@@ -88,9 +88,11 @@
                     { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3' },
                     { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3' },
                 ]
+                // cards: eventBus.videos.vidCards
             }
         },
         mounted() {
+            console.log(this.cards)
             var that = this
 
             for (var i=0; i < this.videos.length; ++i){
@@ -194,8 +196,8 @@
             'annotate-path': AnnotatePath
         },
         updated() {
-            console.log(this.annotateEffect)
-            console.log(this.annotateComment)
+            
+
         }
     }
 
@@ -365,10 +367,6 @@
                         align-items: center;
                         justify-content: center;
                 } */
-
-                .test {
-                    display: none;
-                }
 </style>
 
 
