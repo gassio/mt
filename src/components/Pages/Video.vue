@@ -29,12 +29,13 @@
                         <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
                     </p>
                 </div>
-
-                <input type="submit" value="Annotate" @click="annotate()"/>
+                <div>
+                    <input type="submit" value="Annotate" @click="annotate()"/>
+                </div>
             </div>
-            
-            <div style="pointer-events:all" @click="isAnnotating = !isAnnotating">+Annotate</div>
 
+            <div class="annotate-btn" @click="isAnnotating = !isAnnotating">+Annotate</div>
+            
             <!--<annotate-path></annotate-path> -->
             
             <div class="player__progress" id="progress">
@@ -50,7 +51,6 @@
 								</div> -->
             </div>
         </div>
-
 
         <div class="cards">
             <div class="card" v-for="card in videoAnnotations">
@@ -121,9 +121,14 @@
                 "height": 460
             });
 
-            // $(document).ready(function() {
-            //     $('.jw-dock').append("<button @click=\"isAnnotating =! isAnnotating\" style=\"pointer-events:all\">+Annotate</button>")
-            // })
+            // Appendinside the JWPlayer div
+            $(document).ready(function() {
+                var annotateBtn = $('.annotate-btn')
+                $('.jw-controls').append(annotateBtn)
+
+                var annotate = $('.annotate')
+                $('#player').append(annotate)
+            })
 
             // this.player.on('ready', function() {
             //     that.player.addButton(
@@ -204,8 +209,6 @@
             'annotate-path': AnnotatePath
         },
     }
-
-
     // goCurrentRibbon() {
             //     var that = this
 
@@ -317,7 +320,10 @@
 					background-color: #E0E0E0;
         }
         
-
+    .annotate-btn {
+      pointer-events: all;
+      background-color: yellow;
+    }
    
     .cards {
         width: 40%;
