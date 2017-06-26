@@ -20,10 +20,16 @@ const router = new VueRouter({
 
 export const eventBus = new Vue({
   data: {
+    // JWPlayer DB
     feeds: ['ccPaHVIt', 'O2LEnFP4'], // playlist ids
     playlistNames: [],
-    namesAndFeeds: [], // playlists names and playlist id ==> { 'NasaClass' : 'ccPaHVIt' }
     videos: [],
+    // Our DB
+    allAnnotations: [
+      { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', author: 'Ben Domino', videoID: 'wUu9NAdZ' },
+      { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', videoID: 'TIz5jlaL' },
+      { title: 'Visual design', desc: 'Yeah baby!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', videoID: 'TIz5jlaL' },
+    ],
   },
   methods: {
     navigateBack(that) {
@@ -31,6 +37,9 @@ export const eventBus = new Vue({
     }
   }
 })
+
+// DATA
+// namesAndFeeds: [], // playlists names and playlist id ==> { 'NasaClass' : 'ccPaHVIt' }
 
 new Vue({
   el: '#app',

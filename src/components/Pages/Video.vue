@@ -3,7 +3,7 @@
         <img src="/static/add.png">
 
         <div class="player">
-            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[currVideoID].vidTitle}}</button>     
+            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[currVideoIndex].vidTitle}}</button>     
 
 
             <div id="player">Loading the player...</div>
@@ -51,8 +51,8 @@
         </div>
 
         <div class="cards">
-            <div class="card" v-for="card in cards">
-                <div class="card-head">
+            <div class="card" v-for="card in videoAnnotations">
+                <div class="card-head" > <!-- @click="remove()" -->
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
                 </div> 
@@ -75,43 +75,45 @@
         data() {
             return {
                 videos: eventBus.videos,
-                currVideoID: 0,
-                id: this.$route.params.id,
-                player: null,
+                videoAnnotations: [],
+                currVideoIndex: 0,
                 duration: 0,
+                player: null,
                 clickCoords: 0,
                 annotateEffect: 1,
                 annotateComment: '',
                 annotateFrom: null,
                 annotateTo: null,
-                cards: eventBus.videos.vidCards
+                id: this.$route.params.id,
             }
         },
         mounted() {
-            
+            console.log('All annotations: ')
+            console.log(eventBus.allAnnotations)
 
             var that = this
 
             for (var i=0; i < this.videos.length; ++i){
                 if(this.videos[i].videoID === this.id) {
-                    this.currVideoID = i
+                    this.currVideoIndex = i
                 }
-                console.log(this.videos[i].vidCards)
             }
-            
-            this.duration = this.videos[this.currVideoID].vidDuration
+
+            this.loadVideoAnnotations()
+
+            this.duration = this.videos[this.currVideoIndex].vidDuration
 
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
             // So, we get the last object - 1 = sourcesLength - 2 
-            var sourcesLength = this.videos[this.currVideoID].vidSources.length
+            var sourcesLength = this.videos[this.currVideoIndex].vidSources.length
             var correctSource = sourcesLength - 2
 
             this.player = jwplayer('player')            
             this.player.setup({
-                file: this.videos[this.currVideoID].vidSources[correctSource].file,
-                image: this.videos[this.currVideoID].vidThumb,
+                file: this.videos[this.currVideoIndex].vidSources[correctSource].file,
+                image: this.videos[this.currVideoIndex].vidThumb,
                 "width": 860,
                 "height": 460
             });
@@ -183,20 +185,38 @@
                         $('.jw-nextup-container').append(annoMenu)
                     })
             },
-            annotate() {
-                for (var i=0; i < this.cards.length; i++) {
-                    var card = { title: 'Posture & Stance', desc: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect }
+            // Fetches annotations of the current video (videoid = URLid)
+            // Stores annotations in videoAnnotations[]
+            loadVideoAnnotations() {
+                for (var i=0; i < eventBus.allAnnotations.length; ++i) {
+                    if(eventBus.allAnnotations[i].videoID === this.id) {
+                        this.videoAnnotations.push(eventBus.allAnnotations[i])
+                    }
                 }
-                this.cards.push(card)
-            }
+            },
+            annotate() {
+                // if ()
+                for (var i=0; i <= this.videoAnnotations.length; i++) {
+                    var card = { title: 'XXX', desc: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect, author: 'Ben Domino', videoID: this.id }
+                }
+                this.videoAnnotations.push(card)
+
+                // Pushes the new annotation to the main eventBus object
+                eventBus.allAnnotations.push(card)
+                console.log('eventbus')
+                console.log(eventBus.allAnnotations)
+                this.annotateComment = ''
+                this.annotateFrom = null
+                this.annotateTo = null
+                this.annotateEffect
+            },
+            // remove(e) {
+            //     alert('remove!')
+            // },
         },
         components: {
             'annotate-path': AnnotatePath
         },
-        updated() {
-            
-
-        }
     }
 
 

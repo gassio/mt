@@ -34,22 +34,15 @@
                                 videoID: playlist[i].mediaid,
                                 vidSources: playlist[i].sources,
                                 vidPlaylistName: title,
-                                // here is going to put the card object
-                                vidCards: [
-                                    { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3' },
-                                    { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3' },
-                                ]
+                                vidAnnotations: eventBus.allAnnotations
                             }
                             eventBus.videos.push(video)
                         }
-                        console.log(video)
                     })
                     .catch(function (error) {
                         console.log(error)
                     })
-            }
-            
-            console.log(eventBus.videos)
+            }  
         },
         components: {
             'my-header': MyHeader

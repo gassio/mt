@@ -32,9 +32,10 @@
     export default {
         data() {
             return {
-                videos: eventBus.videos
+                videos: eventBus.videos,
+                videoAnnotations: eventBus.allAnnotations
             }
-        } 
+        }
     }
 </script>
 

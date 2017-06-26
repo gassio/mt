@@ -34,7 +34,6 @@
         data() {
             return { 
                 feeds: eventBus.feeds,
-                playlistNames: eventBus.playlistNames,
                 videos: eventBus.videos,
                 id: this.$route.params.id
             }
