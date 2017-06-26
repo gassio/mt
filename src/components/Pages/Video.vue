@@ -8,9 +8,35 @@
 
             <div id="player">Loading the player...</div>
 
+            <div class="annotate" v-show="isAnnotating">
+                <div class="field">
+                    <p class="control">
+                        Set effectiveness:
+                        <el-slider v-model="annotateEffect" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <label class="label">Comment</label>
+                    <p class="control">
+                        <textarea class="textarea" placeholder="Comment here..." v-model="annotateComment"></textarea>
+                    </p>
+                </div>
+
+                <div class="field">
+                    <p class="control">
+                        <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
+                        <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
+                    </p>
+                </div>
+
+                <input type="submit" value="Annotate" @click="annotate()"/>
+            </div>
+            
+            <div style="pointer-events:all" @click="isAnnotating = !isAnnotating">+Annotate</div>
+
             <!--<annotate-path></annotate-path> -->
-
-
+            
             <div class="player__progress" id="progress">
 
                 <div class="player__ribbon">
@@ -25,34 +51,10 @@
             </div>
         </div>
 
-        <div class="annotate" style="padding: 15px;">
-            <div class="field">
-                <p class="control">
-                    Set effectiveness:
-                    <el-slider v-model="annotateEffect" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
-                </p>
-            </div>
-
-            <div class="field">
-                <label class="label">Comment</label>
-                <p class="control">
-                    <textarea class="textarea" placeholder="Comment here..." v-model="annotateComment"></textarea>
-                </p>
-            </div>
-
-            <div class="field">
-                <p class="control">
-                    <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
-                    <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
-                </p>
-            </div>
-
-            <input type="submit" value="Annotate" @click="annotate()"/>
-        </div>
 
         <div class="cards">
             <div class="card" v-for="card in videoAnnotations">
-                <div class="card-head" > <!-- @click="remove()" -->
+                <div class="card-head">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
                 </div> 
@@ -84,6 +86,7 @@
                 annotateComment: '',
                 annotateFrom: null,
                 annotateTo: null,
+                isAnnotating: false,
                 id: this.$route.params.id,
             }
         },
@@ -117,6 +120,10 @@
                 "width": 860,
                 "height": 460
             });
+
+            // $(document).ready(function() {
+            //     $('.jw-dock').append("<button @click=\"isAnnotating =! isAnnotating\" style=\"pointer-events:all\">+Annotate</button>")
+            // })
 
             // this.player.on('ready', function() {
             //     that.player.addButton(
@@ -163,26 +170,9 @@
             },
             showAnnoMenu() {
                     $(document).ready(function() {
-                        var annoMenu = `
-                                <div class="annomenu">
-                                        <div class="annomenu-option">
-                                        1
-                                        </div>
-                                        <div class="annomenu-option">
-                                        2
-                                        </div>
-                                        <div class="annomenu-option">
-                                        3
-                                        </div>
-                                        <div class="annomenu-option">
-                                        4
-                                        </div>
-                                        <div class="annomenu-option">
-                                        5
-                                        </div>
-                                </div>
-                        `;
-                        $('.jw-nextup-container').append(annoMenu)
+                        var annotatePath = $('.annotate')
+                        $('#player').append(annotatePath)
+                        $('.annotate').css('display', 'inline')
                     })
             },
             // Fetches annotations of the current video (videoid = URLid)
@@ -195,7 +185,6 @@
                 }
             },
             annotate() {
-                // if ()
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
                     var card = { title: 'XXX', desc: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect, author: 'Ben Domino', videoID: this.id }
                 }
@@ -209,10 +198,7 @@
                 this.annotateFrom = null
                 this.annotateTo = null
                 this.annotateEffect
-            },
-            // remove(e) {
-            //     alert('remove!')
-            // },
+            }
         },
         components: {
             'annotate-path': AnnotatePath
@@ -239,10 +225,34 @@
             //     <span class="player__progress-ribbon" @click="goCurrentRibbon()"></span>
             // </div>
             // },
+
+            // showAnnoMenu() {
+            //         $(document).ready(function() {
+            //             var annoMenu = `
+            //                     <div class="annomenu">
+            //                             <div class="annomenu-option">
+            //                             1
+            //                             </div>
+            //                             <div class="annomenu-option">
+            //                             2
+            //                             </div>
+            //                             <div class="annomenu-option">
+            //                             3
+            //                             </div>
+            //                             <div class="annomenu-option">
+            //                             4
+            //                             </div>
+            //                             <div class="annomenu-option">
+            //                             5
+            //                             </div>
+            //                     </div>
+            //             `;
+            //             $('.jw-nextup-container').append(annoMenu)
+            //         })
+            // },
 </script>
 
 <style>
-
 .video {
     padding: 0;
     padding-top: 25px;
