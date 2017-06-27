@@ -26,9 +26,10 @@ export const eventBus = new Vue({
     videos: [],
     // Our DB
     allAnnotations: [
-      { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', author: 'Ben Domino', videoID: 'wUu9NAdZ' },
-      { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', videoID: 'TIz5jlaL' },
-      { title: 'Visual design', desc: 'Yeah baby!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', videoID: 'TIz5jlaL' },
+      { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', author: 'Ben Domino', category: 'delivery', videoID: 'wUu9NAdZ' },
+      { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', category: 'delivery', videoID: 'TIz5jlaL' },
+      { title: 'Visual design', desc: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'delivery', videoID: 'TIz5jlaL' },
+      { title: 'Example move', desc: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'moves', videoID: 'TIz5jlaL' },
     ],
   },
   methods: {

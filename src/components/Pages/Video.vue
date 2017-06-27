@@ -9,6 +9,22 @@
             <div id="player">Loading the player...</div>
 
             <div class="annotate" v-show="isAnnotating">
+                <div class="annotate-menu">
+                    <nav class="annotate-menu__categogies">
+                        <a href="#">Structure</a>
+                        <a href="#">Delivery</a>
+                        <a href="#">Visual</a>
+                        <a href="#">Style</a>
+                        <a href="#">Moves</a>
+                    </nav>
+                    <nav class="annotate-menu__moves">
+                        <a href="#">Volume</a>
+                        <a href="#">Gestures</a>
+                        <a href="#">Metadiscourse</a>
+                        <a href="#">Posture & stance</a>
+                        <a href="#">Language</a>
+                    </nav>
+                </div>
                 <div class="field">
                     <p class="control">
                         Set effectiveness:
@@ -53,7 +69,15 @@
         </div>
 
         <div class="cards">
-            <div class="card" v-for="card in videoAnnotations">
+            <nav class="card-menu">
+                <a href="#" @click="chooseCategory('moves')">Moves</a>
+                <a href="#" @click="chooseCategory('structure')">Structure</a>
+                <a href="#" @click="chooseCategory('delivery')">Delivery</a>
+                <a href="#" @click="chooseCategory('visual')">Visual</a>
+                <a href="#" @click="chooseCategory('style')">Style</a>
+                <a href="#" @click="chooseCategory('all')">All</a>
+            </nav>
+            <div class="card" v-for="card in videoAnnotations" v-if="card.category === chosenCategory">
                 <div class="card-head">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
@@ -87,6 +111,7 @@
                 annotateFrom: null,
                 annotateTo: null,
                 isAnnotating: false,
+                chosenCategory: 'delivery',
                 id: this.$route.params.id,
             }
         },
@@ -120,23 +145,6 @@
                 "width": 860,
                 "height": 460
             });
-
-            // Appendinside the JWPlayer div
-            $(document).ready(function() {
-                var annotateBtn = $('.annotate-btn')
-                $('.jw-controls').append(annotateBtn)
-
-                var annotate = $('.annotate')
-                $('#player').append(annotate)
-            })
-
-            // this.player.on('ready', function() {
-            //     that.player.addButton(
-            //         "/static/add.png", 
-            //         "Add annotation", 
-            //         function() { that.showAnnoMenu() }, 
-            //         "annomenu");
-            // })
 
             // Animate progress bar width
             this.player.on('time', function(event) {
@@ -203,6 +211,9 @@
                 this.annotateFrom = null
                 this.annotateTo = null
                 this.annotateEffect
+            },
+            chooseCategory(category) {
+                this.chosenCategory = category
             }
         },
         components: {
@@ -253,15 +264,32 @@
             //             $('.jw-nextup-container').append(annoMenu)
             //         })
             // },
+
+            // Append inside the JWPlayer div
+            // $(document).ready(function() {
+            //     var annotateBtn = $('.annotate-btn')
+            //     $('.jw-controls').append(annotateBtn)
+
+            //     var annotate = $('.annotate')
+            //     $('#player').append(annotate)
+            // })
+
+            // Create button inside JWPlayer, using their API.
+            // this.player.on('ready', function() {
+            //     that.player.addButton(
+            //         "/static/add.png", 
+            //         "Add annotation", 
+            //         function() { that.showAnnoMenu() }, 
+            //         "annomenu");
+            // })
 </script>
 
 <style>
 .video {
     padding: 0;
     padding-top: 25px;
-    display: flex;
+    display: flex; 
 }
-
     .player {
     }
 
@@ -324,6 +352,30 @@
       pointer-events: all;
       background-color: yellow;
     }
+
+    .annotate-menu__categogies {
+        display: flex;
+        justify-content: center;
+    }
+
+        .annotate-menu__categogies a {
+            color: #0a0a0a;
+            padding: 5px;
+        }
+
+    .annotate-menu__moves {
+        width: 100%;
+        display: flex;
+    }
+        .annotate-menu__moves a {
+            width: 25%;
+            height: 100px;
+            color: #0a0a0a;
+            border: 1px solid #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
    
     .cards {
         width: 40%;
@@ -348,6 +400,15 @@
                 display: flex;
                 justify-content: space-between;
             }
+
+    .card-menu {
+        display: flex;
+    }
+
+        .card-menu a {
+            color: #0a0a0a;
+            padding: 15px;
+        }
 
         .jw-controlbar {
             display: none !important;
