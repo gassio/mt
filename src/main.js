@@ -34,12 +34,13 @@ export const eventBus = new Vue({
         to: '03:17', 
         rating: '3', 
         author: 'Ben Domino', 
-        category: 'delivery',
+        canon: 'delivery',
+        category: 'posture',
         videoID: 'wUu9NAdZ' 
       },
-      { title: 'Volume, rate and pitch', desc: 'Volume, rate, and pitch are appropriate and modulated', comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', category: 'delivery', videoID: 'TIz5jlaL' },
-      { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'delivery', videoID: 'TIz5jlaL' },
-      { title: 'Example move', comment: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'moves', videoID: 'TIz5jlaL' },
+      { title: 'Volume, rate and pitch', desc: 'Volume, rate, and pitch are appropriate and modulated', comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', canon: 'delivery', category: 'volume', videoID: 'TIz5jlaL' },
+      { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'visual', category: 'graphics', videoID: 'TIz5jlaL' },
+      { title: 'Example move', comment: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'moves', category: 'moves', videoID: 'TIz5jlaL' },
     ],
   },
   methods: {

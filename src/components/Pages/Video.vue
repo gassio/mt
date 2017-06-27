@@ -10,37 +10,37 @@
 
             <div class="annotate" v-show="isAnnotating">
                 <div class="annotate-menu">
-                    <nav class="annotate-menu__categogies">
-                        <a href="#">Structure</a>
-                        <a href="#">Delivery</a>
-                        <a href="#">Visual</a>
-                        <a href="#">Style</a>
-                        <a href="#">Moves</a>
+                    <nav class="annotate-menu__canons">
+                        <a @click="chooseCanonAnnotate('structure', $event)">Structure</a>
+                        <a @click="chooseCanonAnnotate('delivery', $event)">Delivery</a>
+                        <a @click="chooseCanonAnnotate('visual', $event)">Visual</a>
+                        <a @click="chooseCanonAnnotate('style', $event)">Style</a>
+                        <a @click="chooseCanonAnnotate('moves', $event)">Moves</a>
                     </nav>
                     <nav class="annotate-menu__moves">
-                        <a href="#">Volume</a>
-                        <a href="#">Gestures</a>
-                        <a href="#">Metadiscourse</a>
-                        <a href="#">Posture & stance</a>
-                        <a href="#">Language</a>
+                        <a @click="chooseCategoryAnnotate('volume')">Volume</a>
+                        <a @click="chooseCategoryAnnotate('gestures')">Gestures</a>
+                        <a @click="chooseCategoryAnnotate('metadiscourse')">Metadiscourse</a>
+                        <a @click="chooseCategoryAnnotate('posture')">Posture & stance</a>
+                        <a @click="chooseCategoryAnnotate('language')">Language</a>
                     </nav>
                 </div>
                 <div class="field">
                     <p class="control">
                         Set effectiveness:
-                        <el-slider v-model="annotateEffect" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
+                        <el-slider v-model="annotateRating" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
                     </p>
                 </div>
 
                 <div class="field">
                     <label class="label">Comment</label>
                     <p class="control">
-                        <textarea class="textarea" placeholder="Comment here..." v-model="annotateComment"></textarea>
+                        <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
                     </p>
                 </div>
 
                 <div class="field">
-                    <p class="control">
+                    <p class="control" style="display:flex; width: 30%">
                         <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
                         <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
                     </p>
@@ -70,14 +70,14 @@
 
         <div class="cards">
             <nav class="card-menu">
-                <a href="#" @click="chooseCategory('moves')">Moves</a>
-                <a href="#" @click="chooseCategory('structure')">Structure</a>
-                <a href="#" @click="chooseCategory('delivery')">Delivery</a>
-                <a href="#" @click="chooseCategory('visual')">Visual</a>
-                <a href="#" @click="chooseCategory('style')">Style</a>
-                <a href="#" @click="chooseCategory('all')">All</a>
+                <a @click="chooseCanonFilter('moves')">Moves</a>
+                <a @click="chooseCanonFilter('structure')">Structure</a>
+                <a @click="chooseCanonFilter('delivery')">Delivery</a>
+                <a @click="chooseCanonFilter('visual')">Visual</a>
+                <a @click="chooseCanonFilter('style')">Style</a>
+                <a @click="chooseCanonFilter('all')">All</a>
             </nav>
-            <div class="card" v-for="card in videoAnnotations" v-if="card.category === chosenCategory">
+            <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
                 <div class="card-head">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
@@ -106,12 +106,14 @@
                 duration: 0,
                 player: null,
                 clickCoords: 0,
-                annotateEffect: 1,
+                annotateCanon: '',
+                annotateCategory: '',
                 annotateComment: '',
+                annotateRating: 1,
                 annotateFrom: null,
                 annotateTo: null,
                 isAnnotating: false,
-                chosenCategory: 'delivery',
+                filterCanon: 'delivery',
                 id: this.$route.params.id,
             }
         },
@@ -199,7 +201,17 @@
             },
             annotate() {
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
-                    var card = { title: 'XXX', comment: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect, author: 'Ben Domino', videoID: this.id }
+                    var card = { 
+                        title: this.annotateCategory,
+                        desc: 'Dummy',
+                        comment: this.annotateComment,
+                        from: this.annotateFrom,
+                        to: this.annotateTo, 
+                        rating: this.annotateRating, 
+                        canon: this.annotateCanon,
+                        category: this.annotateCategory,
+                        videoID: this.id
+                    }
                 }
                 this.videoAnnotations.push(card)
 
@@ -210,11 +222,20 @@
                 this.annotateComment = ''
                 this.annotateFrom = null
                 this.annotateTo = null
-                this.annotateEffect
+                this.annotateRating
             },
-            chooseCategory(category) {
-                this.chosenCategory = category
-            }
+            chooseCanonFilter(canon) {
+                this.filterCanon = canon
+            },
+            chooseCanonAnnotate(canon, event) {
+                this.annotateCanon = canon
+                console.log(this.annotateCanon)
+                event.currentTarget.style.backgroundColor = "yellow"
+            },
+            chooseCategoryAnnotate(canon) {
+                this.annotateCategory = canon
+                console.log(this.annotateCategory)
+            },
         },
         components: {
             'annotate-path': AnnotatePath
@@ -285,6 +306,11 @@
 </script>
 
 <style>
+
+    .structure, .delivery, .visual, .style, .moves {
+        background-color: #39425C
+    }
+
 .video {
     padding: 0;
     padding-top: 25px;
@@ -353,15 +379,16 @@
       background-color: yellow;
     }
 
-    .annotate-menu__categogies {
+    .annotate-menu__canons {
         display: flex;
         justify-content: center;
     }
 
-        .annotate-menu__categogies a {
+        .annotate-menu__canons a {
             color: #0a0a0a;
             padding: 5px;
         }
+
 
     .annotate-menu__moves {
         width: 100%;
