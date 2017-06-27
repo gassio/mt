@@ -82,7 +82,7 @@
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
                 </div> 
-                <span class="card-desc">{{ card.desc }}</span>
+                <span class="card-comment">{{ card.comment }}</span>
                 <span class="card-rating">{{ card.rating }}</span>
             </div>
             <!-- <router-link :to=" '/video/' + id + '/edit' ">
@@ -199,7 +199,7 @@
             },
             annotate() {
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
-                    var card = { title: 'XXX', desc: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect, author: 'Ben Domino', videoID: this.id }
+                    var card = { title: 'XXX', comment: this.annotateComment, from: this.annotateFrom, to: this.annotateTo, rating: this.annotateEffect, author: 'Ben Domino', videoID: this.id }
                 }
                 this.videoAnnotations.push(card)
 
@@ -391,7 +391,7 @@
             display: flex;
             flex-direction: column;
         }
-            .card-head, .card-desc, .card-rating {
+            .card-head, .card-comment, .card-rating {
                 padding: 10px;
                 border-bottom: 1px dotted black;
             }

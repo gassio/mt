@@ -26,10 +26,20 @@ export const eventBus = new Vue({
     videos: [],
     // Our DB
     allAnnotations: [
-      { title: 'Posture & Stance', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', author: 'Ben Domino', category: 'delivery', videoID: 'wUu9NAdZ' },
-      { title: 'Volume, rate and pitch', desc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', category: 'delivery', videoID: 'TIz5jlaL' },
-      { title: 'Visual design', desc: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'delivery', videoID: 'TIz5jlaL' },
-      { title: 'Example move', desc: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'moves', videoID: 'TIz5jlaL' },
+      { 
+        title: 'Posture & Stance',
+        desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen',
+        comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', 
+        from: '03:05',
+        to: '03:17', 
+        rating: '3', 
+        author: 'Ben Domino', 
+        category: 'delivery',
+        videoID: 'wUu9NAdZ' 
+      },
+      { title: 'Volume, rate and pitch', desc: 'Volume, rate, and pitch are appropriate and modulated', comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', category: 'delivery', videoID: 'TIz5jlaL' },
+      { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'delivery', videoID: 'TIz5jlaL' },
+      { title: 'Example move', comment: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', category: 'moves', videoID: 'TIz5jlaL' },
     ],
   },
   methods: {
