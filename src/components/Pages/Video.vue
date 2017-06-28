@@ -11,18 +11,34 @@
             <div class="annotate" v-show="isAnnotating">
                 <div class="annotate-menu">
                     <nav class="annotate-menu__canons">
-                        <a @click="chooseCanonAnnotate('structure', $event)">Structure</a>
-                        <a @click="chooseCanonAnnotate('delivery', $event)">Delivery</a>
+                        <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
+                        <!--<a @click="chooseCanonAnnotate('delivery', $event)">Delivery</a>
                         <a @click="chooseCanonAnnotate('visual', $event)">Visual</a>
                         <a @click="chooseCanonAnnotate('style', $event)">Style</a>
-                        <a @click="chooseCanonAnnotate('moves', $event)">Moves</a>
+                        <a @click="chooseCanonAnnotate('moves', $event)">Moves</a> -->
                     </nav>
-                    <nav class="annotate-menu__moves">
-                        <a @click="chooseCategoryAnnotate('volume')">Volume</a>
+                    <nav class="annotate-menu__categories" v-if="canon.name === annotateCanon" v-for="canon in canons">
+                        <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>
+                        <!-- STRUCTURE
+                            <a @click="chooseCategoryAnnotate('key-terms')">Key terms</a>
+                        <a @click="chooseCategoryAnnotate('conseptual-transitions')">Conceptual transitions</a>
+                        <a @click="chooseCategoryAnnotate('line-of-argument')">Line of argument</a>
+                        <a @click="chooseCategoryAnnotate('central-moves')">Central moves</a>
+
+                            DELIVERY
+                            <a @click="chooseCategoryAnnotate('volume')">Volume</a>
                         <a @click="chooseCategoryAnnotate('gestures')">Gestures</a>
                         <a @click="chooseCategoryAnnotate('metadiscourse')">Metadiscourse</a>
                         <a @click="chooseCategoryAnnotate('posture')">Posture & stance</a>
                         <a @click="chooseCategoryAnnotate('language')">Language</a>
+                            
+                            VISUAL
+                        <a @click="chooseCategoryAnnotate('pictorial-cues')">Pictorial cues</a>
+                        <a @click="chooseCategoryAnnotate('slide-titles')">Slide titles</a>
+                        <a @click="chooseCategoryAnnotate('image-text-highlight')">Image-text highlight</a>
+                        <a @click="chooseCategoryAnnotate('graphics')">Graphics</a>
+                        <a @click="chooseCategoryAnnotate('memorable-images')">Memorable images</a> 
+                        -->
                     </nav>
                 </div>
                 <div class="field">
@@ -82,7 +98,10 @@
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
                 </div> 
-                <span class="card-comment">{{ card.comment }}</span>
+                <span class="card-comment">{{ card.comment }} </span>
+                <span>Canon: {{ card.canon }}</span>
+                <span>Category: {{ card.category }}</span>
+                <span>Title: {{ card.title }}</span>
                 <span class="card-rating">{{ card.rating }}</span>
             </div>
             <!-- <router-link :to=" '/video/' + id + '/edit' ">
@@ -102,6 +121,7 @@
             return {
                 videos: eventBus.videos,
                 videoAnnotations: [],
+                canons: eventBus.canons,
                 currVideoIndex: 0,
                 duration: 0,
                 player: null,
@@ -113,13 +133,15 @@
                 annotateFrom: null,
                 annotateTo: null,
                 isAnnotating: false,
-                filterCanon: 'delivery',
+                filterCanon: 'Delivery',
                 id: this.$route.params.id,
             }
         },
         mounted() {
-            console.log('All annotations: ')
-            console.log(eventBus.allAnnotations)
+            // console.log('All annotations: ')
+            // console.log(eventBus.allAnnotations)
+            // console.log('Canons: ')
+            // console.log(this.canons)
 
             var that = this
 
@@ -397,11 +419,11 @@
         }
 
 
-    .annotate-menu__moves {
+    .annotate-menu__categories {
         width: 100%;
         display: flex;
     }
-        .annotate-menu__moves a {
+        .annotate-menu__categories a {
             width: 25%;
             height: 100px;
             color: #0a0a0a;

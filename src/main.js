@@ -42,6 +42,79 @@ export const eventBus = new Vue({
       { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'visual', category: 'graphics', videoID: 'TIz5jlaL' },
       { title: 'Example move', comment: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'moves', category: 'moves', videoID: 'TIz5jlaL' },
     ],
+    canons: [
+      { 
+        name: 'Structure', 
+        categories: [
+          { 
+            name: 'Terms',
+            desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'
+          },
+          { 
+            name: 'Conceptual transitions',
+            desc: 'Uses conceptual transitions to connect key sections of the presentation'
+          },
+          { 
+            name: 'Line of argument',
+            desc: 'Provides a clear line of argument which is brought to a clear position at the end'
+          },
+          { 
+            name: 'Central moves',
+            desc: 'Uses the central rhetorical moves for each section appropriately '
+          }
+        ]
+      },
+      { 
+        name: 'Delivery', 
+        categories: [
+          { 
+            name: 'Volume',
+            desc: 'Volume, rate, and pitch are appropriate and modulated'
+          },
+          { 
+            name: 'Gestures',
+            desc: 'Gestures, eye contact, and body movement used intentionally to engage audience'
+          },
+          { 
+            name: 'Metadiscourse',
+            desc: 'Metadiscourse orients listener and helps transition between sections'
+          },
+          { 
+            name: 'Posture',
+            desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen'
+          },
+          { 
+            name: 'Language',
+            desc: 'Technical and informal language are both employed as appropriate'
+          }
+        ]
+      },
+      { 
+        name: 'Visual Design', 
+        categories: [
+          { 
+            name: 'Pictorial cues',
+            desc: 'Uses primarily pictorial cues (limited text)'
+          },
+          { 
+            name: 'Slide titles',
+            desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
+          },
+          { 
+            name: 'Image-text highlight',
+            desc: 'Images and text highlight/focus audience on key points'
+          },
+          { 
+            name: 'Graphics',
+            desc: 'Graphics show relevant data/concepts to support the claims'
+          },
+          { 
+            name: 'Memorable images',
+            desc: 'Memorable images provide necessary context to support the oral discussion'
+          }
+        ]
+      },
+    ]
   },
   methods: {
     navigateBack(that) {
