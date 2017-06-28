@@ -86,12 +86,12 @@
 
         <div class="cards">
             <nav class="card-menu">
-                <a @click="chooseCanonFilter('moves')">Moves</a>
-                <a @click="chooseCanonFilter('structure')">Structure</a>
-                <a @click="chooseCanonFilter('delivery')">Delivery</a>
-                <a @click="chooseCanonFilter('visual')">Visual</a>
-                <a @click="chooseCanonFilter('style')">Style</a>
-                <a @click="chooseCanonFilter('all')">All</a>
+                <a @click="chooseCanonFilter('Moves')">Moves</a>
+                <a @click="chooseCanonFilter('Structure')">Structure</a>
+                <a @click="chooseCanonFilter('Delivery')">Delivery</a>
+                <a @click="chooseCanonFilter('Visual')">Visual</a>
+                <a @click="chooseCanonFilter('Style')">Style</a>
+                <a @click="chooseCanonFilter('All')">All</a>
             </nav>
             <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
                 <div class="card-head">
