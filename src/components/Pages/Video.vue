@@ -224,17 +224,24 @@
                 this.annotateTo = null
                 this.annotateRating
             },
+            activeItemProblem(event) {
+                var children = event.currentTarget.parentNode.children
+                for (var i=0; i < children.length; i++) {
+                    children[i].style.backgroundColor = "transparent"
+                }
+                event.currentTarget.style.backgroundColor = "yellow"
+            },
             chooseCanonFilter(canon) {
                 this.filterCanon = canon
+                this.activeItemProblem(event)
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
-                console.log(this.annotateCanon)
-                event.currentTarget.style.backgroundColor = "yellow"
+                this.activeItemProblem(event)
             },
-            chooseCategoryAnnotate(canon) {
-                this.annotateCategory = canon
-                console.log(this.annotateCategory)
+            chooseCategoryAnnotate(category) {
+                this.annotateCategory = category
+                this.activeItemProblem(event)
             },
         },
         components: {
