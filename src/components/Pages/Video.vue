@@ -49,7 +49,7 @@
                 <div class="annotate-rating field">
                     <p class="control">
                         Set effectiveness:
-                        <el-slider v-model="annotateRating" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
+                        <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" show-stops show-tooltip></el-slider>
                     </p>
                 </div>
 
@@ -436,6 +436,9 @@
             justify-content: center;
             align-items: center;
         }
+
+            .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }
+            .el-slider__stop { border-radius: 0 !important;}
    
     .cards {
         width: 40%;
