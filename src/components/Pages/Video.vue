@@ -41,21 +41,26 @@
                         -->
                     </nav>
                 </div>
-                <div class="field">
+                <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                    <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">
+                       "{{ cat.desc }}"
+                    </p>
+                </div>
+                <div class="annotate-rating field">
                     <p class="control">
                         Set effectiveness:
                         <el-slider v-model="annotateRating" :step="1" :min="1" :max="5" show-stops show-tooltip></el-slider>
                     </p>
                 </div>
 
-                <div class="field">
+                <div class="annotate-comment field">
                     <label class="label">Comment</label>
                     <p class="control">
                         <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
                     </p>
                 </div>
 
-                <div class="field">
+                <div class="annotate-drag field">
                     <p class="control" style="display:flex; width: 30%">
                         <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
                         <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
@@ -91,7 +96,7 @@
                 <a @click="chooseCanonFilter('Delivery')">Delivery</a>
                 <a @click="chooseCanonFilter('Visual')">Visual</a>
                 <a @click="chooseCanonFilter('Style')">Style</a>
-                <a @click="chooseCanonFilter('All')">All</a>
+                <!--<a @click="chooseCanonFilter('All')">All</a>-->
             </nav>
             <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
                 <div class="card-head">
@@ -225,7 +230,6 @@
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
                     var card = { 
                         title: this.annotateCategory,
-                        desc: 'Dummy',
                         comment: this.annotateComment,
                         from: this.annotateFrom,
                         to: this.annotateTo, 
