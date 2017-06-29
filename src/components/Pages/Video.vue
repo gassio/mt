@@ -98,8 +98,8 @@
                 <a @click="chooseCanonFilter('Style')">Style</a>
                 <!--<a @click="chooseCanonFilter('All')">All</a>-->
             </nav>
-            <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon" @click="seekCard($event)">
-                <div class="card-head">
+            <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
+                <div class="card-head" @click="seekCard($event)">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
                 </div> 
@@ -270,12 +270,14 @@
                 this.activeItemProblem(event)
             },
             seekCard(event) {
-                console.log(event.currentTarget.children[0].children[1].innerText)
-                var timeString = event.currentTarget.children[0].children[1].innerText // 03:05 - 03:17
-                // 1. Divide the timeString in start & end time "03:05", "03:17"
-                // 2. Seek to the start time
-                // 3. Show timeline box (from start to end)
-            }
+                var timeString = event.currentTarget.children[1].innerText // 03:05 - 03:17
+                timeString = timeString.substring(0,5)
+                var a = timeString.split(':'); // split it at the colons
+                // minutes are worth 60 seconds. Hours are worth 60 minutes.
+                var seekTimeSeconds = (+a[0]) * 60 + (+a[1]); // 185s
+                this.player.seek(seekTimeSeconds)
+                console.log('Seeked to ' + timeString)
+            },
         },
         components: {
             'annotate-path': AnnotatePath

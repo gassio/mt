@@ -30,17 +30,17 @@ export const eventBus = new Vue({
         title: 'Posture & Stance',
         desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', 
-        from: '03:05',
-        to: '03:17', 
+        from: '00:05',
+        to: '00:17', 
         rating: '3', 
         author: 'Ben Domino', 
         canon: 'Delivery',
         category: 'posture',
         videoID: 'wUu9NAdZ' 
       },
-      { title: 'Volume, rate and pitch', desc: 'Volume, rate, and pitch are appropriate and modulated', comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '03:05', to: '03:17', rating: '3', canon: 'Delivery', category: 'volume', videoID: 'TIz5jlaL' },
-      { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'Visual', category: 'graphics', videoID: 'TIz5jlaL' },
-      { title: 'Example move', comment: 'This is move', from: '01:04', to: '05:15', rating: '2', author: 'Ben Domino', canon: 'Moves', category: 'Moves', videoID: 'TIz5jlaL' },
+      { title: 'Volume, rate and pitch', desc: 'Volume, rate, and pitch are appropriate and modulated', comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', from: '00:05', to: '00:17', rating: '3', canon: 'Delivery', category: 'volume', videoID: 'TIz5jlaL' },
+      { title: 'Graphics', desc: 'Graphics show relevant data/concepts to support the claims', comment: 'Hello!', from: '00:04', to: '01:15', rating: '2', author: 'Ben Domino', canon: 'Visual', category: 'graphics', videoID: 'TIz5jlaL' },
+      { title: 'Example move', comment: 'This is move', from: '01:04', to: '01:14', rating: '2', author: 'Ben Domino', canon: 'Moves', category: 'Moves', videoID: 'TIz5jlaL' },
     ],
     canons: [
       { 
