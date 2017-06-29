@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="annotate-btn" @click="isAnnotating = !isAnnotating">+Annotate</div>
+            <div class="annotate-btn" @click="annotating()">+Annotate</div>
             
             <div class="player__progress" id="progress">
 
@@ -147,7 +147,6 @@
             // console.log(eventBus.allAnnotations)
             // console.log('Canons: ')
             // console.log(this.canons)
-
             var that = this
 
             for (var i=0; i < this.videos.length; ++i){
@@ -207,12 +206,17 @@
             goBack() {
                 eventBus.navigateBack(this)
             },
-            showAnnoMenu() {
+            annotating() {
+                this.isAnnotating = !this.isAnnotating
+                if (this.isAnnotating === false) {
                     $(document).ready(function() {
-                        var annotatePath = $('.annotate')
-                        $('#player').append(annotatePath)
-                        $('.annotate').css('display', 'inline')
+                        $('.player__ribbon').show()
                     })
+                } else {
+                    $(document).ready(function() {
+                        $('.player__ribbon').hide()
+                    })
+                }
             },
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
@@ -281,12 +285,13 @@
                 this.player.seek(startSec)
 
                 // Move the timeline according to the annotateFrom & annotateTo vars
-                var startPercent = (startSec / totalTime) * 100;
-                var endPercent = (endSec / totalTime) * 100;
-                $('.timeline__start').animate({ marginLeft: startPercent + "%" }, 150);
-                $('.timeline__end').animate({ marginLeft: endPercent + "%" }, 150);
+                // var startPercent = (startSec / totalTime) * 100;
+                // var endPercent = (endSec / totalTime) * 100;
+                // $('.timeline__start').animate({ marginLeft: startPercent + "%" }, 150);
+                // $('.timeline__end').animate({ marginLeft: endPercent + "%" }, 150);
             },
         },
+
         components: {
             'annotate-path': AnnotatePath
         },
@@ -353,6 +358,14 @@
             //         function() { that.showAnnoMenu() }, 
             //         "annomenu");
             // })
+
+            // showAnnoMenu() {
+            //         $(document).ready(function() {
+            //             var annotatePath = $('.annotate')
+            //             $('#player').append(annotatePath)
+            //             $('.annotate').css('display', 'inline')
+            //         })
+            // },
 </script>
 
 <style>
@@ -412,15 +425,17 @@
             .timeline__start {
                 left: 122px;
                 width: 2px;
+                margin: 0;
                 height: 65%;
                 align-self: center;
                 position: absolute;
                 background-color: #E0E0E0;
             }
 
-            .timeline__end{
+            .timeline__end {
                 left: 202px;
                 width: 2px;
+                margin: 0;
                 height: 65%;
                 align-self: center;
                 position: absolute;
@@ -459,6 +474,8 @@
 
             .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }
             .el-slider__stop { border-radius: 0 !important;}
+
+            .annotate-comment { margin-top: 25px; }
    
     .cards {
         width: 40%;
@@ -546,5 +563,3 @@
                         justify-content: center;
                 } */
 </style>
-
-
