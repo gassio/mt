@@ -5,7 +5,8 @@
         <div class="player">
             <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[currVideoIndex].vidTitle}}</button>     
 
-
+            <!--<annotate-path></annotate-path> -->
+            
             <div id="player">Loading the player...</div>
 
             <div class="annotate" v-show="isAnnotating">
@@ -73,8 +74,6 @@
 
             <div class="annotate-btn" @click="isAnnotating = !isAnnotating">+Annotate</div>
             
-            <!--<annotate-path></annotate-path> -->
-            
             <div class="player__progress" id="progress">
 
                 <div class="player__ribbon">
@@ -82,10 +81,11 @@
                     <span class="player__ribbon-line"></span>
                 </div>
 
-                <!-- FOR THE FUTURE
-									<div class="player__timeline">
-									<span class="player__min"></span>
-								</div> -->
+                <!-- FOR THE FUTURE -->
+                <div class="player__timeline">
+                    <span class="timeline__start"></span>
+                    <span class="timeline__end"></span>
+                </div> 
             </div>
         </div>
 
@@ -182,13 +182,10 @@
                     var currentTime = event.position;
                     var percentTime = (currentTime / totalTime) * 100;
 
-                    // $('.player__bar').animate({width: percentTime + '%'});
                     $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
                 }
             })
 
-            // $( ".player__ribbon" ).draggable({ axis: "x" })
-            
             // If progress bar div is clicked, animate width  
             document.getElementById('progress').addEventListener('click', function (e) {
                 var offset = this.getClientRects()[0];
@@ -196,7 +193,6 @@
                 var clickCoordsPercent = ( that.clickCoords / $('.player__progress').width() ) * 100
                     console.log(clickCoordsPercent + ' %')
 
-                // $('.player__bar').animate({ width: clickCoordsPercent + '%' });
                 $('.player__ribbon').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
 
                 var clickTime = (clickCoordsPercent * that.duration) / 100
@@ -204,6 +200,7 @@
                 that.player.seek(clickTime)
             }, false);
 
+            // $( ".player__ribbon" ).draggable({ axis: "x" })
             // this.player.setControls(false);
         },
         methods: {
@@ -270,13 +267,24 @@
                 this.activeItemProblem(event)
             },
             seekCard(event) {
-                var timeString = event.currentTarget.children[1].innerText // 03:05 - 03:17
-                timeString = timeString.substring(0,5)
-                var a = timeString.split(':'); // split it at the colons
-                // minutes are worth 60 seconds. Hours are worth 60 minutes.
-                var seekTimeSeconds = (+a[0]) * 60 + (+a[1]); // 185s
-                this.player.seek(seekTimeSeconds)
-                console.log('Seeked to ' + timeString)
+                var time = event.currentTarget.children[1].innerText // 03:05 - 03:17
+                var startTime = time.substring(0,5); // 03:05
+                var endTime = time.substring(8,13); // 03:17
+                var totalTime = this.duration;
+
+                var a = startTime.split(':')
+                var b = endTime.split(':')
+                var startSec = (+a[0]) * 60 + (+a[1]) // in sec
+                var endSec = (+b[0]) * 60 + (+b[1]) // in sec
+                
+                // Seek player according to annotateFrom var
+                this.player.seek(startSec)
+
+                // Move the timeline according to the annotateFrom & annotateTo vars
+                var startPercent = (startSec / totalTime) * 100;
+                var endPercent = (endSec / totalTime) * 100;
+                $('.timeline__start').animate({ marginLeft: startPercent + "%" }, 150);
+                $('.timeline__end').animate({ marginLeft: endPercent + "%" }, 150);
             },
         },
         components: {
@@ -362,59 +370,62 @@
     }
 
     .player__progress {
-			position: relative;
-			height: 125px;
-			border-radius: 0;
-			background-color: #39425C;
-			display: flex;
+        position: relative;
+        height: 125px;
+        border-radius: 0;
+        background-color: #39425C;
+        display: flex;
     }
 
-        .player__bar {
-					background-color: red;
-        }
-
         .player__ribbon {
-					position: absolute;
-					height: 90px;
-					margin: 0;
-					margin-top: 15px;
-					z-index: 999;
-					display: flex;
-					flex-direction: column;
+            position: absolute;
+            height: 90px;
+            margin: 0;
+            margin-top: 15px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
         }
-
             .player__ribbon-circle {
-							width: 20px;
-							height: 20px;
-							border-radius: 50%;
-							border: 2.5px solid #FFF;
-							background-color: #C53B3B;
-							display: flex;
-							justify-content: center;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border: 2.5px solid #FFF;
+                background-color: #C53B3B;
+                display: flex;
+                justify-content: center;
             }
-
             .player__ribbon-line {
-							width: 2px;
-							height: 100%;
-							background-color: #fff;
-							margin-left: 0;
-							align-self: center;
+                width: 2px;
+                height: 100%;
+                background-color: #fff;
+                margin-left: 0;
+                align-self: center;
             }
 
-			.player__timeline {
-				width: 100%;
-				height: 100%;
-				position: relative;
-				display: flex;
-			}
-        .player__min {
-					left: 100px;
-					width: 1px;
-					height: 65%;
-					align-self: center;
-					position: absolute;
-					background-color: #E0E0E0;
+        .player__timeline {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
         }
+            .timeline__start {
+                left: 122px;
+                width: 2px;
+                height: 65%;
+                align-self: center;
+                position: absolute;
+                background-color: #E0E0E0;
+            }
+
+            .timeline__end{
+                left: 202px;
+                width: 2px;
+                height: 65%;
+                align-self: center;
+                position: absolute;
+                background-color: #E0E0E0;
+            }
         
     .annotate-btn {
       pointer-events: all;
