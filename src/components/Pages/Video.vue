@@ -86,6 +86,8 @@
                     <span class="timeline__start"></span>
                     <span class="timeline__end"></span>
                 </div> 
+
+                <div><span style="color: #fff">{{ nowTime }}</span></div>
             </div>
         </div>
 
@@ -129,6 +131,7 @@
                 canons: eventBus.canons,
                 currVideoIndex: 0,
                 duration: 0,
+                nowTime: 0,
                 player: null,
                 clickCoords: 0,
                 annotateCanon: '',
@@ -174,16 +177,6 @@
                 "height": 460
             });
 
-            // Animate progress bar width
-            this.player.on('time', function(event) {
-                if (that.player.getState() === 'playing') {
-                    var totalTime = that.duration;
-                    var currentTime = event.position;
-                    var percentTime = (currentTime / totalTime) * 100;
-
-                    $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
-                }
-            })
 
             // If progress bar div is clicked, animate width  
             document.getElementById('progress').addEventListener('click', function (e) {
@@ -291,7 +284,21 @@
                 // $('.timeline__end').animate({ marginLeft: endPercent + "%" }, 150);
             },
         },
+        updated() {
+            var that = this
 
+            // Animate progress bar width
+            this.player.on('time', function(event) {
+                if (that.player.getState() === 'playing') {
+                    var totalTime = that.duration;
+                    var currentTime = event.position;
+                    var percentTime = (currentTime / totalTime) * 100;
+
+                    $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
+                    // that.nowTime = parseInt(currentTime)
+                }
+            })
+        },
         components: {
             'annotate-path': AnnotatePath
         },
@@ -511,7 +518,7 @@
         }
 
         .jw-controlbar {
-            display: none !important;
+            /*display: none !important;*/
         }
 
         .jw-controlbar-center-group .jw-slider-time, 
