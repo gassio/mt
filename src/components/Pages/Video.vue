@@ -533,6 +533,8 @@
             .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }
             .el-slider__stop { border-radius: 0 !important;}
 
+            .el-slider__runway { height: 40px !important;}
+
             .annotate-comment { margin-top: 25px; }
    
     .cards {
