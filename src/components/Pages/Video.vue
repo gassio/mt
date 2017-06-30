@@ -1,6 +1,5 @@
 <template>
     <div class="video container">
-        <img src="/static/add.png">
 
         <div class="player">
             <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[currVideoIndex].vidTitle}}</button>     
@@ -484,7 +483,7 @@
 
 <style>
 
-.timeline{
+.timeline {
 	height:100%;
 	width: 100%;
 	overflow: auto;
@@ -590,8 +589,12 @@
             }
         
     .annotate-btn {
+      padding: 7px;
+      color: #fff;
       pointer-events: all;
-      background-color: yellow;
+      background-color: #A90931;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .annotate-menu__canons {
