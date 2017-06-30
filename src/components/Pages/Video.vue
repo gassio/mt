@@ -102,7 +102,60 @@
                 <a @click="chooseCanonFilter('Style')">Style</a>
                 <a @click="chooseCanonFilter('All')">All</a>
             </nav>
-            <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
+
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
+                <div class="column" @click="seekCard($event)">
+                    <div class="columns is-gapless is-marginless">
+                        <div class="column is-9">
+                            <p class="timeline-card-title">{{ card.title }}</p>
+                        </div>
+                        <div class="column is-3">
+                            <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
+                        </div>
+                    </div>
+                    <div class="columns is-gapless is-marginless">
+                        <div class="column">
+                            <p class="timeline-card-description">{{ card.comment }}</p>
+                        </div>
+                    </div>
+                    <div class="columns is-gapless is-marginless">
+                        <div class="timeline-card-effectiveness-bar column is-8">
+                            <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
+                        </div>
+                        <div class="column is-4">
+                            <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'">
+                <div class="column" @click="seekCard($event)">
+                    <div class="columns is-gapless is-marginless">
+                        <div class="column is-9">
+                            <p class="timeline-card-title">{{ card.title }}</p>
+                        </div>
+                        <div class="column is-3">
+                            <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
+                        </div>
+                    </div>
+                    <div class="columns is-gapless is-marginless">
+                        <div class="column">
+                            <p class="timeline-card-description">{{ card.comment }}</p>
+                        </div>
+                    </div>
+                    <div class="columns is-gapless is-marginless">
+                        <div class="timeline-card-effectiveness-bar column is-8">
+                            <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
+                        </div>
+                        <div class="column is-4">
+                            <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
                 <div class="card-head" @click="seekCard($event)">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
@@ -123,7 +176,10 @@
                 <span>Category: {{ card.category }}</span>
                 <span>Title: {{ card.title }}</span>
                 <span class="card-rating">{{ card.rating }}</span>
-            </div>
+            </div> -->
+            
+        </div>
+
             <!-- <router-link :to=" '/video/' + id + '/edit' ">
                 <button class="button is-warning">Edit</button>
             </router-link>
@@ -315,7 +371,7 @@
                 this.activeItemProblem(event)
             },
             seekCard(event) {
-                var time = event.currentTarget.children[1].innerText // 03:05 - 03:17
+                var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 var endTime = time.substring(8,13); // 03:17
                 var totalTime = this.videoDuration;
@@ -427,6 +483,39 @@
 </script>
 
 <style>
+
+.timeline{
+	height:100%;
+	width: 100%;
+	overflow: auto;
+	padding: 15px !important;
+}
+	.timeline-card{
+		padding: 15px !important;
+		margin-bottom: 20px;
+		box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
+        cursor: pointer;
+	}
+		.timeline-card-title{
+			font-size: 25px;
+			font-style: bold;
+		}
+		.timeline-card-time{
+			font-style: italic;
+		}
+		.timeline-card-description{
+			
+		}
+		.timeline-card-effectiveness-bar{
+			margin-top: 6px !important;
+			padding-left: 10px !important;
+			padding-right: 10px !important;
+		}
+		.timeline-card-effectiveness-label{
+			
+		}
+/* ---------------- /STEFANOS ------------------*/
+
 
     .structure, .delivery, .visual, .style, .moves {
         background-color: #39425C
