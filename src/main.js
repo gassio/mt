@@ -30,7 +30,7 @@ export const eventBus = new Vue({
         title: 'Posture & Stance',
         desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen',
         comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..', 
-        from: '00:05',
+        from: '00:08',
         to: '00:17', 
         rating: '3', 
         author: 'Ben Domino', 

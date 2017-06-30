@@ -89,7 +89,7 @@
                     <span class="timeline__end"></span>
                 </div>  -->
 
-                <span style="color: #fff;margin-top: 10px; padding-left: 15px;">{{ videoDurationMMSS }}</span>
+                <!--<span style="color: #fff;margin-top: 10px; padding-left: 15px;">{{ videoDurationMMSS }}</span>-->
             </div>
         </div>
 
@@ -100,9 +100,20 @@
                 <a @click="chooseCanonFilter('Delivery')">Delivery</a>
                 <a @click="chooseCanonFilter('Visual')">Visual</a>
                 <a @click="chooseCanonFilter('Style')">Style</a>
-                <!--<a @click="chooseCanonFilter('All')">All</a>-->
+                <a @click="chooseCanonFilter('All')">All</a>
             </nav>
             <div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
+                <div class="card-head" @click="seekCard($event)">
+                    <span class="card-title"><strong>{{ card.title }}</strong></span>
+                    <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
+                </div> 
+                <span class="card-comment">{{ card.comment }} </span>
+                <span>Canon: {{ card.canon }}</span>
+                <span>Category: {{ card.category }}</span>
+                <span>Title: {{ card.title }}</span>
+                <span class="card-rating">{{ card.rating }}</span>
+            </div>
+            <div class="card" v-for="card in videoAnnotations" v-if="filterCanon === 'All'">
                 <div class="card-head" @click="seekCard($event)">
                     <span class="card-title"><strong>{{ card.title }}</strong></span>
                     <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
@@ -196,6 +207,25 @@
                     that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
 
                     $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
+
+                    // If current video time == annotation.from, then animate card
+                    for(var i=0; i< that.videoAnnotations.length; i++) {
+                        var currentAnnotationTime = that.videoAnnotations[i].from
+                        currentAnnotationTime = that.mmssToSeconds(currentAnnotationTime)
+                        if (parseInt(that.videoCurrentTime) === currentAnnotationTime) {
+                            // compare dbComment with rendered card-comment
+                            var dbComment = that.videoAnnotations[i].comment
+
+                            $('.cards').find('.card').each(function(){
+                                var htmlComment = $(this).find('.card-comment').text()
+                                if (dbComment === htmlComment) {
+                                   $(this).animate({marginLeft: '50px'}, 800);
+                                }
+                            })
+
+                            console.log('animate: ' + that.videoAnnotations[i].title)
+                        }                        
+                    }
                 }
             })
 
@@ -311,6 +341,10 @@
                 var s = Math.floor(s % 3600 % 60);
 
                 return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+            },
+            mmssToSeconds(timeMMSS) {
+                var timeMMSS = timeMMSS.split(':')
+                return (+timeMMSS[0]) * 60 + (+timeMMSS[1]) // in sec
             },
         },
         updated() {
