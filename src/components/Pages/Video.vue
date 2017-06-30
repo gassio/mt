@@ -591,6 +591,7 @@
     .annotate-btn {
       padding: 7px;
       color: #fff;
+      cursor: pointer;
       pointer-events: all;
       background-color: #A90931;
       display: flex;
