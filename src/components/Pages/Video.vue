@@ -76,18 +76,20 @@
             
             <div class="player__progress" id="progress">
 
+                <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
+
                 <div class="player__ribbon">
                     <span class="player__ribbon-circle"></span>
                     <span class="player__ribbon-line"></span>
                 </div>
 
-                <!-- FOR THE FUTURE -->
+                <!-- FOR THE FUTURE
                 <div class="player__timeline">
                     <span class="timeline__start"></span>
                     <span class="timeline__end"></span>
-                </div> 
+                </div>  -->
 
-                <div><span style="color: #fff">{{ nowTime }}</span></div>
+                <span style="color: #fff;margin-top: 10px; padding-left: 15px;">{{ videoDurationMMSS }}</span>
             </div>
         </div>
 
@@ -130,10 +132,12 @@
                 videoAnnotations: [],
                 canons: eventBus.canons,
                 currVideoIndex: 0,
-                duration: 0,
-                nowTime: 0,
                 player: null,
                 clickCoords: 0,
+                videoDuration: 0,
+                videoDurationMMSS: 0,
+                videoCurrentTime: 0,
+                videoCurrentTimeMMSS: 0,
                 annotateCanon: '',
                 annotateCategory: '',
                 annotateComment: '',
@@ -160,7 +164,8 @@
 
             this.loadVideoAnnotations()
 
-            this.duration = this.videos[this.currVideoIndex].vidDuration
+            this.videoDuration = this.videos[this.currVideoIndex].vidDuration
+            this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
 
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
@@ -174,9 +179,25 @@
                 file: this.videos[this.currVideoIndex].vidSources[correctSource].file,
                 image: this.videos[this.currVideoIndex].vidThumb,
                 "width": 860,
-                "height": 460
+                "height": 460,
+                // events
             });
 
+            // Animate progress bar width
+            this.player.on('time', function(event) {
+                if (that.player.getState() === 'playing') {
+                    var totalTime = that.videoDuration;
+                    var currentTime = event.position;
+                    var percentTime = (currentTime / totalTime) * 100;
+
+                    // Get the current time of video in sec
+                    that.videoCurrentTime = that.player.getPosition()
+                    // Convert the time to MM:SS
+                    that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
+
+                    $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
+                }
+            })
 
             // If progress bar div is clicked, animate width  
             document.getElementById('progress').addEventListener('click', function (e) {
@@ -187,7 +208,7 @@
 
                 $('.player__ribbon').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
 
-                var clickTime = (clickCoordsPercent * that.duration) / 100
+                var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                     console.log(+ clickTime + ' sec');                     console.log('\n')
                 that.player.seek(clickTime)
             }, false);
@@ -267,7 +288,7 @@
                 var time = event.currentTarget.children[1].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 var endTime = time.substring(8,13); // 03:17
-                var totalTime = this.duration;
+                var totalTime = this.videoDuration;
 
                 var a = startTime.split(':')
                 var b = endTime.split(':')
@@ -283,21 +304,17 @@
                 // $('.timeline__start').animate({ marginLeft: startPercent + "%" }, 150);
                 // $('.timeline__end').animate({ marginLeft: endPercent + "%" }, 150);
             },
+            secondsToMMSS(s) {
+                s = Number(s);
+
+                var m = Math.floor(s % 3600 / 60);
+                var s = Math.floor(s % 3600 % 60);
+
+                return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+            },
         },
         updated() {
-            var that = this
-
-            // Animate progress bar width
-            this.player.on('time', function(event) {
-                if (that.player.getState() === 'playing') {
-                    var totalTime = that.duration;
-                    var currentTime = event.position;
-                    var percentTime = (currentTime / totalTime) * 100;
-
-                    $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
-                    // that.nowTime = parseInt(currentTime)
-                }
-            })
+            var that = this 
         },
         components: {
             'annotate-path': AnnotatePath
@@ -314,7 +331,7 @@
             //         console.log(getPercent)
                     
             //         console.log("goto")
-            //         var goToDrag = that.duration / ( 100 / getPercent )
+            //         var goToDrag = that.videoDuration/ ( 100 / getPercent )
             //         that.player.seek(goToDrag);
             //     });
 
