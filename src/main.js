@@ -25,6 +25,43 @@ export const eventBus = new Vue({
     playlistNames: [],
     videos: [],
     // Our DB
+    videosDB: [
+      {
+        "title": "Hello",
+        "link": "...",
+        "id": "1",
+        "sources": [],
+        "duration": "12:00",
+        "playlistID": "asdf324",
+        "playlistName": "Aeronastro class",
+        "thumb": "http://www.test.com/jpeg",
+        "videoID": "wUu9NAdZ",
+        "categories": [
+          {
+            "name": "Posture & Stance",
+            "desc": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
+            "canon": "Delivery",
+            "annotations": [
+              {
+                "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
+                "from": "00:08",
+                "to": "00:17",
+                "rating": "3",
+                "author": "Ben Domino"
+              },
+              {
+                "comment": "Lorem hahah",
+                "from": "00:56",
+                "to": "01:23",
+                "rating": "4",
+                "author": "Ben Domino"
+              }
+            ]
+          }
+        ]
+      },
+    ],
+    // Old structure
     allAnnotations: [
       { 
         title: 'Posture & Stance',
