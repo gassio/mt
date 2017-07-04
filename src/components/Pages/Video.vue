@@ -2,7 +2,7 @@
     <div class="video container">
 
         <div class="player">
-            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[currVideoIndex].vidTitle}}</button>     
+            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos.title}}</button>     
 
             <!--<annotate-path></annotate-path> -->
             
@@ -194,7 +194,7 @@
     export default {
         data() {
             return {
-                videos: eventBus.videos,
+                // videos: eventBus.videos,
                 videoAnnotations: [],
                 canons: eventBus.canons,
                 currVideoIndex: 0,
@@ -406,8 +406,13 @@
                 return (+timeMMSS[0]) * 60 + (+timeMMSS[1]) // in sec
             },
         },
-        updated() {
-            var that = this 
+        computed: {
+            playlistIDs() {
+                return this.$store.state.playlistIDs
+            },
+            videos() {
+                return this.$store.state.videos
+            }
         },
         components: {
             'annotate-path': AnnotatePath

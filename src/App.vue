@@ -11,7 +11,7 @@
 
     export default {
         created() {
-            this.fetchClasses()
+            // this.fetchClasses()
         },
         mounted() {
             // for (var i=0; i < eventBus.feeds.length; ++i) {
@@ -52,8 +52,8 @@
             // feeds[] are playlist ids
             fetchClasses() {
                 var that = this
-                for (var i=0; i < this.$store.state.feeds.length; ++i) {
-                    var url = 'https://cdn.jwplayer.com/v2/playlists/' + this.$store.state.feeds[i]
+                for (var i=0; i < this.playlistIDs.length; ++i) {
+                    var url = 'https://cdn.jwplayer.com/v2/playlists/' + this.playlistIDs[i]
 
                     this.axios.get(url)
                         .then(function (response) {
@@ -65,6 +65,12 @@
                             console.log(error)
                         })
                 } 
+            },
+        },
+        computed: {
+            // Store: playlistIDs[] array
+            playlistIDs() {
+                return this.$store.state.playlistIDs
             }
         },
         components: {

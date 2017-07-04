@@ -1,34 +1,76 @@
 {
     "title": "Hello",
-    "link": "...",
-    "id": "1",
-    "sources": [],
-    "duration": "12:00",
-    "playlistID": "asdf324",
-    "playlistName": "Aeronastro class",
-    "thumb": "http://www.test.com/jpeg",
-    "videoID": "wUu9NAdZ",
+    "videoID": "1",
+    "link": "https://cdn.jwplayer.com/previews/wUu9NAdZ",
+    "thumb": "https://cdn.jwplayer.com/thumbs/wUu9NAdZ-720.jpg",
+    "sources": [
+                {
+                    "width": 1280,
+                    "type": "application/vnd.apple.mpegurl",
+                    "file": "https://cdn.jwplayer.com/manifests/wUu9NAdZ.m3u8",
+                    "height": 720
+                },
+                {
+                    "width": 320,
+                    "height": 180,
+                    "type": "video/mp4",
+                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-2thAkUNK.mp4",
+                    "label": "180p"
+                },
+                {
+                    "width": 480,
+                    "height": 270,
+                    "type": "video/mp4",
+                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-I7QHntgN.mp4",
+                    "label": "270p"
+                },
+                {
+                    "width": 720,
+                    "height": 406,
+                    "type": "video/mp4",
+                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-bjE4cNUM.mp4",
+                    "label": "406p"
+                },
+                {
+                    "width": 1280,
+                    "height": 720,
+                    "type": "video/mp4",
+                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-2v7o7MEI.mp4",
+                    "label": "720p"
+                },
+                {
+                    "type": "audio/mp4",
+                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-lJqrUNGH.m4a",
+                    "label": "AAC Audio"
+                }
+            ],
+    "duration": "90",
+    "jwVideoID": "wUu9NAdZ",
+    "jwPlaylistID": "asdf324",
+    "class": "Aeronastro class",
     "categories": [
         {
             "name": "Posture & Stance",
             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            "canon": "Delivery",
-            "annotations": [
-                {
-                    "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-                    "from": "00:08",
-                    "to": "00:17",
-                    "rating": "3",
-                    "author": "Ben Domino"
-                },
-                {
-                    "comment": "Lorem hahah",
-                    "from": "00:56",
-                    "to": "01:23",
-                    "rating": "4",
-                    "author": "Ben Domino"
-                }
-            ]
+            "canon": "Delivery"
         }
-    ]
+	],
+	"annotations": [
+		{
+			"category": "Posture & Stance",
+			"comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
+			"from": "00:08",
+			"to": "00:17",
+			"rating": "3",
+			"author": "Ben Domino"
+		},
+		{
+			"category": "Posture & Stance",
+			"comment": "Lorem hahah",
+			"from": "00:56",
+			"to": "01:23",
+			"rating": "4",
+			"author": "Ben Domino"
+		}
+	]
 }
