@@ -10,39 +10,62 @@
     import MyHeader from './components/Layout/MyHeader.vue'
 
     export default {
+        created() {
+            this.fetchClasses()
+        },
         mounted() {
-            for (var i=0; i < eventBus.feeds.length; ++i) {
-                var url = 'https://cdn.jwplayer.com/v2/playlists/' + eventBus.feeds[i]
+            // for (var i=0; i < eventBus.feeds.length; ++i) {
+            //     var url = 'https://cdn.jwplayer.com/v2/playlists/' + eventBus.feeds[i]
 
-                this.axios.get(url)
-                    .then(function (response)
-                    {
-                        var title = response.data.title;
-                        eventBus.playlistNames.push(title)
+            //     this.axios.get(url)
+            //         .then(function (response)
+            //         {
+            //             var title = response.data.title;
+            //             eventBus.playlistNames.push(title)
 
-                        var playlist = response.data.playlist
+            //             var playlist = response.data.playlist
 
-                        for (var i=0; i < playlist.length; ++i) {
-                            var video = { 
-                                vidTitle: playlist[i].title, 
-                                vidLink: playlist[i].link, 
-                                vidThumb: playlist[i].image, 
-                                vidDuration: playlist[i].duration, 
-                                vidDesc: playlist[i].description, 
-                                vidStudent: playlist[i].student, 
-                                playlistID: playlist[i].feedid,
-                                videoID: playlist[i].mediaid,
-                                vidSources: playlist[i].sources,
-                                vidPlaylistName: title,
-                                vidAnnotations: eventBus.allAnnotations
-                            }
-                            eventBus.videos.push(video)
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log(error)
-                    })
-            }  
+            //             for (var i=0; i < playlist.length; ++i) {
+            //                 var video = { 
+            //                     vidTitle: playlist[i].title, 
+            //                     vidLink: playlist[i].link, 
+            //                     vidThumb: playlist[i].image, 
+            //                     vidDuration: playlist[i].duration, 
+            //                     vidDesc: playlist[i].description, 
+            //                     vidStudent: playlist[i].student, 
+            //                     playlistID: playlist[i].feedid,
+            //                     videoID: playlist[i].mediaid,
+            //                     vidSources: playlist[i].sources,
+            //                     vidPlaylistName: title,
+            //                     vidAnnotations: eventBus.allAnnotations
+            //                 }
+            //                 eventBus.videos.push(video)
+            //             }
+            //         })
+            //         .catch(function (error) {
+            //             console.log(error)
+            //         })
+            // }  
+        },
+        methods: {
+            // JSON call in order to fetch the playlists (classes) of JW database
+            // feeds[] are playlist ids
+            fetchClasses() {
+                var that = this
+                for (var i=0; i < this.$store.state.feeds.length; ++i) {
+                    var url = 'https://cdn.jwplayer.com/v2/playlists/' + this.$store.state.feeds[i]
+
+                    this.axios.get(url)
+                        .then(function (response) {
+                            var title = response.data.title;
+                            that.$store.state.playlistNames.push(title)
+
+                        })
+                        .catch(function (error) {
+                            console.log(error)
+                        })
+                } 
+            }
         },
         components: {
             'my-header': MyHeader

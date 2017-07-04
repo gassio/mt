@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
+import { store } from './store/store'
+
 import VueRouter from 'vue-router'
 import { routes } from './routes'
 Vue.use(VueRouter)
@@ -27,19 +29,11 @@ export const eventBus = new Vue({
     // Our DB
     videosDB: [
       {
-        "title": "Hello",
-        "link": "...",
         "id": "1",
-        "sources": [],
-        "duration": "12:00",
-        "playlistID": "asdf324",
-        "playlistName": "Aeronastro class",
-        "thumb": "http://www.test.com/jpeg",
-        "videoID": "wUu9NAdZ",
         "categories": [
           {
             "name": "Posture & Stance",
-            "desc": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
+            "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
             "canon": "Delivery",
             "annotations": [
               {
@@ -166,6 +160,7 @@ export const eventBus = new Vue({
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })
 

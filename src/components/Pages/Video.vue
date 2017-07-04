@@ -215,11 +215,15 @@
                 id: this.$route.params.id,
             }
         },
+        created() {
+            // loading
+            // JSON call allAnnotations/video_id
+        },
         mounted() {
             // console.log('All annotations: ')
             // console.log(eventBus.allAnnotations)
             // console.log('Canons: ')
-            // console.log(this.canons)
+            // console.log(this.canons)            
             var that = this
 
             for (var i=0; i < this.videos.length; ++i){

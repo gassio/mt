@@ -17,25 +17,26 @@
     export default {
         data() {
             return { 
-                feeds: eventBus.feeds,
-                playlistNames: eventBus.playlistNames,
-                playlistNamesURI: [],
-                videos: eventBus.videos,
+                // playlistNamesURI: [],
             }
         },
         mounted() {
-
-            for (var i=0; i < this.playlistNames.length; ++i) {
-                this.playlistNamesURI[i] = this.playlistNames[i]
+        },
+        methods: {
+            // It is not used because of line 6: 
+            // <router-link :to=" 'classes/' + p.replace(/ /g, '-') " tag="a">{{ p }}</router-link>
+            // fixPlaylistNames() {
+            //     for (var i=0; i < this.playlistNamesURI.length; ++i) {
+            //         this.playlistNamesURI[i] = this.playlistNamesURI[i].replace(/ /g, "-")
+            //     }
+            // }
+        },
+        computed: {
+            // Store: playlistNames[] array
+            playlistNames() {
+                return this.$store.state.playlistNames
             }
-            for (var i=0; i < this.playlistNamesURI.length; ++i) {
-                this.playlistNamesURI[i] = this.playlistNamesURI[i].replace(/ /g, "-")
-            }
-
-            console.log(this.playlistNames)
-            console.log("URI")
-            console.log(this.playlistNamesURI)
-        }
+        },
     }
 </script>
 
