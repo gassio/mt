@@ -328,14 +328,14 @@
                     id: this.id
                 })
 
-                // Pushes the new annotation to the main eventBus object
-
+                // Reset default design states (no annotating)
                 this.annotateComment = ''
                 this.annotateFrom = null
                 this.annotateTo = null
                 this.annotateRating
                 this.isAnnotating = false
                 this.annotateMenuisShown = true
+                $('.player__ribbon').show()
             },
             activeItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
