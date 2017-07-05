@@ -2,8 +2,8 @@
     <div class="classes container">
         <h3>Classes</h3>
         <div class="row">
-            <div class="col-xs-6 col-md-3 thumbnail" v-for="p in playlistNames">
-                <router-link :to=" 'classes/' + p.replace(/ /g, '-') " tag="a">{{ p }}</router-link>
+            <div class="col-xs-6 col-md-3 thumbnail classaki" v-for="c in classes">
+                <router-link :to="'classes/' + c.title.replace(/ /g, '-')" tag="a"><strong>{{ c.title }}</strong> | {{c.section}} | {{c.spring}} | {{c.videosCount}} videos</router-link>
             </div>
         </div>
 
@@ -31,8 +31,8 @@
         },
         computed: {
             // Store: playlistNames[] array
-            playlistNames() {
-                return this.$store.state.playlistNames
+            classes() {
+                return this.$store.getters.classes
             }
         },
     }
@@ -42,5 +42,12 @@
     .thumbnail a {
         color: #A90931
     }
-
+    .classaki {
+        background-color: yellow;
+        height: 200px;
+        width: 200px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>

@@ -2,7 +2,7 @@
     <div class="video container">
 
         <div class="player">
-            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos.title}}</button>     
+            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[id].title}}</button>     
 
             <!--<annotate-path></annotate-path> -->
             
@@ -106,7 +106,7 @@
                 <div class="column" @click="seekCard($event)">
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
-                            <p class="timeline-card-title">{{ card.title }}</p>
+                            <p class="timeline-card-title">{{ card.category }}</p>
                         </div>
                         <div class="column is-3">
                             <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
@@ -132,7 +132,7 @@
                 <div class="column" @click="seekCard($event)">
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
-                            <p class="timeline-card-title">{{ card.title }}</p>
+                            <p class="timeline-card-title">{{ card.category }}</p>
                         </div>
                         <div class="column is-3">
                             <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
@@ -194,24 +194,21 @@
     export default {
         data() {
             return {
-                // videos: eventBus.videos,
-                videoAnnotations: [],
-                canons: eventBus.canons,
-                currVideoIndex: 0,
                 player: null,
                 clickCoords: 0,
                 videoDuration: 0,
+                videoAnnotations: [],
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
-                annotateCanon: '',
-                annotateCategory: '',
+                annotateCanon: 'Delivery',
+                annotateCategory: 'Volume',
                 annotateComment: '',
                 annotateRating: 1,
                 annotateFrom: null,
                 annotateTo: null,
                 isAnnotating: false,
-                filterCanon: 'Delivery',
+                filterCanon: 'All',
                 id: this.$route.params.id,
             }
         },
@@ -219,35 +216,28 @@
             // loading
             // JSON call allAnnotations/video_id
         },
-        mounted() {
-            // console.log('All annotations: ')
-            // console.log(eventBus.allAnnotations)
-            // console.log('Canons: ')
-            // console.log(this.canons)            
+        mounted() {          
             var that = this
 
-            for (var i=0; i < this.videos.length; ++i){
-                if(this.videos[i].videoID === this.id) {
-                    this.currVideoIndex = i
-                }
-            }
+            this.id = parseInt(this.id)
+            this.$store.commit('setCurrentVideoID', this.id)
 
             this.loadVideoAnnotations()
 
-            this.videoDuration = this.videos[this.currVideoIndex].vidDuration
+            this.videoDuration = this.videos[this.id].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
 
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
             // So, we get the last object - 1 = sourcesLength - 2 
-            var sourcesLength = this.videos[this.currVideoIndex].vidSources.length
+            var sourcesLength = this.videos[this.id].sources.length
             var correctSource = sourcesLength - 2
 
             this.player = jwplayer('player')            
             this.player.setup({
-                file: this.videos[this.currVideoIndex].vidSources[correctSource].file,
-                image: this.videos[this.currVideoIndex].vidThumb,
+                file: this.videos[this.id].sources[correctSource].file,
+                image: this.videos[this.id].thumb,
                 "width": 860,
                 "height": 460,
                 // events
@@ -268,23 +258,23 @@
                     $('.player__ribbon').animate({ marginLeft: percentTime + "%" }, 150);
 
                     // If current video time == annotation.from, then animate card
-                    for(var i=0; i< that.videoAnnotations.length; i++) {
-                        var currentAnnotationTime = that.videoAnnotations[i].from
-                        currentAnnotationTime = that.mmssToSeconds(currentAnnotationTime)
-                        if (parseInt(that.videoCurrentTime) === currentAnnotationTime) {
-                            // compare dbComment with rendered card-comment
-                            var dbComment = that.videoAnnotations[i].comment
+                    // for(var i=0; i< that.videoAnnotations.length; i++) {
+                    //     var currentAnnotationTime = that.videoAnnotations[i].from
+                    //     currentAnnotationTime = that.mmssToSeconds(currentAnnotationTime)
+                    //     if (parseInt(that.videoCurrentTime) === currentAnnotationTime) {
+                    //         // compare dbComment with rendered card-comment
+                    //         var dbComment = that.videoAnnotations[i].comment
 
-                            $('.cards').find('.card').each(function(){
-                                var htmlComment = $(this).find('.card-comment').text()
-                                if (dbComment === htmlComment) {
-                                   $(this).animate({marginLeft: '50px'}, 800);
-                                }
-                            })
+                    //         $('.cards').find('.card').each(function(){
+                    //             var htmlComment = $(this).find('.card-comment').text()
+                    //             if (dbComment === htmlComment) {
+                    //                $(this).animate({marginLeft: '50px'}, 800);
+                    //             }
+                    //         })
 
-                            console.log('animate: ' + that.videoAnnotations[i].title)
-                        }                        
-                    }
+                    //         console.log('animate: ' + that.videoAnnotations[i].title)
+                    //     }                        
+                    // }
                 }
             })
 
@@ -324,31 +314,30 @@
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
             loadVideoAnnotations() {
-                for (var i=0; i < eventBus.allAnnotations.length; ++i) {
-                    if(eventBus.allAnnotations[i].videoID === this.id) {
-                        this.videoAnnotations.push(eventBus.allAnnotations[i])
-                    }
+                for (var i=0; i < this.videos[this.id].annotations.length; ++i) {
+                    this.videoAnnotations.push(this.videos[this.id].annotations[i])
                 }
             },
             annotate() {
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
                     var card = { 
-                        title: this.annotateCategory,
+                        author: "Ben Domino",
+                        canon: this.annotateCanon,
+                        category: this.annotateCategory,
                         comment: this.annotateComment,
                         from: this.annotateFrom,
                         to: this.annotateTo, 
                         rating: this.annotateRating, 
-                        canon: this.annotateCanon,
-                        category: this.annotateCategory,
-                        videoID: this.id
                     }
                 }
                 this.videoAnnotations.push(card)
+                this.$store.commit('ADD_ANNOTATION', {
+                    annotation: card, 
+                    id: this.id
+                })
 
                 // Pushes the new annotation to the main eventBus object
-                eventBus.allAnnotations.push(card)
-                console.log('eventbus')
-                console.log(eventBus.allAnnotations)
+
                 this.annotateComment = ''
                 this.annotateFrom = null
                 this.annotateTo = null
@@ -407,11 +396,14 @@
             },
         },
         computed: {
-            playlistIDs() {
-                return this.$store.state.playlistIDs
-            },
             videos() {
-                return this.$store.state.videos
+                return this.$store.getters.videos
+            },
+            currentVideoID() {
+                return this.$store.getters.currentVideoID
+            },
+            canons() {
+                return this.$store.getters.canons
             }
         },
         components: {

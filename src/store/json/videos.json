@@ -58,6 +58,7 @@
 	"annotations": [
 		{
 			"category": "Posture & Stance",
+            "canon": "Delivery",
 			"comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
 			"from": "00:08",
 			"to": "00:17",
@@ -65,7 +66,8 @@
 			"author": "Ben Domino"
 		},
 		{
-			"category": "Posture & Stance",
+			"category": "Volume, rate and pitch",
+            "canon": "Delivery",
 			"comment": "Lorem hahah",
 			"from": "00:56",
 			"to": "01:23",

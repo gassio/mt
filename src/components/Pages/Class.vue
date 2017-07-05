@@ -10,7 +10,7 @@
         <div class="v-videos fx-dir-col">
             <div class="v-video fx-dir-row" v-for="vid in videos" v-if="vid.class === replaceUnderscores(id)">
                 
-                <router-link :to="'/video/' + vid.jwVideoID"  tag="a" >
+                <router-link :to="'/video/' + vid.videoID"  tag="a" >
                     <img class="video-thumb" :src="vid.thumb">
                 </router-link>
                 <div class="video-meta">
@@ -36,6 +36,7 @@
             }
         },
         mounted(){
+            // this.$store.commit('retrieveVideosByClass', this.id)
         },
         methods: {
             // setClasses() {
@@ -84,7 +85,7 @@
             },
             classNames() {
                 return this.$store.state.classNames
-            }
+            },
         },
     }
 </script>
