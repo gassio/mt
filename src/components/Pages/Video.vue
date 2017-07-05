@@ -9,78 +9,60 @@
             <div id="player">Loading the player...</div>
 
             <div class="annotate" v-show="isAnnotating">
-                <div class="annotate-menu">
+                <div class="annotate-menu" v-show="annotateMenuisShown">
                     <nav class="annotate-menu__canons">
                         <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
-                        <!--<a @click="chooseCanonAnnotate('delivery', $event)">Delivery</a>
-                        <a @click="chooseCanonAnnotate('visual', $event)">Visual</a>
-                        <a @click="chooseCanonAnnotate('style', $event)">Style</a>
-                        <a @click="chooseCanonAnnotate('moves', $event)">Moves</a> -->
+                        <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
                     </nav>
                     <nav class="annotate-menu__categories" v-if="canon.name === annotateCanon" v-for="canon in canons">
-                        <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>
-                        <!-- STRUCTURE
-                            <a @click="chooseCategoryAnnotate('key-terms')">Key terms</a>
-                        <a @click="chooseCategoryAnnotate('conseptual-transitions')">Conceptual transitions</a>
-                        <a @click="chooseCategoryAnnotate('line-of-argument')">Line of argument</a>
-                        <a @click="chooseCategoryAnnotate('central-moves')">Central moves</a>
-
-                            DELIVERY
-                            <a @click="chooseCategoryAnnotate('volume')">Volume</a>
-                        <a @click="chooseCategoryAnnotate('gestures')">Gestures</a>
-                        <a @click="chooseCategoryAnnotate('metadiscourse')">Metadiscourse</a>
-                        <a @click="chooseCategoryAnnotate('posture')">Posture & stance</a>
-                        <a @click="chooseCategoryAnnotate('language')">Language</a>
-                            
-                            VISUAL
-                        <a @click="chooseCategoryAnnotate('pictorial-cues')">Pictorial cues</a>
-                        <a @click="chooseCategoryAnnotate('slide-titles')">Slide titles</a>
-                        <a @click="chooseCategoryAnnotate('image-text-highlight')">Image-text highlight</a>
-                        <a @click="chooseCategoryAnnotate('graphics')">Graphics</a>
-                        <a @click="chooseCategoryAnnotate('memorable-images')">Memorable images</a> 
-                        -->
+                        <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>  
                     </nav>
                 </div>
-                <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                    <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">
-                       "{{ cat.desc }}"
-                    </p>
-                </div>
-                <div class="annotate-rating field">
-                    <p class="control">
-                        Set effectiveness:
-                        <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" show-stops show-tooltip></el-slider>
-                    </p>
-                </div>
-
-                <div class="annotate-comment field">
-                    <label class="label">Comment</label>
-                    <p class="control">
-                        <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
-                    </p>
-                </div>
-
-                <div class="annotate-drag field">
-                    <p class="control" style="display:flex; width: 30%">
-                        <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
-                        <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
-                    </p>
-                </div>
-                <div>
-                    <input type="submit" value="Annotate" @click="annotate()"/>
+                
+                
+                <div class="annotate-fields" v-show="!annotateMenuisShown">
+                    <div class="annotate-fields-left">
+                        <button class="button is-white" @click="annotateMenuisShown = true"><i aria-hidden="true" class="fa fa-chevron-left"></i>Back</button>
+                    </div>
+                    
+                    <div class="annotate-fields-right">
+                        <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                            <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
+                            <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
+                        </div>
+                        <div class="annotate-effectiveness field">
+                            <p>Set effectiveness:</p>
+                            <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" show-stops show-tooltip class="annotate-effectiveness-slider"></el-slider>
+                        </div>
+                        <div class="annotate-comment field">
+                            <label class="label">Comment</label>
+                            <p class="control">
+                                <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
+                            </p>
+                        </div>
+                        <div class="annotate-drag field">
+                            <p class="control" style="display:flex; width: 30%">
+                                <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
+                                <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
+                            </p>
+                        </div>
+                        <div class="annotate-submit">
+                            <button class="button is-link" @click="annotate()">Annotate</button>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
-
-            <div class="annotate-btn" @click="annotating()">+Annotate</div>
             
             <div class="player__progress" id="progress">
-
                 <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
 
                 <div class="player__ribbon">
                     <span class="player__ribbon-circle"></span>
                     <span class="player__ribbon-line"></span>
                 </div>
+
+                <!-- <div class="annotate-btn" @click="annotating()">+Annotate</div> -->
 
                 <!-- FOR THE FUTURE
                 <div class="player__timeline">
@@ -201,6 +183,7 @@
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
+                annotateMenuisShown: true,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
                 annotateComment: '',
@@ -278,6 +261,15 @@
                 }
             })
 
+            // Create button inside JWPlayer, using their API.
+            this.player.on('ready', function() {
+                that.player.addButton(
+                    "/static/add.png", 
+                    "Add annotation", 
+                    function() { that.annotating() }, 
+                    "annomenu");
+            })
+
             // If progress bar div is clicked, animate width  
             document.getElementById('progress').addEventListener('click', function (e) {
                 var offset = this.getClientRects()[0];
@@ -342,6 +334,8 @@
                 this.annotateFrom = null
                 this.annotateTo = null
                 this.annotateRating
+                this.isAnnotating = false
+                this.annotateMenuisShown = true
             },
             activeItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
@@ -361,6 +355,7 @@
             chooseCategoryAnnotate(category) {
                 this.annotateCategory = category
                 this.activeItemProblem(event)
+                this.annotateMenuisShown = false
             },
             seekCard(event) {
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
@@ -394,6 +389,9 @@
                 var timeMMSS = timeMMSS.split(':')
                 return (+timeMMSS[0]) * 60 + (+timeMMSS[1]) // in sec
             },
+            showAnnotateMenu() {
+                $('.annotate-menu').show()
+            }
         },
         computed: {
             videos() {
@@ -609,6 +607,23 @@
             padding: 5px;
         }
 
+        .annotate-menu__canons-close {
+            flex-grow: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+            .annotate-menu__canons-close span {
+                width: 50px;
+                color: #39425C;
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .annotate-menu__canons-close span:hover {
+                color: #FFF;
+                background-color: #39425C;
+            }
 
     .annotate-menu__categories {
         width: 100%;
@@ -623,13 +638,54 @@
             justify-content: center;
             align-items: center;
         }
-
+            .el-slider { width: 80%}
             .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }
             .el-slider__stop { border-radius: 0 !important;}
 
             .el-slider__runway { height: 40px !important;}
 
-            .annotate-comment { margin-top: 25px; }
+
+    .annotate-fields {
+        display: flex;
+    }
+
+        .annotate-fields-left {
+            width: 10%;
+        }
+
+        .annotate-fields-right {
+            width: 90%;
+        }
+            .annotate-desc {
+                display: flex;
+            }
+
+            .annotate-effectiveness {
+                display: flex;
+            }
+                .annotate-effectiveness p {
+                    width: 15%
+                }
+            
+            .annotate-comment {
+                display: flex;   
+            }
+                .annotate-comment label {
+                    width: 15%;
+                }
+
+                .annotate-comment p {
+                    width: 80%;
+                }
+
+            .annotate-drag {
+                padding-left: 115px;
+            }
+
+            .annotate-submit {
+                display: flex;
+                justify-content: flex-end;
+            }
    
     .cards {
         width: 40%;
@@ -690,7 +746,7 @@
 
             .jw-dock-button {
                 font-size: 3.5em;
-                                    margin-top: 45% !important;
+                margin-top: 40% !important;
             }
 
 
