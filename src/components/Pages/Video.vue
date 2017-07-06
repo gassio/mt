@@ -286,6 +286,12 @@
                 that.player.seek(clickTime)
             }, false);
 
+            $(document).ready(function() {
+                $('.timeline__clip').css('left', 0)
+                $('.timeline__clip').css('width', 10)
+                $('.timeline__end').css('left', 10)
+            })
+
             $( ".timeline__start" ).draggable({
                 // helper: function( event ) {
                 //     return $( "<div class='ui-widget-header'>I'm a custom helper</div>" );
@@ -302,6 +308,7 @@
                     console.log('start left = ' + clickCoords)                    
                     var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
                     var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                    that.player.seek(clickTime)
                     clickTime = that.secondsToMMSS(clickTime)
                     console.log(clickTime)
                     that.annotateFrom = clickTime
