@@ -31,29 +31,38 @@
                             <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
                         </div>
                         <div class="annotate-effectiveness field">
-                            <p>Set effectiveness:</p>
+                             <label class="label">Set effectiveness:</label>
                             <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" show-stops show-tooltip class="annotate-effectiveness-slider"></el-slider>
                         </div>
                         <div class="annotate-comment field">
-                            <label class="label">Comment</label>
+                            <label class="label">Comment:</label>
                             <p class="control">
                                 <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
                             </p>
                         </div>
-                        <div class="annotate-drag field">
-                            <p class="control" style="display:flex; width: 30%">
+                        <div class="annotate-drag">
+                            <div class="annotate-drag-inputs">
                                 <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
                                 <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
-                            </p>
+                            </div>
+                            <div class="annotate-submit">
+                                <button class="button is-link" @click="annotate()">Annotate</button>
+                            </div>                            
                         </div>
-                        <div class="annotate-submit">
-                            <button class="button is-link" @click="annotate()">Annotate</button>
-                        </div>
+                        
                     </div>
                     
                 </div>
             </div>
-            
+
+            <div class="player__from-to" id="from-to">
+                <span class="timeline__start"></span>
+                <!--<div class="player__timeline">
+                    <span class="timeline__start"></span>
+                    <span class="timeline__end"></span>
+                </div> -->
+            </div>
+
             <div class="player__progress" id="progress">
                 <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
 
@@ -63,13 +72,6 @@
                 </div>
 
                 <!-- <div class="annotate-btn" @click="annotating()">+Annotate</div> -->
-
-                <!-- FOR THE FUTURE
-                <div class="player__timeline">
-                    <span class="timeline__start"></span>
-                    <span class="timeline__end"></span>
-                </div>  -->
-
                 <!--<span style="color: #fff;margin-top: 10px; padding-left: 15px;">{{ videoDurationMMSS }}</span>-->
             </div>
         </div>
@@ -275,17 +277,31 @@
                 var offset = this.getClientRects()[0];
                 that.clickCoords = e.clientX - offset.left; 
                 var clickCoordsPercent = ( that.clickCoords / $('.player__progress').width() ) * 100
-                    console.log(clickCoordsPercent + ' %')
 
                 $('.player__ribbon').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
 
                 var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                    console.log(+ clickTime + ' sec');                     console.log('\n')
+                console.log('Progress: ' + that.secondsToMMSS(clickTime));
                 that.player.seek(clickTime)
             }, false);
 
             // $( ".player__ribbon" ).draggable({ axis: "x" })
             // this.player.setControls(false);
+
+            // If from-to bar div is clicked, set from/to data
+            document.getElementById('from-to').addEventListener('click', function (e) {
+                var offset = this.getClientRects()[0];
+                that.clickCoords = e.clientX - offset.left; 
+                var clickCoordsPercent = ( that.clickCoords / $('.player__from-to').width() ) * 100
+
+                $('.timeline__start').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
+
+                var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                that.player.seek(clickTime)
+                clickTime = that.secondsToMMSS(clickTime)
+                console.log('from: ' + clickTime)
+                that.annotateFrom = clickTime
+            }, false);
         },
         methods: {
             goBack() {
@@ -295,11 +311,11 @@
                 this.isAnnotating = !this.isAnnotating
                 if (this.isAnnotating === false) {
                     $(document).ready(function() {
-                        $('.player__ribbon').show()
+                        // $('.player__ribbon').show()
                     })
                 } else {
                     $(document).ready(function() {
-                        $('.player__ribbon').hide()
+                        // $('.player__ribbon').hide()
                     })
                 }
             },
@@ -403,6 +419,10 @@
             canons() {
                 return this.$store.getters.canons
             }
+        },
+        updated() {
+            var time = this.secondsToMMSS(this.videoCurrentTime)
+            // this.annotateFrom = time
         },
         components: {
             'annotate-path': AnnotatePath
@@ -535,6 +555,15 @@
         display: flex;
     }
 
+    .player__from-to {
+        position: relative;
+        border-radius: 0;
+        background-color: #39425C;
+        display: flex;
+        height: 50px;
+        border-bottom: 2px solid #FFF;
+    }
+
         .player__ribbon {
             position: absolute;
             height: 90px;
@@ -568,9 +597,9 @@
             display: flex;
         }
             .timeline__start {
-                left: 122px;
                 width: 2px;
                 margin: 0;
+                padding: 0;
                 height: 65%;
                 align-self: center;
                 position: absolute;
@@ -679,13 +708,22 @@
                 }
 
             .annotate-drag {
+                display: flex;
+                justify-content: space-between;
                 padding-left: 115px;
             }
+                .annotate-drag-inputs {
+                    display: flex;
+                }
+                    .annotate-drag-inputs input {
+                        width: 100px;
+                        margin-right: 5px;
+                    }
 
-            .annotate-submit {
-                display: flex;
-                justify-content: flex-end;
-            }
+                .annotate-submit {
+                    display: flex;
+                    justify-content: flex-end;
+                }
    
     .cards {
         width: 40%;
