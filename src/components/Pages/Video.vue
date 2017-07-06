@@ -55,15 +55,16 @@
                 </div>
             </div>
 
-            <div class="player__from-to" id="from-to">
-                <span class="timeline__start"></span>
+            <div class="player__from-to" id="from-to" v-show="isAnnotating">
+                <span class="timeline__start" draggable="true"></span>
+                <span class="timeline__end" draggable="true"></span>
+                <span class="timeline__clip"></span>
                 <!--<div class="player__timeline">
                     <span class="timeline__start"></span>
-                    <span class="timeline__end"></span>
                 </div> -->
             </div>
 
-            <div class="player__progress" id="progress">
+            <div class="player__progress" id="progress" v-show="isAnnotating">
                 <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
 
                 <div class="player__ribbon">
@@ -285,23 +286,80 @@
                 that.player.seek(clickTime)
             }, false);
 
-            // $( ".player__ribbon" ).draggable({ axis: "x" })
+            $( ".timeline__start" ).draggable({
+                // helper: function( event ) {
+                //     return $( "<div class='ui-widget-header'>I'm a custom helper</div>" );
+                // },
+                axis: "x",
+                cursor: "e-resize",
+                start() {
+                    console.log('Start')
+                },
+                drag() {
+                },
+                stop(event) {
+                    var clickCoords = event.originalEvent.clientX - 172
+                    console.log('start left = ' + clickCoords)                    
+                    var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                    clickTime = that.secondsToMMSS(clickTime)
+                    console.log(clickTime)
+                    that.annotateFrom = clickTime
+                    $(document).ready(function() {
+                        var clipLeft = $('.timeline__start').position().left
+                        console.log(clipLeft)
+                        var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
+                        console.log(clipWidth)
+                        $('.timeline__clip').css('left', clipLeft)
+                        $('.timeline__clip').css('width', clipWidth)
+                    })
+                }
+            })
+
+            $( ".timeline__end").draggable({
+                axis: "x",
+                cursor: "e-resize",
+                start() {
+                    console.log('End')
+                },
+                drag() {
+                },
+                stop(event) {
+                    var clickCoords = event.originalEvent.clientX - 172
+                    console.log('end left = ' + clickCoords)
+                    var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                    clickTime = that.secondsToMMSS(clickTime)
+                    console.log(clickTime)
+                    that.annotateTo = clickTime
+
+                    $(document).ready(function() {
+                        var clipLeft = $('.timeline__start').position().left
+                        console.log(clipLeft)
+                        var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
+                        console.log(clipWidth)
+                        $('.timeline__clip').css('left', clipLeft)
+                        $('.timeline__clip').css('width', clipWidth)
+                    })
+                }
+            })
+
             // this.player.setControls(false);
 
             // If from-to bar div is clicked, set from/to data
-            document.getElementById('from-to').addEventListener('click', function (e) {
-                var offset = this.getClientRects()[0];
-                that.clickCoords = e.clientX - offset.left; 
-                var clickCoordsPercent = ( that.clickCoords / $('.player__from-to').width() ) * 100
+            // document.getElementById('from-to').addEventListener('click', function (e) {
+            //     var offset = this.getClientRects()[0];
+            //     that.clickCoords = e.clientX - offset.left; 
+            //     var clickCoordsPercent = ( that.clickCoords / $('.player__from-to').width() ) * 100
 
-                $('.timeline__start').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
+            //     $('.timeline__start').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
 
-                var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                that.player.seek(clickTime)
-                clickTime = that.secondsToMMSS(clickTime)
-                console.log('from: ' + clickTime)
-                that.annotateFrom = clickTime
-            }, false);
+            //     var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+            //     that.player.seek(clickTime)
+            //     clickTime = that.secondsToMMSS(clickTime)
+            //     console.log('from: ' + clickTime)
+            //     that.annotateFrom = clickTime
+            // }, false);
         },
         methods: {
             goBack() {
@@ -549,34 +607,24 @@
 
     .player__progress {
         position: relative;
-        height: 125px;
+        height: 100px;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
     }
-
-    .player__from-to {
-        position: relative;
-        border-radius: 0;
-        background-color: #39425C;
-        display: flex;
-        height: 50px;
-        border-bottom: 2px solid #FFF;
-    }
-
         .player__ribbon {
             position: absolute;
-            height: 90px;
+            height: 80%;/*90px;*/
             margin: 0;
-            margin-top: 15px;
             z-index: 999;
             display: flex;
             flex-direction: column;
+            align-self: center;
         }
             .player__ribbon-circle {
                 width: 20px;
                 height: 20px;
-                border-radius: 50%;
+                border-radius: 2px; /*50%;*/
                 border: 2.5px solid #FFF;
                 background-color: #C53B3B;
                 display: flex;
@@ -590,31 +638,43 @@
                 align-self: center;
             }
 
-        .player__timeline {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            display: flex;
-        }
-            .timeline__start {
-                width: 2px;
-                margin: 0;
-                padding: 0;
-                height: 65%;
-                align-self: center;
-                position: absolute;
-                background-color: #E0E0E0;
-            }
 
-            .timeline__end {
-                left: 202px;
-                width: 2px;
-                margin: 0;
-                height: 65%;
-                align-self: center;
-                position: absolute;
-                background-color: #E0E0E0;
-            }
+    .player__from-to {
+        position: relative;
+        border-radius: 0;
+        background-color: #39425C;
+        display: flex;
+        height: 50px;
+        border-bottom: 2px solid #FFF;
+    }
+        .timeline__start {
+            width: 3px;
+            margin: 0;
+            padding: 0;
+            z-index: 100;
+            height: 100%;
+            cursor: e-resize;
+            align-self: center;
+            position: absolute;
+            background-color: #E0E0E0;
+        }
+        .timeline__clip {
+            width: 100px;
+            background-color: red;
+            position: relative;
+        }
+        .timeline__end {
+            width: 3px;
+            margin: 0;
+            padding: 0;
+            z-index: 100;            
+            height: 100%;
+            cursor: e-resize;
+            align-self: center;
+            position: absolute;
+            background-color: #E0E0E0;
+        }
+
         
     .annotate-btn {
       padding: 7px;
