@@ -39,29 +39,29 @@
                             <p class="control">
                                 <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
                             </p>
-                        </div>
-                        <div class="annotate-drag">
-                            <div class="annotate-drag-inputs">
-                                <input class="input is-primary" type="text" placeholder="From" v-model="annotateFrom">
-                                <input class="input is-primary" type="text" placeholder="To" v-model="annotateTo">
-                            </div>
                             <div class="annotate-submit">
                                 <button class="button is-link" @click="annotate()">Annotate</button>
-                            </div>                            
+                            </div>
                         </div>
-                        
                     </div>
                     
                 </div>
             </div>
 
             <div class="player__from-to" id="from-to" v-show="isAnnotating">
-                <span class="timeline__start" draggable="true"></span>
-                <span class="timeline__end" draggable="true"></span>
+                <div class="timeline__start" draggable="true">
+                    <div class="timeline__start-tooltip" style="margin-left: -15px;">
+                        <span>|||</span>
+                    </div>
+                    <p style="color:#fff; z-index: 200; font-size: 12px;">{{ startDragTime }}</p>
+                </div>
+                <div class="timeline__end" draggable="true">
+                    <div class="timeline__start-tooltip">
+                        <span>|||</span>
+                    </div>
+                    <p style="color:#fff; z-index: 200; font-size: 12px;">{{ endDragTime }}</p>
+                </div>
                 <span class="timeline__clip"></span>
-                <!--<div class="player__timeline">
-                    <span class="timeline__start"></span>
-                </div> -->
             </div>
 
             <div class="player__progress" id="progress" v-show="isAnnotating">
@@ -194,6 +194,8 @@
                 annotateFrom: null,
                 annotateTo: null,
                 isAnnotating: false,
+                startDragTime: 0,
+                endDragTime: 0,
                 filterCanon: 'All',
                 id: this.$route.params.id,
             }
@@ -286,71 +288,6 @@
                 that.player.seek(clickTime)
             }, false);
 
-            $(document).ready(function() {
-                $('.timeline__clip').css('left', 0)
-                $('.timeline__clip').css('width', 10)
-                $('.timeline__end').css('left', 10)
-            })
-
-            $( ".timeline__start" ).draggable({
-                // helper: function( event ) {
-                //     return $( "<div class='ui-widget-header'>I'm a custom helper</div>" );
-                // },
-                axis: "x",
-                cursor: "e-resize",
-                start() {
-                    console.log('Start')
-                },
-                drag() {
-                },
-                stop(event) {
-                    var clickCoords = event.originalEvent.clientX - 172
-                    console.log('start left = ' + clickCoords)                    
-                    var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
-                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                    that.player.seek(clickTime)
-                    clickTime = that.secondsToMMSS(clickTime)
-                    console.log(clickTime)
-                    that.annotateFrom = clickTime
-                    $(document).ready(function() {
-                        var clipLeft = $('.timeline__start').position().left
-                        console.log(clipLeft)
-                        var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
-                        console.log(clipWidth)
-                        $('.timeline__clip').css('left', clipLeft)
-                        $('.timeline__clip').css('width', clipWidth)
-                    })
-                }
-            })
-
-            $( ".timeline__end").draggable({
-                axis: "x",
-                cursor: "e-resize",
-                start() {
-                    console.log('End')
-                },
-                drag() {
-                },
-                stop(event) {
-                    var clickCoords = event.originalEvent.clientX - 172
-                    console.log('end left = ' + clickCoords)
-                    var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
-                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                    clickTime = that.secondsToMMSS(clickTime)
-                    console.log(clickTime)
-                    that.annotateTo = clickTime
-
-                    $(document).ready(function() {
-                        var clipLeft = $('.timeline__start').position().left
-                        console.log(clipLeft)
-                        var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
-                        console.log(clipWidth)
-                        $('.timeline__clip').css('left', clipLeft)
-                        $('.timeline__clip').css('width', clipWidth)
-                    })
-                }
-            })
-
             // this.player.setControls(false);
 
             // If from-to bar div is clicked, set from/to data
@@ -373,15 +310,68 @@
                 eventBus.navigateBack(this)
             },
             annotating() {
+                var that = this
                 this.isAnnotating = !this.isAnnotating
+                $('.timeline__start').css('left', 50)
+                $('.timeline__end').css('left', 100)
+                $('.timeline__clip').css('left', 50)
+                $('.timeline__clip').css('width', 50)
+                // var clipLeft = $('.timeline__start').position().left
+                // var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
+
+                $( ".timeline__start" ).draggable({
+                    axis: "x",
+                    cursor: "e-resize",
+                    start() {
+                    },
+                    drag() {
+                        $(document).ready(function() {
+                            var clipLeft = $('.timeline__start').position().left
+                            var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
+                            $('.timeline__clip').css('left', clipLeft)
+                            $('.timeline__clip').css('width', clipWidth)
+                        })
+                    },
+                    stop(event) {
+                        var clickCoords = event.originalEvent.clientX - 172
+                        console.log('start left = ' + clickCoords)                    
+                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                        that.player.seek(clickTime)
+                        clickTime = that.secondsToMMSS(clickTime)
+                        that.annotateFrom = clickTime
+                        that.startDragTime = clickTime
+                    }
+                })
+
+                $( ".timeline__end").draggable({
+                    axis: "x",
+                    cursor: "e-resize",
+                    start() {
+                    },
+                    drag() {
+                        $(document).ready(function() {
+                            var clipLeft = $('.timeline__start').position().left
+                            var clipWidth = $('.timeline__end').position().left - $('.timeline__start').position().left
+                            $('.timeline__clip').css('left', clipLeft)
+                            $('.timeline__clip').css('width', clipWidth)
+                        })
+                    },
+                    stop(event) {
+                        var clickCoords = event.originalEvent.clientX - 172
+                        console.log('end left = ' + clickCoords)
+                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                        clickTime = that.secondsToMMSS(clickTime)
+                        that.annotateTo = clickTime
+                        that.endDragTime = clickTime
+                    }
+                })
+
                 if (this.isAnnotating === false) {
-                    $(document).ready(function() {
-                        // $('.player__ribbon').show()
-                    })
+                    
                 } else {
-                    $(document).ready(function() {
-                        // $('.player__ribbon').hide()
-                    })
+                    
                 }
             },
             // Fetches annotations of the current video (videoid = URLid)
@@ -663,12 +653,20 @@
             cursor: e-resize;
             align-self: center;
             position: absolute;
-            background-color: #E0E0E0;
+            background-color: #F2C94C;
+            display: flex;
+            align-items: center;
         }
+            .timeline__start-tooltip {
+                padding: 3px;
+                border-radius: 2px;
+                background-color: #F2C94C;
+            }
+
         .timeline__clip {
             width: 100px;
-            background-color: red;
             position: relative;
+            background-color: #7A7F8D;
         }
         .timeline__end {
             width: 3px;
@@ -679,7 +677,9 @@
             cursor: e-resize;
             align-self: center;
             position: absolute;
-            background-color: #E0E0E0;
+            background-color: #F2C94C;
+            display: flex;
+            align-items: center;
         }
 
         
@@ -764,14 +764,16 @@
                 }
             
             .annotate-comment {
-                display: flex;   
+                display: flex;
+                margin-bottom: 10px;
             }
                 .annotate-comment label {
                     width: 15%;
                 }
-
                 .annotate-comment p {
                     width: 80%;
+                }
+                .annotate-comment textarea {
                 }
 
             .annotate-drag {
@@ -790,7 +792,11 @@
                 .annotate-submit {
                     display: flex;
                     justify-content: flex-end;
+                    align-items: center;
                 }
+                    .annotate-submit button {
+                        height: 100%;
+                    }
    
     .cards {
         width: 40%;
