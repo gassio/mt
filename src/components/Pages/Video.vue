@@ -48,33 +48,39 @@
                 </div>
             </div>
 
-            <div class="player__from-to" id="from-to" v-show="isAnnotating">
-                <div class="timeline__start" draggable="true">
-                    <div class="timeline__start-tooltip" style="margin-left: -15px;">
-                        <span>|||</span>
-                    </div>
-                    <p style="color:#fff; z-index: 200; font-size: 12px; margin-left: -50px;">{{ startDragTime }}</p>
-                </div>
-                <div class="timeline__end" draggable="true">
-                    <div class="timeline__start-tooltip">
-                        <span>|||</span>
-                    </div>
-                    <p style="color:#fff; z-index: 200; font-size: 12px; margin-left:3px;">{{ endDragTime }}</p>
-                </div>
-                <span class="timeline__clip"></span>
-            </div>
-
             <div class="player__progress" id="progress" v-show="isAnnotating">
+
                 <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
 
-                <div class="player__ribbon">
+                <div class="player__ribbon" draggable="true">
                     <span class="player__ribbon-circle"></span>
                     <span class="player__ribbon-line">
-                        <p style="color:#fff; z-index: 200; font-size: 12px; margin-left: 10px;">{{ timeNow }}</p>
+                        <p style="color:#fff; z-index: 200; font-size: 12px; margin-left: 10px;">{{ videoCurrentTimeMMSS }}</p>
                     </span>
                 </div>
 
+                <div class="player__from-to" id="from-to" >
+                    <div class="timeline__start" draggable="true">
+                        <div class="timeline__start-tooltip" style="margin-left: -15px;">
+                            <span>|||</span>
+                        </div>
+                        <p style="color:#fff; z-index: 200; font-size: 12px; margin-left: -50px;">{{ startDragTime }}</p>
+                    </div>
+                    <div class="timeline__end" draggable="true">
+                        <div class="timeline__start-tooltip">
+                            <span>|||</span>
+                        </div>
+                        <p style="color:#fff; z-index: 200; font-size: 12px; margin-left:3px;">{{ endDragTime }}</p>
+                    </div>
+                    <span class="timeline__clip"></span>
+                </div>
+
+                <!--<div class="times">
+                    <span class="times-min">&nbsp</span>
+                </div> -->
+
             </div>
+
         </div>
 
         <div class="cards">
@@ -307,7 +313,7 @@
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
-                var coordsPercentEnd = ((annotationNowTime + 30)  * 100) / that.videoDuration
+                var coordsPercentEnd = ((annotationNowTime + 15)  * 100) / that.videoDuration
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
                 $('.timeline__start').css('left', coordsStart)
@@ -325,9 +331,9 @@
                     cursor: "col-resize",
                     axis: "x",
                     drag(event) {
-                        var windowOffset = $('.player__from-to').offset().left
+                        var windowOffset = $('.player__progress').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickCoordsPercent = ( clickCoords / $('.player__progress').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         that.player.seek(clickTime)
 
@@ -339,9 +345,9 @@
                         that.startDragTime = clickTime
                     },
                     stop(event) {
-                        var windowOffset = $('.player__from-to').offset().left
+                        var windowOffset = $('.player__progress').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickCoordsPercent = ( clickCoords / $('.player__progress').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
                         that.annotateFrom = clickTime
@@ -353,9 +359,9 @@
                     cursor: "col-resize",
                     axis: "x",
                     drag(event) {
-                        var windowOffset = $('.player__from-to').offset().left
+                        var windowOffset = $('.player__progress').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickCoordsPercent = ( clickCoords / $('.player__progress').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         that.player.seek(clickTime)
                         var clipLeft = $('.timeline__start').position().left
@@ -366,9 +372,9 @@
                         that.endDragTime = clickTime
                     },
                     stop(event) {
-                        var windowOffset = $('.player__from-to').offset().left
+                        var windowOffset = $('.player__progress').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        var clickCoordsPercent = ( clickCoords / $('.player__from-to').width() ) * 100
+                        var clickCoordsPercent = ( clickCoords / $('.player__progress').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
                         that.annotateFrom = clickTime
@@ -479,10 +485,6 @@
             canons() {
                 return this.$store.getters.canons
             }
-        },
-        updated() {
-            this.timeNow = this.secondsToMMSS(this.videoCurrentTime)
-            console.log("updated() " + this.timeNow)
         },
         components: {
             'annotate-path': AnnotatePath
@@ -625,14 +627,14 @@
 
     .player__progress {
         position: relative;
-        height: 90px;
+        height: 130px;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
     }
         .player__ribbon {
             position: absolute;
-            height: 100%;/*90px;*/
+            height: 115px;
             left: 0;
             margin: 0;
             padding: 0;
@@ -643,11 +645,10 @@
             align-self: center;
         }
             .player__ribbon-circle {
-                margin-top: -10px;
-                width: 15px;
-                height: 15px;
-                border-radius: 2px; /*50%;*/
-                border: 1.5px solid #FFF;
+                width: 25px;
+                height: 25px;
+                border-radius: 50%;
+                border: 3px solid #FFF;
                 background-color: #C53B3B;
                 display: flex;
                 justify-content: center;
@@ -662,25 +663,28 @@
 
 
     .player__from-to {
-        position: relative;
+        height: 70px;
+        /*position: relative;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
-        height: 70px;
-        border-bottom: 1px solid #FFF;
+        
+        border-bottom: 1px solid #FFF;*/
     }
         .timeline__start {
             width: 3px;
             margin: 0;
             padding: 0;
             z-index: 100;
-            height: 100%;
+            height: 80px; /* of 130px */
+            margin-top: 30px;
             cursor: col-resize;
             align-self: center;
             position: absolute;
             background-color: #F2C94C;
             display: flex;
             align-items: center;
+            border-radius: 3px;
         }
             .timeline__start-tooltip {
                 padding: 3px;
@@ -689,8 +693,12 @@
             }
 
         .timeline__clip {
-            width: 100px;
-            position: relative;
+            z-index: 99;
+            margin-top: 30px;
+            position: absolute;
+            border-radius: 3px;
+            border: 2px solid #F2C94C;
+            height: 80px; /* of 130px */
             background-color: #7A7F8D;
         }
         .timeline__end {
@@ -698,15 +706,29 @@
             margin: 0;
             padding: 0;
             z-index: 100;            
-            height: 100%;
+            height: 80px; /* of 130px */
+            margin-top: 30px;
             cursor: col-resize;
             align-self: center;
             position: absolute;
             background-color: #F2C94C;
             display: flex;
             align-items: center;
+            border-radius: 3px;
         }
 
+        /*
+        .times {
+            width: 100%;
+            height: 100%;
+        }
+            .times-min {
+                width: 100%;
+                height: 100%;
+                left: 110px;
+                background-color: #fff;
+            }
+        */
         
     .annotate-btn {
       padding: 7px;
