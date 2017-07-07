@@ -2,9 +2,9 @@
     <div class="video container">
 
         <div class="player">
-            <button class="button is-white" @click="goBack()"> <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[id].title}}</button>     
-
-            <!--<annotate-path></annotate-path> -->
+            <button class="button is-white" @click="goBack()">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>{{videos[id].title}}
+            </button>     
             
             <div id="player">Loading the player...</div>
 
@@ -22,7 +22,9 @@
                 
                 <div class="annotate-fields" v-show="!annotateMenuisShown">
                     <div class="annotate-fields-left">
-                        <button class="button is-white" @click="annotateMenuisShown = true"><i aria-hidden="true" class="fa fa-chevron-left"></i>Back</button>
+                        <button class="button is-white" @click="annotateMenuisShown = true">
+                            <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
+                        </button>
                     </div>
                     
                     <div class="annotate-fields-right">
@@ -32,12 +34,17 @@
                         </div>
                         <div class="annotate-effectiveness field">
                              <label class="label">Set effectiveness:</label>
-                            <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" show-stops show-tooltip class="annotate-effectiveness-slider"></el-slider>
+                            <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
+                                       show-stops 
+                                       show-tooltip class="annotate-effectiveness-slider">
+                            </el-slider>
                         </div>
                         <div class="annotate-comment field">
                             <label class="label">Comment:</label>
                             <p class="control">
-                                <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." v-model="annotateComment"></textarea>
+                                <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." 
+                                          v-model="annotateComment">
+                                </textarea>
                             </p>
                             <div class="annotate-submit">
                                 <button class="button is-link" @click="annotate()">Annotate</button>
@@ -52,7 +59,7 @@
 
                 <span style="color: #fff;margin-top: 10px;">{{ videoCurrentTimeMMSS }}</span>
 
-                <div class="player__ribbon" draggable="true">
+                <div class="player__ribbon" draggable="true" v-show="!isAnnotating">
                     <span class="player__ribbon-circle"></span>
                     <span class="player__ribbon-line">
                         <p style="color:#fff; z-index: 200; font-size: 12px; margin-left: 10px;">{{ videoCurrentTimeMMSS }}</p>
@@ -407,7 +414,7 @@
                 this.annotateRating
                 this.isAnnotating = false
                 this.annotateMenuisShown = true
-                $('.player__ribbon').show()
+                // $('.player__ribbon').show()
             },
             loadVideoAnnotations() {
                 // Fetches annotations of the current video (videoid = URLid)
@@ -485,10 +492,7 @@
             canons() {
                 return this.$store.getters.canons
             }
-        },
-        components: {
-            'annotate-path': AnnotatePath
-        },
+        }
     }
     // goCurrentRibbon() {
             //     var that = this
@@ -580,48 +584,24 @@
 
 <style>
 
-.timeline {
-	height:100%;
-	width: 100%;
-	overflow: auto;
-	padding: 15px !important;
+/* ==============================================
+                #GENERIC
+================================================= */
+
+.structure, .delivery, .visual, .style, .moves {
+    background-color: #39425C
 }
-	.timeline-card{
-		padding: 15px !important;
-		margin-bottom: 20px;
-		box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
-        cursor: pointer;
-	}
-		.timeline-card-title{
-			font-size: 25px;
-			font-style: bold;
-		}
-		.timeline-card-time{
-			font-style: italic;
-		}
-		.timeline-card-description{
-			
-		}
-		.timeline-card-effectiveness-bar{
-			margin-top: 6px !important;
-			padding-left: 10px !important;
-			padding-right: 10px !important;
-		}
-		.timeline-card-effectiveness-label{
-			
-		}
-/* ---------------- /STEFANOS ------------------*/
-
-
-    .structure, .delivery, .visual, .style, .moves {
-        background-color: #39425C
-    }
 
 .video {
     padding: 0;
     padding-top: 25px;
     display: flex; 
 }
+
+/* ==============================================
+                #PROGRESS BAR
+================================================= */
+
     .player {
     }
 
@@ -661,14 +641,12 @@
                 align-self: center;
             }
 
-
     .player__from-to {
         height: 70px;
         /*position: relative;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
-        
         border-bottom: 1px solid #FFF;*/
     }
         .timeline__start {
@@ -729,6 +707,10 @@
                 background-color: #fff;
             }
         */
+
+/* ==============================================
+                #ANNOTATE FIELDS
+================================================= */
         
     .annotate-btn {
       padding: 7px;
@@ -844,30 +826,18 @@
                     .annotate-submit button {
                         height: 100%;
                     }
-   
-    .cards {
-        width: 40%;
-        padding-top: 26px;
-        display: flex;
-        flex-direction: column;
-    }
-        .card {
-            height: 100p;
-            background: #eee;
-            margin: 10px 15px;
-            border: 2px solid #555;
-            display: flex;
-            flex-direction: column;
-        }
-            .card-head, .card-comment, .card-rating {
-                padding: 10px;
-                border-bottom: 1px dotted black;
-            }
-            
-            .card-head {
-                display: flex;
-                justify-content: space-between;
-            }
+
+
+/* ==============================================
+                    #CARDS
+================================================= */
+
+.cards {
+    width: 40%;
+    padding-top: 26px;
+    display: flex;
+    flex-direction: column;
+}
 
     .card-menu {
         display: flex;
@@ -878,56 +848,81 @@
             padding: 15px;
         }
 
-        .jw-controlbar {
-            /*display: none !important;*/
+        .timeline {
+            height:100%;
+            width: 100%;
+            overflow: auto;
+            padding: 15px !important;
         }
-
-        .jw-controlbar-center-group .jw-slider-time, 
-        .jw-controlbar-center-group .jw-slider-container, 
-        .jw-controlbar-center-group .jw-rail,
-        .jw-controlbar-center-group .jw-slider-horizontal .jw-progress,
-        .jw-controlbar-center-group .jw-buffer {
-            height: 100% !important;
-        }
-        
-        .jw-controlbar-center-group .jw-knob {
-            background-color: #202020;
-            border: 0.12em solid #fff;
-            font-size: 3em;
-            top: 10%;
-        }
-        
-        .jw-dock {
-            margin-top: 35%;
-            margin-left: 10%;
-        }
-
-            .jw-dock-button {
-                font-size: 3.5em;
-                margin-top: 40% !important;
+            .timeline-card{
+                padding: 15px !important;
+                margin-bottom: 20px;
+                box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
+                cursor: pointer;
             }
+                .timeline-card-title{
+                    font-size: 25px;
+                    font-style: bold;
+                }
+                .timeline-card-time{
+                    font-style: italic;
+                }
+                .timeline-card-description{
+                    
+                }
+                .timeline-card-effectiveness-bar{
+                    margin-top: 6px !important;
+                    padding-left: 10px !important;
+                    padding-right: 10px !important;
+                }
+                .timeline-card-effectiveness-label{
+                    
+                }     
 
 
-        .jw-nextup-container {
-            opacity: 1 !important;
-            visibility: visible !important;
-            padding: 0;
-            margin: 0;
-        }
-            .jw-nextup { display: none !important; }
 
-            /*.annomenu {
-                color: #fff;
-                height: 90px;
-                border: 1px solid #fff;
-                background: rgba(33,33,33,.8);
-                display: flex;
-            }
-                .annomenu-option {
-                        border-right: 1px solid #fff;
-                        width: 25%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                } */
+
+
+/* ==============================================
+                #JWPLAYER TRUMPS
+================================================= */
+
+.jw-controlbar {
+    /*display: none !important;*/
+}
+
+.jw-controlbar-center-group .jw-slider-time, 
+.jw-controlbar-center-group .jw-slider-container, 
+.jw-controlbar-center-group .jw-rail,
+.jw-controlbar-center-group .jw-slider-horizontal .jw-progress,
+.jw-controlbar-center-group .jw-buffer {
+    height: 100% !important;
+}
+
+.jw-controlbar-center-group .jw-knob {
+    background-color: #202020;
+    border: 0.12em solid #fff;
+    font-size: 3em;
+    top: 10%;
+}
+
+.jw-dock {
+    margin-top: 35%;
+    margin-left: 10%;
+}
+
+    .jw-dock-button {
+        font-size: 3.5em;
+        margin-top: 40% !important;
+    }
+
+
+.jw-nextup-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    padding: 0;
+    margin: 0;
+}
+    .jw-nextup { display: none !important; }
+        
 </style>
