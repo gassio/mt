@@ -73,15 +73,15 @@
 
                 <div class="crop videoline-crop" id="videoline-crop" >
                     <div class="crop__corner crop__start" draggable="true">
-                        <div class="crop__grab" style="margin-left: -15px;">
+                        <!--<div class="crop__grab" style="margin-left: -15px;">
                             <span>|||</span>
-                        </div>
+                        </div> -->
                         <p class="crop__time-label">{{ startDragTime }}</p>
                     </div>
                     <div class="crop__corner crop__end" draggable="true">
-                        <div class="crop__grab">
+                        <!--<div class="crop__grab">
                             <span>|||</span>
-                        </div>
+                        </div>-->
                         <p class="crop__time-label">{{ endDragTime }}</p>
                     </div>
                     <span class="crop__space"></span>
@@ -662,6 +662,7 @@
   #DRAG N' DROP CROP
 \*------------------------------------*/
 .videoline-crop {
+    height: 50%;
     /*position: relative;
     border-radius: 0;
     background-color: #39425C;
@@ -669,12 +670,12 @@
     border-bottom: 1px solid #FFF;*/
 }
     .crop__corner {
-        width: 1px;
+        width: 5px;
         margin: 0;
         padding: 0;
         z-index: 100;
-        height: 100%; /* of 130px */
-        /*margin-top: 30px;*/
+        height: 60%; /* of 100px */
+        margin-top: 20px;
         background-color: #F2C94C;
         cursor: col-resize;
         position: absolute;
@@ -702,10 +703,11 @@
 
     .crop__space {
         z-index: 99;
+        margin-top: 20px;
         position: absolute;
         border-radius: 3px;
         border: 2px solid #F2C94C;
-        height: 100%; /* of 100px */
+        height: 60%; /* of 100px */
         background-color: #7A7F8D;
     }
 
