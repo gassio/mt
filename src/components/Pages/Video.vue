@@ -55,8 +55,13 @@
                 </div>
             </div>
 
-            <div class="videoline" v-show="isAnnotating">
+            <div class="times" v-show="isAnnotating">
+                <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
+                <span class="times-min" v-for="t in 10"></span>
+                <!-- <span class="times-sec" v-for="t in 10"></span> -->
+            </div>
 
+            <div class="videoline" v-show="isAnnotating">
                 <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
 
                 <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
@@ -66,7 +71,7 @@
                     </span>
                 </div>
 
-                <div class="videoline-crop" id="videoline-crop" >
+                <div class="crop videoline-crop" id="videoline-crop" >
                     <div class="crop__corner crop__start" draggable="true">
                         <div class="crop__grab" style="margin-left: -15px;">
                             <span>|||</span>
@@ -81,13 +86,7 @@
                     </div>
                     <span class="crop__space"></span>
                 </div>
-
-                <!--<div class="times">
-                    <span class="times-min">&nbsp</span>
-                </div> -->
-
             </div>
-
         </div>
 
         <div class="cards">
@@ -211,6 +210,13 @@
                 startDragTime: 0,
                 endDragTime: 0,
                 filterCanon: 'All',
+                times: [
+                    { marginleft: '10%' },
+                    { marginleft: '20%' },
+                    { marginleft: '30%' },
+                    { marginleft: '40%' },
+                    { marginleft: '50%' },
+                ],
                 id: this.$route.params.id,
             }
         },
@@ -607,7 +613,7 @@
 
     .videoline {
         position: relative;
-        height: 130px;
+        height: 100px;
         border-top: 1px solid #fff;
         border-radius: 0;
         background-color: #39425C;
@@ -631,16 +637,16 @@
             align-self: center;
         }
             .videoline-ribbon-circle {
-                width: 25px;
-                height: 25px;
-                border-radius: 50%;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%; /*1px;*/
                 border: 3px solid #FFF;
                 background-color: #C53B3B;
                 display: flex;
                 justify-content: center;
             }
             .videoline-ribbon-line {
-                width: 3px;
+                width: 1px;
                 height: 100%;
                 background-color: #fff;
                 margin-left: 0;
@@ -663,23 +669,24 @@
     border-bottom: 1px solid #FFF;*/
 }
     .crop__corner {
-        width: 3px;
+        width: 1px;
         margin: 0;
         padding: 0;
         z-index: 100;
         height: 100%; /* of 130px */
         /*margin-top: 30px;*/
-        cursor: col-resize;
-        align-self: center;
-        position: absolute;
         background-color: #F2C94C;
-        display: flex;
-        align-items: center;
+        cursor: col-resize;
+        position: absolute;
         border-radius: 3px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        align-self: center;
     }
         .crop__grab {
-            /*padding: 50px 3px;
-            border-radius: 2px;*/
+            padding: 15px 3px;
+            border-radius: 2px;
             background-color: #F2C94C;
         }
         .crop__time-label {
@@ -688,13 +695,17 @@
             font-size: 12px;
         }
 
+            .crop__start .crop__time-label { 
+                margin-left: -50px;
+            }
+        
+
     .crop__space {
         z-index: 99;
-        /*margin-top: 30px;*/
         position: absolute;
         border-radius: 3px;
         border: 2px solid #F2C94C;
-        height: 100%; /* of 130px */
+        height: 100%; /* of 100px */
         background-color: #7A7F8D;
     }
 
@@ -705,18 +716,25 @@
 
     }
 
-        /*
-        .times {
-            width: 100%;
-            height: 100%;
+    .times {
+        height: 30px;
+        background-color: #39425C;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+        .times-min {
+            width: 1px;
+            height: 70%;
+            background-color: #FFF;
+            border-right: 1px solid #FFF;
         }
-            .times-min {
-                width: 100%;
-                height: 100%;
-                left: 110px;
-                background-color: #fff;
-            }
-        */
+        .times-sec {
+            width: 1px;
+            height: 40%;
+            background-color: #FFF;
+            border-right: 1px solid #FFF;
+        }
 
 /* ==============================================
                 #ANNOTATE FIELDS
