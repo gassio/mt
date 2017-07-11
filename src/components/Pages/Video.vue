@@ -64,7 +64,7 @@
             <div class="videoline" v-show="isAnnotating">
                 <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
 
-                <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
+                <div class="videoline-ribbon" draggable="true" v-show="!isAnnotating"> <!--  -->
                     <span class="videoline-ribbon-circle"></span>
                     <span class="videoline-ribbon-line">
                         <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
@@ -73,18 +73,21 @@
 
                 <div class="crop videoline-crop" id="videoline-crop" >
                     <div class="crop__corner crop__start" draggable="true">
-                        <div class="crop__grab" style="margin-left: -15px;">
-                            <span>|||</span>
-                        </div>
-                        <p class="crop__time-label">{{ startDragTime }}</p>
+                        <!--<div class="crop__grab" style="margin-left: -10px"> 
+                            <span>||</span>
+                        </div>-->
+                        <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>
                     </div>
                     <div class="crop__corner crop__end" draggable="true">
-                        <div class="crop__grab">
-                            <span>|||</span>
-                        </div>
+                        <!--<div class="crop__grab">
+                            <span>||</span>
+                        </div> -->
                         <p class="crop__time-label">{{ endDragTime }}</p>
                     </div>
                     <span class="crop__space"></span>
+                </div>
+
+                <div class="videoline-progress">
                 </div>
             </div>
         </div>
@@ -217,6 +220,8 @@
                     { marginleft: '40%' },
                     { marginleft: '50%' },
                 ],
+                isDragging: false,
+                dragEndIsMoving: false,
                 id: this.$route.params.id,
             }
         },
@@ -259,7 +264,14 @@
                     // Convert the time to MM:SS
                     that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
 
-                    // $('.videoline-ribbon').animate({ left: percentTime + "%" }, 150);
+                    // Paint progress width
+                    $('.videoline-progress').css('width', percentTime + '%' )
+                    
+                    // if (that.isDragging) {
+                    //     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+                    // }
+                    
+                    
                     
                     // If current video time == annotation.from, then animate card
                     // for(var i=0; i< that.videoAnnotations.length; i++) {
@@ -295,7 +307,7 @@
             $( ".videoline-ribbon" ).draggable({
                 axis: "x",
                 start() {
-                    that.player.pause()
+                    //that.player.pause()
                 },
                 drag(event) {
                     var windowOffset = $('.videoline').offset().left
@@ -335,7 +347,7 @@
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
-                this.endDragTime = this.secondsToMMSS(annotationNowTime + 10)
+                this.endDragTime = this.secondsToMMSS(annotationNowTime + 20)
                 this.annotateStart = this.startDragTime
                 this.annotateEnd = this.endDragTime
 
@@ -343,7 +355,11 @@
                 $( ".crop__start" ).draggable({
                     cursor: "col-resize",
                     axis: "x",
+                    start(){
+                         that.isDragging = true
+                    },
                     drag(event) {
+                        that.isDragging = true
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
@@ -371,7 +387,11 @@
                 $( ".crop__end").draggable({
                     cursor: "col-resize",
                     axis: "x",
+                    start() {
+                        that.isDragging = false
+                    },
                     drag(event) {
+                        that.isDragging = false
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
@@ -385,6 +405,7 @@
                         that.endDragTime = clickTime
                     },
                     stop(event) {
+                        that.isDragging = false
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
@@ -450,9 +471,12 @@
                 this.annotateMenuisShown = false
             },
             seekCard(event) {
+                this.isAnnotating = true;
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
+                this.annotateStart = startTime
                 var endTime = time.substring(8,13); // 03:17
+                this.annotateEnd = endTime
                 var totalTime = this.videoDuration;
 
                 var a = startTime.split(':')
@@ -661,6 +685,7 @@
 /*------------------------------------*\
   #DRAG N' DROP CROP
 \*------------------------------------*/
+
 .videoline-crop {
     height: 50%;
     /*position: relative;
@@ -686,18 +711,19 @@
         align-self: center;
     }
         .crop__grab {
-            padding: 15px 3px;
-            border-radius: 2px;
+            padding: 1px;
+            padding: 18px 4px;
+            border-radius: 0px;
             background-color: #F2C94C;
         }
         .crop__time-label {
             color: #fff;
             z-index: 200;
+            padding: 0px;
             font-size: 12px;
         }
 
             .crop__start .crop__time-label { 
-                margin-left: -50px;
             }
         
 
@@ -705,7 +731,7 @@
         z-index: 99;
         margin-top: 20px;
         position: absolute;
-        border-radius: 3px;
+        border-radius: 0px;
         border: 2px solid #F2C94C;
         height: 60%; /* of 100px */
         background-color: #7A7F8D;
@@ -737,6 +763,12 @@
             background-color: #FFF;
             border-right: 1px solid #FFF;
         }
+
+.videoline-progress {
+    height: 100%;
+    position: absolute;
+    background-color: rgba(45, 54, 79, 0.67);
+}
 
 /* ==============================================
                 #ANNOTATE FIELDS
