@@ -73,15 +73,15 @@
 
                 <div class="crop videoline-crop" id="videoline-crop" >
                     <div class="crop__corner crop__start" draggable="true">
-                        <!--<div class="crop__grab" style="margin-left: -15px;">
+                        <div class="crop__grab" style="margin-left: -15px;">
                             <span>|||</span>
-                        </div> -->
+                        </div>
                         <p class="crop__time-label">{{ startDragTime }}</p>
                     </div>
                     <div class="crop__corner crop__end" draggable="true">
-                        <!--<div class="crop__grab">
+                        <div class="crop__grab">
                             <span>|||</span>
-                        </div>-->
+                        </div>
                         <p class="crop__time-label">{{ endDragTime }}</p>
                     </div>
                     <span class="crop__space"></span>
@@ -204,8 +204,8 @@
                 annotateCategory: 'Volume',
                 annotateComment: '',
                 annotateRating: 1,
-                annotateFrom: null,
-                annotateTo: null,
+                annotateStart: null,
+                annotateEnd: null,
                 isAnnotating: false,
                 startDragTime: 0,
                 endDragTime: 0,
@@ -336,8 +336,8 @@
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
                 this.endDragTime = this.secondsToMMSS(annotationNowTime + 10)
-                this.annotateFrom = this.startDragTime
-                this.annotateTo = this.endDragTime
+                this.annotateStart = this.startDragTime
+                this.annotateEnd = this.endDragTime
 
                 // START
                 $( ".crop__start" ).draggable({
@@ -363,7 +363,7 @@
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.annotateFrom = clickTime
+                        that.annotateStart = clickTime
                     }
                 })
 
@@ -390,7 +390,7 @@
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.annotateFrom = clickTime
+                        that.annotateEnd = clickTime
                     }
                 })
 
@@ -402,8 +402,8 @@
                         canon: this.annotateCanon,
                         category: this.annotateCategory,
                         comment: this.annotateComment,
-                        from: this.annotateFrom,
-                        to: this.annotateTo, 
+                        from: this.annotateStart,
+                        to: this.annotateEnd, 
                         rating: this.annotateRating, 
                     }
                 }
@@ -415,8 +415,8 @@
 
                 // Reset default design states (no annotating)
                 this.annotateComment = ''
-                this.annotateFrom = null
-                this.annotateTo = null
+                this.annotateStart = null
+                this.annotateEnd = null
                 this.annotateRating
                 this.isAnnotating = false
                 this.annotateMenuisShown = true
@@ -460,10 +460,10 @@
                 var startSec = (+a[0]) * 60 + (+a[1]) // in sec
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
                 
-                // Seek player according to annotateFrom var
+                // Seek player according to annotateStart var
                 this.player.seek(startSec)
 
-                // Move the timeline according to the annotateFrom & annotateTo vars
+                // Move the timeline according to the annotateStart & annotateEnd vars
                 // var startPercent = (startSec / totalTime) * 100;
                 // var endPercent = (endSec / totalTime) * 100;
                 // $('.crop__start').animate({ marginLeft: startPercent + "%" }, 150);
@@ -584,7 +584,7 @@
             //     that.player.seek(clickTime)
             //     clickTime = that.secondsToMMSS(clickTime)
             //     console.log('from: ' + clickTime)
-            //     that.annotateFrom = clickTime
+            //     that.annotateStart = clickTime
             // }, false);
 </script>
 
@@ -655,7 +655,7 @@
                 .videoline-ribbon-line-time {
                     color: #FFF;
                     font-size: 12px;
-                    margin: 20px 0px 0px 5px;
+                    margin: 0px 0px 0px 5px;
                 }
 
 /*------------------------------------*\
@@ -670,7 +670,7 @@
     border-bottom: 1px solid #FFF;*/
 }
     .crop__corner {
-        width: 5px;
+        width: 0px;
         margin: 0;
         padding: 0;
         z-index: 100;
