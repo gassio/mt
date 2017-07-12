@@ -106,7 +106,7 @@
             </nav>
 
             <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
-                <div class="column" @click="seekCard($event)">
+                <div class="column"> <!--  @click="seekCard($event)" -->
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
                             <p class="timeline-card-title">{{ card.category }}</p>
@@ -131,7 +131,7 @@
                 </div>
             </div>
 
-            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'">
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseenter="toggleCardEditButton = !toggleCardEditButton">
                 <div class="column" @click="seekCard($event)">
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
@@ -155,30 +155,10 @@
                         </div>
                     </div>
                 </div>
+                <div class="timeline-card-edit">
+                    <button v-show="toggleCardEditButton" @click="isAnnotating = !isAnnotating">Edit</button>
+                </div>
             </div>
-
-            <!--<div class="card" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
-                <div class="card-head" @click="seekCard($event)">
-                    <span class="card-title"><strong>{{ card.title }}</strong></span>
-                    <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
-                </div> 
-                <span class="card-comment">{{ card.comment }} </span>
-                <span>Canon: {{ card.canon }}</span>
-                <span>Category: {{ card.category }}</span>
-                <span>Title: {{ card.title }}</span>
-                <span class="card-rating">{{ card.rating }}</span>
-            </div>
-            <div class="card" v-for="card in videoAnnotations" v-if="filterCanon === 'All'">
-                <div class="card-head" @click="seekCard($event)">
-                    <span class="card-title"><strong>{{ card.title }}</strong></span>
-                    <span class="card-time"> {{ card.from }} - {{ card.to }} </span>
-                </div> 
-                <span class="card-comment">{{ card.comment }} </span>
-                <span>Canon: {{ card.canon }}</span>
-                <span>Category: {{ card.category }}</span>
-                <span>Title: {{ card.title }}</span>
-                <span class="card-rating">{{ card.rating }}</span>
-            </div> -->
             
         </div>
 
@@ -225,6 +205,8 @@
                 ],
                 timesArray: [],
                 isDragging: false,
+                isEditing: false,
+                toggleCardEditButton: false,
                 dragEndIsMoving: false,
                 id: this.$route.params.id,
             }
@@ -452,6 +434,35 @@
                 this.annotateMenuisShown = true
                 // $('.videoline-ribbon').show()
             },
+            editing() {
+                this.isAnnotating = true;
+                var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
+                var startTime = time.substring(0,5); // 03:05
+                this.annotateStart = startTime
+                var endTime = time.substring(8,13); // 03:17
+                this.annotateEnd = endTime
+                var totalTime = this.videoDuration;
+
+                var a = startTime.split(':')
+                var b = endTime.split(':')
+                var startSec = (+a[0]) * 60 + (+a[1]) // in sec
+                var endSec = (+b[0]) * 60 + (+b[1]) // in sec
+
+                // Move the timeline according to the annotateStart & annotateEnd vars
+                var barWidth = 860 // $('.videoline').width()
+                var coordsPercentStart = (startSec  * 100) / this.videoDuration
+                var coordsStart = (coordsPercentStart * barWidth) / 100
+                var coordsPercentEnd = (endSec * 100) / this.videoDuration
+                var coordsEnd = (coordsPercentEnd * barWidth) / 100
+
+                $('.crop__start').css('left', coordsStart)
+                $('.crop__end').css('left', coordsEnd)
+                $('.crop__space').css('left', coordsStart)
+                $('.crop__space').css('width', coordsEnd - coordsStart)
+            },
+            showEditButton() {
+                alert('is editing!')
+            },
             loadVideoAnnotations() {
                 // Fetches annotations of the current video (videoid = URLid)
                 // Stores annotations in videoAnnotations[]
@@ -494,7 +505,7 @@
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
 
                 // Move the timeline according to the annotateStart & annotateEnd vars
-                var barWidth = 860 //$('.videoline').width()
+                var barWidth = 860 // $('.videoline').width()
                 var coordsPercentStart = (startSec  * 100) / this.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
                 var coordsPercentEnd = (endSec * 100) / this.videoDuration
