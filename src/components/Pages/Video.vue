@@ -18,8 +18,6 @@
                         <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>  
                     </nav>
                 </div>
-                
-                
                 <div class="annotate-fields" v-show="!annotateMenuisShown">
                     <div class="annotate-fields-left">
                         <button class="button is-black" @click="annotateMenuisShown = true">
@@ -50,6 +48,8 @@
                                 <button class="button" @click="annotate()">Annotate</button>
                             </div>
                         </div>
+                        <input type="text" v-model="annotateStart">
+                        <input type="text" v-model="annotateEnd">
                     </div>
                     
                 </div>
@@ -64,7 +64,7 @@
             <div class="videoline" v-show="isAnnotating">
                 <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
 
-                <div class="videoline-ribbon" draggable="true" v-show="!isAnnotating"> <!--  -->
+                <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
                     <span class="videoline-ribbon-circle"></span>
                     <span class="videoline-ribbon-line">
                         <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
@@ -72,17 +72,20 @@
                 </div>
 
                 <div class="crop videoline-crop" id="videoline-crop" >
-                    <div class="crop__corner crop__start" draggable="true">
+                    <div class="crop__corner crop__start" draggable="true" style="display:flex; flex-direction: column;">
+                        <span style="background-color:#F2C94C; padding:8px 1px;">||</span>
+                        <span>&nbsp;</span>
                         <!--<div class="crop__grab" style="margin-left: -10px"> 
                             <span>||</span>
-                        </div>-->
-                        <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>
+                        </div>
+                        <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>-->
                     </div>
-                    <div class="crop__corner crop__end" draggable="true">
+                    <div class="crop__corner crop__end" draggable="true" style="display:flex; flex-direction:column; /*justify-content:flex-end;*/">
+                        <span style="background-color:#F2C94C; padding:8px 1px; ">||</span>
                         <!--<div class="crop__grab">
                             <span>||</span>
-                        </div> -->
-                        <p class="crop__time-label">{{ endDragTime }}</p>
+                        </div> 
+                        <p class="crop__time-label">{{ endDragTime }}</p>-->
                     </div>
                     <span class="crop__space"></span>
                 </div>
@@ -220,6 +223,7 @@
                     { marginleft: '40%' },
                     { marginleft: '50%' },
                 ],
+                timesArray: [],
                 isDragging: false,
                 dragEndIsMoving: false,
                 id: this.$route.params.id,
@@ -267,9 +271,9 @@
                     // Paint progress width
                     $('.videoline-progress').css('width', percentTime + '%' )
                     
-                    // if (that.isDragging) {
-                    //     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-                    // }
+                    if (that.isDragging) {
+                        $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+                    }
                     
                     
                     
@@ -334,14 +338,15 @@
                 
                 // setStartEndPosition()
                 var annotationNowTime = this.videoCurrentTime - 10 // 10 seconds before pause
-                var barWidth = 860 //$('.videoline-crop').width()
+                var barWidth = 860 // $('.videoline').width()
+                console.log('barwidth = ' + barWidth)
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
                 var coordsPercentEnd = ((annotationNowTime + 15)  * 100) / that.videoDuration
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
-                $('.crop__start').css('left', coordsStart)
+                $('.crop__start').css('left', coordsStart); console.log(coordsStart)
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
@@ -362,6 +367,7 @@
                         that.isDragging = true
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
+                        //console.log(event.originalEvent.clientX)
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         that.player.seek(clickTime)
@@ -380,6 +386,7 @@
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
                         that.annotateStart = clickTime
+                        console.log('start = ' + that.annotateStart)
                     }
                 })
 
@@ -394,6 +401,7 @@
                         that.isDragging = false
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
+                        //console.log(event.originalEvent.clientX)
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         that.player.seek(clickTime)
@@ -412,6 +420,7 @@
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
                         clickTime = that.secondsToMMSS(clickTime)
                         that.annotateEnd = clickTime
+                        console.log('end = ' + that.annotateEnd)
                     }
                 })
 
@@ -483,15 +492,21 @@
                 var b = endTime.split(':')
                 var startSec = (+a[0]) * 60 + (+a[1]) // in sec
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
-                
-                // Seek player according to annotateStart var
-                this.player.seek(startSec)
 
                 // Move the timeline according to the annotateStart & annotateEnd vars
-                // var startPercent = (startSec / totalTime) * 100;
-                // var endPercent = (endSec / totalTime) * 100;
-                // $('.crop__start').animate({ marginLeft: startPercent + "%" }, 150);
-                // $('.crop__end').animate({ marginLeft: endPercent + "%" }, 150);
+                var barWidth = 860 //$('.videoline').width()
+                var coordsPercentStart = (startSec  * 100) / this.videoDuration
+                var coordsStart = (coordsPercentStart * barWidth) / 100
+                var coordsPercentEnd = (endSec * 100) / this.videoDuration
+                var coordsEnd = (coordsPercentEnd * barWidth) / 100
+                
+                $('.crop__start').css('left', coordsStart)
+                $('.crop__end').css('left', coordsEnd)
+                $('.crop__space').css('left', coordsStart)
+                $('.crop__space').css('width', coordsEnd - coordsStart)
+          
+                // Seek player according to annotateStart var
+                this.player.seek(startSec)
             },
             secondsToMMSS(s) {
                 s = Number(s);
@@ -511,6 +526,22 @@
             goBack() {
                 eventBus.navigateBack(this)
             },
+            paintTimes() {
+                var minPos = $('.videoline').offset().left
+                var maxPos = $('.videoline').width() + $('.videoline').offset().left
+                minPos = parseInt(minPos)
+                maxPos = parseInt(maxPos)
+
+                var sum = 0
+
+                for (var i = minPos; i < maxPos; i++) {
+                    this.timesArray[i] = ( i / parseInt($('.videoline').width()) ) * 100
+                    sum = sum + 1
+                }
+                console.log(this.timesArray)
+                console.log('sum = ' + sum)
+                //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+            }
         },
         computed: {
             videos() {
@@ -522,6 +553,11 @@
             canons() {
                 return this.$store.getters.canons
             }
+        },
+        updated() {
+            // if (this.isAnnotating) {
+            //     this.paintTimes()
+            // }
         }
     }
     // goCurrentRibbon() {
@@ -698,9 +734,8 @@
         width: 0px;
         margin: 0;
         padding: 0;
-        z-index: 100;
-        height: 60%; /* of 100px */
-        margin-top: 20px;
+        height: 100%; /* of 100px */
+        /*margin-top: 20px;*/
         background-color: #F2C94C;
         cursor: col-resize;
         position: absolute;
@@ -712,7 +747,7 @@
     }
         .crop__grab {
             padding: 1px;
-            padding: 18px 4px;
+            padding: 18px 1px;
             border-radius: 0px;
             background-color: #F2C94C;
         }
@@ -728,20 +763,20 @@
         
 
     .crop__space {
-        z-index: 99;
-        margin-top: 20px;
+        z-index: 90;
+        /* margin-top: 20px;*/
         position: absolute;
         border-radius: 0px;
-        border: 2px solid #F2C94C;
-        height: 60%; /* of 100px */
+        border: 1px solid #F2C94C;
+        height: 100%; /* of 100px */
         background-color: #7A7F8D;
     }
 
     .crop__start {
-
+        z-index: 105;
     }
     .crop__end {
-
+        z-index: 100;
     }
 
     .times {
@@ -765,6 +800,7 @@
         }
 
 .videoline-progress {
+    /*z-index: 95;*/
     height: 100%;
     position: absolute;
     background-color: rgba(45, 54, 79, 0.67);
