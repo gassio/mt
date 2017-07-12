@@ -464,7 +464,7 @@
                 for (var i=0; i < children.length; i++) {
                     children[i].style.backgroundColor = "transparent"
                 }
-                event.currentTarget.style.backgroundColor = "yellow"
+                event.currentTarget.style.backgroundColor = "rgb(36, 43, 62)"
             },
             chooseCanonFilter(canon) {
                 this.filterCanon = canon
@@ -499,7 +499,7 @@
                 var coordsStart = (coordsPercentStart * barWidth) / 100
                 var coordsPercentEnd = (endSec * 100) / this.videoDuration
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
-                
+
                 $('.crop__start').css('left', coordsStart)
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
@@ -674,7 +674,6 @@
     .videoline {
         position: relative;
         height: 100px;
-        border-top: 1px solid #fff;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
@@ -781,6 +780,7 @@
 
     .times {
         height: 30px;
+        border-top: 1px solid #000;
         background-color: #39425C;
         display: flex;
         justify-content: space-between;
@@ -812,21 +812,22 @@
         
     .annotate-btn {
       padding: 7px;
-      color: #fff;
       cursor: pointer;
       pointer-events: all;
-      background-color: #A90931;
+      color: #fff;
+      background-color: #39425C;
       display: flex;
       justify-content: flex-end;
     }
 
     .annotate-menu__canons {
+        background-color: #39425C;
         display: flex;
         justify-content: center;
     }
 
         .annotate-menu__canons a {
-            color: #0a0a0a;
+            color: #FFF;
             padding: 5px;
         }
 
@@ -837,25 +838,26 @@
         }
             .annotate-menu__canons-close span {
                 width: 50px;
-                color: #39425C;
+                color: #FFF;
                 cursor: pointer;
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
             .annotate-menu__canons-close span:hover {
-                color: #FFF;
-                background-color: #39425C;
+                color: #39425C;
+                background-color: #FFF;
             }
 
     .annotate-menu__categories {
         width: 100%;
+        background-color: #39425C;
         display: flex;
     }
         .annotate-menu__categories a {
             width: 25%;
             height: 100px;
-            color: #0a0a0a;
+            color: #FFF;
             border: 1px solid #0a0a0a;
             display: flex;
             justify-content: center;
