@@ -131,8 +131,8 @@
                 </div>
             </div>
 
-            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseenter="toggleCardEditButton = !toggleCardEditButton">
-                <div class="column" @click="seekCard($event)">
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="toggleCardEditButton = true" @mouseout="toggleCardEditButton = false">
+                <div class="column" @click="seekCard($event)" >
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
                             <p class="timeline-card-title">{{ card.category }}</p>
@@ -155,8 +155,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="timeline-card-edit">
-                    <button v-show="toggleCardEditButton" @click="isAnnotating = !isAnnotating">Edit</button>
+                <div class="timeline-card-edit" @mouseover="toggleCardEditButton = true">
+                    <button v-show="toggleCardEditButton" @click="isAnnotating = !isAnnotating"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
+                    <button v-show="toggleCardEditButton"><i class="fa fa-trash-o fa-2x" aria-hidden="true"></i></button>
                 </div>
             </div>
             
@@ -995,6 +996,20 @@
                 .timeline-card-effectiveness-label{
                     
                 }     
+
+                .timeline-card-edit {
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .timeline-card-edit button {
+                    padding: 10px;
+                    height: 100%;
+                    border: none;
+                    border-bottom: 1px solid #FFF;
+                    color: #FFF;
+                    background-color: #A90931;
+                }
 
 
 
