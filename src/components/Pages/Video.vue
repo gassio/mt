@@ -48,8 +48,8 @@
                                 <button class="button" @click="annotate()">Annotate</button>
                             </div>
                         </div>
-                        <input type="text" v-model="annotateStart">
-                        <input type="text" v-model="annotateEnd">
+                        <!--<input type="text" v-model="annotateStart">
+                        <input type="text" v-model="annotateEnd">-->
                     </div>
                     
                 </div>
@@ -77,15 +77,16 @@
                         <span>&nbsp;</span>
                         <!--<div class="crop__grab" style="margin-left: -10px"> 
                             <span>||</span>
-                        </div>
-                        <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>-->
+                        </div>-->
+                        <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>
                     </div>
                     <div class="crop__corner crop__end" draggable="true" style="display:flex; flex-direction:column; /*justify-content:flex-end;*/">
                         <span style="background-color:#F2C94C; padding:8px 1px; ">||</span>
+                        <span>&nbsp;</span>
                         <!--<div class="crop__grab">
                             <span>||</span>
-                        </div> 
-                        <p class="crop__time-label">{{ endDragTime }}</p>-->
+                        </div> -->
+                        <p class="crop__time-label">{{ endDragTime }}</p>
                     </div>
                     <span class="crop__space"></span>
                 </div>
@@ -131,7 +132,7 @@
                 </div>
             </div>
 
-            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'">
                 <div class="column" @click="seekCard($event)" >
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
@@ -155,9 +156,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="timeline-card-edit" @mouseover="hideEditButton($event)">
-                    <button @click="isAnnotating = !isAnnotating"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
-                    <button><i class="fa fa-trash-o fa-2x" aria-hidden="true"></i></button>
+                <div class="timeline-card-edit">
+                    <button @click="editing()"><i class="fa fa-pencil-square-o fa-1_5x" aria-hidden="true"></i></button>
+                    <button><i class="fa fa-trash-o fa-1_5x" aria-hidden="true"></i></button>
                 </div>
             </div>
             
@@ -436,8 +437,9 @@
                 // $('.videoline-ribbon').show()
             },
             editing() {
-                this.isAnnotating = true;
-                var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
+                this.isAnnotating = true
+                this.annotateMenuisShown = false
+                var time = event.currentTarget.parentElement.parentElement.children[0].children[0].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
                 var endTime = time.substring(8,13); // 03:17
@@ -460,12 +462,10 @@
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
-            },
-            showEditButton(event) {
-                //$(event.currentTarget).find().show()
-            },
-            hideEditButton(event) {
-                //$(event.currentTarget).children().hide()
+
+                // The annotation comment
+                var comment = event.currentTarget.parentElement.parentElement.children[0].children[1].children[0].innerText
+                this.annotateComment = comment
             },
             loadVideoAnnotations() {
                 // Fetches annotations of the current video (videoid = URLid)
@@ -1011,7 +1011,7 @@
                     border: none;
                     border-bottom: 1px solid #FFF;
                     color: #FFF;
-                    background-color: #A90931;
+                    background-color: #4a4a4a;
                 }
 
 
@@ -1060,4 +1060,17 @@
 }
     .jw-nextup { display: none !important; }
         
+
+
+
+
+
+/* ==============================================
+                #TRUMPS
+================================================= */
+
+.fa-1_5x {
+    font-size: 20px;
+}
+
 </style>
