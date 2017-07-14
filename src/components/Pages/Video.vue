@@ -131,7 +131,7 @@
                 </div>
             </div>
 
-            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="toggleCardEditButton = true" @mouseout="toggleCardEditButton = false">
+            <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
                 <div class="column" @click="seekCard($event)" >
                     <div class="columns is-gapless is-marginless">
                         <div class="column is-9">
@@ -155,9 +155,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="timeline-card-edit" @mouseover="toggleCardEditButton = true">
-                    <button v-show="toggleCardEditButton" @click="isAnnotating = !isAnnotating"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
-                    <button v-show="toggleCardEditButton"><i class="fa fa-trash-o fa-2x" aria-hidden="true"></i></button>
+                <div class="timeline-card-edit" @mouseover="hideEditButton($event)">
+                    <button @click="isAnnotating = !isAnnotating"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
+                    <button><i class="fa fa-trash-o fa-2x" aria-hidden="true"></i></button>
                 </div>
             </div>
             
@@ -461,8 +461,11 @@
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
             },
-            showEditButton() {
-                alert('is editing!')
+            showEditButton(event) {
+                //$(event.currentTarget).find().show()
+            },
+            hideEditButton(event) {
+                //$(event.currentTarget).children().hide()
             },
             loadVideoAnnotations() {
                 // Fetches annotations of the current video (videoid = URLid)
