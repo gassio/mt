@@ -1,12 +1,29 @@
 <template>
-    <div class="classes container">
-        <h3>Classes</h3>
-        <div class="row">
-            <div class="col-xs-6 col-md-3 thumbnail classaki" v-for="c in classes">
-                <router-link :to="'classes/' + c.title.replace(/ /g, '-')" tag="a"><strong>{{ c.title }}</strong> | {{c.section}} | {{c.spring}} | {{c.videosCount}} videos</router-link>
-            </div>
-        </div>
-
+    <div class="classes">
+        <div class="container">
+			<!-- MAIN CONTENT - start -->
+			<div class="classes-main columns is-gapless is-marginless">
+				<div class="classes-content">
+					<div class="classes-content-single-semester">
+						<!-- SEMESTER - start -->
+						<div class="classes-semester">
+							<div class="classes-semester-title"><p><strong>Spring 2017</strong></p></div>
+						</div><!-- end -->
+						
+						<div class="classes-of-semester">
+							<!-- CLASS CARD - start -->
+                            <div class="classes-card" v-for="c in classes">   
+                                <router-link :to="'classes/' + c.title.replace(/ /g, '-')" tag="a" class="">
+                                    <i class="fa fa-book fa-5x" aria-hidden="true"></i>
+                                    <p class="classes-card-title"> {{c.section}} {{c.spring}} {{ c.title }}</p>
+                                    <p class="classes-card-details">{{c.videosCount}} videos, 2 instructors</p>
+                                </router-link><!-- end -->
+					        </div>						
+						</div>
+					</div>
+				</div>	
+			</div><!-- end -->
+		</div>
         <router-view></router-view>
     </div>      
 </template>
@@ -39,15 +56,128 @@
 </script>
 
 <style>
-    .thumbnail a {
-        color: #A90931
-    }
-    .classaki {
-        background-color: yellow;
-        height: 200px;
-        width: 200px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+/*-------------- MAIN CONTENT ---------------- */
+.classes-main{
+	display: flex;
+	flex-direction: column;
+}
+	.classes-content{
+		display: flex;
+		flex-direction: column;
+		height: auto;
+		width: 100%;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+	
+	.classes-content-single-semester{
+		display: flex;
+		flex-direction: column;
+		height: auto;
+		width: 100%;
+		margin-top: 60px;
+	}
+/*-------------- SEMESTER ---------------- */	
+		.classes-semester{
+			display: flex;
+			flex-direction: row;
+			align-items: flex-start;
+			height: 30px;
+			width: 100%;
+		}
+			.classes-semester-title{
+				height: 30px;
+				width: auto;
+				border-bottom: 2px solid;
+			}
+			
+/*-------------- CLASS CARD ---------------- */			
+		.classes-of-semester{
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			height: auto;
+			width: 100%;
+			margin-top: 20px;
+		}
+			
+			@media screen and (min-width: 0px){
+				.classes-card{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					background: rgba(169,9,49,0.04);
+					color: #6B6B6B;
+					padding: 45px;
+					margin: 20px;
+					height: auto;
+					width: 100%;
+                    transition:  box-shadow 0.5s ease;
+                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
+				}
+			}
+			
+			@media screen and (min-width: 426px){
+				.classes-card{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					background: rgba(169,9,49,0.04);
+					color: #6B6B6B;
+					padding: 45px;
+					margin: 20px;
+					height: auto;
+					width: calc(100% /2 - 40px);
+                    transition:  box-shadow 0.5s ease;
+                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
+				}
+			}
+			
+			@media screen and (min-width: 600px){
+				.classes-card{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					background: rgba(169,9,49,0.04);
+					color: #6B6B6B;
+					padding: 45px;
+					margin: 20px;
+					height: auto;
+					width: calc(100% /3 - 40px);
+                    transition:  box-shadow 0.5s ease;
+                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
+				}
+			}
+			
+			@media screen and (min-width: 1024px){
+				.classes-card{
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					background: rgba(169,9,49,0.04);
+					color: #6B6B6B;
+					padding: 45px;
+					margin: 20px;
+					height: auto;
+					width: calc(100% /4 - 40px);
+                    transition:  box-shadow 0.5s ease;
+                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
+				}	
+			}
+				.classes-card:hover{
+					box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.5);
+					cursor: pointer;
+				}	
+				.classes-card-title{
+					text-align: center;
+					font-size: 20px;
+					color: #A90931;
+				}
+				.classes-card-details{
+					text-align: center;
+				}
 </style>
