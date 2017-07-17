@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 
-//jw pwd: m1t-metal0gon!
-
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
