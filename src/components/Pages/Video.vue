@@ -231,6 +231,11 @@
             this.videoDuration = this.videos[this.id].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
             
+            // Change the color and background of All in cards menu so that it looks active
+            var allButton = document.getElementById("all-is-active")
+            allButton.style.background = "#8F082A";
+            allButton.style.color = "#FFFFFF";
+
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
@@ -1070,7 +1075,7 @@
             color: #6B6B6B;
             padding: 15px;
             border-bottom: solid 1px rgba(0, 0, 0, .5);
-        }
+        }        
 
     .timeline-content{
         padding: 10px !important;
