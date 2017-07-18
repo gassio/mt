@@ -18,8 +18,8 @@
                             <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
                             <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
                         </nav>
-                        <nav class="annotate-menu__categories" v-if="canon.name === annotateCanon" v-for="canon in canons">
-                            <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>  
+                        <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                            <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
                         </nav>
                     </div>
                     <div class="annotate-fields" v-show="!annotateMenuisShown">
@@ -626,19 +626,17 @@
                     allStartTime[k] = that.mmssToSeconds(allStartTime[k])
                     allEndTime[k] = that.mmssToSeconds(allEndTime[k])
                 }
-                
+
                 this.player.on('time', function(event) {
                     if (that.player.getState() === 'playing') {
                         that.videoCurrentTime = this.getPosition()
                         var j=0;
                         for (j=0; j < allCards.length; j++) {
                             if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
-                                $('.timeline-card').eq(j).css('background-color', 'yellow');
-                                console.log('animate!')
+                                $('.timeline-card').eq(j).css('background-color', 'yellow')
                             }
                             if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
-                                $('.timeline-card').eq(j).css('background-color', 'white');
-                                console.log('no animate...')
+                                $('.timeline-card').eq(j).css('background-color', 'white')
                             } 
                         }
                     }
