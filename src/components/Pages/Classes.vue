@@ -100,74 +100,50 @@
 			width: 100%;
 			margin-top: 20px;
 		}
-			
+			.classes-card{
+				background: rgba(169,9,49,0.04);
+				color: #6B6B6B;
+				padding: 45px;
+				margin: 20px;
+				height: auto;
+				transition:  box-shadow 0.5s ease;
+				box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
+			}
+
 			@media screen and (min-width: 0px){
 				.classes-card{
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					background: rgba(169,9,49,0.04);
-					color: #6B6B6B;
-					padding: 45px;
-					margin: 20px;
-					height: auto;
 					width: 100%;
-                    transition:  box-shadow 0.5s ease;
-                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
 				}
 			}
 			
 			@media screen and (min-width: 426px){
 				.classes-card{
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					background: rgba(169,9,49,0.04);
-					color: #6B6B6B;
-					padding: 45px;
-					margin: 20px;
-					height: auto;
 					width: calc(100% /2 - 40px);
-                    transition:  box-shadow 0.5s ease;
-                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
 				}
 			}
 			
 			@media screen and (min-width: 600px){
 				.classes-card{
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					background: rgba(169,9,49,0.04);
-					color: #6B6B6B;
-					padding: 45px;
-					margin: 20px;
-					height: auto;
 					width: calc(100% /3 - 40px);
-                    transition:  box-shadow 0.5s ease;
-                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
 				}
 			}
 			
 			@media screen and (min-width: 1024px){
 				.classes-card{
+					width: calc(100% /4 - 40px);
+				}	
+			}
+				.classes-card a{
 					display: flex;
 					flex-direction: column;
 					justify-content: center;
 					align-items: center;
-					background: rgba(169,9,49,0.04);
+				}
+
+				.classes-card i, p{
 					color: #6B6B6B;
-					padding: 45px;
-					margin: 20px;
-					height: auto;
-					width: calc(100% /4 - 40px);
-                    transition:  box-shadow 0.5s ease;
-                    box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
-				}	
-			}
+				}
+
 				.classes-card:hover{
 					box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.5);
 					cursor: pointer;
