@@ -4,7 +4,7 @@
             <button class="button is-white player-spacer-button" @click="goBack()">
                 <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{videos[id].title}}
             </button> 
-             <button class="button is-white player-spacer-button" @click="seeGrades()">
+             <button class="button is-white player-spacer-button">
                 <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
             </button> 
         </div>
@@ -250,42 +250,6 @@
                 "height": $('.player').height(),
                 // events
             });
-
-            // HOOOOOOOOOOOOOOOPING
-            // Not yet done. Do not touch!
-            var allCards = $('.timeline-card')
-            var allStartTime = []
-            var allEndTime = []
-            var allTimeString = []
-            var k=0;
-            for (k=0; k < allCards.length; k++) {
-                allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
-                allStartTime[k] = allTimeString[k].substring(0,5)
-                allEndTime[k] = allTimeString[k].substring(8,13)
-
-                allStartTime[k] = that.mmssToSeconds(allStartTime[k])
-                allEndTime[k] = that.mmssToSeconds(allEndTime[k])
-            }
-            console.log(allCards)
-            console.log(allStartTime)
-            console.log(allEndTime)
-
-
-            this.player.on('time', function(event) {
-                if (that.player.getState() === 'playing') {
-                    that.videoCurrentTime = this.getPosition()
-                    var j=0;
-                    for (j=0; j < allCards.length; j++) {
-                        if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
-                            $('.timeline-card').eq(j).css('background-color', 'yellow');
-                            console.log('animate!')
-                        }
-                        if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
-                            console.log('no animate...')
-                        } 
-                    }
-                }
-            })
 
             // Animate progress bar width
             this.player.on('time', function(event) {
@@ -644,6 +608,41 @@
                 console.log(this.timesArray)
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+            },
+            // Color a card when videoCurrentTime is between card from and end
+            hooping() {
+                var that = this
+
+                var allCards = $('.timeline-card')
+                var allStartTime = []
+                var allEndTime = []
+                var allTimeString = []
+                var k=0;
+                for (k=0; k < allCards.length; k++) {
+                    allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
+                    allStartTime[k] = allTimeString[k].substring(0,5)
+                    allEndTime[k] = allTimeString[k].substring(8,13)
+
+                    allStartTime[k] = that.mmssToSeconds(allStartTime[k])
+                    allEndTime[k] = that.mmssToSeconds(allEndTime[k])
+                }
+                
+                this.player.on('time', function(event) {
+                    if (that.player.getState() === 'playing') {
+                        that.videoCurrentTime = this.getPosition()
+                        var j=0;
+                        for (j=0; j < allCards.length; j++) {
+                            if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
+                                $('.timeline-card').eq(j).css('background-color', 'yellow');
+                                console.log('animate!')
+                            }
+                            if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
+                                $('.timeline-card').eq(j).css('background-color', 'white');
+                                console.log('no animate...')
+                            } 
+                        }
+                    }
+                })
             }
         },
         computed: {
@@ -658,9 +657,7 @@
             }
         },
         updated() {
-            // if (this.isAnnotating) {
-            //     this.paintTimes()
-            // }
+            this.hooping()
         }
     }
     // goCurrentRibbon() {
