@@ -246,26 +246,39 @@
                 // events
             });
 
-            //Highlight current cards
+            // HOOOOOOOOOOOOOOOPING
+            // Not yet done. Do not touch!
+            var allCards = $('.timeline-card')
+            var allStartTime = []
+            var allEndTime = []
+            var allTimeString = []
+            var k=0;
+            for (k=0; k < allCards.length; k++) {
+                allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
+                allStartTime[k] = allTimeString[k].substring(0,5)
+                allEndTime[k] = allTimeString[k].substring(8,13)
+
+                allStartTime[k] = that.mmssToSeconds(allStartTime[k])
+                allEndTime[k] = that.mmssToSeconds(allEndTime[k])
+            }
+            console.log(allCards)
+            console.log(allStartTime)
+            console.log(allEndTime)
+
+
             this.player.on('time', function(event) {
                 if (that.player.getState() === 'playing') {
-                    console.log('HOOOOOOOOOOOOOOOPING' )
-                    // Get the current time of video in sec
-                    that.videoCurrentTime = that.player.getPosition()
-                    var videoCurrentTime =  that.videoCurrentTime
-                    console.log('that.videoCurrentTime =' + that.videoCurrentTime)
-                    for (var i=0; i < that.videos[that.id].annotations.length; ++i) {
-                        var from = that.mmssToSeconds(that.videos[that.id].annotations[i].from)
-                        var to = that.mmssToSeconds(that.videos[that.id].annotations[i].to)
-                        console.log('from , to :' + from + ' - ' + to)
-                        //console.log(event.currentTarget)
-                        console.log('----')
-                        if(videoCurrentTime > from && videoCurrentTime < to){
-                            console.log('HERE WE ARE')
-                            $('.timeline-card').animate({ background: 'yellow' });
+                    that.videoCurrentTime = this.getPosition()
+                    var j=0;
+                    for (j=0; j < allCards.length; j++) {
+                        if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
+                            $('.timeline-card').eq(j).css('background-color', 'yellow');
+                            console.log('animate!')
                         }
+                        if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
+                            console.log('no animate...')
+                        } 
                     }
-                                       
                 }
             })
 
@@ -382,9 +395,9 @@
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
                 // "out of bounds" exception
-                if(that.videoDuration - annotationNowTime > 20){
+                if (that.videoDuration - annotationNowTime > 20) {
                     this.endDragTime = this.secondsToMMSS(annotationNowTime + 20)
-                }else{
+                } else {
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
                  
@@ -462,9 +475,9 @@
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         console.log('clickCoordsBefore = ' + clickCoords)
                         // "out of bounds" exception
-                        if(clickCoords < 0){
+                        if (clickCoords < 0) {
                             clickCoords = 0
-                        }else if (clickCoords > barWidth) {
+                        } else if (clickCoords > barWidth) {
                             clickCoords = barWidth
                         }
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100

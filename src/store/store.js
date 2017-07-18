@@ -23,44 +23,44 @@ export const store = new Vuex.Store({
                     "type": "application/vnd.apple.mpegurl",
                     "file": "https://cdn.jwplayer.com/manifests/G4mlZSx4.m3u8",
                     "height": 720
-                },
-                {
-                    "width": 320,
-                    "height": 180,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
-                    "label": "180p"
-                },
-                {
-                    "width": 480,
-                    "height": 270,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
-                    "label": "270p"
-                },
-                {
-                    "width": 720,
-                    "height": 406,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
-                    "label": "406p"
-                },
-                {
-                    "width": 1280,
-                    "height": 720,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
-                    "label": "720p"
-                },
-                {
-                    "type": "audio/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
-                    "label": "AAC Audio"
-                }
+                    },
+                    {
+                        "width": 320,
+                        "height": 180,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
+                        "label": "180p"
+                    },
+                    {
+                        "width": 480,
+                        "height": 270,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
+                        "label": "270p"
+                    },
+                    {
+                        "width": 720,
+                        "height": 406,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
+                        "label": "406p"
+                    },
+                    {
+                        "width": 1280,
+                        "height": 720,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
+                        "label": "720p"
+                    },
+                    {
+                        "type": "audio/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
+                        "label": "AAC Audio"
+                    }
                         ],
                 "duration": "355",
                 "jwVideoID": "G4mlZSx4", // mediaID
-                "jwPlaylistID": "k5WSiplm", //k5WSiplm
+                "jwPlaylistID": "k5WSiplm", // k5WSiplm
                 "class": "Aeronautics Class",
                 "categories": [
                     {
