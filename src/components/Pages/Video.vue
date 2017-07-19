@@ -2,7 +2,7 @@
     <div class="video container">
         <div class="spacer">
             <button class="button is-white player-spacer-button" @click="goBack()">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{videos[id].title}}
+                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ videos[id].title }}
             </button> 
              <button class="button is-white player-spacer-button">
                 <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
@@ -172,7 +172,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
+                                        <p class="timeline-card-title">{{ card.category }}</p> - {{ card.id }}
                                     </div>
                                     <div class="column is-3">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -570,6 +570,7 @@
                 // Setting flags
                 this.isEditing = true
                 this.isEditFields = true
+                this.player.pause()
                 // this.isVideoline = true
 
                 // Setting from + end annotate times
@@ -639,6 +640,7 @@
 
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
+                // Are you sure to Delete annotation?
                 swal({
                     title: "Delete ''" + cardTitle + "'' annotation?",
                     type: 'question',
@@ -652,6 +654,10 @@
                             cardID: cardID,
                         })
                         $(editingCard).remove()
+                        // delete from videoAnnotations
+                        that.videoAnnotations.shift(cardID)
+                        console.log('videoAnnotations')
+                        console.log(that.videoAnnotations)
                     }
                 )
 
