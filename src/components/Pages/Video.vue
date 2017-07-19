@@ -318,9 +318,7 @@
                 "height": $('.player').height(),
                 // events
             });
-            
-            // Show "Sroll down for more" when there are more than 5 cards
-            this.moreAnnotations()
+        
         
             // Animate progress bar width
             this.player.on('time', function(event) {
@@ -574,6 +572,7 @@
                 // this.isVideoline = true
 
                 // Setting from + end annotate times
+                // ga to be changed
                 var time = editingCard.children[0].children[0].children[1].children[0].innerText // 03:05 - 03:17               
                 var startTime = time.substring(0,5); // 03:05
                 this.editStart = startTime
@@ -701,6 +700,7 @@
             },
             seekCard(event) {
                 this.isAnnotating = true;
+                // ga to be changed                
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
@@ -762,7 +762,6 @@
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
             },
-            // Color a card when videoCurrentTime is between card from and end
             hooping() {
                 var that = this
 
@@ -772,6 +771,7 @@
                 var allTimeString = []
                 var k=0;
                 for (k=0; k < allCards.length; k++) {
+                    // ga to be changed                    
                     allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
                     allStartTime[k] = allTimeString[k].substring(0,5)
                     allEndTime[k] = allTimeString[k].substring(8,13)
@@ -796,14 +796,14 @@
                 })
             },
             moreAnnotations() {
-                var moreAnnotations = document.getElementById("more-annotations")
-                var mydiv  = document.querySelector('.timeline-content');
-                var clientHeight = $(mydiv).height() + 160; //head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
+                var moreAnnotations = $('.more-annotations')
+                var mydiv  = $('.timeline-content');
+                var clientHeight = $(mydiv).height() + 160; // head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
                 var windowHeight = $(window).height();
                 if (clientHeight > windowHeight) {
-                    moreAnnotations.style.display = "flex"
+                    moreAnnotations.css('display', 'flex')
                 } else {
-                    moreAnnotations.style.display = "none"
+                    moreAnnotations.css('display', 'none')
                 }
             },
 
@@ -820,7 +820,11 @@
             }
         },
         updated() {
+            // Color a card when videoCurrentTime is between card from and end
             this.hooping()
+            
+            // Show "Sroll down for more" when there are more than 5 cards
+            this.moreAnnotations()
         }
     }
 </script>
