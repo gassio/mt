@@ -104,8 +104,8 @@
                                     <button class="button" @click="edit()">Edit</button>
                                 </div>
                             </div>
-                            <input type="text" v-model="annotateStart">
-                            <input type="text" v-model="annotateEnd">
+                            <input type="text" v-model="editStart">
+                            <input type="text" v-model="editEnd">
                         </div>
                     </div>
                 </div>
@@ -250,6 +250,8 @@
                 annotateEnd: null,
                 editRating: null,
                 editComment: '',
+                editStart: null,
+                editEnd: null,
                 editingCard: null,
                 timesArray: [],
                 isAnnotating: false,
@@ -555,14 +557,14 @@
                 // Setting flags
                 this.isEditing = true
                 this.isEditFields = true
-                this.isVideoline = true
+                // this.isVideoline = true
 
                 // Setting from + end annotate times
                 var time = editingCard.children[0].children[0].children[1].children[0].innerText // 03:05 - 03:17               
                 var startTime = time.substring(0,5); // 03:05
-                this.annotateStart = startTime
+                this.editStart = startTime
                 var endTime = time.substring(8,13); // 03:17
-                this.annotateEnd = endTime
+                this.editEnd = endTime
                 var totalTime = this.videoDuration;
 
                 var a = startTime.split(':')
@@ -570,7 +572,7 @@
                 var startSec = (+a[0]) * 60 + (+a[1]) // in sec
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
 
-                // Move the timeline according to the annotateStart & annotateEnd vars
+                // Move the timeline according to the editStart & editEnd vars
                 var barWidth = $('.player').width()
                 var coordsPercentStart = (startSec  * 100) / this.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
@@ -582,12 +584,12 @@
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
-                // Setting edit effectiveness
+                // Render edit effectiveness
                 var cardRating = $(editingCard).find('.timeline-card-effectiveness-label').text().slice(0,1) // e.g. '3' in string
                 cardRating = parseInt(cardRating) // string => int
                 this.editRating = cardRating
 
-                // Setting edit comment
+                // Render edit comment
                 var cardComment = $(editingCard).find('.timeline-card-description').text()
                 this.editComment = cardComment
                 
@@ -605,7 +607,9 @@
                     id: this.id,
                     cardID: cardID,
                     rating: this.editRating,
-                    comment: this.editComment 
+                    comment: this.editComment,
+                    from: this.editStart,
+                    to: this.editEnd
                 })
 
                 this.isEditFields = false
