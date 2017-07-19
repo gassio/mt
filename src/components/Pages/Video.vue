@@ -319,8 +319,8 @@
                 // events
             });
             
-          // Show "Sroll down for more" when there are more than 5 cards
-          that.moreAnnotations()
+            // Show "Sroll down for more" when there are more than 5 cards
+            this.moreAnnotations()
         
             // Animate progress bar width
             this.player.on('time', function(event) {
@@ -788,18 +788,19 @@
                         }
                     }
                 })
-            }
-        },
-        moreAnnotations() {
-            var moreAnnotations = document.getElementById("more-annotations")
-            var mydiv  = document.querySelector('.timeline-content');
-            var clientHeight = $(mydiv).height() + 160; //head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
-            var windowHeight = $(window).height();
-            if (clientHeight > windowHeight) {
-                moreAnnotations.style.display = "flex"
-            } else {
-                moreAnnotations.style.display = "none"
-            }
+            },
+            moreAnnotations() {
+                var moreAnnotations = document.getElementById("more-annotations")
+                var mydiv  = document.querySelector('.timeline-content');
+                var clientHeight = $(mydiv).height() + 160; //head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
+                var windowHeight = $(window).height();
+                if (clientHeight > windowHeight) {
+                    moreAnnotations.style.display = "flex"
+                } else {
+                    moreAnnotations.style.display = "none"
+                }
+            },
+
         },
         computed: {
             videos() {
