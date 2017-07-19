@@ -92,6 +92,24 @@ export const store = new Vuex.Store({
                         "category": "Graphics",
                         "canon": "Visual",
                         "comment": "Lorem hahah",
+                        "from": "00:56",
+                        "to": "01:23",
+                        "rating": "4",
+                        "author": "Ben Domino"
+                    },
+                    {
+                        "category": "Graphics",
+                        "canon": "Visual",
+                        "comment": "Lorem hahah",
+                        "from": "00:56",
+                        "to": "01:23",
+                        "rating": "4",
+                        "author": "Ben Domino"
+                    },
+                    {
+                        "category": "Graphics",
+                        "canon": "Visual",
+                        "comment": "Lorem hahah",
                         "from": "00:43",
                         "to": "00:58",
                         "rating": "4",

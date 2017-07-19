@@ -99,7 +99,7 @@
                 </div>
             </div>
 
-            <div class="cards column is-5 is-gapless is-marginless">
+            <div class="cards column is-5 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
                         <a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>
@@ -108,10 +108,16 @@
                         <a @click="chooseCanonFilter('Delivery')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>Delivery</a>
                         <a @click="chooseCanonFilter('Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i>Visual</a>
                         <a @click="chooseCanonFilter('Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i>Style</a>
+                        <div id="more-annotations" class="more-annotations">
+                            Scroll
+                            <div class="scroll-mouse">
+                                <i class="scroll-wheel fa fa-circle" aria-hidden="true"></i>
+                            </div>
+                        </div>
                     </nav>
                     <div class="timeline-content column is-10">
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
-                            <div class="column" @click="seekCard($event)" >
+                            <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
                                         <p class="timeline-card-title">{{ card.category }}</p>
@@ -173,6 +179,7 @@
             </router-link>
             <router-view></router-view> -->
         </div>
+        
     </div>
 
     
@@ -236,6 +243,8 @@
             allButton.style.background = "#8F082A";
             allButton.style.color = "#FFFFFF";
 
+            
+
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
@@ -250,23 +259,28 @@
                 "height": $('.player').height(),
                 // events
             });
+            
 
-            //Highlight current cards
             this.player.on('time', function(event) {
+                
+                //Show "Sroll down for more" when there are more than 5 cards
+                that.moreAnnotations()
+                
+                //Highlight current cards
                 if (that.player.getState() === 'playing') {
-                    console.log('HOOOOOOOOOOOOOOOPING' )
+                   // console.log('HOOOOOOOOOOOOOOOPING' )
                     // Get the current time of video in sec
                     that.videoCurrentTime = that.player.getPosition()
                     var videoCurrentTime =  that.videoCurrentTime
-                    console.log('that.videoCurrentTime =' + that.videoCurrentTime)
+                   // console.log('that.videoCurrentTime =' + that.videoCurrentTime)
                     for (var i=0; i < that.videos[that.id].annotations.length; ++i) {
                         var from = that.mmssToSeconds(that.videos[that.id].annotations[i].from)
                         var to = that.mmssToSeconds(that.videos[that.id].annotations[i].to)
-                        console.log('from , to :' + from + ' - ' + to)
+                       // console.log('from , to :' + from + ' - ' + to)
                         //console.log(event.currentTarget)
-                        console.log('----')
+                        //console.log('----')
                         if(videoCurrentTime > from && videoCurrentTime < to){
-                            console.log('HERE WE ARE')
+                            //console.log('HERE WE ARE')
                             $('.timeline-card').animate({ background: 'yellow' });
                         }
                     }
@@ -631,6 +645,17 @@
                 console.log(this.timesArray)
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+            }
+        },
+        moreAnnotations() {
+            var moreAnnotations = document.getElementById("more-annotations")
+            var mydiv  = document.querySelector('.timeline-content');
+            var clientHeight = $(mydiv).height() + 160; //head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
+            var windowHeight = $(window).height();
+            if (clientHeight > windowHeight) {
+                moreAnnotations.style.display = "flex"
+            } else {
+                moreAnnotations.style.display = "none"
             }
         },
         computed: {
@@ -1079,6 +1104,7 @@
 
     .timeline-content{
         padding: 10px !important;
+        height: 100%;
     }
         .timeline {
             height:100%;
@@ -1128,7 +1154,54 @@
                 }
 
 
+/* ==============================================
+                #OVERLAY STUFF
+================================================= */
+.more-annotations {
+    position: fixed; 
+    right:20px; 
+    bottom:50px; 
+    display:none; 
+    flex-direction:column; 
+    align-items:center; 
+    font-weight: 600;
+    color: #6B6B6B;
+}
 
+    .scroll-mouse {
+        border: 1px solid;
+        border-color: #6B6B6B;
+        padding-left: 7px;
+        padding-right: 7px;
+        padding-top: 2px;
+        padding-bottom: 10px;
+        border-radius: 15px;
+    }
+
+    .scroll-wheel {
+        position: relative;
+        font-size: 8px;
+        -webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+        -webkit-animation-duration: 2s; /* Safari 4.0 - 8.0 */
+        -webkit-animation-iteration-count: infinite; /* Safari 4.0 - 8.0 */
+        animation-name: example;
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+    }
+
+    /* Safari 4.0 - 8.0 */
+    @-webkit-keyframes example {
+        0%   {left:0px; top:0px;}
+        50%  {left:0px; top:8px;}
+        100% {left:0px; top:0px;}
+    }
+
+    /* Standard syntax */
+    @keyframes example {
+        0%   {left:0px; top:0px;}
+        50%  {left:0px; top:8px;}
+        100% {left:0px; top:0px;}
+    }
 
 
 /* ==============================================

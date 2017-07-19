@@ -83,6 +83,7 @@
     body {
         font-family: 'Proxima Nova Alt';
         font-weight: 500;
+        height: 100%;
     }
 
     a {
@@ -91,6 +92,7 @@
 
     .app {
       width: 100%; 
+      height: 100%;
       padding: 0;
       margin: 0;
     }
