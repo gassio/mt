@@ -513,13 +513,17 @@ export const store = new Vuex.Store({
         },
         ADD_ANNOTATION: (state, payload) => {
             state.videos[payload.id].annotations.push(payload.annotation)
-            //console.log(state.videos)
         },
         EDIT_ANNOTATION: (state, payload) => {
             state.videos[payload.id].annotations[payload.cardID].rating = payload.rating
             state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
             state.videos[payload.id].annotations[payload.cardID].from = payload.from
             state.videos[payload.id].annotations[payload.cardID].to = payload.to
+        },
+        DELETE_ANNOTATION: (state, payload) => {
+            var myArray = state.videos[payload.id].annotations
+            myArray.shift(payload.cardID)
+            console.log(state.videos[payload.id].annotations)
         },
         // future
         retrieveVideosByClass: (state, className) => {

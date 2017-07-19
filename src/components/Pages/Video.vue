@@ -161,6 +161,7 @@
                         <a @click="chooseCanonFilter('Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i>Style</a>
                     </nav>
                     <div class="timeline-content column is-10">
+
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
                             <div class="column" @click="seekCard($event)" >
                                 <div class="columns is-gapless is-marginless">
@@ -187,7 +188,7 @@
                             </div>
                             <div class="timeline-card-edit">
                                 <button class="button" @click="editing()"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
-                                <button class="button"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
 
@@ -615,6 +616,20 @@
                 this.isEditFields = false
                 this.isEditing = false
                 this.isVideoline = false
+            },
+            deleteAnnotation(event) {
+                var editingCard = event.currentTarget.parentElement.parentElement
+                // Get annotation id
+                var cardID = $(editingCard).find('.timeline-card-id').text()
+                cardID = parseInt(cardID)
+
+                
+
+                this.$store.commit('DELETE_ANNOTATION', {
+                    id: this.id,
+                    cardID: cardID,
+                })
+                $(editingCard).remove()
             },
             showEditButton(event) {
                 //$(event.currentTarget).find().show()
