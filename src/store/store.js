@@ -23,44 +23,44 @@ export const store = new Vuex.Store({
                     "type": "application/vnd.apple.mpegurl",
                     "file": "https://cdn.jwplayer.com/manifests/G4mlZSx4.m3u8",
                     "height": 720
-                },
-                {
-                    "width": 320,
-                    "height": 180,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
-                    "label": "180p"
-                },
-                {
-                    "width": 480,
-                    "height": 270,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
-                    "label": "270p"
-                },
-                {
-                    "width": 720,
-                    "height": 406,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
-                    "label": "406p"
-                },
-                {
-                    "width": 1280,
-                    "height": 720,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
-                    "label": "720p"
-                },
-                {
-                    "type": "audio/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
-                    "label": "AAC Audio"
-                }
+                    },
+                    {
+                        "width": 320,
+                        "height": 180,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
+                        "label": "180p"
+                    },
+                    {
+                        "width": 480,
+                        "height": 270,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
+                        "label": "270p"
+                    },
+                    {
+                        "width": 720,
+                        "height": 406,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
+                        "label": "406p"
+                    },
+                    {
+                        "width": 1280,
+                        "height": 720,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
+                        "label": "720p"
+                    },
+                    {
+                        "type": "audio/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
+                        "label": "AAC Audio"
+                    }
                         ],
                 "duration": "355",
                 "jwVideoID": "G4mlZSx4", // mediaID
-                "jwPlaylistID": "k5WSiplm", //k5WSiplm
+                "jwPlaylistID": "k5WSiplm", // k5WSiplm
                 "class": "Aeronautics Class",
                 "categories": [
                     {
@@ -77,7 +77,8 @@ export const store = new Vuex.Store({
                         "from": "00:08",
                         "to": "00:17",
                         "rating": "3",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 0
                     },
                     {
                         "category": "Graphics",
@@ -86,7 +87,8 @@ export const store = new Vuex.Store({
                         "from": "00:56",
                         "to": "01:23",
                         "rating": "4",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 1
                     },
                     {
                         "category": "Graphics",
@@ -113,7 +115,8 @@ export const store = new Vuex.Store({
                         "from": "00:43",
                         "to": "00:58",
                         "rating": "4",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 2
                     }
                 ]
             // },
@@ -528,7 +531,17 @@ export const store = new Vuex.Store({
         },
         ADD_ANNOTATION: (state, payload) => {
             state.videos[payload.id].annotations.push(payload.annotation)
-            console.log(state.videos)
+        },
+        EDIT_ANNOTATION: (state, payload) => {
+            state.videos[payload.id].annotations[payload.cardID].rating = payload.rating
+            state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
+            state.videos[payload.id].annotations[payload.cardID].from = payload.from
+            state.videos[payload.id].annotations[payload.cardID].to = payload.to
+        },
+        DELETE_ANNOTATION: (state, payload) => {
+            var myArray = state.videos[payload.id].annotations
+            myArray.shift(payload.cardID)
+            console.log(state.videos[payload.id].annotations)
         },
         // future
         retrieveVideosByClass: (state, className) => {

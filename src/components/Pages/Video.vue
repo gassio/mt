@@ -4,7 +4,7 @@
             <button class="button is-white player-spacer-button" @click="goBack()">
                 <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{videos[id].title}}
             </button> 
-             <button class="button is-white player-spacer-button" @click="seeGrades()">
+             <button class="button is-white player-spacer-button">
                 <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
             </button> 
         </div>
@@ -13,18 +13,18 @@
                 <div id="player">Loading the player...</div>
 
                 <div class="annotate" v-show="isAnnotating">
-                    <div class="annotate-menu" v-show="annotateMenuisShown">
+                    <div class="annotate-menu" v-show="isAnnotateMenu">
                         <nav class="annotate-menu__canons">
                             <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
-                            <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
+                            <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateMenu = false">X</span></div>
                         </nav>
-                        <nav class="annotate-menu__categories" v-if="canon.name === annotateCanon" v-for="canon in canons">
-                            <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)">{{ cat.name }}</a>  
+                        <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                            <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
                         </nav>
                     </div>
-                    <div class="annotate-fields" v-show="!annotateMenuisShown">
+                    <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
                         <div class="annotate-fields-left">
-                            <button class="button is-black" @click="annotateMenuisShown = true">
+                            <button class="button is-black" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true;">
                                 <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
                             </button>
                         </div>
@@ -32,7 +32,7 @@
                         <div class="annotate-fields-right">
                             <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
                                 <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
-                                <div class="annotate-menu__canons-close"><span @click="isAnnotating = false">X</span></div>
+                                <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false">X</span></div>
                             </div>
                             <div class="annotate-effectiveness field">
                                 <label class="label">Set effectiveness:</label>
@@ -57,15 +57,66 @@
                         </div>
                         
                     </div>
+
+
                 </div>
 
-                <div class="times" v-show="isAnnotating">
+                <div class="edit" v-show="isEditing">
+                    <!-- FUTURE
+                        <div class="annotate-menu" v-show="isEditMenu">
+                            <nav class="annotate-menu__canons">
+                                <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
+                                <div class="annotate-menu__canons-close"><span @click="isEditing = false">X</span></div>
+                            </nav>
+                            <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                                <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
+                            </nav>
+                        </div> 
+                    -->
+                    <div class="annotate-fields" v-show="isEditFields">
+                        <!-- FUTURE
+                            <div class="annotate-fields-left">
+                                <button class="button is-black" @click="isEditMenu = true; isEditFields = false; isVideoline = false">
+                                    <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
+                                </button>
+                            </div>
+                        -->
+                        <div class="annotate-fields-right">
+                            <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
+                                <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
+                                <div class="annotate-menu__canons-close"><span @click="isEditing = false; isVideoline = false; isEditFields = false">X</span></div>
+                            </div>
+                            <div class="annotate-effectiveness field">
+                                <label class="label">Set effectiveness:</label>
+                                <el-slider v-model="editRating" :step="1" :min="0" :max="5" 
+                                        show-stops 
+                                        show-tooltip class="annotate-effectiveness-slider">
+                                </el-slider>
+                            </div>
+                            <div class="annotate-comment field">
+                                <label class="label">Comment:</label>
+                                <p class="control">
+                                    <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." 
+                                            v-model="editComment">
+                                    </textarea>
+                                </p>
+                                <div class="annotate-submit">
+                                    <button class="button" @click="edit()">Edit</button>
+                                </div>
+                            </div>
+                            <input type="text" v-model="editStart">
+                            <input type="text" v-model="editEnd">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="times" v-show="isVideoline">
                     <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
                     <span class="times-min" v-for="t in 10"></span>
                     <!-- <span class="times-sec" v-for="t in 10"></span> -->
                 </div>
 
-                <div class="videoline" id="videoline" v-show="isAnnotating">
+                <div class="videoline" id="videoline" v-show="isVideoline">
                     <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
 
                     <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
@@ -116,6 +167,7 @@
                         </div>
                     </nav>
                     <div class="timeline-content column is-10">
+
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
@@ -123,7 +175,7 @@
                                         <p class="timeline-card-title">{{ card.category }}</p>
                                     </div>
                                     <div class="column is-3">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
+                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
                                     </div>
                                 </div>
                                 <div class="columns is-gapless is-marginless">
@@ -140,9 +192,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="timeline-card-edit" @mouseover="hideEditButton($event)">
-                                <button @click="isAnnotating = !isAnnotating"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i></button>
-                                <button><i class="fa fa-trash-o fa-2x" aria-hidden="true"></i></button>
+                            <div class="timeline-card-edit">
+                                <button class="button" @click="editing()"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
 
@@ -181,8 +233,6 @@
         </div>
         
     </div>
-
-    
 </template>
 
 <script>
@@ -200,14 +250,26 @@
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
-                annotateMenuisShown: true,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
-                annotateComment: '',
                 annotateRating: 1,
+                annotateComment: '',
                 annotateStart: null,
                 annotateEnd: null,
+                editRating: null,
+                editComment: '',
+                editStart: null,
+                editEnd: null,
+                editingCard: null,
+                timesArray: [],
                 isAnnotating: false,
+                isAnnotateMenu: false,
+                isAnnotateFields: false,
+                isVideoline: false,
+                isEditing: false,
+                isEditMenu: false,
+                isEditFields: false,
+                isDragging: false,
                 startDragTime: 0,
                 endDragTime: 0,
                 filterCanon: 'All',
@@ -218,9 +280,6 @@
                     { marginleft: '40%' },
                     { marginleft: '50%' },
                 ],
-                timesArray: [],
-                isDragging: false,
-                isEditing: false,
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
                 id: this.$route.params.id,
@@ -260,34 +319,9 @@
                 // events
             });
             
-
-            this.player.on('time', function(event) {
-                
-                //Show "Sroll down for more" when there are more than 5 cards
-                that.moreAnnotations()
-                
-                //Highlight current cards
-                if (that.player.getState() === 'playing') {
-                   // console.log('HOOOOOOOOOOOOOOOPING' )
-                    // Get the current time of video in sec
-                    that.videoCurrentTime = that.player.getPosition()
-                    var videoCurrentTime =  that.videoCurrentTime
-                   // console.log('that.videoCurrentTime =' + that.videoCurrentTime)
-                    for (var i=0; i < that.videos[that.id].annotations.length; ++i) {
-                        var from = that.mmssToSeconds(that.videos[that.id].annotations[i].from)
-                        var to = that.mmssToSeconds(that.videos[that.id].annotations[i].to)
-                       // console.log('from , to :' + from + ' - ' + to)
-                        //console.log(event.currentTarget)
-                        //console.log('----')
-                        if(videoCurrentTime > from && videoCurrentTime < to){
-                            //console.log('HERE WE ARE')
-                            $('.timeline-card').animate({ background: 'yellow' });
-                        }
-                    }
-                                       
-                }
-            })
-
+          // Show "Sroll down for more" when there are more than 5 cards
+          that.moreAnnotations()
+        
             // Animate progress bar width
             this.player.on('time', function(event) {
                 if (that.player.getState() === 'playing') {
@@ -329,7 +363,6 @@
                     // }
                 }
             })
-
 
             // Create button inside JWPlayer, using their API.
             this.player.on('ready', function() {
@@ -374,7 +407,10 @@
         methods: {
             annotating() {
                 var that = this
-                this.isAnnotating = !this.isAnnotating
+                this.isAnnotating = true
+                this.isAnnotateMenu = true
+                this.annotateRating = null
+                this.annotateComment = ''
                 this.player.pause()
                 
                 // setStartEndPosition()
@@ -401,9 +437,9 @@
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
                 // "out of bounds" exception
-                if(that.videoDuration - annotationNowTime > 20){
+                if (that.videoDuration - annotationNowTime > 20) {
                     this.endDragTime = this.secondsToMMSS(annotationNowTime + 20)
-                }else{
+                } else {
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
                  
@@ -481,9 +517,9 @@
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         console.log('clickCoordsBefore = ' + clickCoords)
                         // "out of bounds" exception
-                        if(clickCoords < 0){
+                        if (clickCoords < 0) {
                             clickCoords = 0
-                        }else if (clickCoords > barWidth) {
+                        } else if (clickCoords > barWidth) {
                             clickCoords = barWidth
                         }
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
@@ -504,7 +540,8 @@
                         comment: this.annotateComment,
                         from: this.annotateStart,
                         to: this.annotateEnd, 
-                        rating: this.annotateRating, 
+                        rating: this.annotateRating,
+                        id: this.videoAnnotations.length
                     }
                 }
                 this.videoAnnotations.push(card)
@@ -517,18 +554,30 @@
                 this.annotateComment = ''
                 this.annotateStart = null
                 this.annotateEnd = null
-                this.annotateRating
+                this.annotateRating = 1
                 this.isAnnotating = false
-                this.annotateMenuisShown = true
+                this.isAnnotateMenu = false
+                this.isAnnotateFields = false
+                this.isVideoline = false
                 // $('.videoline-ribbon').show()
             },
             editing() {
-                this.isAnnotating = true;
-                var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
+                // <div class="timeline-card">
+                // The card that is being editing. It is a DOM object. 
+                var editingCard = event.currentTarget.parentElement.parentElement
+                this.editingCard = editingCard
+
+                // Setting flags
+                this.isEditing = true
+                this.isEditFields = true
+                // this.isVideoline = true
+
+                // Setting from + end annotate times
+                var time = editingCard.children[0].children[0].children[1].children[0].innerText // 03:05 - 03:17               
                 var startTime = time.substring(0,5); // 03:05
-                this.annotateStart = startTime
+                this.editStart = startTime
                 var endTime = time.substring(8,13); // 03:17
-                this.annotateEnd = endTime
+                this.editEnd = endTime
                 var totalTime = this.videoDuration;
 
                 var a = startTime.split(':')
@@ -536,7 +585,7 @@
                 var startSec = (+a[0]) * 60 + (+a[1]) // in sec
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
 
-                // Move the timeline according to the annotateStart & annotateEnd vars
+                // Move the timeline according to the editStart & editEnd vars
                 var barWidth = $('.player').width()
                 var coordsPercentStart = (startSec  * 100) / this.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
@@ -547,6 +596,65 @@
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
+
+                // Render edit effectiveness
+                var cardRating = $(editingCard).find('.timeline-card-effectiveness-label').text().slice(0,1) // e.g. '3' in string
+                cardRating = parseInt(cardRating) // string => int
+                this.editRating = cardRating
+
+                // Render edit comment
+                var cardComment = $(editingCard).find('.timeline-card-description').text()
+                this.editComment = cardComment
+                
+            },
+            edit() {
+                var editingCard = this.editingCard
+
+                // Get annotation id
+                var cardID = $(editingCard).find('.timeline-card-id').text()
+                cardID = parseInt(cardID)
+
+                // Update data
+                var that = this
+                this.$store.commit('EDIT_ANNOTATION', {
+                    id: this.id,
+                    cardID: cardID,
+                    rating: this.editRating,
+                    comment: this.editComment,
+                    from: this.editStart,
+                    to: this.editEnd
+                })
+
+                this.isEditFields = false
+                this.isEditing = false
+                this.isVideoline = false
+            },
+            deleteAnnotation(event) {
+                var that = this
+
+                var editingCard = event.currentTarget.parentElement.parentElement
+                // Get annotation id
+                var cardID = $(editingCard).find('.timeline-card-id').text()
+                cardID = parseInt(cardID)
+
+                var cardTitle = $(editingCard).find('.timeline-card-title').text()
+
+                swal({
+                    title: "Delete ''" + cardTitle + "'' annotation?",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: 'gray',
+                    confirmButtonText: 'Delete'
+                    }).then(function () {
+                        that.$store.commit('DELETE_ANNOTATION', {
+                            id: that.id,
+                            cardID: cardID,
+                        })
+                        $(editingCard).remove()
+                    }
+                )
+
             },
             showEditButton(event) {
                 //$(event.currentTarget).find().show()
@@ -581,7 +689,9 @@
             chooseCategoryAnnotate(category) {
                 this.annotateCategory = category
                 this.activeItemProblem(event)
-                this.annotateMenuisShown = false
+                this.isAnnotateMenu = false
+                this.isAnnotateFields = true
+                this.isVideoline = true
             },
             seekCard(event) {
                 this.isAnnotating = true;
@@ -645,6 +755,39 @@
                 console.log(this.timesArray)
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+            },
+            // Color a card when videoCurrentTime is between card from and end
+            hooping() {
+                var that = this
+
+                var allCards = $('.timeline-card')
+                var allStartTime = []
+                var allEndTime = []
+                var allTimeString = []
+                var k=0;
+                for (k=0; k < allCards.length; k++) {
+                    allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
+                    allStartTime[k] = allTimeString[k].substring(0,5)
+                    allEndTime[k] = allTimeString[k].substring(8,13)
+
+                    allStartTime[k] = that.mmssToSeconds(allStartTime[k])
+                    allEndTime[k] = that.mmssToSeconds(allEndTime[k])
+                }
+
+                this.player.on('time', function(event) {
+                    if (that.player.getState() === 'playing') {
+                        that.videoCurrentTime = this.getPosition()
+                        var j=0;
+                        for (j=0; j < allCards.length; j++) {
+                            if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
+                                $('.timeline-card').eq(j).css('background-color', 'yellow')
+                            }
+                            if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
+                                $('.timeline-card').eq(j).css('background-color', 'white')
+                            } 
+                        }
+                    }
+                })
             }
         },
         moreAnnotations() {
@@ -670,97 +813,9 @@
             }
         },
         updated() {
-            // if (this.isAnnotating) {
-            //     this.paintTimes()
-            // }
+            this.hooping()
         }
     }
-    // goCurrentRibbon() {
-            //     var that = this
-
-            //     $(document).ready(function(){
-            //         var getWidth = $('.videoline-ribbon').css('margin-left') 
-            //         var getWidthParent =  $('.videoline').width()
-            //         var getPercent = parseInt(parseFloat(getWidth) / getWidthParent * 100)
-
-            //         console.log(getPercent)
-                    
-            //         console.log("goto")
-            //         var goToDrag = that.videoDuration/ ( 100 / getPercent )
-            //         that.player.seek(goToDrag);
-            //     });
-
-            // <div class="videoline">
-            //     <span class="videoline-ribbon" @click="goCurrentRibbon()"></span>
-            // </div>
-            // },
-
-            // showAnnoMenu() {
-            //         $(document).ready(function() {
-            //             var annoMenu = `
-            //                     <div class="annomenu">
-            //                             <div class="annomenu-option">
-            //                             1
-            //                             </div>
-            //                             <div class="annomenu-option">
-            //                             2
-            //                             </div>
-            //                             <div class="annomenu-option">
-            //                             3
-            //                             </div>
-            //                             <div class="annomenu-option">
-            //                             4
-            //                             </div>
-            //                             <div class="annomenu-option">
-            //                             5
-            //                             </div>
-            //                     </div>
-            //             `;
-            //             $('.jw-nextup-container').append(annoMenu)
-            //         })
-            // },
-
-            // Append inside the JWPlayer div
-            // $(document).ready(function() {
-            //     var annotateBtn = $('.annotate-btn')
-            //     $('.jw-controls').append(annotateBtn)
-
-            //     var annotate = $('.annotate')
-            //     $('#player').append(annotate)
-            // })
-
-            // Create button inside JWPlayer, using their API.
-            // this.player.on('ready', function() {
-            //     that.player.addButton(
-            //         "/static/add.png", 
-            //         "Add annotation", 
-            //         function() { that.showAnnoMenu() }, 
-            //         "annomenu");
-            // })
-
-            // showAnnoMenu() {
-            //         $(document).ready(function() {
-            //             var annotatePath = $('.annotate')
-            //             $('#player').append(annotatePath)
-            //             $('.annotate').css('display', 'inline')
-            //         })
-            // },
-
-            
-            // If from-to bar div is clicked, set from/to data
-            // document.getElementById('videoline-crop').addEventListener('click', function (e) {
-            //     var offset = this.getClientRects()[0];
-            //     that.clickCoords = e.clientX - offset.left; 
-            //     var clickCoordsPercent = ( that.clickCoords / $('.videoline-crop').width() ) * 100
-
-            //     $('.crop__start').animate({ marginLeft: clickCoordsPercent + "%" }, 50);
-
-            //     var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-            //     that.player.seek(clickTime)
-            //     clickTime = that.secondsToMMSS(clickTime)
-            //     console.log('from: ' + clickTime)
-            //     that.annotateStart = clickTime
-            // }, false);
 </script>
 
 <style>
@@ -1136,21 +1191,27 @@
                 }
                 .timeline-card-effectiveness-label{
                     
-                }     
+                }
+
+                .timeline-card-id{
+                    visibility: hidden;
+                }
 
                 .timeline-card-edit {
                     display: flex;
                     flex-direction: column;
-                    margin-left: 5px;
+                    margin-left: 10px;
                 }
 
-                .timeline-card-edit button {
-                    padding: 10px;
-                    height: 100%;
-                    border: none;
-                    border-bottom: 1px solid #FFF;
+                .timeline-card-edit button,
+                .timeline-card-edit button:focus {
                     color: #FFF;
-                    background-color: #A90931;
+                    background-color: #4A4A4A;
+                }
+
+                .timeline-card-edit button:hover {
+                    color: #FFF;
+                    background-color: #272424;
                 }
 
 
