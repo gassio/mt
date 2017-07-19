@@ -88,7 +88,7 @@
                             </div>
                             <div class="annotate-effectiveness field">
                                 <label class="label">Set effectiveness:</label>
-                                <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
+                                <el-slider v-model="editRating" :step="1" :min="0" :max="5" 
                                         show-stops 
                                         show-tooltip class="annotate-effectiveness-slider">
                                 </el-slider>
@@ -97,7 +97,7 @@
                                 <label class="label">Comment:</label>
                                 <p class="control">
                                     <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." 
-                                            v-model="annotateComment">
+                                            v-model="editComment">
                                     </textarea>
                                 </p>
                                 <div class="annotate-submit">
@@ -168,7 +168,7 @@
                                         <p class="timeline-card-title">{{ card.category }}</p>
                                     </div>
                                     <div class="column is-3">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
+                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
                                     </div>
                                 </div>
                                 <div class="columns is-gapless is-marginless">
@@ -244,10 +244,13 @@
                 videoCurrentTimeMMSS: 0,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
-                annotateComment: '',
                 annotateRating: 1,
+                annotateComment: '',
                 annotateStart: null,
                 annotateEnd: null,
+                editRating: null,
+                editComment: '',
+                editingCard: null,
                 timesArray: [],
                 isAnnotating: false,
                 isAnnotateMenu: false,
@@ -522,7 +525,8 @@
                         comment: this.annotateComment,
                         from: this.annotateStart,
                         to: this.annotateEnd, 
-                        rating: this.annotateRating, 
+                        rating: this.annotateRating,
+                        id: this.videoAnnotations.length
                     }
                 }
                 this.videoAnnotations.push(card)
@@ -546,8 +550,9 @@
                 // <div class="timeline-card">
                 // The card that is being editing. It is a DOM object. 
                 var editingCard = event.currentTarget.parentElement.parentElement
+                this.editingCard = editingCard
 
-                // Setting show flags
+                // Setting flags
                 this.isEditing = true
                 this.isEditFields = true
                 this.isVideoline = true
@@ -577,16 +582,35 @@
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
-                // Setting annotate effectiveness
-                this.annotateRating = 5
+                // Setting edit effectiveness
+                var cardRating = $(editingCard).find('.timeline-card-effectiveness-label').text().slice(0,1) // e.g. '3' in string
+                cardRating = parseInt(cardRating) // string => int
+                this.editRating = cardRating
 
-                // Setting annotate comment
+                // Setting edit comment
                 var cardComment = $(editingCard).find('.timeline-card-description').text()
-                this.annotateComment = cardComment
+                this.editComment = cardComment
                 
             },
             edit() {
-                console.log('edit!')
+                var editingCard = this.editingCard
+
+                // Get annotation id
+                var cardID = $(editingCard).find('.timeline-card-id').text()
+                cardID = parseInt(cardID)
+
+                // Update data
+                var that = this
+                this.$store.commit('EDIT_ANNOTATION', {
+                    id: this.id,
+                    cardID: cardID,
+                    rating: this.editRating,
+                    comment: this.editComment 
+                })
+
+                this.isEditFields = false
+                this.isEditing = false
+                this.isVideoline = false
             },
             showEditButton(event) {
                 //$(event.currentTarget).find().show()
@@ -1111,7 +1135,11 @@
                 }
                 .timeline-card-effectiveness-label{
                     
-                }     
+                }
+
+                .timeline-card-id{
+                    visibility: hidden;
+                }
 
                 .timeline-card-edit {
                     display: flex;

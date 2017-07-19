@@ -77,7 +77,8 @@ export const store = new Vuex.Store({
                         "from": "00:08",
                         "to": "00:17",
                         "rating": "3",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 0
                     },
                     {
                         "category": "Graphics",
@@ -86,7 +87,8 @@ export const store = new Vuex.Store({
                         "from": "00:56",
                         "to": "01:23",
                         "rating": "4",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 1
                     },
                     {
                         "category": "Graphics",
@@ -95,7 +97,8 @@ export const store = new Vuex.Store({
                         "from": "00:43",
                         "to": "00:58",
                         "rating": "4",
-                        "author": "Ben Domino"
+                        "author": "Ben Domino",
+                        "id": 2
                     }
                 ]
             // },
@@ -510,7 +513,11 @@ export const store = new Vuex.Store({
         },
         ADD_ANNOTATION: (state, payload) => {
             state.videos[payload.id].annotations.push(payload.annotation)
-            console.log(state.videos)
+            //console.log(state.videos)
+        },
+        EDIT_ANNOTATION: (state, payload) => {
+            state.videos[payload.id].annotations[payload.cardID].rating = payload.rating
+            state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
         },
         // future
         retrieveVideosByClass: (state, className) => {
