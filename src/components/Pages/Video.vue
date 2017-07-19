@@ -618,18 +618,31 @@
                 this.isVideoline = false
             },
             deleteAnnotation(event) {
+                var that = this
+
                 var editingCard = event.currentTarget.parentElement.parentElement
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
                 cardID = parseInt(cardID)
 
-                
+                var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
-                this.$store.commit('DELETE_ANNOTATION', {
-                    id: this.id,
-                    cardID: cardID,
-                })
-                $(editingCard).remove()
+                swal({
+                    title: "Delete ''" + cardTitle + "'' annotation?",
+                    type: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: 'gray',
+                    confirmButtonText: 'Delete'
+                    }).then(function () {
+                        that.$store.commit('DELETE_ANNOTATION', {
+                            id: that.id,
+                            cardID: cardID,
+                        })
+                        $(editingCard).remove()
+                    }
+                )
+
             },
             showEditButton(event) {
                 //$(event.currentTarget).find().show()
