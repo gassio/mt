@@ -820,6 +820,7 @@
             }
         },
         updated() {
+            $('.jw-logo').hide()
             // Color a card when videoCurrentTime is between card from and end
             this.hooping()
             
