@@ -91,311 +91,116 @@ export const store = new Vuex.Store({
                         "id": 1
                     },
                     {
-                        "category": "Graphics",
-                        "canon": "Visual",
+                        "category": "Terms",
+                        "canon": "Structure",
                         "comment": "Lorem hahah",
-                        "from": "00:56",
-                        "to": "01:23",
-                        "rating": "4",
-                        "author": "Ben Domino"
-                    },
-                    {
-                        "category": "Graphics",
-                        "canon": "Visual",
-                        "comment": "Lorem hahah",
-                        "from": "00:56",
-                        "to": "01:23",
-                        "rating": "4",
-                        "author": "Ben Domino"
-                    },
-                    {
-                        "category": "Graphics",
-                        "canon": "Visual",
-                        "comment": "Lorem hahah",
-                        "from": "00:43",
-                        "to": "00:58",
+                        "from": "03:32",
+                        "to": "03:56",
                         "rating": "4",
                         "author": "Ben Domino",
                         "id": 2
+                    },
+                    {
+                        "category": "Graphics",
+                        "canon": "Visual",
+                        "comment": "Lorem hahah",
+                        "from": "05:21",
+                        "to": "06:23",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 3
+                    },
+                    {
+                        "category": "Volume",
+                        "canon": "Delivery",
+                        "comment": "Lorem hahah",
+                        "from": "07:43",
+                        "to": "10:58",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 4
                     }
                 ]
-            // },
-            // {
-            //     "title": "Rabbit-video",
-            //     "videoID": 1,
-            //     "link": "https://cdn.jwplayer.com/previews/d3LzLrAf",
-            //     "thumb": "https://cdn.jwplayer.com/thumbs/d3LzLrAf-720.jpg",
-            //     "sources": [
-            //         {
-            //             "width": 320,
-            //             "type": "application/vnd.apple.mpegurl",
-            //             "file": "https://cdn.jwplayer.com/manifests/d3LzLrAf.m3u8",
-            //             "height": 180
-            //         },
-            //         {
-            //             "width": 320,
-            //             "height": 180,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/d3LzLrAf-2thAkUNK.mp4",
-            //             "label": "180p"
-            //         },
-            //         {
-            //             "type": "audio/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/d3LzLrAf-lJqrUNGH.m4a",
-            //             "label": "AAC Audio"
-            //         }
-            //     ],
-            //     "duration": "13",
-            //     "jwVideoID": "d3LzLrAf",
-            //     "jwPlaylistID": "ccPaHVIt",
-            //     "class": "NasaClass",
-            //     "categories": [
-            //         {
-            //             "name": "Posture & Stance",
-            //             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            //             "canon": "Delivery"
-            //         }
-            //     ],
-            //     "annotations": [
-            //         {
-            //             "category": "Posture & Stance",
-            //             "canon": "Delivery",
-            //             "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-            //             "from": "00:08",
-            //             "to": "00:17",
-            //             "rating": "3",
-            //             "author": "Ben Domino"
-            //         },
-            //         {
-            //             "category": "Graphics",
-            //             "canon": "Visual",
-            //             "comment": "Lorem hahah",
-            //             "from": "00:56",
-            //             "to": "01:23",
-            //             "rating": "4",
-            //             "author": "Ben Domino"
-            //         }
-            //     ]
-            // },
-            // {
-            //     "title": "Nasa presentation",
-            //     "videoID": 2,
-            //     "link": "https://cdn.jwplayer.com/previews/1zZ9ACm3",
-            //     "thumb": "https://cdn.jwplayer.com/thumbs/1zZ9ACm3-720.jpg",
-            //     "sources": [
-            //         {
-            //             "width": 1280,
-            //             "type": "application/vnd.apple.mpegurl",
-            //             "file": "https://cdn.jwplayer.com/manifests/1zZ9ACm3.m3u8",
-            //             "height": 720
-            //         },
-            //         {
-            //             "width": 320,
-            //             "height": 180,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-2thAkUNK.mp4",
-            //             "label": "180p"
-            //         },
-            //         {
-            //             "width": 480,
-            //             "height": 270,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-I7QHntgN.mp4",
-            //             "label": "270p"
-            //         },
-            //         {
-            //             "width": 720,
-            //             "height": 406,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-bjE4cNUM.mp4",
-            //             "label": "406p"
-            //         },
-            //         {
-            //             "width": 1280,
-            //             "height": 720,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-2v7o7MEI.mp4",
-            //             "label": "720p"
-            //         },
-            //         {
-            //             "type": "audio/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-lJqrUNGH.m4a",
-            //             "label": "AAC Audio"
-            //         }
-            //     ],
-            //     "duration": "59",
-            //     "jwVideoID": "1zZ9ACm3",
-            //     "jwPlaylistID": "ccPaHVIt",
-            //     "class": "NasaClass",
-            //     "categories": [
-            //         {
-            //             "name": "Posture & Stance",
-            //             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            //             "canon": "Delivery"
-            //         }
-            //     ],
-            //     "annotations": [
-            //         {
-            //             "category": "Posture & Stance",
-            //             "canon": "Delivery",
-            //             "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-            //             "from": "00:08",
-            //             "to": "00:17",
-            //             "rating": "3",
-            //             "author": "Ben Domino"
-            //         },
-            //         {
-            //             "category": "Graphics",
-            //             "canon": "Visual",
-            //             "comment": "Lorem hahah",
-            //             "from": "00:56",
-            //             "to": "01:23",
-            //             "rating": "4",
-            //             "author": "Ben Domino"
-            //         }
-            //     ]
-            // },
-            // {
-            //     "title": "Nasa presentation",
-            //     "videoID": 3,
-            //     "link": "https://cdn.jwplayer.com/previews/1zZ9ACm3",
-            //     "thumb": "https://cdn.jwplayer.com/thumbs/1zZ9ACm3-720.jpg",
-            //     "sources": [
-            //         {
-            //             "width": 1280,
-            //             "type": "application/vnd.apple.mpegurl",
-            //             "file": "https://cdn.jwplayer.com/manifests/1zZ9ACm3.m3u8",
-            //             "height": 720
-            //         },
-            //         {
-            //             "width": 320,
-            //             "height": 180,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-2thAkUNK.mp4",
-            //             "label": "180p"
-            //         },
-            //         {
-            //             "width": 480,
-            //             "height": 270,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-I7QHntgN.mp4",
-            //             "label": "270p"
-            //         },
-            //         {
-            //             "width": 720,
-            //             "height": 406,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-bjE4cNUM.mp4",
-            //             "label": "406p"
-            //         },
-            //         {
-            //             "width": 1280,
-            //             "height": 720,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-2v7o7MEI.mp4",
-            //             "label": "720p"
-            //         },
-            //         {
-            //             "type": "audio/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/1zZ9ACm3-lJqrUNGH.m4a",
-            //             "label": "AAC Audio"
-            //         }
-            //     ],
-            //     "duration": "59",
-            //     "jwVideoID": "1zZ9ACm3",
-            //     "jwPlaylistID": "O2LEnFP4",
-            //     "class": "Mathematics Class",
-            //     "categories": [
-            //         {
-            //             "name": "Posture & Stance",
-            //             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            //             "canon": "Delivery"
-            //         }
-            //     ],
-            //     "annotations": [
-            //         {
-            //             "category": "Posture & Stance",
-            //             "canon": "Delivery",
-            //             "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-            //             "from": "00:08",
-            //             "to": "00:17",
-            //             "rating": "3",
-            //             "author": "Ben Domino"
-            //         },
-            //         {
-            //             "category": "Graphics",
-            //             "canon": "Visual",
-            //             "comment": "Lorem hahah",
-            //             "from": "00:56",
-            //             "to": "01:23",
-            //             "rating": "4",
-            //             "author": "Ben Domino"
-            //         }
-            //     ]
-            // },
-            // {
-            //     "title": "Simon-Sinek",
-            //     "videoID": 4,
-            //     "link": "https://cdn.jwplayer.com/previews/rPbI6QAc",
-            //     "thumb": "https://cdn.jwplayer.com/thumbs/rPbI6QAc-720.jpg",
-            //     "sources": [
-            //         {
-            //             "width": 480,
-            //             "type": "application/vnd.apple.mpegurl",
-            //             "file": "https://cdn.jwplayer.com/manifests/rPbI6QAc.m3u8",
-            //             "height": 360
-            //         },
-            //         {
-            //             "width": 320,
-            //             "height": 240,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/rPbI6QAc-2thAkUNK.mp4",
-            //             "label": "180p"
-            //         },
-            //         {
-            //             "width": 480,
-            //             "height": 360,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/rPbI6QAc-I7QHntgN.mp4",
-            //             "label": "270p"
-            //         },
-            //         {
-            //             "type": "audio/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/rPbI6QAc-lJqrUNGH.m4a",
-            //             "label": "AAC Audio"
-            //         }
-            //     ],
-            //     "duration": "1081",
-            //     "jwVideoID": "rPbI6QAc",
-            //     "jwPlaylistID": "ccPaHVIt",
-            //     "class": "NasaClass",
-            //     "categories": [
-            //         {
-            //             "name": "Posture & Stance",
-            //             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            //             "canon": "Delivery"
-            //         }
-            //     ],
-            //     "annotations": [
-            //         {
-            //             "category": "Posture & Stance",
-            //             "canon": "Delivery",
-            //             "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-            //             "from": "00:08",
-            //             "to": "00:17",
-            //             "rating": "3",
-            //             "author": "Ben Domino"
-            //         },
-            //         {
-            //             "category": "Graphics",
-            //             "canon": "Visual",
-            //             "comment": "Lorem hahah",
-            //             "from": "00:56",
-            //             "to": "01:23",
-            //             "rating": "4",
-            //             "author": "Ben Domino"
-            //         }
-            //     ]
+            },
+            {
+                "title": "Don't Follow Your Passion",
+                "videoID": 1,
+                "link": "https://cdn.jwplayer.com/previews/gj1SyIed",
+                "thumb": "https://cdn.jwplayer.com/thumbs/gj1SyIed-720.jpg",
+                "sources": [
+                    {
+                        "width": 1280,
+                        "type": "application/vnd.apple.mpegurl",
+                        "file": "https://cdn.jwplayer.com/manifests/gj1SyIed.m3u8",
+                        "height": 720
+                    },
+                    {
+                        "width": 320,
+                        "height": 180,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/gj1SyIed-t89KRkmF.mp4",
+                        "label": "180p"
+                    },
+                    {
+                        "width": 480,
+                        "height": 270,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/gj1SyIed-3gtc2psT.mp4",
+                        "label": "270p"
+                    },
+                    {
+                        "width": 720,
+                        "height": 406,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/gj1SyIed-mOPkLg6c.mp4",
+                        "label": "406p"
+                    },
+                    {
+                        "width": 1280,
+                        "height": 720,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/gj1SyIed-ASGnrRDI.mp4",
+                        "label": "720p"
+                    },
+                    {
+                        "type": "audio/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/gj1SyIed-1smvQZjW.m4a",
+                        "label": "AAC Audio"
+                    }
+                ],
+                "duration": "904",
+                "jwVideoID": "gj1SyIed", // mediaID
+                "jwPlaylistID": "k5WSiplm", // k5WSiplm
+                "class": "Aeronautics Class",
+                "categories": [
+                    {
+                        "name": "Posture & Stance",
+                        "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
+                        "canon": "Delivery"
+                    }
+                ],
+                "annotations": [
+                    {
+                        "category": "Graphics",
+                        "canon": "Visual",
+                        "comment": "Lorem hahah",
+                        "from": "00:56",
+                        "to": "01:23",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 0
+                    },
+                    {
+                        "category": "Terms",
+                        "canon": "Structure",
+                        "comment": "Lorem hahah",
+                        "from": "03:32",
+                        "to": "03:56",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 1
+                    }
+                ]
             }
         ],
         classes: [
@@ -541,6 +346,7 @@ export const store = new Vuex.Store({
         DELETE_ANNOTATION: (state, payload) => {
             var myArray = state.videos[payload.id].annotations
             myArray.shift(payload.cardID)
+            console.log('mutation')
             console.log(state.videos[payload.id].annotations)
         },
         // future

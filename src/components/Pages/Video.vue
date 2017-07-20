@@ -2,7 +2,7 @@
     <div class="video container">
         <div class="spacer">
             <button class="button is-white player-spacer-button" @click="goBack()">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{videos[id].title}}
+                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ videos[id].title }}
             </button> 
              <button class="button is-white player-spacer-button">
                 <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
@@ -172,7 +172,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
+                                        <p class="timeline-card-title">{{ card.category }}</p> - {{ card.id }}
                                     </div>
                                     <div class="column is-3">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -318,9 +318,7 @@
                 "height": $('.player').height(),
                 // events
             });
-            
-          // Show "Sroll down for more" when there are more than 5 cards
-          that.moreAnnotations()
+        
         
             // Animate progress bar width
             this.player.on('time', function(event) {
@@ -570,9 +568,11 @@
                 // Setting flags
                 this.isEditing = true
                 this.isEditFields = true
+                this.player.pause()
                 // this.isVideoline = true
 
                 // Setting from + end annotate times
+                // ga to be changed
                 var time = editingCard.children[0].children[0].children[1].children[0].innerText // 03:05 - 03:17               
                 var startTime = time.substring(0,5); // 03:05
                 this.editStart = startTime
@@ -639,6 +639,7 @@
 
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
+                // Are you sure to Delete annotation?
                 swal({
                     title: "Delete ''" + cardTitle + "'' annotation?",
                     type: 'question',
@@ -652,6 +653,10 @@
                             cardID: cardID,
                         })
                         $(editingCard).remove()
+                        // delete from videoAnnotations
+                        that.videoAnnotations.shift(cardID)
+                        console.log('videoAnnotations')
+                        console.log(that.videoAnnotations)
                     }
                 )
 
@@ -695,6 +700,7 @@
             },
             seekCard(event) {
                 this.isAnnotating = true;
+                // ga to be changed                
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
@@ -756,7 +762,6 @@
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
             },
-            // Color a card when videoCurrentTime is between card from and end
             hooping() {
                 var that = this
 
@@ -766,6 +771,7 @@
                 var allTimeString = []
                 var k=0;
                 for (k=0; k < allCards.length; k++) {
+                    // ga to be changed                    
                     allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
                     allStartTime[k] = allTimeString[k].substring(0,5)
                     allEndTime[k] = allTimeString[k].substring(8,13)
@@ -788,18 +794,19 @@
                         }
                     }
                 })
-            }
-        },
-        moreAnnotations() {
-            var moreAnnotations = document.getElementById("more-annotations")
-            var mydiv  = document.querySelector('.timeline-content');
-            var clientHeight = $(mydiv).height() + 160; //head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
-            var windowHeight = $(window).height();
-            if (clientHeight > windowHeight) {
-                moreAnnotations.style.display = "flex"
-            } else {
-                moreAnnotations.style.display = "none"
-            }
+            },
+            moreAnnotations() {
+                var moreAnnotations = $('.more-annotations')
+                var mydiv  = $('.timeline-content');
+                var clientHeight = $(mydiv).height() + 160; // head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
+                var windowHeight = $(window).height();
+                if (clientHeight > windowHeight) {
+                    moreAnnotations.css('display', 'flex')
+                } else {
+                    moreAnnotations.css('display', 'none')
+                }
+            },
+
         },
         computed: {
             videos() {
@@ -813,7 +820,11 @@
             }
         },
         updated() {
+            // Color a card when videoCurrentTime is between card from and end
             this.hooping()
+            
+            // Show "Sroll down for more" when there are more than 5 cards
+            this.moreAnnotations()
         }
     }
 </script>
