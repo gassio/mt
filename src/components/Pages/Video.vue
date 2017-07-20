@@ -677,7 +677,16 @@
                     this.videoAnnotations.push(this.videos[this.id].annotations[i])
                 }
             },
-            activeItemProblem(event) {
+            annotateModeActiveItemProblem(event) {
+                var children = event.currentTarget.parentNode.children
+                for (var i=0; i < children.length; i++) {
+                    children[i].style.backgroundColor = "transparent"
+                    children[i].style.color = "#FFFFFF"
+                }
+                event.currentTarget.style.backgroundColor = "#8F082A"
+                event.currentTarget.style.color = "#FFFFFF"
+            },
+            timelineMenuActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
                 for (var i=0; i < children.length; i++) {
                     children[i].style.backgroundColor = "transparent"
@@ -688,15 +697,15 @@
             },
             chooseCanonFilter(canon) {
                 this.filterCanon = canon
-                this.activeItemProblem(event)
+                this.timelineMenuActiveItemProblem(event)
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
-                this.activeItemProblem(event)
+                this.annotateModeActiveItemProblem(event)
             },
             chooseCategoryAnnotate(category) {
                 this.annotateCategory = category
-                this.activeItemProblem(event)
+                this.annotateModeActiveItemProblem(event)
                 this.isAnnotateMenu = false
                 this.isAnnotateFields = true
                 this.isVideoline = true
