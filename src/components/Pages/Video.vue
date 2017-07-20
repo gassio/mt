@@ -193,8 +193,9 @@
                                 </div>
                             </div>
                             <div class="timeline-card-edit">
-                                <button class="button" @click="editing()"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
-                                <button class="button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete()"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+                                <button class="edit-buttons edit-buttons-edit button" @click="editing()"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
 
@@ -560,6 +561,7 @@
                 // $('.videoline-ribbon').show()
             },
             editing() {
+                this.toggleEditDelete()
                 // <div class="timeline-card">
                 // The card that is being editing. It is a DOM object. 
                 var editingCard = event.currentTarget.parentElement.parentElement
@@ -630,6 +632,7 @@
                 this.isVideoline = false
             },
             deleteAnnotation(event) {
+                this.toggleEditDelete()
                 var that = this
 
                 var editingCard = event.currentTarget.parentElement.parentElement
@@ -806,7 +809,14 @@
                     moreAnnotations.css('display', 'none')
                 }
             },
-
+            toggleEditDelete() {
+                var editButtons = $('.edit-buttons')
+                 if(editButtons.css("display") === 'none') {
+                    editButtons.css('display','flex')
+                } else {
+                    editButtons.css('display','none')
+                }
+            },
         },
         computed: {
             videos() {
@@ -1215,11 +1225,40 @@
                     margin-left: 10px;
                 }
 
-                .timeline-card-edit button,
-                .timeline-card-edit button:focus {
-                    color: #FFF;
-                    background-color: #4A4A4A;
+
+                .edit-buttons {
+                    display: none;
+                    justify-content: center;
+                    align-items: center;
+                    color: #FFFFFF;
                 }
+                    .edit-buttons-moreLess {
+                        height: 36px;
+                        width: 42px;
+                    }
+                    .edit-buttons-moreLess:hover {
+                        background-color: #FFFFFF !important;
+                       color: #6B6B6B !important;
+                       box-shadow: inset 0 0 0 2px #6B6B6B;
+                    }
+                    .edit-buttons-edit {
+                        background-color: #003300;
+                        opacity:0.8;
+                    }
+                    .edit-buttons-edit:hover {
+                       background-color: #FFFFFF !important;
+                       color: #003300 !important;
+                       box-shadow: inset 0 0 0 3px #003300;
+                    }
+                    .edit-buttons-delete {
+                        background-color: #A90931;
+                    }
+                    .edit-buttons-delete:hover {
+                       background-color: #FFFFFF !important;
+                       color: #A90931 !important;
+                       box-shadow: inset 0 0 0 3px #A90931;
+                    }
+
 
                 .timeline-card-edit button:hover {
                     color: #FFF;
