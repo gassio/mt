@@ -149,6 +149,7 @@
                     </div>
                 </div>
 
+                <!-- testing -->
                 <div class="test">
                     <ul>
                         <li v-for="a in this.$store.state.videos[this.id].annotations"> {{ a.id }}</li>
@@ -160,11 +161,11 @@
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
                         <a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>
-                        <a @click="chooseCanonFilter('Moves')"><i class="fa fa-book fa-2x" aria-hidden="true"></i>Moves</a>
-                        <a @click="chooseCanonFilter('Structure')"><i class="fa fa-book fa-2x" aria-hidden="true"></i>Structure</a>
-                        <a @click="chooseCanonFilter('Delivery')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>Delivery</a>
-                        <a @click="chooseCanonFilter('Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i>Visual</a>
-                        <a @click="chooseCanonFilter('Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i>Style</a>
+                        <a @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-book fa-2x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa-2x" aria-hidden="true"></i><span>Structure</span></a>
+                        <a @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i><span>Delivery</span></a>
+                        <a @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i><span>Visual</span></a>
+                        <a @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i><span>Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -172,9 +173,9 @@
                             </div>
                         </div>
                     </nav>
-                    <div class="timeline-content column is-10">
-
-                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
+                    <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
+                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
+                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
@@ -205,8 +206,8 @@
                             </div>
                         </div>
 
-                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
-                            <div class="column"> <!--  @click="seekCard($event)" -->
+                        <!--<div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">   
+                            <div class="column">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
                                         <p class="timeline-card-title">{{ card.category }}</p>
@@ -229,12 +230,12 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
             </div>
         </div>
-            <!-- <router-link :to=" '/video/' + id + '/edit' ">
-                <button class="button is-warning">Edit</button>
+            <!-- <router-link :to=" '/video/' + id + '/edit' ">d
+                <button class="button is-warning">Edit</button>d
             </router-link>
             <router-view></router-view> -->
         </div>
@@ -280,6 +281,11 @@
                 startDragTime: 0,
                 endDragTime: 0,
                 filterCanon: 'All',
+                isMoves: 'Moves',
+                isStructure: 'Structure',
+                isDelivery: 'Delivery',
+                isVisual: 'Visual',
+                isStyle: 'Style',
                 times: [
                     { marginleft: '10%' },
                     { marginleft: '20%' },
@@ -647,12 +653,6 @@
                     },
                 )
             },
-            showEditButton(event) {
-                //$(event.currentTarget).find().show()
-            },
-            hideEditButton(event) {
-                //$(event.currentTarget).children().hide()
-            },
             annotateModeActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
                 for (var i=0; i < children.length; i++) {
@@ -671,9 +671,30 @@
                 event.currentTarget.style.backgroundColor = "#8F082A"
                 event.currentTarget.style.color = "#FFFFFF"
             },
-            chooseCanonFilter(canon) {
-                this.filterCanon = canon
+            chooseCanonFilter(event, canon) {
+                // this.filterCanon = canon
                 this.timelineMenuActiveItemProblem(event)
+
+                if (canon === 'Moves') {
+                    if (this.isMoves !== '') this.isMoves = ''
+                    else this.isMoves = 'Moves'
+                }
+                if (canon === 'Structure') {
+                    if (this.isStructure !== '') this.isStructure = ''
+                    else this.isStructure = 'Structure'
+                }
+                if (canon === 'Delivery') {
+                    if (this.isDelivery !== '') this.isDelivery = ''
+                    else this.isDelivery = 'Delivery'
+                } 
+                if (canon === 'Visual') {
+                    if (this.isVisual !== '') this.isVisual = ''
+                    else this.isVisual = 'Visual'
+                }
+                if (canon === 'Style') {
+                    if (this.isStyle !== '') this.isStyle = ''
+                    else this.isStyle = 'Style'
+                }
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
@@ -1187,7 +1208,8 @@
                 background: none;
                 padding: 15px !important;
                 margin-bottom: 20px;
-                box-shadow: 3px 3px 9px 3px rgba(0,0,0,0.33);
+                box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
+                /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
                 .timeline-card-title{
