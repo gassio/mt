@@ -172,7 +172,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p> - {{ card.id }}
+                                        <p class="timeline-card-title">{{ card.category }}</p> <!--- {{ card.id }} -->
                                     </div>
                                     <div class="column is-3">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -193,8 +193,8 @@
                                 </div>
                             </div>
                             <div class="timeline-card-edit">
-                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete()"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-                                <button class="edit-buttons edit-buttons-edit button" @click="editing()"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+                                <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
                                 <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
@@ -560,8 +560,10 @@
                 this.isVideoline = false
                 // $('.videoline-ribbon').show()
             },
-            editing() {
-                this.toggleEditDelete()
+            editing(event) {
+                // Hide the Edit and Delete buttons
+                $(event.currentTarget).hide(); $(event.currentTarget.parentElement).find('.edit-buttons').hide()
+
                 // <div class="timeline-card">
                 // The card that is being editing. It is a DOM object. 
                 var editingCard = event.currentTarget.parentElement.parentElement
@@ -632,15 +634,30 @@
                 this.isVideoline = false
             },
             deleteAnnotation(event) {
-                this.toggleEditDelete()
                 var that = this
 
                 var editingCard = event.currentTarget.parentElement.parentElement
+                console.log('Hereeeee')
+                console.log($(editingCard))
+
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
                 cardID = parseInt(cardID)
 
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
+
+                // var r = confirm("Delete ''" + cardTitle + "'' annotation?")
+
+                // if (r === true) {
+                //     that.videoAnnotations.shift(cardID)
+                //     that.$store.commit('DELETE_ANNOTATION', {
+                //         id: that.id,
+                //         cardID: cardID,
+                //     })
+                //     $(editingCard).remove()
+                // } else {
+                //     console.log('cancel!')
+                // }
 
                 // Are you sure to Delete annotation?
                 swal({
@@ -651,16 +668,16 @@
                     cancelButtonColor: 'gray',
                     confirmButtonText: 'Delete'
                     }).then(function () {
+                        // delete from videoAnnotations
+                        that.videoAnnotations.shift(cardID)
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
                         })
+
                         $(editingCard).remove()
-                        // delete from videoAnnotations
-                        that.videoAnnotations.shift(cardID)
-                        console.log('videoAnnotations')
-                        console.log(that.videoAnnotations)
-                    }
+                        console.log($(editingCard))
+                    },
                 )
 
             },
@@ -818,12 +835,15 @@
                     moreAnnotations.css('display', 'none')
                 }
             },
-            toggleEditDelete() {
-                var editButtons = $('.edit-buttons')
-                 if(editButtons.css("display") === 'none') {
-                    editButtons.css('display','flex')
+            toggleEditDelete(event) {
+                var moreLessBtn = $(event.currentTarget)
+
+                //moreLessBtn.hide()
+
+                if (moreLessBtn.siblings().css("display") === 'none') {
+                    moreLessBtn.siblings().show()
                 } else {
-                    editButtons.css('display','none')
+                    moreLessBtn.siblings().hide()
                 }
             },
         },
