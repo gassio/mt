@@ -328,6 +328,16 @@ export const store = new Vuex.Store({
             ]
             },
         ],
+        user: [ 
+            {
+                firstName: 'Nikos',
+                lastName: 'Dimitriou',
+                email: 'nikos@gmail.com',
+                password: '123',
+                type: 'admin' // admin, professor, technical-instructor, communicational-instructor, student, 
+            }
+        ],
+
         currentVideoID: null
     },
     mutations: {
@@ -342,6 +352,8 @@ export const store = new Vuex.Store({
             state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
             state.videos[payload.id].annotations[payload.cardID].from = payload.from
             state.videos[payload.id].annotations[payload.cardID].to = payload.to
+
+            console.log(state.videos[payload.id].annotations)
         },
         DELETE_ANNOTATION: (state, payload) => {
             var myArray = state.videos[payload.id].annotations

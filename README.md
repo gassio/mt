@@ -8,23 +8,19 @@ Live (click at "home" link)
 ## Build Setup
 
 ``` bash
-# install vue.js
+# install vue.js - one time
 npm install vue
 
-# install vue-cli
+# install vue-cli - one time
 npm install --global vue-cli
-
-# create a new project using the "webpack" template
-vue init webpack my-project
-
-# install dependencies and go!
-cd my-project
 
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
+
+--------------------------------------------
 
 # build for production with minification
 npm run build
