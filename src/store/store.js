@@ -345,21 +345,25 @@ export const store = new Vuex.Store({
             state.currentVideoID = id
         },
         ADD_ANNOTATION: (state, payload) => {
-            state.videos[payload.id].annotations.push(payload.annotation)
+            var annotations = state.videos[payload.id].annotations
+            annotations.push(payload.annotation)
         },
         EDIT_ANNOTATION: (state, payload) => {
-            state.videos[payload.id].annotations[payload.cardID].rating = payload.rating
-            state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
-            state.videos[payload.id].annotations[payload.cardID].from = payload.from
-            state.videos[payload.id].annotations[payload.cardID].to = payload.to
+            var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
+            
+            currentAnnotation.rating = payload.rating
+            currentAnnotation.comment = payload.comment
+            currentAnnotation.from = payload.from
+            currentAnnotation.to = payload.to
 
-            console.log(state.videos[payload.id].annotations)
         },
         DELETE_ANNOTATION: (state, payload) => {
-            var myArray = state.videos[payload.id].annotations
-            myArray.shift(payload.cardID)
-            console.log('mutation')
-            console.log(state.videos[payload.id].annotations)
+            var newAnnotations = state.videos[payload.id].annotations
+            newAnnotations = newAnnotations.filter(function(a){
+                return a.id !== payload.cardID
+            })
+            // Update annotations[]
+            state.videos[payload.id].annotations = newAnnotations
         },
         // future
         retrieveVideosByClass: (state, className) => {

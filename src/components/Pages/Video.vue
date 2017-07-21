@@ -148,6 +148,12 @@
                     <div class="videoline-progress">
                     </div>
                 </div>
+
+                <div class="test">
+                    <ul>
+                        <li v-for="a in this.$store.state.videos[this.id].annotations"> {{ a.id }}</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="cards column is-5 is-gapless is-marginless" id="cards">
@@ -172,7 +178,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p> <!--- {{ card.id }} -->
+                                        <p class="timeline-card-title">{{ card.category }}</p>  {{ card.id }}
                                     </div>
                                     <div class="column is-3">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -292,8 +298,6 @@
             this.id = parseInt(this.id)
             
             this.$store.commit('setCurrentVideoID', this.id)
-
-            this.loadVideoAnnotations()
             
             this.videoDuration = this.videos[this.id].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
@@ -339,27 +343,6 @@
                     if (that.isDragging) {
                         $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
                     }
-                    
-                    
-                    
-                    // If current video time == annotation.from, then animate card
-                    // for(var i=0; i< that.videoAnnotations.length; i++) {
-                    //     var currentAnnotationTime = that.videoAnnotations[i].from
-                    //     currentAnnotationTime = that.mmssToSeconds(currentAnnotationTime)
-                    //     if (parseInt(that.videoCurrentTime) === currentAnnotationTime) {
-                    //         // compare dbComment with rendered card-comment
-                    //         var dbComment = that.videoAnnotations[i].comment
-
-                    //         $('.cards').find('.card').each(function(){
-                    //             var htmlComment = $(this).find('.card-comment').text()
-                    //             if (dbComment === htmlComment) {
-                    //                $(this).animate({marginLeft: '50px'}, 800);
-                    //             }
-                    //         })
-
-                    //         console.log('animate: ' + that.videoAnnotations[i].title)
-                    //     }                        
-                    // }
                 }
             })
 
@@ -543,7 +526,6 @@
                         id: this.videoAnnotations.length
                     }
                 }
-                this.videoAnnotations.push(card)
                 this.$store.commit('ADD_ANNOTATION', {
                     annotation: card, 
                     id: this.id
@@ -636,9 +618,9 @@
             deleteAnnotation(event) {
                 var that = this
 
-                var editingCard = event.currentTarget.parentElement.parentElement
-                console.log('Hereeeee')
-                console.log($(editingCard))
+                // var editingCard = event.currentTarget.parentElement.parentElement
+                var editingCard = $(event.currentTarget).parent().parent()
+                // console.log(editingCard)
 
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
@@ -646,19 +628,8 @@
 
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
-                // var r = confirm("Delete ''" + cardTitle + "'' annotation?")
-
-                // if (r === true) {
-                //     that.videoAnnotations.shift(cardID)
-                //     that.$store.commit('DELETE_ANNOTATION', {
-                //         id: that.id,
-                //         cardID: cardID,
-                //     })
-                //     $(editingCard).remove()
-                // } else {
-                //     console.log('cancel!')
-                // }
-
+                // Hide .edit-buttons
+                $(event.currentTarget).hide(); $(event.currentTarget).siblings('.edit-buttons').hide()
                 // Are you sure to Delete annotation?
                 swal({
                     title: "Delete ''" + cardTitle + "'' annotation?",
@@ -668,31 +639,19 @@
                     cancelButtonColor: 'gray',
                     confirmButtonText: 'Delete'
                     }).then(function () {
-                        // delete from videoAnnotations
-                        that.videoAnnotations.shift(cardID)
+                        // Delete from store
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
                         })
-
-                        $(editingCard).remove()
-                        console.log($(editingCard))
                     },
                 )
-
             },
             showEditButton(event) {
                 //$(event.currentTarget).find().show()
             },
             hideEditButton(event) {
                 //$(event.currentTarget).children().hide()
-            },
-            loadVideoAnnotations() {
-                // Fetches annotations of the current video (videoid = URLid)
-                // Stores annotations in videoAnnotations[]
-                for (var i=0; i < this.videos[this.id].annotations.length; ++i) {
-                    this.videoAnnotations.push(this.videos[this.id].annotations[i])
-                }
             },
             annotateModeActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
@@ -838,7 +797,7 @@
             toggleEditDelete(event) {
                 var moreLessBtn = $(event.currentTarget)
 
-                //moreLessBtn.hide()
+                // moreLessBtn.hide()
 
                 if (moreLessBtn.siblings().css("display") === 'none') {
                     moreLessBtn.siblings().show()
@@ -859,7 +818,13 @@
             }
         },
         updated() {
+            // Fixes unknown man picture bug
             $('.jw-logo').hide()
+
+            // Fetches annotations of the current video (videoid = URLid)
+            // Stores annotations in videoAnnotations[]
+            this.videoAnnotations = this.$store.state.videos[this.id].annotations
+
             // Color a card when videoCurrentTime is between card from and end
             this.hooping()
             
