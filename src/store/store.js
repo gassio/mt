@@ -347,14 +347,21 @@ export const store = new Vuex.Store({
         ADD_ANNOTATION: (state, payload) => {
             var annotations = state.videos[payload.id].annotations
             annotations.push(payload.annotation)
+
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
         },
         EDIT_ANNOTATION: (state, payload) => {
             var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
+            var annotations = state.videos[payload.id].annotations
             
             currentAnnotation.rating = payload.rating
             currentAnnotation.comment = payload.comment
             currentAnnotation.from = payload.from
             currentAnnotation.to = payload.to
+
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
 
         },
         DELETE_ANNOTATION: (state, payload) => {
@@ -414,3 +421,13 @@ export const store = new Vuex.Store({
         // SET_JW_VIDEOS: (state, { videos }) => {
         //     state.jwVideos = videos.playlist
         // },
+
+        // SORTING ARRAY BY FROM PROPERTY 
+        // function compare(a,b) {
+        //     if (a.from < b.from)
+        //         return -1;
+        //     if (a.from > b.from)
+        //         return 1;
+        //     return 0;
+        // }
+        // annotations.sort(compare);
