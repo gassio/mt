@@ -9,7 +9,7 @@
             </button> 
         </div>
         <div class="main-content columns is-gapless is-marginless">
-            <div class="player column is-7">
+            <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
                 <div class="annotate" v-show="isAnnotating">
@@ -127,16 +127,16 @@
                     </div>
 
                     <div class="crop videoline-crop" id="videoline-crop" >
-                        <div class="crop__corner crop__start" draggable="true" style="display:flex; flex-direction: column;">
-                            <span style="background-color:#F2C94C; padding:5px 8px;  border-radius: 25px;">||</span>
+                        <div class="crop__corner crop__start" draggable="true">
+                            <span>||</span>
                             <span>&nbsp;</span>
                             <!--<div class="crop__grab" style="margin-left: -10px"> 
                                 <span>||</span>
                             </div>
                             <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>-->
                         </div>
-                        <div class="crop__corner crop__end" draggable="true" style="display:flex; flex-direction:column; /*justify-content:flex-end;*/">
-                            <span style="background-color:#F2C94C; padding:5px 8px;  border-radius: 25px;">||</span>
+                        <div class="crop__corner crop__end" draggable="true">
+                            <span>||</span>
                             <!--<div class="crop__grab">
                                 <span>||</span>
                             </div> 
@@ -158,7 +158,7 @@
                     </ul> -->
             </div>
 
-            <div class="cards column is-5 is-gapless is-marginless" id="cards">
+            <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
                         <!--<a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>-->
@@ -180,10 +180,10 @@
                              v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
-                                    <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p>  {{ card.id }}
+                                    <div class="column is-8">
+                                        <p class="timeline-card-title">{{ card.category }}</p>  <!-- {{ card.id }} -->
                                     </div>
-                                    <div class="column is-3">
+                                    <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
                                 </div>
                                 <div class="columns is-gapless is-marginless">
                                     <div class="timeline-card-effectiveness-bar column is-8">
-                                        <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
+                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
@@ -289,7 +289,7 @@
             // var allButton = document.getElementById("all-is-active")
             // allButton.style.background = "#8F082A";
             // allButton.style.color = "#FFFFFF";
-            $('.card-menu a').css('background-color', '#4a4a4a')
+            $('.card-menu a').css('background-color', '#39425C')
             $('.card-menu a').css('color', '#FFF')
             
 
@@ -380,7 +380,7 @@
                 this.player.pause()
                 
                 // setStartEndPosition()
-                var annotationNowTime = this.videoCurrentTime - 10 // 10 seconds before pause
+                var annotationNowTime = this.videoCurrentTime - 5 // 5 seconds before pause
                 var barWidth = $('.player').width()
                // "out of bounds" exception
                 if (annotationNowTime < 0){
@@ -389,7 +389,8 @@
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
-                var coordsPercentEnd = ((annotationNowTime + 15)  * 100) / that.videoDuration
+                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / that.videoDuration // 10 seconds after from
+
                 // "out of bounds" exception
                 if(coordsPercentEnd > 100){
                     coordsPercentEnd = 100
@@ -402,9 +403,10 @@
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
+
                 // "out of bounds" exception
-                if (that.videoDuration - annotationNowTime > 20) {
-                    this.endDragTime = this.secondsToMMSS(annotationNowTime + 20)
+                if (that.videoDuration - annotationNowTime > 10) {
+                    this.endDragTime = this.secondsToMMSS(annotationNowTime + 10)
                 } else {
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
@@ -637,7 +639,7 @@
                     children[i].style.backgroundColor = "transparent"
                     children[i].style.color = "#FFFFFF"
                 }
-                event.currentTarget.style.backgroundColor = "#8F082A"
+                event.currentTarget.style.backgroundColor = "#27314d"
                 event.currentTarget.style.color = "#FFFFFF"
             },
             chooseCanonFilter(event, canon) {
@@ -650,7 +652,7 @@
                     }
                     else {
                         this.isMoves = 'Moves'
-                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                         this.checked = true
                     }
@@ -659,11 +661,11 @@
                     if (this.isStructure !== '') {
                         this.isStructure = ''
                         event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#6B6B6B"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isStructure = 'Structure'
-                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                     } 
                 }
@@ -671,11 +673,11 @@
                     if (this.isDelivery !== '') {
                         this.isDelivery = ''
                         event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#6B6B6B"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isDelivery = 'Delivery'
-                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 } 
@@ -683,11 +685,11 @@
                     if (this.isVisual !== '') {
                         this.isVisual = ''
                         event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#6B6B6B"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isVisual = 'Visual'
-                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
@@ -695,11 +697,11 @@
                     if (this.isStyle !== '') {
                         this.isStyle = ''
                         event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#6B6B6B"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isStyle = 'Style'
-                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
@@ -716,7 +718,7 @@
                 this.isVideoline = true
             },
             seekCard(event) {
-                this.isAnnotating = true;
+                // this.isAnnotating = true;
                 // ga to be changed                
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
@@ -936,7 +938,7 @@
 }
 
     .add-annotation-area span {
-        margin: 5px;    
+        margin: 10px;    
         font-size: 1.4em;
     }
 
@@ -950,7 +952,7 @@
 
     .videoline {
         position: relative;
-        height: 100px;
+        height: 80px;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
@@ -961,13 +963,15 @@
     }
 
         .videoline-ribbon {
+            display: none !important;
             position: absolute;
             height: 130px;
             left: 0;
             margin: 0;
+            margin-top: 0px;
             padding: 0;
             cursor: pointer;
-            z-index: 200;
+            z-index: 50;
             display: flex;
             flex-direction: column;
             align-self: center;
@@ -990,8 +994,8 @@
             }
                 .videoline-ribbon-line-time {
                     color: #FFF;
-                    font-size: 12px;
-                    margin: 0px 0px 0px 5px;
+                    font-size: 0.6em;
+                    margin: -4px 0px 0px 10px;
                 }
 
 /*------------------------------------*\
@@ -1015,9 +1019,9 @@
         background-color: #F2C94C;
         cursor: col-resize;
         position: absolute;
-        border-radius: 3px;
+        border-radius: 0px;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         align-self: center;
     }
@@ -1051,9 +1055,19 @@
     .crop__start {
         z-index: 105;
     }
+        .crop__start span:nth-child(1) {
+            padding: 5px 5px; 
+            background-color: #F2C94C; 
+        }
+
     .crop__end {
         z-index: 100;
+        justify-content: flex-end;
     }
+        .crop__end span {
+            padding: 5px 5px; 
+            background-color: #F2C94C; 
+        }
 
     .times {
         height: 30px;
@@ -1265,23 +1279,27 @@
                 /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
-                .timeline-card-title{
-                    font-size: 25px;
+                .timeline-card-title {
+                    font-size: 1.1em;
                     font-style: bold;
                 }
-                .timeline-card-time{
-                    font-style: italic;
+                .timeline-card-time {
+                    font-size: 0.8em;
                 }
-                .timeline-card-description{
-                    
+                .timeline-card-description {
+                     font-size: 0.8em;
                 }
-                .timeline-card-effectiveness-bar{
+                .timeline-card-effectiveness-bar {
                     margin-top: 6px !important;
-                    padding-left: 10px !important;
                     padding-right: 10px !important;
                 }
-                .timeline-card-effectiveness-label{
-                    
+                    .timeline-card-effectiveness-bar progress {
+                        border-radius: 1px !important;
+                        color: #39425C !important;                        
+                    }
+                .timeline-card-effectiveness-label {
+                    font-size: 0.8em;
+                    text-align: right;
                 }
 
                 .timeline-card-id{
@@ -1402,7 +1420,7 @@
 }
 
 .jw-controlbar-center-group .jw-knob {
-    background-color: #202020;
+    background-color: #313A53;
     border: 0.12em solid #fff;
     font-size: 3em;
     top: 10%;
@@ -1435,6 +1453,13 @@
     .jw-nextup { display: none !important; }
 
 
+.jw-background-color { background-color: #313A53 !important }
+
+#player .jw-option.jw-active-option, #player .jw-progress { background-color: #27314d !important } 
+
+.jw-buffer { background-color: #313A53 !important }
+
+.jw-rail { background-color: #39425C !important }
 
 
 /* ==============================================
@@ -1443,6 +1468,10 @@
 
 .fa_1_5x {
     font-size: 1.5em;
+}
+
+.progress.is-info {
+    background-color: #313A53 !important; 
 }
 
 

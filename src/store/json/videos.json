@@ -1,78 +1,100 @@
 {
-    "title": "Hello",
-    "videoID": "1",
-    "link": "https://cdn.jwplayer.com/previews/wUu9NAdZ",
-    "thumb": "https://cdn.jwplayer.com/thumbs/wUu9NAdZ-720.jpg",
+    "title": "How To Sound Smart In Your Tedx Talk",
+    "videoID": 0,
+    "link": "http://content.jwplatform.com/videos/G4mlZSx4-mOPkLg6c.mp4",
+    "thumb": "http://content.jwplatform.com/thumbs/G4mlZSx4-720.jpg",
     "sources": [
-                {
-                    "width": 1280,
-                    "type": "application/vnd.apple.mpegurl",
-                    "file": "https://cdn.jwplayer.com/manifests/wUu9NAdZ.m3u8",
-                    "height": 720
-                },
-                {
-                    "width": 320,
-                    "height": 180,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-2thAkUNK.mp4",
-                    "label": "180p"
-                },
-                {
-                    "width": 480,
-                    "height": 270,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-I7QHntgN.mp4",
-                    "label": "270p"
-                },
-                {
-                    "width": 720,
-                    "height": 406,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-bjE4cNUM.mp4",
-                    "label": "406p"
-                },
-                {
-                    "width": 1280,
-                    "height": 720,
-                    "type": "video/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-2v7o7MEI.mp4",
-                    "label": "720p"
-                },
-                {
-                    "type": "audio/mp4",
-                    "file": "https://cdn.jwplayer.com/videos/wUu9NAdZ-lJqrUNGH.m4a",
-                    "label": "AAC Audio"
-                }
+                    {
+        "width": 1280,
+        "type": "application/vnd.apple.mpegurl",
+        "file": "https://cdn.jwplayer.com/manifests/G4mlZSx4.m3u8",
+        "height": 720
+        },
+        {
+            "width": 320,
+            "height": 180,
+            "type": "video/mp4",
+            "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
+            "label": "180p"
+        },
+        {
+            "width": 480,
+            "height": 270,
+            "type": "video/mp4",
+            "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
+            "label": "270p"
+        },
+        {
+            "width": 720,
+            "height": 406,
+            "type": "video/mp4",
+            "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
+            "label": "406p"
+        },
+        {
+            "width": 1280,
+            "height": 720,
+            "type": "video/mp4",
+            "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
+            "label": "720p"
+        },
+        {
+            "type": "audio/mp4",
+            "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
+            "label": "AAC Audio"
+        }
             ],
-    "duration": "90",
-    "jwVideoID": "wUu9NAdZ",
-    "jwPlaylistID": "asdf324",
-    "class": "Aeronastro class",
+    "duration": "355",
+    "jwVideoID": "G4mlZSx4", // mediaID
+    "jwPlaylistID": "k5WSiplm", // k5WSiplm
+    "class": "Material Science Engineering",
     "categories": [
         {
             "name": "Posture & Stance",
             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
             "canon": "Delivery"
         }
-	],
-	"annotations": [
-		{
-			"category": "Posture & Stance",
+    ],
+    "annotations": [
+        {
+            "category": "Posture & Stance",
             "canon": "Delivery",
-			"comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-			"from": "00:08",
-			"to": "00:17",
-			"rating": "3",
-			"author": "Ben Domino"
-		},
-		{
-			"category": "Volume, rate and pitch",
-            "canon": "Delivery",
-			"comment": "Lorem hahah",
-			"from": "00:56",
-			"to": "01:23",
-			"rating": "4",
-			"author": "Ben Domino"
-		}
-	]
+            "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
+            "from": "00:08",
+            "to": "00:17",
+            "rating": "3",
+            "author": "Ben Domino",
+            "id": 0
+        },
+        {
+            "category": "Graphics",
+            "canon": "Visual",
+            "comment": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
+            "from": "00:56",
+            "to": "01:23",
+            "rating": "4",
+            "author": "Ben Domino",
+            "id": 1
+        },
+        {
+            "category": "Terms",
+            "canon": "Structure",
+            "comment": "There are many variations of passages of Lorem Ipsum available.",
+            "from": "03:32",
+            "to": "03:56",
+            "rating": "4",
+            "author": "Ben Domino",
+            "id": 2
+        },
+        {
+            "category": "Graphics",
+            "canon": "Visual",
+            "comment": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
+            "from": "05:21",
+            "to": "06:23",
+            "rating": "4",
+            "author": "Ben Domino",
+            "id": 3
+        }
+    ]
 }
