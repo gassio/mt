@@ -160,10 +160,10 @@
             <div class="cards column is-5 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>
-                        <a @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-book fa-2x" aria-hidden="true"></i><span>Moves</span></a>
+                        <!--<a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>-->
+                        <a @click="chooseCanonFilter($event, 'Moves')"><!--<input type="checkbox" v-model="checked">--><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i><span>Moves</span></a>
                         <a @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa-2x" aria-hidden="true"></i><span>Structure</span></a>
-                        <a @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i><span>Delivery</span></a>
+                        <a @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i><span>Delivery</span></a>
                         <a @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i><span>Visual</span></a>
                         <a @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i><span>Style</span></a>
                         <div id="more-annotations" class="more-annotations">
@@ -205,32 +205,6 @@
                                 <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
-
-                        <!--<div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">   
-                            <div class="column">
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
-                                    </div>
-                                    <div class="column is-3">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column">
-                                        <p class="timeline-card-description">{{ card.comment }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="timeline-card-effectiveness-bar column is-8">
-                                        <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
             </div>
         </div>
@@ -295,6 +269,7 @@
                 ],
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
+                // checked: false,
                 id: this.$route.params.id,
             }
         },
@@ -309,10 +284,11 @@
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
             
             // Change the color and background of All in cards menu so that it looks active
-            var allButton = document.getElementById("all-is-active")
-            allButton.style.background = "#8F082A";
-            allButton.style.color = "#FFFFFF";
-
+            // var allButton = document.getElementById("all-is-active")
+            // allButton.style.background = "#8F082A";
+            // allButton.style.color = "#FFFFFF";
+            $('.card-menu a').css('background-color', '#4a4a4a')
+            $('.card-menu a').css('color', '#FFF')
             
 
             // Get the correct source of the video. 
@@ -662,38 +638,68 @@
                 event.currentTarget.style.backgroundColor = "#8F082A"
                 event.currentTarget.style.color = "#FFFFFF"
             },
-            timelineMenuActiveItemProblem(event) {
-                var children = event.currentTarget.parentNode.children
-                for (var i=0; i < children.length; i++) {
-                    children[i].style.backgroundColor = "transparent"
-                    children[i].style.color = "#6B6B6B"
-                }
-                event.currentTarget.style.backgroundColor = "#8F082A"
-                event.currentTarget.style.color = "#FFFFFF"
-            },
             chooseCanonFilter(event, canon) {
-                // this.filterCanon = canon
-                this.timelineMenuActiveItemProblem(event)
-
                 if (canon === 'Moves') {
-                    if (this.isMoves !== '') this.isMoves = ''
-                    else this.isMoves = 'Moves'
+                    if (this.isMoves !== '')  {
+                        this.isMoves = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                        this.checked = false
+                    }
+                    else {
+                        this.isMoves = 'Moves'
+                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.color = "#FFFFFF"
+                        this.checked = true
+                    }
                 }
                 if (canon === 'Structure') {
-                    if (this.isStructure !== '') this.isStructure = ''
-                    else this.isStructure = 'Structure'
+                    if (this.isStructure !== '') {
+                        this.isStructure = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#6B6B6B"
+                    }
+                    else {
+                        this.isStructure = 'Structure'
+                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    } 
                 }
                 if (canon === 'Delivery') {
-                    if (this.isDelivery !== '') this.isDelivery = ''
-                    else this.isDelivery = 'Delivery'
+                    if (this.isDelivery !== '') {
+                        this.isDelivery = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#6B6B6B"
+                    }
+                    else {
+                        this.isDelivery = 'Delivery'
+                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
                 } 
                 if (canon === 'Visual') {
-                    if (this.isVisual !== '') this.isVisual = ''
-                    else this.isVisual = 'Visual'
+                    if (this.isVisual !== '') {
+                        this.isVisual = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#6B6B6B"
+                    }
+                    else { 
+                        this.isVisual = 'Visual'
+                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
                 }
                 if (canon === 'Style') {
-                    if (this.isStyle !== '') this.isStyle = ''
-                    else this.isStyle = 'Style'
+                    if (this.isStyle !== '') {
+                        this.isStyle = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#6B6B6B"
+                    }
+                    else { 
+                        this.isStyle = 'Style'
+                        event.currentTarget.style.backgroundColor = "#4a4a4a"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
                 }
             },
             chooseCanonAnnotate(canon, event) {
@@ -851,6 +857,12 @@
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
+
+            // console.log(this.isMoves)
+            // console.log(this.isStructure)
+            // console.log(this.isDelivery)
+            // console.log(this.isVisual)
+            // console.log(this.isStyle)
         }
     }
 </script>
@@ -1258,7 +1270,7 @@
                        box-shadow: inset 0 0 0 2px #6B6B6B;
                     }
                     .edit-buttons-edit {
-                        background-color: #003300;
+                        background-color: #159D1A;
                         opacity:0.8;
                     }
                     .edit-buttons-edit:hover {
@@ -1267,9 +1279,9 @@
                        box-shadow: inset 0 0 0 3px #003300;
                     }
                     .edit-buttons-delete {
-                        background-color: #A90931;
+                        background-color: #BC1715;
                     }
-                    .edit-buttons-delete:hover {
+                    +.edit-buttons-delete:hover {
                        background-color: #FFFFFF !important;
                        color: #A90931 !important;
                        box-shadow: inset 0 0 0 3px #A90931;
@@ -1380,5 +1392,53 @@
     margin: 0;
 }
     .jw-nextup { display: none !important; }
-        
+
+
+
+
+/* ==============================================
+                #CHECKBOX
+================================================= */
+/*
+.checkboxFive {
+	width: 25px;
+	margin: 10px 10px;
+	position: relative;
+}
+
+.checkboxFive label {
+	cursor: pointer;
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	top: 0;
+  	left: 0;
+	background: #eee;
+	border:1px solid #ddd;
+}
+
+.checkboxFive label:after {
+	opacity: 0.2;
+	content: '';
+	position: absolute;
+	width: 9px;
+	height: 5px;
+	background: transparent;
+	top: 6px;
+	left: 7px;
+	border: 3px solid #333;
+	border-top: none;
+	border-right: none;
+
+	transform: rotate(-45deg);
+}
+
+.checkboxFive label:hover::after {
+	opacity: 0.5;
+}
+
+.checkboxFive input[type=checkbox]:checked + label:after {
+	opacity: 1;
+}
+*/        
 </style>
