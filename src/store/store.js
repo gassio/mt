@@ -202,14 +202,14 @@ export const store = new Vuex.Store({
                 "classID": "1",
                 "jwPlaylistID": "k5WSiplm",
             },
-            {
-                "title": "Mathematics Class",
-                "section": "16.S979",
-                "spring": 'Spring 17',
-                "videosCount": "22",
-                "classID": "2",
-                "jwPlaylistID": "k5WSiplm",
-            },   
+            // {
+            //     "title": "Mathematics Class",
+            //     "section": "16.S979",
+            //     "spring": 'Spring 17',
+            //     "videosCount": "22",
+            //     "classID": "2",
+            //     "jwPlaylistID": "k5WSiplm",
+            // },   
         ],
         canons: [
             { 
