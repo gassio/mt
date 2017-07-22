@@ -433,6 +433,8 @@
                 this.annotateStart = this.startDragTime
                 this.annotateEnd = this.endDragTime
 
+                var current = this.videoCurrentTime
+
                 // START
                 $( ".crop__start" ).draggable({
                     cursor: "col-resize",
@@ -459,7 +461,7 @@
                     stop(event) {
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        var currentTime = that.videoCurrentTime
+                        current = that.videoCurrentTime
 
                         // "out of bounds" exception
                         if (clickCoords < 0)
@@ -473,13 +475,15 @@
 
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        var targetTime = currentTime + clickTime - 90
+                        var targetTime = current + clickTime - 90
 
                         // Seek to targetTime
-                        that.player.seek(targetTime)    
+                        // that.player.seek(targetTime)    
 
                         // Set from
                         targetTime = that.secondsToMMSS(targetTime)
+                        
+                        // TO BE CALCULATED IN ANNOTATE()
                         that.annotateStart = targetTime
                     }
                 })
@@ -527,6 +531,7 @@
                         var targetTime = currentTime + clickTime - 90
                         targetTime = that.secondsToMMSS(targetTime)
 
+                        // TO BE CALCULATED IN ANNOTATE()
                         that.annotateEnd = targetTime
                     }
                 })
@@ -560,6 +565,11 @@
                 this.isAnnotateFields = false
                 this.isVideoline = false
                 // $('.videoline-ribbon').show()
+
+                // annotateStart + annotateEnd 
+                // MUST BEE CALCULATED HERE
+                
+                this.player.seek(this.videoCurrentTime)
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
