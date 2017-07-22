@@ -448,7 +448,6 @@
                         var clickCoords = event.originalEvent.clientX - windowOffset
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        // that.player.seek(clickTime)
 
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
@@ -472,11 +471,15 @@
 
                         // console.log(parseInt(clickCoordsPercent) + "%")
 
-                        // 2 minutes scaling
-                        var clickTime = (clickCoordsPercent * 120) / 100
-                        var targetTime = currentTime + clickTime - 60
-                        targetTime = that.secondsToMMSS(targetTime)
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+                        var targetTime = currentTime + clickTime - 90
 
+                        // Seek to targetTime
+                        that.player.seek(targetTime)    
+
+                        // Set from
+                        targetTime = that.secondsToMMSS(targetTime)
                         that.annotateStart = targetTime
                     }
                 })
@@ -519,9 +522,9 @@
 
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
 
-                        // 2 minutes scaling
-                        var clickTime = (clickCoordsPercent * 120) / 100
-                        var targetTime = currentTime + clickTime - 60
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+                        var targetTime = currentTime + clickTime - 90
                         targetTime = that.secondsToMMSS(targetTime)
 
                         that.annotateEnd = targetTime
