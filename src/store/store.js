@@ -61,7 +61,7 @@ export const store = new Vuex.Store({
                 "duration": "355",
                 "jwVideoID": "G4mlZSx4", // mediaID
                 "jwPlaylistID": "k5WSiplm", // k5WSiplm
-                "class": "Aeronautics Class",
+                "class": "Material Science Engineering",
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -171,7 +171,7 @@ export const store = new Vuex.Store({
                 "duration": "904",
                 "jwVideoID": "gj1SyIed", // mediaID
                 "jwPlaylistID": "k5WSiplm", // k5WSiplm
-                "class": "Aeronautics Class",
+                "class": "Material Science Engineering",
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -205,7 +205,7 @@ export const store = new Vuex.Store({
         ],
         classes: [
              {
-                "title": "Aeronautics Class",
+                "title": "Material Science Engineering",
                 "section": "16.S982",
                 "spring": 'Spring 17',
                 "videosCount": "34",
