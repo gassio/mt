@@ -370,6 +370,26 @@
             })
             // this.player.setControls(false);
         },
+        updated() {
+            // Fixes unknown man picture bug
+            $('.jw-logo').hide()
+
+            // Fetches annotations of the current video (videoid = URLid)
+            // Stores annotations in videoAnnotations[]
+            this.videoAnnotations = this.$store.state.videos[this.id].annotations
+
+            // Color a card when videoCurrentTime is between card from and end
+            this.hooping()
+            
+            // Show "Sroll down for more" when there are more than 5 cards
+            this.moreAnnotations()
+
+            // console.log(this.isMoves)
+            // console.log(this.isStructure)
+            // console.log(this.isDelivery)
+            // console.log(this.isVisual)
+            // console.log(this.isStyle)
+        },
         methods: {
             annotating() {
                 var that = this
@@ -848,26 +868,6 @@
                 return this.$store.getters.canons
             }
         },
-        updated() {
-            // Fixes unknown man picture bug
-            $('.jw-logo').hide()
-
-            // Fetches annotations of the current video (videoid = URLid)
-            // Stores annotations in videoAnnotations[]
-            this.videoAnnotations = this.$store.state.videos[this.id].annotations
-
-            // Color a card when videoCurrentTime is between card from and end
-            this.hooping()
-            
-            // Show "Sroll down for more" when there are more than 5 cards
-            this.moreAnnotations()
-
-            // console.log(this.isMoves)
-            // console.log(this.isStructure)
-            // console.log(this.isDelivery)
-            // console.log(this.isVisual)
-            // console.log(this.isStyle)
-        }
     }
 </script>
 
