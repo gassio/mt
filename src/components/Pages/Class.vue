@@ -145,7 +145,6 @@
 		margin-top: 30px !important;
 		margin-bottom: 0px !important;
         transition:  box-shadow 0.5s ease;
-        box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
 	}
 	.class-card i{
 		color: #6B6B6B;

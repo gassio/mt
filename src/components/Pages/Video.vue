@@ -150,22 +150,24 @@
                 </div>
 
                 <!-- testing -->
-                <div class="test">
-                    <ul>
+                    <div class="add-annotation-area" @click="annotating()" v-show="!isAnnotating">
+                        <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
+                    </div>
+                    <!--<ul>
                         <li v-for="a in this.$store.state.videos[this.id].annotations"> {{ a.id }}</li>
-                    </ul>
-                </div>
+                    </ul> -->
             </div>
 
             <div class="cards column is-5 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
                         <!--<a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>-->
-                        <a @click="chooseCanonFilter($event, 'Moves')"><!--<input type="checkbox" v-model="checked">--><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i><span>Moves</span></a>
-                        <a @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa-2x" aria-hidden="true"></i><span>Structure</span></a>
-                        <a @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa-2x" aria-hidden="true"></i><span>Delivery</span></a>
-                        <a @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i><span>Visual</span></a>
-                        <a @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i><span>Style</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><!--<input type="checkbox" v-model="checked">--><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                        <!--<a class="card-menu-link add-annotation" @click="annotating()"><i class="fa fa-plus fa_1_5x " aria-hidden="true"></i><span>Annotation</span></a>-->
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -329,13 +331,13 @@
             })
 
             // Create button inside JWPlayer, using their API.
-            this.player.on('ready', function() {
-                that.player.addButton(
-                    "/static/add.png", 
-                    "Add annotation", 
-                    function() { that.annotating() }, 
-                    "annomenu");
-            })
+            // this.player.on('ready', function() {
+            //     that.player.addButton(
+            //         "/static/add.png", 
+            //         "Add annotation", 
+            //         function() { that.annotating() }, 
+            //         "annomenu");
+            // })
 
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
@@ -907,6 +909,37 @@
         color: #FFFFFF !important;
     }
 
+
+
+
+
+/* ==============================================
+                #ADD ANNOTATION AREA
+================================================= */
+
+.add-annotation-area {
+    cursor: pointer;
+    height: 100px;
+    color: #39425C;
+    border: 0.1em solid #39425C;
+    border-top: none;
+    background: #FFF;
+    transition: 0.25s;
+    -webkit-transition: 0.25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-annotation-area:hover {
+    color: #FFF;
+    background: #39425C;
+}
+
+    .add-annotation-area span {
+        margin: 5px;    
+        font-size: 1.4em;
+    }
+
 /* ==============================================
                 #PROGRESS BAR
 ================================================= */
@@ -1196,15 +1229,23 @@
         height: 100%;
     }
 
-        .card-menu a {
+        .card-menu-link {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #6B6B6B;
-            padding: 15px;
+            padding: 15px 10px;
             border-bottom: solid 1px rgba(0, 0, 0, .5);
-        }        
+        }
+             .card-menu-link span {
+                 font-size: 14px;
+             }
+
+        .add-annotation {
+            color: #4A4A4A !important;
+            background-color: #FFF !important;
+        }
 
     .timeline-content{
         padding: 10px !important;
@@ -1397,48 +1438,12 @@
 
 
 /* ==============================================
-                #CHECKBOX
+                #TRUMPS
 ================================================= */
-/*
-.checkboxFive {
-	width: 25px;
-	margin: 10px 10px;
-	position: relative;
+
+.fa_1_5x {
+    font-size: 1.5em;
 }
 
-.checkboxFive label {
-	cursor: pointer;
-	position: absolute;
-	width: 15px;
-	height: 15px;
-	top: 0;
-  	left: 0;
-	background: #eee;
-	border:1px solid #ddd;
-}
 
-.checkboxFive label:after {
-	opacity: 0.2;
-	content: '';
-	position: absolute;
-	width: 9px;
-	height: 5px;
-	background: transparent;
-	top: 6px;
-	left: 7px;
-	border: 3px solid #333;
-	border-top: none;
-	border-right: none;
-
-	transform: rotate(-45deg);
-}
-
-.checkboxFive label:hover::after {
-	opacity: 0.5;
-}
-
-.checkboxFive input[type=checkbox]:checked + label:after {
-	opacity: 1;
-}
-*/        
 </style>
