@@ -145,7 +145,7 @@
                         <span class="crop__space"></span>
                     </div>
 
-                    <div class="videoline-progress">
+                    <div class="videoline-progress" v-show="false">
                     </div>
                 </div>
 
@@ -271,7 +271,7 @@
                 ],
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
-                // checked: false,
+                // targetTime: 0,
                 id: this.$route.params.id,
             }
         },
@@ -391,19 +391,23 @@
             // console.log(this.isStyle)
         },
         methods: {
+            // DO NOT TOUCH!
             annotating() {
                 var that = this
+
                 this.isAnnotating = true
                 this.isAnnotateMenu = true
                 this.annotateRating = null
                 this.annotateComment = ''
                 this.player.pause()
+
+                const annotationPauseTime = this.player.getPosition();
                 
                 // setStartEndPosition()
                 var annotationNowTime = this.videoCurrentTime - 5 // 5 seconds before pause
                 var barWidth = $('.player').width()
                // "out of bounds" exception
-                if (annotationNowTime < 0) 
+                if (annotationPauseTime < 0) 
                     annotationNowTime = 0
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
@@ -411,12 +415,15 @@
                 var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / that.videoDuration // 10 seconds after from
 
                 // "out of bounds" exception
-                if(coordsPercentEnd > 100)
+                if (coordsPercentEnd > 100)
                     coordsPercentEnd = 100
                     
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
-                $('.crop__start').css('left', coordsStart); 
+                // DO NOT TOUCH!
+                console.log(coordsStart)
+
+                $('.crop__start').css('left', coordsStart);
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
@@ -433,7 +440,6 @@
                 this.annotateStart = this.startDragTime
                 this.annotateEnd = this.endDragTime
 
-                var current = this.videoCurrentTime
 
                 // START
                 $( ".crop__start" ).draggable({
@@ -461,7 +467,7 @@
                     stop(event) {
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        current = that.videoCurrentTime
+                        console.log(clickCoords)
 
                         // "out of bounds" exception
                         if (clickCoords < 0)
@@ -475,15 +481,12 @@
 
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        var targetTime = current + clickTime - 90
+                        var targetTime = annotationPauseTime + clickTime - 90
 
-                        // Seek to targetTime
-                        // that.player.seek(targetTime)    
+                        that.player.seek(targetTime)
 
-                        // Set from
                         targetTime = that.secondsToMMSS(targetTime)
-                        
-                        // TO BE CALCULATED IN ANNOTATE()
+
                         that.annotateStart = targetTime
                     }
                 })
@@ -528,10 +531,12 @@
 
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        var targetTime = currentTime + clickTime - 90
+                        var targetTime = annotationPauseTime + clickTime - 90
+
+                        that.player.seek(targetTime)
+
                         targetTime = that.secondsToMMSS(targetTime)
 
-                        // TO BE CALCULATED IN ANNOTATE()
                         that.annotateEnd = targetTime
                     }
                 })
@@ -566,10 +571,6 @@
                 this.isVideoline = false
                 // $('.videoline-ribbon').show()
 
-                // annotateStart + annotateEnd 
-                // MUST BEE CALCULATED HERE
-                
-                this.player.seek(this.videoCurrentTime)
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
