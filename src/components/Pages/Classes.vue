@@ -92,7 +92,7 @@
 			}
 			
 /*-------------- CLASS CARD ---------------- */			
-		.classes-of-semester{
+		.classes-of-semester {
 			display: flex;
 			flex-direction: row;
 			flex-wrap: wrap;
@@ -100,17 +100,16 @@
 			width: 100%;
 			margin-top: 20px;
 		}
-			.classes-card{
-				background: rgba(169,9,49,0.04);
+			.classes-card {
+				background-color: rgba(169,9,49,0.04);
 				color: #6B6B6B;
 				padding: 45px;
 				margin: 20px;
 				height: auto;
 				transition:  box-shadow 0.5s ease;
-				box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.3);
 			}
 
-			@media screen and (min-width: 0px){
+			@media screen and (min-width: 0px) {
 				.classes-card{
 					width: 100%;
 				}
@@ -150,7 +149,7 @@
 				}	
 				.classes-card-title{
 					text-align: center;
-					font-size: 20px;
+					font-size: 18px;
 					color: #A90931;
 				}
 				.classes-card-details{

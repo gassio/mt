@@ -61,7 +61,7 @@ export const store = new Vuex.Store({
                 "duration": "355",
                 "jwVideoID": "G4mlZSx4", // mediaID
                 "jwPlaylistID": "k5WSiplm", // k5WSiplm
-                "class": "Aeronautics Class",
+                "class": "Material Science Engineering",
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -83,7 +83,7 @@ export const store = new Vuex.Store({
                     {
                         "category": "Graphics",
                         "canon": "Visual",
-                        "comment": "Lorem hahah",
+                        "comment": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
                         "from": "00:56",
                         "to": "01:23",
                         "rating": "4",
@@ -93,7 +93,7 @@ export const store = new Vuex.Store({
                     {
                         "category": "Terms",
                         "canon": "Structure",
-                        "comment": "Lorem hahah",
+                        "comment": "There are many variations of passages of Lorem Ipsum available.",
                         "from": "03:32",
                         "to": "03:56",
                         "rating": "4",
@@ -103,22 +103,12 @@ export const store = new Vuex.Store({
                     {
                         "category": "Graphics",
                         "canon": "Visual",
-                        "comment": "Lorem hahah",
+                        "comment": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
                         "from": "05:21",
                         "to": "06:23",
                         "rating": "4",
                         "author": "Ben Domino",
                         "id": 3
-                    },
-                    {
-                        "category": "Volume",
-                        "canon": "Delivery",
-                        "comment": "Lorem hahah",
-                        "from": "07:43",
-                        "to": "10:58",
-                        "rating": "4",
-                        "author": "Ben Domino",
-                        "id": 4
                     }
                 ]
             },
@@ -171,7 +161,7 @@ export const store = new Vuex.Store({
                 "duration": "904",
                 "jwVideoID": "gj1SyIed", // mediaID
                 "jwPlaylistID": "k5WSiplm", // k5WSiplm
-                "class": "Aeronautics Class",
+                "class": "Material Science Engineering",
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -204,23 +194,22 @@ export const store = new Vuex.Store({
             }
         ],
         classes: [
-             {
-                "title": "Aeronautics Class",
+            {
+                "title": "Material Science Engineering",
                 "section": "16.S982",
                 "spring": 'Spring 17',
                 "videosCount": "34",
                 "classID": "1",
                 "jwPlaylistID": "k5WSiplm",
             },
-            {
-                "title": "Mathematics Class",
-                "section": "16.S979",
-                "spring": 'Spring 17',
-                "videosCount": "22",
-                "classID": "2",
-                "jwPlaylistID": "k5WSiplm",
-            },
-           
+            // {
+            //     "title": "Mathematics Class",
+            //     "section": "16.S979",
+            //     "spring": 'Spring 17',
+            //     "videosCount": "22",
+            //     "classID": "2",
+            //     "jwPlaylistID": "k5WSiplm",
+            // },   
         ],
         canons: [
             { 
@@ -345,21 +334,35 @@ export const store = new Vuex.Store({
             state.currentVideoID = id
         },
         ADD_ANNOTATION: (state, payload) => {
-            state.videos[payload.id].annotations.push(payload.annotation)
+            var annotations = state.videos[payload.id].annotations
+            annotations.push(payload.annotation)
+
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
         },
         EDIT_ANNOTATION: (state, payload) => {
-            state.videos[payload.id].annotations[payload.cardID].rating = payload.rating
-            state.videos[payload.id].annotations[payload.cardID].comment = payload.comment
-            state.videos[payload.id].annotations[payload.cardID].from = payload.from
-            state.videos[payload.id].annotations[payload.cardID].to = payload.to
+            var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
+            var annotations = state.videos[payload.id].annotations
+            
+            currentAnnotation.rating = payload.rating
+            currentAnnotation.comment = payload.comment
+            currentAnnotation.from = payload.from
+            currentAnnotation.to = payload.to
 
-            console.log(state.videos[payload.id].annotations)
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
+
         },
         DELETE_ANNOTATION: (state, payload) => {
-            var myArray = state.videos[payload.id].annotations
-            myArray.shift(payload.cardID)
-            console.log('mutation')
-            console.log(state.videos[payload.id].annotations)
+            var newAnnotations = state.videos[payload.id].annotations
+            newAnnotations = newAnnotations.filter(function(a){
+                return a.id !== payload.cardID
+            })
+            // Update annotations[]
+            state.videos[payload.id].annotations = newAnnotations
+
+            // Sorting annotations[] by from property
+            newAnnotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
         },
         // future
         retrieveVideosByClass: (state, className) => {
@@ -410,3 +413,13 @@ export const store = new Vuex.Store({
         // SET_JW_VIDEOS: (state, { videos }) => {
         //     state.jwVideos = videos.playlist
         // },
+
+        // SORTING ARRAY BY FROM PROPERTY 
+        // function compare(a,b) {
+        //     if (a.from < b.from)
+        //         return -1;
+        //     if (a.from > b.from)
+        //         return 1;
+        //     return 0;
+        // }
+        // annotations.sort(compare);

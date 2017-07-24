@@ -85,8 +85,9 @@
 			</div>
 			
 			<div class="home-card-add-new">
-				<i class="fa fa-plus fa-4x" aria-hidden="true"></i>
+				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<p>Add new video</p>
+				<span>Or drop it here</span>
 			</div>
 			
 		</div>
@@ -182,11 +183,10 @@
 	height: 100%;
 }
 
-	.home-card{
+	.home-card {
 		height:auto;
 		width: calc(100% /3 - 20px);
 		margin: 10px;
-		box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
 	}	
 		.home-card-container{
 			padding: 0px !important;
@@ -220,20 +220,24 @@
 				padding-right: 20px !important;
 			}		
 			
-			.home-card-add-new{
+			.home-card-add-new {
 				display: flex;
 				flex-direction:column;
 				justify-content: center;
 				align-items: center;
 				height:280px;
+				color: #A90931;
+				background-color: #FFF;
 				width: calc(100% /3 - 20px);
 				margin: 10px;
-				border: dashed 2px rgba(0, 0, 0, .3);
-				box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.33);
+				border: 1px dashed #DADDE2;
 			}
-			.home-card-add-new p{
+			.home-card-add-new p {
 				color: #A90931;
 				font-size: 30px;
+			}
+			.home-card-add-new span {
+				color: #6B6B6B;
 			}
 
 </style>

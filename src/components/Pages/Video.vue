@@ -9,7 +9,7 @@
             </button> 
         </div>
         <div class="main-content columns is-gapless is-marginless">
-            <div class="player column is-7">
+            <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
                 <div class="annotate" v-show="isAnnotating">
@@ -52,8 +52,7 @@
                                     <button class="button" @click="annotate()">Annotate</button>
                                 </div>
                             </div>
-                            <input type="text" v-model="annotateStart">
-                            <input type="text" v-model="annotateEnd">
+                            
                         </div>
                         
                     </div>
@@ -112,14 +111,23 @@
 
                 <div class="times" v-show="isVideoline">
                     <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
-                    <span class="times-min" v-for="t in 10"></span>
-                    <!-- <span class="times-sec" v-for="t in 10"></span> -->
+                    <!-- v-for="t in 10"  style="color: #fff; font-size: 8px;"-->
+                    <span class="times-min">{{ secondsToMMSS(annotationPauseTime - 90) }}</span><span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(18 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(36 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(54 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(72 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(90 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(108 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(126 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(144 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(162 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
                 </div>
 
                 <div class="videoline" id="videoline" v-show="isVideoline">
-                    <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
+                    <!--<span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>-->
 
-                    <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
+                    <div class="videoline-ribbon" draggable="true" v-show="false">
                         <span class="videoline-ribbon-circle"></span>
                         <span class="videoline-ribbon-line">
                             <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
@@ -127,38 +135,47 @@
                     </div>
 
                     <div class="crop videoline-crop" id="videoline-crop" >
-                        <div class="crop__corner crop__start" draggable="true" style="display:flex; flex-direction: column;">
-                            <span style="background-color:#F2C94C; padding:5px 8px;  border-radius: 25px;">||</span>
-                            <span>&nbsp;</span>
+                        <div class="crop__corner crop__start" draggable="true">
+                            <span>|||</span>
+                            <!--<span>&nbsp;</span>-->
                             <!--<div class="crop__grab" style="margin-left: -10px"> 
                                 <span>||</span>
-                            </div>
-                            <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>-->
+                            </div>-->
+                            <p class="crop__time-label">{{ startDragTime }}</p>
                         </div>
-                        <div class="crop__corner crop__end" draggable="true" style="display:flex; flex-direction:column; /*justify-content:flex-end;*/">
-                            <span style="background-color:#F2C94C; padding:5px 8px;  border-radius: 25px;">||</span>
+                        <div class="crop__corner crop__end" draggable="true">
+                            <span>|||</span>
                             <!--<div class="crop__grab">
                                 <span>||</span>
-                            </div> 
-                            <p class="crop__time-label">{{ endDragTime }}</p>-->
+                            </div> -->
+                            <p class="crop__time-label">{{ endDragTime }}</p>
                         </div>
                         <span class="crop__space"></span>
                     </div>
 
-                    <div class="videoline-progress">
+                    <div class="videoline-progress" v-show="false">
                     </div>
                 </div>
+
+                <!-- testing -->
+                    <div class="add-annotation-area" @click="annotating()" v-show="!isAnnotating">
+                        <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
+                    </div>
+                    <!--<ul>
+                        <li v-for="a in this.$store.state.videos[this.id].annotations"> {{ a.id }}</li>
+                    </ul> -->
             </div>
 
-            <div class="cards column is-5 is-gapless is-marginless" id="cards">
+            <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>
-                        <a @click="chooseCanonFilter('Moves')"><i class="fa fa-book fa-2x" aria-hidden="true"></i>Moves</a>
-                        <a @click="chooseCanonFilter('Structure')"><i class="fa fa-book fa-2x" aria-hidden="true"></i>Structure</a>
-                        <a @click="chooseCanonFilter('Delivery')"><i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>Delivery</a>
-                        <a @click="chooseCanonFilter('Visual')"><i class="fa fa-eye fa-2x" aria-hidden="true"></i>Visual</a>
-                        <a @click="chooseCanonFilter('Style')"><i class="fa fa-diamond fa-2x" aria-hidden="true"></i>Style</a>
+                        <!--<a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>-->
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><!--<input type="checkbox" v-model="checked">--><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                        <!--<a class="card-menu-link add-annotation" @click="annotating()"><i class="fa fa-plus fa_1_5x " aria-hidden="true"></i><span>Annotation</span></a>-->
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -166,15 +183,15 @@
                             </div>
                         </div>
                     </nav>
-                    <div class="timeline-content column is-10">
-
-                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="filterCanon === 'All'" @mouseover="showEditButton($event)" @mouseout="hideEditButton($event)">
+                    <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
+                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
+                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
-                                    <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p> <!--- {{ card.id }} -->
+                                    <div class="column is-8">
+                                        <p class="timeline-card-title">{{ card.category }}</p>  <!-- {{ card.id }} -->
                                     </div>
-                                    <div class="column is-3">
+                                    <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
                                     </div>
                                 </div>
@@ -185,7 +202,7 @@
                                 </div>
                                 <div class="columns is-gapless is-marginless">
                                     <div class="timeline-card-effectiveness-bar column is-8">
-                                        <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
+                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
@@ -198,37 +215,11 @@
                                 <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
-
-                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" v-if="card.canon === filterCanon">
-                            <div class="column"> <!--  @click="seekCard($event)" -->
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column is-9">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
-                                    </div>
-                                    <div class="column is-3">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column">
-                                        <p class="timeline-card-description">{{ card.comment }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="timeline-card-effectiveness-bar column is-8">
-                                        <progress class="progress is-small" v-bind:value="20 * card.rating" max="100"></progress>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
             </div>
         </div>
-            <!-- <router-link :to=" '/video/' + id + '/edit' ">
-                <button class="button is-warning">Edit</button>
+            <!-- <router-link :to=" '/video/' + id + '/edit' ">d
+                <button class="button is-warning">Edit</button>d
             </router-link>
             <router-view></router-view> -->
         </div>
@@ -243,7 +234,6 @@
     export default {
         data() {
             return {
-                timeNow: 0,
                 player: null,
                 clickCoords: 0,
                 videoDuration: 0,
@@ -274,6 +264,11 @@
                 startDragTime: 0,
                 endDragTime: 0,
                 filterCanon: 'All',
+                isMoves: 'Moves',
+                isStructure: 'Structure',
+                isDelivery: 'Delivery',
+                isVisual: 'Visual',
+                isStyle: 'Style',
                 times: [
                     { marginleft: '10%' },
                     { marginleft: '20%' },
@@ -283,6 +278,7 @@
                 ],
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
+                annotationPauseTime: 0,
                 id: this.$route.params.id,
             }
         },
@@ -292,17 +288,16 @@
             this.id = parseInt(this.id)
             
             this.$store.commit('setCurrentVideoID', this.id)
-
-            this.loadVideoAnnotations()
             
             this.videoDuration = this.videos[this.id].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
             
             // Change the color and background of All in cards menu so that it looks active
-            var allButton = document.getElementById("all-is-active")
-            allButton.style.background = "#8F082A";
-            allButton.style.color = "#FFFFFF";
-
+            // var allButton = document.getElementById("all-is-active")
+            // allButton.style.background = "#8F082A";
+            // allButton.style.color = "#FFFFFF";
+            $('.card-menu a').css('background-color', '#39425C')
+            $('.card-menu a').css('color', '#FFF')
             
 
             // Get the correct source of the video. 
@@ -326,51 +321,20 @@
                 if (that.player.getState() === 'playing') {
                     var totalTime = that.videoDuration;
                     var currentTime = event.position;
-                    var percentTime = (currentTime / totalTime) * 100;
 
                     // Get the current time of video in sec
                     that.videoCurrentTime = that.player.getPosition()
                     // Convert the time to MM:SS
                     that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
 
-                    // Paint progress width
-                    $('.videoline-progress').css('width', percentTime + '%' )
-                    
-                    if (that.isDragging) {
-                        $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-                    }
-                    
-                    
-                    
-                    // If current video time == annotation.from, then animate card
-                    // for(var i=0; i< that.videoAnnotations.length; i++) {
-                    //     var currentAnnotationTime = that.videoAnnotations[i].from
-                    //     currentAnnotationTime = that.mmssToSeconds(currentAnnotationTime)
-                    //     if (parseInt(that.videoCurrentTime) === currentAnnotationTime) {
-                    //         // compare dbComment with rendered card-comment
-                    //         var dbComment = that.videoAnnotations[i].comment
+                    // Scaling = 3 minutes 
+                    var percentTime = (currentTime / 180) * 100;
 
-                    //         $('.cards').find('.card').each(function(){
-                    //             var htmlComment = $(this).find('.card-comment').text()
-                    //             if (dbComment === htmlComment) {
-                    //                $(this).animate({marginLeft: '50px'}, 800);
-                    //             }
-                    //         })
-
-                    //         console.log('animate: ' + that.videoAnnotations[i].title)
-                    //     }                        
-                    // }
+                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
                 }
             })
 
-            // Create button inside JWPlayer, using their API.
-            this.player.on('ready', function() {
-                that.player.addButton(
-                    "/static/add.png", 
-                    "Add annotation", 
-                    function() { that.annotating() }, 
-                    "annomenu");
-            })
+
 
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
@@ -378,72 +342,103 @@
                 containment: "#videoline",
                 scroll: false,
                 start() {
-                    //that.player.pause()
-                    //console.log('START')
+
                 },
                 drag(event) {
                     var windowOffset = $('.videoline').offset().left
                     
                     var clickCoords = event.originalEvent.clientX - windowOffset; 
                     var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+
                     if (clickCoordsPercent < 0) {
                         clickCoordsPercent = 0
                     } else if (clickCoordsPercent > 100) {
                         clickCoordsPercent = 100
                     }
                    
-                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                    console.log('Progress: ' + that.secondsToMMSS(clickTime));
-                    that.player.seek(clickTime)
-                    that.timeNow = that.videoCurrentTime
+                    // Scaling = 3 minutes 
+                    var clickTime = (clickCoordsPercent * 180) / 100
+                    
+                    if (that.annotationPauseTime < 90) {
+                        clickTime = clickTime // + that.annotationPauseTime
+                    } else { 
+                        clickTime = clickTime + that.annotationPauseTime - 90
+                    }
+
+                    that.player.seek(clickTime)      
                 },
                 stop(event) {
-                     //console.log('STOP')
                 }
             })
             // this.player.setControls(false);
         },
+        updated() {
+            // Fixes unknown man picture bug
+            $('.jw-logo').hide()
+
+            // Fetches annotations of the current video (videoid = URLid)
+            // Stores annotations in videoAnnotations[]
+            this.videoAnnotations = this.$store.state.videos[this.id].annotations
+
+            // Color a card when videoCurrentTime is between card from and end
+            this.hooping()
+            
+            // Show "Sroll down for more" when there are more than 5 cards
+            this.moreAnnotations()
+
+            // console.log(this.isMoves)
+            // console.log(this.isStructure)
+            // console.log(this.isDelivery)
+            // console.log(this.isVisual)
+            // console.log(this.isStyle)
+        },
         methods: {
+            // DO NOT TOUCH!
             annotating() {
                 var that = this
+
                 this.isAnnotating = true
                 this.isAnnotateMenu = true
                 this.annotateRating = null
                 this.annotateComment = ''
                 this.player.pause()
+
+                this.annotationPauseTime = this.player.getPosition();
                 
                 // setStartEndPosition()
-                var annotationNowTime = this.videoCurrentTime - 10 // 10 seconds before pause
+                var annotationNowTime = this.videoCurrentTime - 5 // 5 seconds before pause
                 var barWidth = $('.player').width()
                // "out of bounds" exception
-                if (annotationNowTime < 0){
+                if (this.annotationPauseTime < 0) 
                     annotationNowTime = 0
-                }
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
                 var coordsStart = (coordsPercentStart * barWidth) / 100
-                var coordsPercentEnd = ((annotationNowTime + 15)  * 100) / that.videoDuration
+                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / that.videoDuration // 10 seconds after from
+
                 // "out of bounds" exception
-                if(coordsPercentEnd > 100){
+                if (coordsPercentEnd > 100)
                     coordsPercentEnd = 100
-                }
+                    
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
-                $('.crop__start').css('left', coordsStart); 
+                // DO NOT TOUCH!
+                console.log(coordsStart)
+
+                $('.crop__start').css('left', coordsStart);
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
                 this.startDragTime = this.secondsToMMSS(annotationNowTime)
+
                 // "out of bounds" exception
-                if (that.videoDuration - annotationNowTime > 20) {
-                    this.endDragTime = this.secondsToMMSS(annotationNowTime + 20)
+                if (that.videoDuration - annotationNowTime > 10) {
+                    this.endDragTime = this.secondsToMMSS(annotationNowTime + 10)
                 } else {
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
-                 
-                this.annotateStart = this.startDragTime
-                this.annotateEnd = this.endDragTime
+
 
                 // START
                 $( ".crop__start" ).draggable({
@@ -458,31 +453,45 @@
                         that.isDragging = true
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        //console.log(event.originalEvent.clientX)
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        that.player.seek(clickTime)
 
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.startDragTime = clickTime
+                        // that.startDragTime = clickTime
                     },
                     stop(event) {
                         var windowOffset = $('.videoline').offset().left
-                        var clickCoords = event.originalEvent.clientX - windowOffset                        
+                        var clickCoords = event.originalEvent.clientX - windowOffset
+
                         // "out of bounds" exception
-                        if(clickCoords < 0){
+                        if (clickCoords < 0)
                             clickCoords = 0
-                        }else if (clickCoords > barWidth) {
+                        else if (clickCoords > barWidth) 
                             clickCoords = barWidth
-                        }
+
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        clickTime = that.secondsToMMSS(clickTime)
-                        that.annotateStart = clickTime
+
+                        
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+
+                        if (that.annotationPauseTime < 90)
+                            var targetTime = clickTime
+                        else
+                            var targetTime = clickTime + that.annotationPauseTime - 90
+
+                        that.player.seek(targetTime)
+
+                        targetTime = that.secondsToMMSS(targetTime)
+
+                        console.log(targetTime)
+
+                        that.annotateStart = targetTime
+                        that.startDragTime = targetTime
                     }
                 })
 
@@ -499,35 +508,49 @@
                         that.isDragging = false
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        //console.log(event.originalEvent.clientX)
+
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        that.player.seek(clickTime)
+                        // that.player.seek(clickTime)
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.endDragTime = clickTime
                     },
                     stop(event) {
                         that.isDragging = false
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        console.log('clickCoordsBefore = ' + clickCoords)
+                        var currentTime = that.videoCurrentTime
+
                         // "out of bounds" exception
-                        if (clickCoords < 0) {
+                        if (clickCoords < 0) 
                             clickCoords = 0
-                        } else if (clickCoords > barWidth) {
+                        else if (clickCoords > barWidth)
                             clickCoords = barWidth
-                        }
+
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        clickTime = that.secondsToMMSS(clickTime)
-                        that.annotateEnd = clickTime
-                        console.log('end = ' + that.annotateEnd)
+
+
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+
+                        if (that.annotationPauseTime < 90)
+                            var targetTime = clickTime
+                        else
+                            var targetTime = clickTime + that.annotationPauseTime - 90
+
+                        that.player.seek(targetTime)
+
+                        targetTime = that.secondsToMMSS(targetTime)
+
+                        that.annotateEnd = targetTime
+                        that.endDragTime = targetTime
                     }
                 })
+
+                console.log('Annotation pause time: ' + this.annotationPauseTime)
 
             },
             annotate() {
@@ -543,7 +566,6 @@
                         id: this.videoAnnotations.length
                     }
                 }
-                this.videoAnnotations.push(card)
                 this.$store.commit('ADD_ANNOTATION', {
                     annotation: card, 
                     id: this.id
@@ -558,7 +580,9 @@
                 this.isAnnotateMenu = false
                 this.isAnnotateFields = false
                 this.isVideoline = false
-                // $('.videoline-ribbon').show()
+
+                this.player.seek(this.annotationPauseTime)
+
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
@@ -636,9 +660,9 @@
             deleteAnnotation(event) {
                 var that = this
 
-                var editingCard = event.currentTarget.parentElement.parentElement
-                console.log('Hereeeee')
-                console.log($(editingCard))
+                // var editingCard = event.currentTarget.parentElement.parentElement
+                var editingCard = $(event.currentTarget).parent().parent()
+                // console.log(editingCard)
 
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
@@ -646,19 +670,8 @@
 
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
-                // var r = confirm("Delete ''" + cardTitle + "'' annotation?")
-
-                // if (r === true) {
-                //     that.videoAnnotations.shift(cardID)
-                //     that.$store.commit('DELETE_ANNOTATION', {
-                //         id: that.id,
-                //         cardID: cardID,
-                //     })
-                //     $(editingCard).remove()
-                // } else {
-                //     console.log('cancel!')
-                // }
-
+                // Hide .edit-buttons
+                $(event.currentTarget).hide(); $(event.currentTarget).siblings('.edit-buttons').hide()
                 // Are you sure to Delete annotation?
                 swal({
                     title: "Delete ''" + cardTitle + "'' annotation?",
@@ -668,31 +681,13 @@
                     cancelButtonColor: 'gray',
                     confirmButtonText: 'Delete'
                     }).then(function () {
-                        // delete from videoAnnotations
-                        that.videoAnnotations.shift(cardID)
+                        // Delete from store
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
                         })
-
-                        $(editingCard).remove()
-                        console.log($(editingCard))
                     },
                 )
-
-            },
-            showEditButton(event) {
-                //$(event.currentTarget).find().show()
-            },
-            hideEditButton(event) {
-                //$(event.currentTarget).children().hide()
-            },
-            loadVideoAnnotations() {
-                // Fetches annotations of the current video (videoid = URLid)
-                // Stores annotations in videoAnnotations[]
-                for (var i=0; i < this.videos[this.id].annotations.length; ++i) {
-                    this.videoAnnotations.push(this.videos[this.id].annotations[i])
-                }
             },
             annotateModeActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
@@ -700,21 +695,72 @@
                     children[i].style.backgroundColor = "transparent"
                     children[i].style.color = "#FFFFFF"
                 }
-                event.currentTarget.style.backgroundColor = "#8F082A"
+                event.currentTarget.style.backgroundColor = "#27314d"
                 event.currentTarget.style.color = "#FFFFFF"
             },
-            timelineMenuActiveItemProblem(event) {
-                var children = event.currentTarget.parentNode.children
-                for (var i=0; i < children.length; i++) {
-                    children[i].style.backgroundColor = "transparent"
-                    children[i].style.color = "#6B6B6B"
+            chooseCanonFilter(event, canon) {
+                if (canon === 'Moves') {
+                    if (this.isMoves !== '')  {
+                        this.isMoves = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                        this.checked = false
+                    }
+                    else {
+                        this.isMoves = 'Moves'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                        this.checked = true
+                    }
                 }
-                event.currentTarget.style.backgroundColor = "#8F082A"
-                event.currentTarget.style.color = "#FFFFFF"
-            },
-            chooseCanonFilter(canon) {
-                this.filterCanon = canon
-                this.timelineMenuActiveItemProblem(event)
+                if (canon === 'Structure') {
+                    if (this.isStructure !== '') {
+                        this.isStructure = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                    }
+                    else {
+                        this.isStructure = 'Structure'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    } 
+                }
+                if (canon === 'Delivery') {
+                    if (this.isDelivery !== '') {
+                        this.isDelivery = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                    }
+                    else {
+                        this.isDelivery = 'Delivery'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
+                } 
+                if (canon === 'Visual') {
+                    if (this.isVisual !== '') {
+                        this.isVisual = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                    }
+                    else { 
+                        this.isVisual = 'Visual'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
+                }
+                if (canon === 'Style') {
+                    if (this.isStyle !== '') {
+                        this.isStyle = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                    }
+                    else { 
+                        this.isStyle = 'Style'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
+                }
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
@@ -728,7 +774,7 @@
                 this.isVideoline = true
             },
             seekCard(event) {
-                this.isAnnotating = true;
+                // this.isAnnotating = true;
                 // ga to be changed                
                 var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
@@ -838,7 +884,7 @@
             toggleEditDelete(event) {
                 var moreLessBtn = $(event.currentTarget)
 
-                //moreLessBtn.hide()
+                // moreLessBtn.hide()
 
                 if (moreLessBtn.siblings().css("display") === 'none') {
                     moreLessBtn.siblings().show()
@@ -858,14 +904,6 @@
                 return this.$store.getters.canons
             }
         },
-        updated() {
-            $('.jw-logo').hide()
-            // Color a card when videoCurrentTime is between card from and end
-            this.hooping()
-            
-            // Show "Sroll down for more" when there are more than 5 cards
-            this.moreAnnotations()
-        }
     }
 </script>
 
@@ -909,6 +947,37 @@
         color: #FFFFFF !important;
     }
 
+
+
+
+
+/* ==============================================
+                #ADD ANNOTATION AREA
+================================================= */
+
+.add-annotation-area {
+    cursor: pointer;
+    height: 100px;
+    color: #39425C;
+    border: 0.1em solid #39425C;
+    border-top: none;
+    background: #FFF;
+    transition: 0.25s;
+    -webkit-transition: 0.25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.add-annotation-area:hover {
+    color: #FFF;
+    background: #39425C;
+}
+
+    .add-annotation-area span {
+        margin: 10px;    
+        font-size: 1.4em;
+    }
+
 /* ==============================================
                 #PROGRESS BAR
 ================================================= */
@@ -919,7 +988,7 @@
 
     .videoline {
         position: relative;
-        height: 100px;
+        height: 80px;
         border-radius: 0;
         background-color: #39425C;
         display: flex;
@@ -930,13 +999,15 @@
     }
 
         .videoline-ribbon {
+            /*display: none !important;*/
             position: absolute;
             height: 130px;
             left: 0;
             margin: 0;
+            margin-top: 0px;
             padding: 0;
             cursor: pointer;
-            z-index: 200;
+            z-index: 150;
             display: flex;
             flex-direction: column;
             align-self: center;
@@ -959,8 +1030,8 @@
             }
                 .videoline-ribbon-line-time {
                     color: #FFF;
-                    font-size: 12px;
-                    margin: 0px 0px 0px 5px;
+                    font-size: 0.6em;
+                    margin: -4px 0px 0px 10px;
                 }
 
 /*------------------------------------*\
@@ -978,18 +1049,25 @@
     .crop__corner {
         width: 0px;
         margin: 0;
-        padding: 0;
-        height: 100%; /* of 100px */
+        padding: 0px 0px; /* Applying Fitt's Law */
+        height: 90%; /* of 100px */
         /*margin-top: 20px;*/
         background-color: #F2C94C;
         cursor: col-resize;
         position: absolute;
-        border-radius: 3px;
+        border-radius: 0px;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
         align-self: center;
     }
+
+        .crop__corner span {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
         .crop__grab {
             padding: 1px;
             padding: 18px 1px;
@@ -1000,10 +1078,15 @@
             color: #fff;
             z-index: 200;
             padding: 0px;
-            font-size: 12px;
+            font-size: 8px;
+            
         }
 
             .crop__start .crop__time-label { 
+                margin-left: -50px;
+            }
+            .crop__end .crop__time-label { 
+                margin-left: 50px;
             }
         
 
@@ -1019,10 +1102,20 @@
 
     .crop__start {
         z-index: 105;
+        
     }
+        .crop__start span:nth-child(1) {
+            padding: 5px 5px; 
+            background-color: #F2C94C; 
+        }
+
     .crop__end {
         z-index: 100;
     }
+        .crop__end span {
+            padding: 5px 5px; 
+            background-color: #F2C94C; 
+        }
 
     .times {
         height: 30px;
@@ -1035,12 +1128,16 @@
         .times-min {
             width: 1px;
             height: 70%;
+            font-size: 8px;
+            color: #FFF;
             background-color: #FFF;
             border-right: 1px solid #FFF;
         }
         .times-sec {
             width: 1px;
             height: 40%;
+            font-size: 7px;
+            color: #FFF;
             background-color: #FFF;
             border-right: 1px solid #FFF;
         }
@@ -1198,15 +1295,23 @@
         height: 100%;
     }
 
-        .card-menu a {
+        .card-menu-link {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #6B6B6B;
-            padding: 15px;
+            padding: 15px 10px;
             border-bottom: solid 1px rgba(0, 0, 0, .5);
-        }        
+        }
+             .card-menu-link span {
+                 font-size: 14px;
+             }
+
+        .add-annotation {
+            color: #4A4A4A !important;
+            background-color: #FFF !important;
+        }
 
     .timeline-content{
         padding: 10px !important;
@@ -1222,26 +1327,31 @@
                 background: none;
                 padding: 15px !important;
                 margin-bottom: 20px;
-                box-shadow: 3px 3px 9px 3px rgba(0,0,0,0.33);
+                box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
+                /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
-                .timeline-card-title{
-                    font-size: 25px;
+                .timeline-card-title {
+                    font-size: 1.1em;
                     font-style: bold;
                 }
-                .timeline-card-time{
-                    font-style: italic;
+                .timeline-card-time {
+                    font-size: 0.8em;
                 }
-                .timeline-card-description{
-                    
+                .timeline-card-description {
+                     font-size: 0.8em;
                 }
-                .timeline-card-effectiveness-bar{
+                .timeline-card-effectiveness-bar {
                     margin-top: 6px !important;
-                    padding-left: 10px !important;
                     padding-right: 10px !important;
                 }
-                .timeline-card-effectiveness-label{
-                    
+                    .timeline-card-effectiveness-bar progress {
+                        border-radius: 1px !important;
+                        color: #39425C !important;                        
+                    }
+                .timeline-card-effectiveness-label {
+                    font-size: 0.8em;
+                    text-align: right;
                 }
 
                 .timeline-card-id{
@@ -1271,7 +1381,7 @@
                        box-shadow: inset 0 0 0 2px #6B6B6B;
                     }
                     .edit-buttons-edit {
-                        background-color: #003300;
+                        background-color: #159D1A;
                         opacity:0.8;
                     }
                     .edit-buttons-edit:hover {
@@ -1280,9 +1390,9 @@
                        box-shadow: inset 0 0 0 3px #003300;
                     }
                     .edit-buttons-delete {
-                        background-color: #A90931;
+                        background-color: #BC1715;
                     }
-                    .edit-buttons-delete:hover {
+                    +.edit-buttons-delete:hover {
                        background-color: #FFFFFF !important;
                        color: #A90931 !important;
                        box-shadow: inset 0 0 0 3px #A90931;
@@ -1362,7 +1472,7 @@
 }
 
 .jw-controlbar-center-group .jw-knob {
-    background-color: #202020;
+    background-color: #313A53;
     border: 0.12em solid #fff;
     font-size: 3em;
     top: 10%;
@@ -1393,5 +1503,28 @@
     margin: 0;
 }
     .jw-nextup { display: none !important; }
-        
+
+
+.jw-background-color { background-color: #313A53 !important }
+
+#player .jw-option.jw-active-option, #player .jw-progress { background-color: #27314d !important } 
+
+.jw-buffer { background-color: #313A53 !important }
+
+.jw-rail { background-color: #39425C !important }
+
+
+/* ==============================================
+                #TRUMPS
+================================================= */
+
+.fa_1_5x {
+    font-size: 1.5em;
+}
+
+.progress.is-info {
+    background-color: #313A53 !important; 
+}
+
+
 </style>
