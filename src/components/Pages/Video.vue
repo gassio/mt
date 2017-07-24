@@ -1049,8 +1049,8 @@
     .crop__corner {
         width: 0px;
         margin: 0;
-        padding: 0px 12px; /* Applying Fitt's Law */
-        height: 100%; /* of 100px */
+        padding: 0px 0px; /* Applying Fitt's Law */
+        height: 90%; /* of 100px */
         /*margin-top: 20px;*/
         background-color: #F2C94C;
         cursor: col-resize;
