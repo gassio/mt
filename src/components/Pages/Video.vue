@@ -52,8 +52,7 @@
                                     <button class="button" @click="annotate()">Annotate</button>
                                 </div>
                             </div>
-                            <input type="text" v-model="annotateStart">
-                            <input type="text" v-model="annotateEnd">
+                            
                         </div>
                         
                     </div>
@@ -112,14 +111,23 @@
 
                 <div class="times" v-show="isVideoline">
                     <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
-                    <span class="times-min" v-for="t in 10"></span>
-                    <!-- <span class="times-sec" v-for="t in 10"></span> -->
+                    <!-- v-for="t in 10"  style="color: #fff; font-size: 8px;"-->
+                    <span class="times-min">{{ secondsToMMSS(annotationPauseTime - 90) }}</span><span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(18 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(36 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(54 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(72 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(90 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(108 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(126 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(144 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                    <span class="times-min">{{ secondsToMMSS(162 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
                 </div>
 
                 <div class="videoline" id="videoline" v-show="isVideoline">
-                    <span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>
+                    <!--<span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>-->
 
-                    <div class="videoline-ribbon" draggable="true" > <!-- v-show="!isAnnotating" -->
+                    <div class="videoline-ribbon" draggable="true" v-show="false">
                         <span class="videoline-ribbon-circle"></span>
                         <span class="videoline-ribbon-line">
                             <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
@@ -132,15 +140,15 @@
                             <!--<span>&nbsp;</span>-->
                             <!--<div class="crop__grab" style="margin-left: -10px"> 
                                 <span>||</span>
-                            </div>
-                            <p class="crop__time-label" style="margin-left: -40px">{{ startDragTime }}</p>-->
+                            </div>-->
+                            <p class="crop__time-label">{{ startDragTime }}</p>
                         </div>
                         <div class="crop__corner crop__end" draggable="true">
                             <span>|||</span>
                             <!--<div class="crop__grab">
                                 <span>||</span>
-                            </div> 
-                            <p class="crop__time-label">{{ endDragTime }}</p>-->
+                            </div> -->
+                            <p class="crop__time-label">{{ endDragTime }}</p>
                         </div>
                         <span class="crop__space"></span>
                     </div>
@@ -226,7 +234,6 @@
     export default {
         data() {
             return {
-                timeNow: 0,
                 player: null,
                 clickCoords: 0,
                 videoDuration: 0,
@@ -271,7 +278,7 @@
                 ],
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
-                // targetTime: 0,
+                annotationPauseTime: 0,
                 id: this.$route.params.id,
             }
         },
@@ -314,30 +321,20 @@
                 if (that.player.getState() === 'playing') {
                     var totalTime = that.videoDuration;
                     var currentTime = event.position;
-                    var percentTime = (currentTime / totalTime) * 100;
 
                     // Get the current time of video in sec
                     that.videoCurrentTime = that.player.getPosition()
                     // Convert the time to MM:SS
                     that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
 
-                    // Paint progress width
-                    $('.videoline-progress').css('width', percentTime + '%' )
-                    
-                    if (that.isDragging) {
-                        $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-                    }
+                    // Scaling = 3 minutes 
+                    var percentTime = (currentTime / 180) * 100;
+
+                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
                 }
             })
 
-            // Create button inside JWPlayer, using their API.
-            // this.player.on('ready', function() {
-            //     that.player.addButton(
-            //         "/static/add.png", 
-            //         "Add annotation", 
-            //         function() { that.annotating() }, 
-            //         "annomenu");
-            // })
+
 
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
@@ -345,27 +342,32 @@
                 containment: "#videoline",
                 scroll: false,
                 start() {
-                    //that.player.pause()
-                    //console.log('START')
+
                 },
                 drag(event) {
                     var windowOffset = $('.videoline').offset().left
                     
                     var clickCoords = event.originalEvent.clientX - windowOffset; 
                     var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+
                     if (clickCoordsPercent < 0) {
                         clickCoordsPercent = 0
                     } else if (clickCoordsPercent > 100) {
                         clickCoordsPercent = 100
                     }
                    
-                    var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                    console.log('Progress: ' + that.secondsToMMSS(clickTime));
-                    that.player.seek(clickTime)
-                    that.timeNow = that.videoCurrentTime
+                    // Scaling = 3 minutes 
+                    var clickTime = (clickCoordsPercent * 180) / 100
+                    
+                    if (that.annotationPauseTime < 90) {
+                        clickTime = clickTime // + that.annotationPauseTime
+                    } else { 
+                        clickTime = clickTime + that.annotationPauseTime - 90
+                    }
+
+                    that.player.seek(clickTime)      
                 },
                 stop(event) {
-                     //console.log('STOP')
                 }
             })
             // this.player.setControls(false);
@@ -401,13 +403,13 @@
                 this.annotateComment = ''
                 this.player.pause()
 
-                const annotationPauseTime = this.player.getPosition();
+                this.annotationPauseTime = this.player.getPosition();
                 
                 // setStartEndPosition()
                 var annotationNowTime = this.videoCurrentTime - 5 // 5 seconds before pause
                 var barWidth = $('.player').width()
                // "out of bounds" exception
-                if (annotationPauseTime < 0) 
+                if (this.annotationPauseTime < 0) 
                     annotationNowTime = 0
 
                 var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
@@ -436,9 +438,6 @@
                 } else {
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
-                 
-                this.annotateStart = this.startDragTime
-                this.annotateEnd = this.endDragTime
 
 
                 // START
@@ -462,12 +461,11 @@
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.startDragTime = clickTime
+                        // that.startDragTime = clickTime
                     },
                     stop(event) {
                         var windowOffset = $('.videoline').offset().left
                         var clickCoords = event.originalEvent.clientX - windowOffset
-                        console.log(clickCoords)
 
                         // "out of bounds" exception
                         if (clickCoords < 0)
@@ -477,17 +475,23 @@
 
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
 
-                        // console.log(parseInt(clickCoordsPercent) + "%")
-
+                        
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        var targetTime = annotationPauseTime + clickTime - 90
+
+                        if (that.annotationPauseTime < 90)
+                            var targetTime = clickTime
+                        else
+                            var targetTime = clickTime + that.annotationPauseTime - 90
 
                         that.player.seek(targetTime)
 
                         targetTime = that.secondsToMMSS(targetTime)
 
+                        console.log(targetTime)
+
                         that.annotateStart = targetTime
+                        that.startDragTime = targetTime
                     }
                 })
 
@@ -513,7 +517,6 @@
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                        that.endDragTime = clickTime
                     },
                     stop(event) {
                         that.isDragging = false
@@ -529,17 +532,25 @@
 
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
 
+
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        var targetTime = annotationPauseTime + clickTime - 90
+
+                        if (that.annotationPauseTime < 90)
+                            var targetTime = clickTime
+                        else
+                            var targetTime = clickTime + that.annotationPauseTime - 90
 
                         that.player.seek(targetTime)
 
                         targetTime = that.secondsToMMSS(targetTime)
 
                         that.annotateEnd = targetTime
+                        that.endDragTime = targetTime
                     }
                 })
+
+                console.log('Annotation pause time: ' + this.annotationPauseTime)
 
             },
             annotate() {
@@ -569,7 +580,8 @@
                 this.isAnnotateMenu = false
                 this.isAnnotateFields = false
                 this.isVideoline = false
-                // $('.videoline-ribbon').show()
+
+                this.player.seek(this.annotationPauseTime)
 
             },
             editing(event) {
@@ -987,7 +999,7 @@
     }
 
         .videoline-ribbon {
-            display: none !important;
+            /*display: none !important;*/
             position: absolute;
             height: 130px;
             left: 0;
@@ -995,7 +1007,7 @@
             margin-top: 0px;
             padding: 0;
             cursor: pointer;
-            z-index: 50;
+            z-index: 150;
             display: flex;
             flex-direction: column;
             align-self: center;
@@ -1066,10 +1078,15 @@
             color: #fff;
             z-index: 200;
             padding: 0px;
-            font-size: 12px;
+            font-size: 8px;
+            
         }
 
             .crop__start .crop__time-label { 
+                margin-left: -50px;
+            }
+            .crop__end .crop__time-label { 
+                margin-left: 50px;
             }
         
 
@@ -1111,12 +1128,16 @@
         .times-min {
             width: 1px;
             height: 70%;
+            font-size: 8px;
+            color: #FFF;
             background-color: #FFF;
             border-right: 1px solid #FFF;
         }
         .times-sec {
             width: 1px;
             height: 40%;
+            font-size: 7px;
+            color: #FFF;
             background-color: #FFF;
             border-right: 1px solid #FFF;
         }
