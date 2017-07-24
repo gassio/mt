@@ -1345,10 +1345,11 @@
                     margin-top: 6px !important;
                     padding-right: 10px !important;
                 }
-                    .timeline-card-effectiveness-bar progress {
-                        border-radius: 1px !important;
-                        color: #39425C !important;                        
+                    .timeline-card-effectiveness-bar progress::-webkit-progress-value { 
+                        border-radius: 1px !important; 
+                        background-color: #39425C !important; 
                     }
+                    
                 .timeline-card-effectiveness-label {
                     font-size: 0.8em;
                     text-align: right;
