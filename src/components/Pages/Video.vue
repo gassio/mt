@@ -439,59 +439,85 @@
                     this.endDragTime = this.secondsToMMSS(that.videoDuration)
                 }
 
-
+    
                 // START
                 $( ".crop__start" ).draggable({
                     cursor: "col-resize",
                     axis: "x",
                     containment: "#videoline",
                     scroll: false,
+                    revert: false,
                     start(){
                          that.isDragging = true
                     },
                     drag(event) {
-                        that.isDragging = true
-                        var windowOffset = $('.videoline').offset().left
-                        var clickCoords = event.originalEvent.clientX - windowOffset
-                        var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                        var revert = $( ".crop__start" ).draggable( "option", "revert" );
+                        var cropWidth = $('.crop__end').position().left - $('.crop__start').position().left
+                        if(cropWidth < 0) {
+                            $( ".crop__start" ).draggable( "option", "revert", true );
+                        } else {
+                            $( ".crop__start" ).draggable( "option", "revert", false );
+                            that.isDragging = true
+                            //var windowOffset = $('.videoline').offset().left
+                            var clickCoords = $('.crop__start').position().left
+                            var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+                            //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
 
+                            var clipLeft = $('.crop__start').position().left
+                            var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
+                            $('.crop__space').css('left', clipLeft)
+                            $('.crop__space').css('width', clipWidth)
+                            //clickTime = that.secondsToMMSS(clickTime)
+                            //console.log("clickTime = " + clickTime)
+                            // "out of bounds" exception
+                            if (clickCoords < 0) {
+                                clickCoords = 0
+                            } else if (clickCoords > barWidth) { 
+                                clickCoords = barWidth
+                            }
+                            var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+                            // 3 minutes scaling
+                            var clickTime = (clickCoordsPercent * 180) / 100
+                            if (that.annotationPauseTime < 90) {
+                                var targetTime = clickTime
+                            } else {
+                                var targetTime = clickTime + that.annotationPauseTime - 90
+                            }
+                            that.player.seek(targetTime)
+                            targetTime = that.secondsToMMSS(targetTime)
+                            that.annotateStart = targetTime
+                            that.startDragTime = targetTime
+                        }
+                    },
+                    stop(event) {
+                        that.isDragging = false
+                        //var windowOffset = $('.videoline').offset().left
+                        var clickCoords = $('.crop__start').position().left
+                        // "out of bounds" exception
+                        if (clickCoords < 0) {
+                            clickCoords = 0
+                        } else if (clickCoords > barWidth) { 
+                            clickCoords = barWidth
+                        }
+                        var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+                        if (that.annotationPauseTime < 90) {
+                            var targetTime = clickTime
+                        } else {
+                            var targetTime = clickTime + that.annotationPauseTime - 90
+                        }
+                        that.player.seek(targetTime)
+                        targetTime = that.secondsToMMSS(targetTime)
+                        that.annotateStart = targetTime
+                        that.startDragTime = targetTime
+                        
+                        //In case that cropWidth < 0, the crop__space should be drawn again
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                        // that.startDragTime = clickTime
-                    },
-                    stop(event) {
-                        var windowOffset = $('.videoline').offset().left
-                        var clickCoords = event.originalEvent.clientX - windowOffset
-
-                        // "out of bounds" exception
-                        if (clickCoords < 0)
-                            clickCoords = 0
-                        else if (clickCoords > barWidth) 
-                            clickCoords = barWidth
-
-                        var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-
-                        
-                        // 3 minutes scaling
-                        var clickTime = (clickCoordsPercent * 180) / 100
-
-                        if (that.annotationPauseTime < 90)
-                            var targetTime = clickTime
-                        else
-                            var targetTime = clickTime + that.annotationPauseTime - 90
-
-                        that.player.seek(targetTime)
-
-                        targetTime = that.secondsToMMSS(targetTime)
-
-                        console.log(targetTime)
-
-                        that.annotateStart = targetTime
-                        that.startDragTime = targetTime
                     }
                 })
 
@@ -501,52 +527,78 @@
                     axis: "x",
                     containment: "#videoline",
                     scroll: false,
+                    revert: false,
                     start() {
                         that.isDragging = false
                     },
                     drag(event) {
-                        that.isDragging = false
-                        var windowOffset = $('.videoline').offset().left
-                        var clickCoords = event.originalEvent.clientX - windowOffset
+                        var revert = $( ".crop__end" ).draggable( "option", "revert" );
+                        var cropWidth = $('.crop__end').position().left - $('.crop__start').position().left
+                        if(cropWidth < 0) {
+                            $( ".crop__end" ).draggable( "option", "revert", true );
+                        } else {
+                            $( ".crop__end" ).draggable( "option", "revert", false );
+                            that.isDragging = false
+                            // var windowOffset = $('.videoline').offset().left
+                            var clickCoords = $('.crop__end').position().left
+                            var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+                            // var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                            // that.player.seek(clickTime)
+                            var clipLeft = $('.crop__start').position().left
+                            var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
+                            $('.crop__space').css('left', clipLeft)
+                            $('.crop__space').css('width', clipWidth)
+                            // clickTime = that.secondsToMMSS(clickTime)
 
+                            // "out of bounds" exception
+                            if (clickCoords < 0) {
+                                clickCoords = 0
+                            } else if (clickCoords > barWidth) { 
+                                clickCoords = barWidth
+                            }
+                            var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+                            // 3 minutes scaling
+                            var clickTime = (clickCoordsPercent * 180) / 100
+                            if (that.annotationPauseTime < 90) {
+                                var targetTime = clickTime
+                            } else {
+                                var targetTime = clickTime + that.annotationPauseTime - 90
+                            }
+                            that.player.seek(targetTime)
+                            targetTime = that.secondsToMMSS(targetTime)
+                            that.annotateEnd = targetTime
+                            that.endDragTime = targetTime
+                        }
+                    },
+                    stop(event) {
+                        that.isDragging = false
+                         //var windowOffset = $('.videoline').offset().left
+                        var clickCoords = $('.crop__end').position().left
+                        // "out of bounds" exception
+                        if (clickCoords < 0) {
+                            clickCoords = 0
+                        } else if (clickCoords > barWidth) { 
+                            clickCoords = barWidth
+                        }
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                        var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                        // that.player.seek(clickTime)
+                        // 3 minutes scaling
+                        var clickTime = (clickCoordsPercent * 180) / 100
+                        if (that.annotationPauseTime < 90) {
+                            var targetTime = clickTime
+                        } else {
+                            var targetTime = clickTime + that.annotationPauseTime - 90
+                        }
+                        that.player.seek(targetTime)
+                        targetTime = that.secondsToMMSS(targetTime)
+                        that.annotateEnd = targetTime
+                        that.endDragTime = targetTime
+                        
+                        //In case that cropWidth < 0, the crop__space should be drawn again
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
                         clickTime = that.secondsToMMSS(clickTime)
-                    },
-                    stop(event) {
-                        that.isDragging = false
-                        var windowOffset = $('.videoline').offset().left
-                        var clickCoords = event.originalEvent.clientX - windowOffset
-                        var currentTime = that.videoCurrentTime
-
-                        // "out of bounds" exception
-                        if (clickCoords < 0) 
-                            clickCoords = 0
-                        else if (clickCoords > barWidth)
-                            clickCoords = barWidth
-
-                        var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-
-
-                        // 3 minutes scaling
-                        var clickTime = (clickCoordsPercent * 180) / 100
-
-                        if (that.annotationPauseTime < 90)
-                            var targetTime = clickTime
-                        else
-                            var targetTime = clickTime + that.annotationPauseTime - 90
-
-                        that.player.seek(targetTime)
-
-                        targetTime = that.secondsToMMSS(targetTime)
-
-                        that.annotateEnd = targetTime
-                        that.endDragTime = targetTime
                     }
                 })
 
@@ -1349,7 +1401,7 @@
                         border-radius: 1px !important; 
                         background-color: #39425C !important; 
                     }
-                    
+
                 .timeline-card-effectiveness-label {
                     font-size: 0.8em;
                     text-align: right;
