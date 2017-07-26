@@ -928,7 +928,8 @@
                             if (that.videoCurrentTime > allEndTime[j]) {
                                 $('.timeline-card').eq(j).fadeOut(700);
                             } else {
-                                $('.timeline-card').eq(j).css('display', 'flex')
+                                $('.timeline-card').eq(j).fadeIn(700);
+
                             }
                         }
                     }
