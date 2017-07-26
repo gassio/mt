@@ -169,13 +169,12 @@
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <!--<a @click="chooseCanonFilter('All')" id="all-is-active"><i class="fa fa-star fa-2x" aria-hidden="true"></i>All</a>-->
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><!--<input type="checkbox" v-model="checked">--><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a class="card-menu-link choose-all" @click="chooseAll($event)"><i class="fa fa-check" aria-hidden="true"></i>Show all</a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
-                        <a class="card-menu-link"><input type="checkbox">All</input></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -319,7 +318,6 @@
                 // events
             });
         
-        
             // Animate progress bar width
             this.player.on('time', function(event) {
                 if (that.player.getState() === 'playing') {
@@ -335,10 +333,14 @@
                     var percentTime = (currentTime / 180) * 100;
 
                     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
                 }
             })
 
-
+            this.player.on('time', function(event) {
+                // Color a card when videoCurrentTime is between card from and end
+                that.hooping()
+            })
 
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
@@ -374,6 +376,7 @@
                 stop(event) {
                 }
             })
+
             // this.player.setControls(false);
         },
         updated() {
@@ -383,21 +386,12 @@
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
             this.videoAnnotations = this.$store.state.videos[this.id].annotations
-
-            // Color a card when videoCurrentTime is between card from and end
-            this.hooping()
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
 
             // Show video current time on top of timeline 
             this.getCurrentTime()
-
-            // console.log(this.isMoves)
-            // console.log(this.isStructure)
-            // console.log(this.isDelivery)
-            // console.log(this.isVisual)
-            // console.log(this.isStyle)
         },
         methods: {
             // DO NOT TOUCH!
@@ -763,13 +757,11 @@
                         this.isMoves = ''
                         event.currentTarget.style.backgroundColor = "transparent"
                         event.currentTarget.style.color = "#4a4a4a"
-                        this.checked = false
                     }
                     else {
                         this.isMoves = 'Moves'
                         event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
-                        this.checked = true
                     }
                 }
                 if (canon === 'Structure') {
@@ -820,6 +812,23 @@
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
+            },
+            chooseAll(event) {
+                var categoryBtn = $(event.currentTarget)
+
+                this.isMoves = 'Moves'
+                this.isStructure = 'Structure'
+                this.isDelivery = 'Delivery'
+                this.isVisual = 'Visual'
+                this.isStyle = 'Style'
+                
+                $(categoryBtn).siblings('.card-menu-link').css({
+                    backgroundColor: "#39425C",
+                    color: "#FFF"
+                })
+                // event.currentTarget.style.backgroundColor = "transparent"
+                // event.currentTarget.style.color = "#4a4a4a"
+
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
@@ -903,7 +912,7 @@
                 var allStartTime = []
                 var allEndTime = []
                 var allTimeString = []
-                var k=0;
+                var k = 0;
                 for (k=0; k < allCards.length; k++) {
                     // ga to be changed                    
                     allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
@@ -913,24 +922,23 @@
                     allStartTime[k] = that.mmssToSeconds(allStartTime[k])
                     allEndTime[k] = that.mmssToSeconds(allEndTime[k])
                 }
-
+                
                 this.player.on('time', function(event) {
                     if (that.player.getState() === 'playing') {
                         that.videoCurrentTime = this.getPosition()
                         var j=0;
                         for (j=0; j < allCards.length; j++) {
-                            if (that.videoCurrentTime > allStartTime[j] && that.videoCurrentTime < allEndTime[j]) {
+                            if (this.getPosition() > allStartTime[j] && this.getPosition() < allEndTime[j]) {
                                 $('.timeline-card').eq(j).css('background-color', 'yellow')
                             }
-                            if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
+                            if (this.getPosition() < allStartTime[j] || this.getPosition() > allEndTime[j]) {
                                 $('.timeline-card').eq(j).css('background-color', 'white')
                             } 
-                            if (that.videoCurrentTime > allEndTime[j]) {
-                                $('.timeline-card').eq(j).fadeOut(700);
-                            } else {
-                                $('.timeline-card').eq(j).fadeIn(700);
-
-                            }
+                                if (this.getPosition() > allEndTime[j]) {
+                                    $('.timeline-card').eq(j).fadeOut(700); 
+                                } else {
+                                    $('.timeline-card').eq(j).fadeIn(700);
+                                }
                         }
                     }
                 })
@@ -1001,7 +1009,7 @@
 /* ==============================================
                 #SPACER
 ================================================= */
-.spacer{
+.spacer {
     height: 70px;
     width: 100%;
     display: flex;
@@ -1011,14 +1019,14 @@
     padding: 10px;
 }
 
-    .player-spacer-button{
+    .player-spacer-button {
         transition: background-color 0.5s ease;
-        color: #6B6B6B;
+        color: #39425C !important;
         padding: 10px !important;
         height: 100% !important;
         background-color: none !important;
     }
-    .player-spacer-button:hover{
+    .player-spacer-button:hover {
         background-color: #A90931 !important;
         color: #FFFFFF !important;
     }
@@ -1384,12 +1392,25 @@
                  font-size: 14px;
              }
 
+             .card-menu-link.choose-all {
+                 font-size: 12px;
+                 color: #A90931 !important;
+                 border-top: 1px dashed #DBDBDB;
+                 border-right: 1px dashed #DBDBDB;
+                 background-color: #FFF !important;
+             }
+             .card-menu-link.choose-all:hover {
+                 transition: 0.15s;
+                 color: #39425C !important;
+                 background-color: #DBDBDB !important;
+             }
+
         .add-annotation {
             color: #4A4A4A !important;
             background-color: #FFF !important;
         }
 
-    .timeline-content{
+    .timeline-content {
         padding-top: 0px !important;
         padding-bottom: 10px !important;
         padding-left: 10px !important;
@@ -1401,9 +1422,7 @@
             height: 50px;
             font-size: 2em;
             text-align: center;
-            border-bottom: 1px solid;
-            color: #6B6B6B;
-            border-color:rgba(107, 107, 107, 0.3); /*#6B6B6B*/
+            color: #39425C;
             margin-bottom: 10px;
         }
 
