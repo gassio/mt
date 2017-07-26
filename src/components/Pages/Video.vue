@@ -184,6 +184,7 @@
                         </div>
                     </nav>
                     <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
+                        <p class="timeline-content-current-video-time">00:00</p>
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
                              v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
@@ -388,6 +389,9 @@
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
+
+            // Show video current time on top of timeline 
+            this.getCurrentTime()
 
             // console.log(this.isMoves)
             // console.log(this.isStructure)
@@ -921,6 +925,12 @@
                             if (that.videoCurrentTime < allStartTime[j] || that.videoCurrentTime > allEndTime[j]) {
                                 $('.timeline-card').eq(j).css('background-color', 'white')
                             } 
+                            if (that.videoCurrentTime > allEndTime[j]) {
+                                $('.timeline-card').eq(j).fadeOut(700);
+                            } else {
+                                $('.timeline-card').eq(j).fadeIn(700);
+
+                            }
                         }
                     }
                 })
@@ -946,6 +956,17 @@
                 } else {
                     moreLessBtn.siblings().hide()
                 }
+            },
+            getCurrentTime() {
+                var that = this
+                var element = $('.timeline-content-current-video-time')
+                this.player.on('time', function() {
+                    if (that.player.getState() === 'playing') {
+                        that.videoCurrentTime = this.getPosition()
+                        var currentTimeToMMSS = that.secondsToMMSS(that.videoCurrentTime)
+                       element.text(currentTimeToMMSS);
+                    }
+                })
             },
         },
         computed: {
@@ -1369,9 +1390,23 @@
         }
 
     .timeline-content{
-        padding: 10px !important;
+        padding-top: 0px !important;
+        padding-bottom: 10px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
         height: 100%;
     }
+        .timeline-content-current-video-time {
+            width: 100%;
+            height: 50px;
+            font-size: 2em;
+            text-align: center;
+            border-bottom: 1px solid;
+            color: #6B6B6B;
+            border-color:rgba(107, 107, 107, 0.3); /*#6B6B6B*/
+            margin-bottom: 10px;
+        }
+
         .timeline {
             height:100%;
             width: 100%;
