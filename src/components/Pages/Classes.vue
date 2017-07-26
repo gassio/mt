@@ -16,9 +16,17 @@
                                 <router-link :to="'classes/' + c.title.replace(/ /g, '-')" tag="a" class="">
                                     <i class="fa fa-book fa-5x" aria-hidden="true"></i>
                                     <p class="classes-card-title"> {{c.section}} {{c.spring}} {{ c.title }}</p>
-                                    <p class="classes-card-details">{{c.videosCount}} videos, 2 instructors</p>
+                                    <span class="classes-card-details">{{c.videosCount}} videos, 2 instructors</span>
                                 </router-link><!-- end -->
-					        </div>						
+					        </div>
+
+							<div class="classes-card">
+								<div class="add-new-class">
+									<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
+									<p>Create new class</p>
+									<span>A class contains student videos</span>
+								</div>
+							</div>						
 						</div>
 					</div>
 				</div>	
@@ -57,6 +65,7 @@
 
 <style>
 /*-------------- MAIN CONTENT ---------------- */
+
 .classes-main{
 	display: flex;
 	flex-direction: column;
@@ -102,11 +111,13 @@
 		}
 			.classes-card {
 				background-color: rgba(169,9,49,0.04);
-				color: #6B6B6B;
+				color: #A90931;
 				padding: 45px;
 				margin: 20px;
 				height: auto;
 				transition:  box-shadow 0.5s ease;
+				display:flex; 
+				align-items:center;
 			}
 
 			@media screen and (min-width: 0px) {
@@ -132,14 +143,14 @@
 					width: calc(100% /4 - 40px);
 				}	
 			}
-				.classes-card a{
+				.classes-card a {
 					display: flex;
 					flex-direction: column;
 					justify-content: center;
 					align-items: center;
 				}
 
-				.classes-card i, p{
+				.classes-card i {
 					color: #6B6B6B;
 				}
 
@@ -152,7 +163,30 @@
 					font-size: 18px;
 					color: #A90931;
 				}
-				.classes-card-details{
+				.classes-card-details {
 					text-align: center;
+					color: #6B6B6B;
 				}
+
+		.add-new-class {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			align-content: center;
+			text-align: center;
+		}
+
+			.add-new-class i {
+				font-size: ;
+				color: #A90931;
+			}
+			.add-new-class p {
+				font-size: 24px;
+				color: #A90931;
+			}
+			.add-new-class span {
+				font-size: 14px;
+				color: #6B6B6B;
+			}
+
 </style>
