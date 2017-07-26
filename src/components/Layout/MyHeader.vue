@@ -12,7 +12,7 @@
                 </div>
                 <div class="head__nav-right">
                     <li class="head__add-video"><a>+ Add Video</a></li>
-                    <li class="head__add-video">Arya Stark | Student</li>
+                    <li class="head__add-video">Ben Domino | Student</li>
                 </div>
             </ul>
         </div>
