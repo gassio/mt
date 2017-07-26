@@ -80,6 +80,13 @@
                     margin-left: 20px;
                     padding: 10px 16px;
                 }
+                .head__nav-item a{
+                    color: #FFFFFF;
+                }
+                .head__nav-item:hover {
+                    background-color: #8F082A;
+                    border-radius: 20px;
+                }
 
                 .head__add-video{
                     margin-left: 20px;

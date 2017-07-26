@@ -15,52 +15,45 @@ export const store = new Vuex.Store({
             {
                 "title": "How To Sound Smart In Your Tedx Talk",
                 "videoID": 0,
-                "link": "http://content.jwplatform.com/videos/G4mlZSx4-mOPkLg6c.mp4",
-                "thumb": "http://content.jwplatform.com/thumbs/G4mlZSx4-720.jpg",
+                "link": "http://content.jwplatform.com/videos/BYmoWNeA-DgOi1siB.mp4",
+                "thumb": "http://content.jwplatform.com/thumbs/BYmoWNeA-720.jpg",
                 "sources": [
-                             {
-                    "width": 1280,
-                    "type": "application/vnd.apple.mpegurl",
-                    "file": "https://cdn.jwplayer.com/manifests/G4mlZSx4.m3u8",
-                    "height": 720
+                    {
+                        "width": 720,
+                        "type": "application/vnd.apple.mpegurl",
+                        "file": "https://cdn.jwplayer.com/manifests/BYmoWNeA.m3u8",
+                        "height": 406
                     },
                     {
                         "width": 320,
                         "height": 180,
                         "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-t89KRkmF.mp4",
+                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-S2DagQP7.mp4",
                         "label": "180p"
                     },
                     {
                         "width": 480,
                         "height": 270,
                         "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-3gtc2psT.mp4",
+                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-9B9NyP5t.mp4",
                         "label": "270p"
                     },
                     {
                         "width": 720,
                         "height": 406,
                         "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-mOPkLg6c.mp4",
+                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-DgOi1siB.mp4",
                         "label": "406p"
                     },
                     {
-                        "width": 1280,
-                        "height": 720,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-ASGnrRDI.mp4",
-                        "label": "720p"
-                    },
-                    {
                         "type": "audio/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/G4mlZSx4-1smvQZjW.m4a",
+                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-BX5mUTQc.m4a",
                         "label": "AAC Audio"
                     }
-                        ],
+                ],
                 "duration": "355",
-                "jwVideoID": "G4mlZSx4", // mediaID
-                "jwPlaylistID": "k5WSiplm", // k5WSiplm
+                "jwVideoID": "BYmoWNeA", // mediaID
+                "jwPlaylistID": "2INkSmd7", // k5WSiplm
                 "class": "Material Science Engineering",
                 "categories": [
                     {
@@ -200,7 +193,7 @@ export const store = new Vuex.Store({
                 "spring": 'Spring 17',
                 "videosCount": "34",
                 "classID": "1",
-                "jwPlaylistID": "k5WSiplm",
+                "jwPlaylistID": "2INkSmd7",
             },
             // {
             //     "title": "Mathematics Class",

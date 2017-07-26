@@ -208,6 +208,9 @@
                                         <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
                                     </div>
                                 </div>
+                                <div class="columns is-gapless is-marginless">
+                                    <p class="timeline-card-author">by {{ card.author }}</p>
+                                </div>
                             </div>
                             <div class="timeline-card-edit">
                                 <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -1405,6 +1408,11 @@
                 .timeline-card-effectiveness-label {
                     font-size: 0.8em;
                     text-align: right;
+                }
+                .timeline-card-author {
+                    font-size: 0.8em;
+                    opacity: 0.7;
+                    margin-top: 5px;
                 }
 
                 .timeline-card-id{
