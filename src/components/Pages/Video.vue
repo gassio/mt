@@ -169,7 +169,10 @@
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <a class="card-menu-link choose-all" @click="chooseAll($event)"><i class="fa fa-check" aria-hidden="true"></i>Show all</a>
+                        <div style="display:flex;">  
+                            <a class="card-menu-link choose-all" @click="hideAll($event)" style="color:#BC1715 !important;"><i class="fa fa-times" aria-hidden="true"></i></a>
+                            <a class="card-menu-link choose-all" @click="showAll($event)" style="color:#44B148 !important;"><i class="fa fa-check" aria-hidden="true"></i></a>
+                        </div>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
@@ -813,7 +816,7 @@
                     }
                 }
             },
-            chooseAll(event) {
+            showAll(event) {
                 var categoryBtn = $(event.currentTarget)
 
                 this.isMoves = 'Moves'
@@ -826,8 +829,21 @@
                     backgroundColor: "#39425C",
                     color: "#FFF"
                 })
-                // event.currentTarget.style.backgroundColor = "transparent"
-                // event.currentTarget.style.color = "#4a4a4a"
+
+            },
+            hideAll(event) {
+                var categoryBtn = $(event.currentTarget)
+
+                this.isMoves = ''
+                this.isStructure = ''
+                this.isDelivery = ''
+                this.isVisual = ''
+                this.isStyle = ''
+                
+                $(categoryBtn).siblings('.card-menu-link').css({
+                    backgroundColor: "#FFF",
+                    color: "#39425C"
+                })
 
             },
             chooseCanonAnnotate(canon, event) {
@@ -1393,6 +1409,7 @@
              }
 
              .card-menu-link.choose-all {
+                 width: 50%;
                  font-size: 12px;
                  color: #A90931 !important;
                  border-top: 1px dashed #DBDBDB;

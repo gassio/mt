@@ -20,7 +20,7 @@
                                 </router-link><!-- end -->
 					        </div>
 
-							<div class="classes-card">
+							<div class="classes-card add-new-class-container">
 								<div class="add-new-class">
 									<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 									<p>Create new class</p>
@@ -167,6 +167,11 @@
 					text-align: center;
 					color: #6B6B6B;
 				}
+
+		.add-new-class-container {
+			border: 1px dashed #DADDE2;
+			background-color: #FFF;
+		}
 
 		.add-new-class {
 			display: flex;
