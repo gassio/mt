@@ -1,7 +1,6 @@
 <template>
     <div class="wiki container">
-        <h3>Wiki</h3>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tenetur, hic?
+        <h1>Wiki</h1>
         <router-view></router-view>
     </div>
 </template>

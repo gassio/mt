@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
                 ],
                 "duration": "355",
                 "jwVideoID": "BYmoWNeA", // mediaID
-                "jwPlaylistID": "2INkSmd7", // k5WSiplm
+                "jwPlaylistID": "2INkSmd7",
                 "class": "Material Science Engineering",
                 "categories": [
                     {
@@ -105,86 +105,86 @@ export const store = new Vuex.Store({
                     }
                 ]
             },
-            // {
-            //     "title": "Don't Follow Your Passion",
-            //     "videoID": 1,
-            //     "link": "https://cdn.jwplayer.com/previews/gj1SyIed",
-            //     "thumb": "https://cdn.jwplayer.com/thumbs/gj1SyIed-720.jpg",
-            //     "sources": [
-            //         {
-            //             "width": 1280,
-            //             "type": "application/vnd.apple.mpegurl",
-            //             "file": "https://cdn.jwplayer.com/manifests/gj1SyIed.m3u8",
-            //             "height": 720
-            //         },
-            //         {
-            //             "width": 320,
-            //             "height": 180,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/gj1SyIed-t89KRkmF.mp4",
-            //             "label": "180p"
-            //         },
-            //         {
-            //             "width": 480,
-            //             "height": 270,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/gj1SyIed-3gtc2psT.mp4",
-            //             "label": "270p"
-            //         },
-            //         {
-            //             "width": 720,
-            //             "height": 406,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/gj1SyIed-mOPkLg6c.mp4",
-            //             "label": "406p"
-            //         },
-            //         {
-            //             "width": 1280,
-            //             "height": 720,
-            //             "type": "video/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/gj1SyIed-ASGnrRDI.mp4",
-            //             "label": "720p"
-            //         },
-            //         {
-            //             "type": "audio/mp4",
-            //             "file": "https://cdn.jwplayer.com/videos/gj1SyIed-1smvQZjW.m4a",
-            //             "label": "AAC Audio"
-            //         }
-            //     ],
-            //     "duration": "904",
-            //     "jwVideoID": "gj1SyIed", // mediaID
-            //     "jwPlaylistID": "k5WSiplm", // k5WSiplm
-            //     "class": "Material Science Engineering",
-            //     "categories": [
-            //         {
-            //             "name": "Posture & Stance",
-            //             "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-            //             "canon": "Delivery"
-            //         }
-            //     ],
-            //     "annotations": [
-            //         {
-            //             "category": "Graphics",
-            //             "canon": "Visual",
-            //             "comment": "Lorem hahah",
-            //             "from": "00:56",
-            //             "to": "01:23",
-            //             "rating": "4",
-            //             "author": "Ben Domino",
-            //             "id": 0
-            //         },
-            //         {
-            //             "category": "Terms",
-            //             "canon": "Structure",
-            //             "comment": "Lorem hahah",
-            //             "from": "03:32",
-            //             "to": "03:56",
-            //             "rating": "4",
-            //             "author": "Ben Domino",
-            //             "id": 1
-            //         }
-            //     ]
-            // }
+            {
+                "title": "Programming Your Mind For Success",
+                "videoID": 1,
+                "link": "https://cdn.jwplayer.com/previews/OTEe0Dn3",
+                "thumb": "https://cdn.jwplayer.com/thumbs/OTEe0Dn3-720.jpg",
+                "sources": [
+                    {
+                        "width": 1280,
+                        "type": "application/vnd.apple.mpegurl",
+                        "file": "https://cdn.jwplayer.com/manifests/OTEe0Dn3.m3u8",
+                        "height": 720
+                    },
+                    {
+                        "width": 320,
+                        "height": 180,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-S2DagQP7.mp4",
+                        "label": "180p"
+                    },
+                    {
+                        "width": 480,
+                        "height": 270,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-9B9NyP5t.mp4",
+                        "label": "270p"
+                    },
+                    {
+                        "width": 720,
+                        "height": 406,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-DgOi1siB.mp4",
+                        "label": "406p"
+                    },
+                    {
+                        "width": 1280,
+                        "height": 720,
+                        "type": "video/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-34JmzxrC.mp4",
+                        "label": "720p"
+                    },
+                    {
+                        "type": "audio/mp4",
+                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-BX5mUTQc.m4a",
+                        "label": "AAC Audio"
+                    }
+                ],
+                "duration": "931",
+                "jwVideoID": "OTEe0Dn3", // mediaID
+                "jwPlaylistID": "2INkSmd7",
+                "class": "Material Science Engineering",
+                "categories": [
+                    {
+                        "name": "Posture & Stance",
+                        "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
+                        "canon": "Delivery"
+                    }
+                ],
+                "annotations": [
+                    {
+                        "category": "Graphics",
+                        "canon": "Visual",
+                        "comment": "Lorem hahah",
+                        "from": "00:56",
+                        "to": "01:23",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 0
+                    },
+                    {
+                        "category": "Terms",
+                        "canon": "Structure",
+                        "comment": "Lorem hahah",
+                        "from": "03:32",
+                        "to": "03:56",
+                        "rating": "4",
+                        "author": "Ben Domino",
+                        "id": 1
+                    }
+                ]
+            }
         ],
         classes: [
             {

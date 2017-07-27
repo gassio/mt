@@ -1,7 +1,6 @@
 <template>
     <div class="about container">
-        <h3>Library</h3>
-        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lcvj;alejfl;jsd</p>
+        <h1>Library</h1>
         <router-view></router-view>
     </div>
 </template>

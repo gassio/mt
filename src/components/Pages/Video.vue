@@ -24,14 +24,14 @@
                     </div>
                     <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
                         <div class="annotate-fields-left">
-                            <button class="button is-black" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true;">
+                            <button class="button annotate-fields-left-back" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true;">
                                 <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
                             </button>
                         </div>
                         
                         <div class="annotate-fields-right">
                             <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                                <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
+                                <p class="annotate-desc-text" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
                                 <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false">X</span></div>
                             </div>
                             <div class="annotate-effectiveness field">
@@ -48,11 +48,11 @@
                                             v-model="annotateComment">
                                     </textarea>
                                 </p>
-                                <div class="annotate-submit">
-                                    <button class="button" @click="annotate()">Annotate</button>
-                                </div>
+                                
                             </div>
-                            
+                            <div class="annotate-submit">
+                                <button class="button" @click="annotate()">Annotate</button>
+                            </div>
                         </div>
                         
                     </div>
@@ -169,10 +169,6 @@
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <div style="display:flex;">  
-                            <a class="card-menu-link choose-all" @click="hideAll($event)" style="color:#BC1715 !important;"><i class="fa fa-times" aria-hidden="true"></i></a>
-                            <a class="card-menu-link choose-all" @click="showAll($event)" style="color:#44B148 !important;"><i class="fa fa-check" aria-hidden="true"></i></a>
-                        </div>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
@@ -186,7 +182,7 @@
                         </div>
                     </nav>
                     <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
-                        <p class="timeline-content-current-video-time">00:00</p>
+                        <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
                              v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
@@ -392,9 +388,6 @@
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
-
-            // Show video current time on top of timeline 
-            this.getCurrentTime()
         },
         methods: {
             // DO NOT TOUCH!
@@ -426,7 +419,6 @@
                     
                 var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
-                // DO NOT TOUCH!
                 console.log(coordsStart)
 
                 $('.crop__start').css('left', coordsStart);
@@ -817,7 +809,7 @@
                 }
             },
             showAll(event) {
-                var categoryBtn = $(event.currentTarget)
+                var categoryBtn = $(event.currentTarget.parentElement)
 
                 this.isMoves = 'Moves'
                 this.isStructure = 'Structure'
@@ -832,7 +824,7 @@
 
             },
             hideAll(event) {
-                var categoryBtn = $(event.currentTarget)
+                var categoryBtn = $(event.currentTarget.parentElement)
 
                 this.isMoves = ''
                 this.isStructure = ''
@@ -980,18 +972,7 @@
                 } else {
                     moreLessBtn.siblings().hide()
                 }
-            },
-            getCurrentTime() {
-                var that = this
-                var element = $('.timeline-content-current-video-time')
-                this.player.on('time', function() {
-                    if (that.player.getState() === 'playing') {
-                        that.videoCurrentTime = this.getPosition()
-                        var currentTimeToMMSS = that.secondsToMMSS(that.videoCurrentTime)
-                       element.text(currentTimeToMMSS);
-                    }
-                })
-            },
+            }
         },
         computed: {
             videos() {
@@ -1271,7 +1252,10 @@
 
         .annotate-menu__canons a {
             color: #FFF;
-            padding: 5px;
+            padding: 5px 15px;
+            font-size: 1.4em;
+            border-top: 1px solid #27314D;
+            border-right: 1px solid #27314D;
         }
 
         .annotate-menu__canons-close {
@@ -1301,7 +1285,7 @@
             width: 25%;
             height: 100px;
             color: #FFF;
-            border: 1px solid #0a0a0a;
+            border: 1px solid #27314D;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -1326,23 +1310,46 @@
         .annotate-fields-left {
             width: 10%;
         }
+            .annotate-fields-left-back {
+                color: #FFF;
+                border: none;
+                background-color: #39425C;
+            }
+
+            .annotate-fields-left-back:hover {
+                color: #27314D;
+            }
+
+                .annotate-fields-left-back i {
+                    padding-right: 3px;
+                }
 
         .annotate-fields-right {
             width: 90%;
         }
             .annotate-desc {
                 display: flex;
+                justify-content: center;
+            }
+
+            .annotate-desc-text {
+                margin-left: 60px;
             }
 
             .annotate-effectiveness {
                 display: flex;
+                flex-direction: column;
+                padding: 0;
+                margin: 0;
             }
-                .annotate-effectiveness p {
-                    width: 15%
+                .annotate-effectiveness label {
+                    padding: 0;
+                    margin: 0;
                 }
             
             .annotate-comment {
                 display: flex;
+                flex-direction: column;
                 margin-bottom: 10px;
             }
                 .annotate-comment label {
@@ -1374,6 +1381,7 @@
                 }
                     .annotate-submit button {
                         height: 100%;
+                        padding: 15px;
                     }
 
 
@@ -1408,20 +1416,6 @@
                  font-size: 14px;
              }
 
-             .card-menu-link.choose-all {
-                 width: 50%;
-                 font-size: 12px;
-                 color: #A90931 !important;
-                 border-top: 1px dashed #DBDBDB;
-                 border-right: 1px dashed #DBDBDB;
-                 background-color: #FFF !important;
-             }
-             .card-menu-link.choose-all:hover {
-                 transition: 0.15s;
-                 color: #39425C !important;
-                 background-color: #DBDBDB !important;
-             }
-
         .add-annotation {
             color: #4A4A4A !important;
             background-color: #FFF !important;
@@ -1441,6 +1435,9 @@
             text-align: center;
             color: #39425C;
             margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .timeline {
