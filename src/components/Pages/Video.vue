@@ -162,7 +162,6 @@
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'All')"><i class="fa fa-cicle fa_1_5x " aria-hidden="true"></i><span>All</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
