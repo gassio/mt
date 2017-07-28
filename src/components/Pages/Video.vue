@@ -1022,11 +1022,15 @@
                             if (this.getPosition() < allStartTime[j] || this.getPosition() > allEndTime[j]) {
                                 $('.timeline-card').eq(j).css('background-color', 'white')
                             } 
-                                if (this.getPosition() > allEndTime[j]) {
-                                        $('.timeline-card').eq(j).fadeOut(700); 
-                                } else {
-                                        $('.timeline-card').eq(j).fadeIn(700);
-                                }
+                            // TO DO GASSI
+                                // if (this.getPosition() > allEndTime[j]) {
+                                //     $('.timeline-card').eq(allCards.length-1).after($('.timeline-card').eq(j));
+                                //     console.log(allEndTime[j])
+                                //     //$('.timeline-card').eq(j).fadeOut(700); 
+                                // }
+                                // // else {
+                                //     //$('.timeline-card').eq(j).fadeIn(700);
+                                // //}
                         }
                     }
                 })

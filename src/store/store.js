@@ -67,8 +67,8 @@ export const store = new Vuex.Store({
                         "category": "Posture & Stance",
                         "canon": "Delivery",
                         "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-                        "from": "00:08",
-                        "to": "00:17",
+                        "from": "00:05",
+                        "to": "00:10",
                         "rating": "3",
                         "author": "Ben Domino",
                         "id": 0,
@@ -168,11 +168,21 @@ export const store = new Vuex.Store({
                         "category": "Graphics",
                         "canon": "Visual",
                         "comment": "Lorem hahah",
-                        "from": "00:56",
-                        "to": "01:23",
+                        "from": "00:05",
+                        "to": "00:10",
                         "rating": "4",
                         "author": "Ben Domino",
                         "id": 0
+                    },
+                    {
+                        "category": "Posture & Stance",
+                        "canon": "Delivery",
+                        "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
+                        "from": "00:15",
+                        "to": "00:25",
+                        "rating": "3",
+                        "author": "Ben Domino",
+                        "id": 1,
                     },
                     {
                         "category": "Terms",
@@ -182,8 +192,8 @@ export const store = new Vuex.Store({
                         "to": "03:56",
                         "rating": "4",
                         "author": "Ben Domino",
-                        "id": 1
-                    }
+                        "id": 2
+                    },
                 ]
             }
         ],
