@@ -71,7 +71,8 @@ export const store = new Vuex.Store({
                         "to": "00:17",
                         "rating": "3",
                         "author": "Ben Domino",
-                        "id": 0
+                        "id": 0,
+                        "sorting": "00:08" // or videoDuration - from
                     },
                     {
                         "category": "Graphics",

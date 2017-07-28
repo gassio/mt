@@ -12,6 +12,45 @@
             <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
+                <div class="times" v-show="isVideoline">
+                    <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
+                    <!-- v-for="t in 10"  style="color: #fff; font-size: 8px;"-->
+                    <span class="times-min" v-for="time in times">{{ time.min }}</span> <!-- <span class="times-sec"></span><span class="times-sec"></span> -->
+                </div>
+
+                <div class="videoline" id="videoline" v-show="isVideoline">
+                    <!--<span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>-->
+
+                    <div class="videoline-ribbon" draggable="true" v-show="false">
+                        <span class="videoline-ribbon-circle"></span>
+                        <span class="videoline-ribbon-line">
+                            <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
+                        </span>
+                    </div>
+
+                    <div class="crop videoline-crop" id="videoline-crop" >
+                        <div class="crop__corner crop__start" draggable="true">
+                            <span>|||</span>
+                            <!--<span>&nbsp;</span>-->
+                            <!--<div class="crop__grab" style="margin-left: -10px"> 
+                                <span>||</span>
+                            </div>-->
+                            <p class="crop__time-label">{{ startDragTime }}</p>
+                        </div>
+                        <div class="crop__corner crop__end" draggable="true">
+                            <span>|||</span>
+                            <!--<div class="crop__grab">
+                                <span>||</span>
+                            </div> -->
+                            <p class="crop__time-label">{{ endDragTime }}</p>
+                        </div>
+                        <span class="crop__space"></span>
+                    </div>
+
+                    <div class="videoline-progress" v-show="false">
+                    </div>
+                </div>
+
                 <div class="annotate" v-show="isAnnotating">
                     <div class="annotate-menu" v-show="isAnnotateMenu">
                         <nav class="annotate-menu__canons">
@@ -109,61 +148,10 @@
                     </div>
                 </div>
 
-                <div class="times" v-show="isVideoline">
-                    <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
-                    <!-- v-for="t in 10"  style="color: #fff; font-size: 8px;"-->
-                    <span class="times-min">{{ secondsToMMSS(annotationPauseTime - 90) }}</span><span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(18 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(36 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(54 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(72 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(90 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(108 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(126 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(144 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
-                    <span class="times-min">{{ secondsToMMSS(162 + annotationPauseTime - 90) }}</span> <span class="times-sec"></span></span><span class="times-sec"></span>
+                <div class="add-annotation-area" @click="annotating()" v-show="!isAnnotating">
+                    <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
-                <div class="videoline" id="videoline" v-show="isVideoline">
-                    <!--<span class="videoline__now-time">{{ videoCurrentTimeMMSS }}</span>-->
-
-                    <div class="videoline-ribbon" draggable="true" v-show="false">
-                        <span class="videoline-ribbon-circle"></span>
-                        <span class="videoline-ribbon-line">
-                            <p class="videoline-ribbon-line-time">{{ videoCurrentTimeMMSS }}</p>
-                        </span>
-                    </div>
-
-                    <div class="crop videoline-crop" id="videoline-crop" >
-                        <div class="crop__corner crop__start" draggable="true">
-                            <span>|||</span>
-                            <!--<span>&nbsp;</span>-->
-                            <!--<div class="crop__grab" style="margin-left: -10px"> 
-                                <span>||</span>
-                            </div>-->
-                            <p class="crop__time-label">{{ startDragTime }}</p>
-                        </div>
-                        <div class="crop__corner crop__end" draggable="true">
-                            <span>|||</span>
-                            <!--<div class="crop__grab">
-                                <span>||</span>
-                            </div> -->
-                            <p class="crop__time-label">{{ endDragTime }}</p>
-                        </div>
-                        <span class="crop__space"></span>
-                    </div>
-
-                    <div class="videoline-progress" v-show="false">
-                    </div>
-                </div>
-
-                <!-- testing -->
-                    <div class="add-annotation-area" @click="annotating()" v-show="!isAnnotating">
-                        <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
-                    </div>
-                    <!--<ul>
-                        <li v-for="a in this.$store.state.videos[this.id].annotations"> {{ a.id }}</li>
-                    </ul> -->
             </div>
 
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
@@ -174,6 +162,7 @@
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
                         <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'All')"><i class="fa fa-cicle fa_1_5x " aria-hidden="true"></i><span>All</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -183,6 +172,8 @@
                     </nav>
                     <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
                         <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
+
+                        <!-- v-show="isAll === ''" -->
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
                              v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
                             <div class="column" @click="seekCard($event)">
@@ -217,6 +208,41 @@
                                 <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
                             </div>
                         </div>
+
+                        <!--< <div v-show="isAll === 'All'" class="all-card columns is-gapless" v-for="card in videoAnnotations"> 
+                        ALL
+                            <div class="column" @click="seekCard($event)">
+                                <div class="columns is-gapless is-marginless">
+                                    <div class="column is-8">
+                                        <p class="timeline-card-title">{{ card.category }}</p>
+                                    </div>
+                                    <div class="column is-4">
+                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
+                                    </div>
+                                </div>
+                                <div class="columns is-gapless is-marginless">
+                                    <div class="column">
+                                        <p class="timeline-card-description">{{ card.comment }}</p>
+                                    </div>
+                                </div>
+                                <div class="columns is-gapless is-marginless">
+                                    <div class="timeline-card-effectiveness-bar column is-8">
+                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
+                                    </div>
+                                    <div class="column is-4">
+                                        <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
+                                    </div>
+                                </div>
+                                <div class="columns is-gapless is-marginless">
+                                    <p class="timeline-card-author">by {{ card.author }}</p>
+                                </div>
+                            </div>
+                            <div class="timeline-card-edit">
+                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+                                <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
+                                <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+                            </div>
+                        </div> -->
                     </div>
             </div>
         </div>
@@ -254,7 +280,6 @@
                 editStart: null,
                 editEnd: null,
                 editingCard: null,
-                timesArray: [],
                 isAnnotating: false,
                 isAnnotateMenu: false,
                 isAnnotateFields: false,
@@ -271,13 +296,8 @@
                 isDelivery: 'Delivery',
                 isVisual: 'Visual',
                 isStyle: 'Style',
-                times: [
-                    { marginleft: '10%' },
-                    { marginleft: '20%' },
-                    { marginleft: '30%' },
-                    { marginleft: '40%' },
-                    { marginleft: '50%' },
-                ],
+                isAll: '',
+                times: [],
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
@@ -390,7 +410,6 @@
             this.moreAnnotations()
         },
         methods: {
-            // DO NOT TOUCH!
             annotating() {
                 var that = this
 
@@ -402,38 +421,49 @@
 
                 this.annotationPauseTime = this.player.getPosition();
                 
+                // Set times array
+                this.setTimes()
+
                 // setStartEndPosition()
                 var annotationNowTime = this.videoCurrentTime - 5 // 5 seconds before pause
-                var barWidth = $('.player').width()
+                var barWidth = $('.player').width() 
+
                // "out of bounds" exception
                 if (this.annotationPauseTime < 0) 
                     annotationNowTime = 0
 
-                var coordsPercentStart = (annotationNowTime  * 100) / that.videoDuration
-                var coordsStart = (coordsPercentStart * barWidth) / 100
-                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / that.videoDuration // 10 seconds after from
-
-                // "out of bounds" exception
-                if (coordsPercentEnd > 100)
+                var coordsPercentStart = (annotationNowTime * 100) / parseInt(that.videoDuration)
+                // 10 seconds after "start"
+                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / parseInt(that.videoDuration)
+                if (coordsPercentEnd > 100) 
                     coordsPercentEnd = 100
-                    
-                var coordsEnd = (coordsPercentEnd * barWidth) / 100
 
-                console.log(coordsStart)
+                // var coordsStart = (coordsPercentStart * barWidth) / 100
+                // var coordsEnd = (coordsPercentEnd * barWidth) / 100
+                var middleCoords = barWidth / 2
+                var coordsStart = middleCoords - 10
+                var coordsEnd = middleCoords + 10
+                console.log('Coords start: ' + coordsStart)
+                console.log('Coords end: ' + coordsEnd)
 
-                $('.crop__start').css('left', coordsStart);
+                $('.crop__start').css('left', coordsStart)
+
+                $('.crop__start').css('left', coordsStart)
                 $('.crop__end').css('left', coordsEnd)
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
-                this.startDragTime = this.secondsToMMSS(annotationNowTime)
+                this.annotateStart = this.secondsToMMSS(this.annotationPauseTime - 5)
+                this.annotateEnd = this.secondsToMMSS(this.annotationPauseTime + 5)
+
+                this.startDragTime = this.secondsToMMSS(this.annotationPauseTime - 5)
+                this.endDragTime = this.secondsToMMSS(this.annotationPauseTime + 5)
 
                 // "out of bounds" exception
-                if (that.videoDuration - annotationNowTime > 10) {
-                    this.endDragTime = this.secondsToMMSS(annotationNowTime + 10)
-                } else {
-                    this.endDragTime = this.secondsToMMSS(that.videoDuration)
-                }
+                if ((that.videoDuration - annotationNowTime) < 90) {
+                    this.startDragTime = this.secondsToMMSS(annotationNowTime)
+                    this.endDragTime = this.secondsToMMSS(this.videoDuration)
+                } 
 
     
                 // START
@@ -449,22 +479,19 @@
                     drag(event) {
                         var revert = $( ".crop__start" ).draggable( "option", "revert" );
                         var cropWidth = $('.crop__end').position().left - $('.crop__start').position().left
-                        if(cropWidth < 0) {
+                        if (cropWidth < 0) {
                             $( ".crop__start" ).draggable( "option", "revert", true );
                         } else {
                             $( ".crop__start" ).draggable( "option", "revert", false );
                             that.isDragging = true
-                            //var windowOffset = $('.videoline').offset().left
                             var clickCoords = $('.crop__start').position().left
                             var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                            //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
 
                             var clipLeft = $('.crop__start').position().left
                             var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                             $('.crop__space').css('left', clipLeft)
                             $('.crop__space').css('width', clipWidth)
-                            //clickTime = that.secondsToMMSS(clickTime)
-                            //console.log("clickTime = " + clickTime)
+
                             // "out of bounds" exception
                             if (clickCoords < 0) {
                                 clickCoords = 0
@@ -474,11 +501,13 @@
                             var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                             // 3 minutes scaling
                             var clickTime = (clickCoordsPercent * 180) / 100
-                            if (that.annotationPauseTime < 90) {
+
+                            if (that.annotationPauseTime < 90)
                                 var targetTime = clickTime
-                            } else {
+                            else
                                 var targetTime = clickTime + that.annotationPauseTime - 90
-                            }
+                            // Third scenario remaining (that.videoDuration - that.annotationPauseTime) < 90
+
                             that.player.seek(targetTime)
                             targetTime = that.secondsToMMSS(targetTime)
                             that.annotateStart = targetTime
@@ -498,11 +527,12 @@
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        if (that.annotationPauseTime < 90) {
+
+                        if (that.annotationPauseTime < 90)
                             var targetTime = clickTime
-                        } else {
+                        else
                             var targetTime = clickTime + that.annotationPauseTime - 90
-                        }
+
                         that.player.seek(targetTime)
                         targetTime = that.secondsToMMSS(targetTime)
                         that.annotateStart = targetTime
@@ -579,17 +609,17 @@
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        if (that.annotationPauseTime < 90) {
+                        if (that.annotationPauseTime < 90)
                             var targetTime = clickTime
-                        } else {
+                        else
                             var targetTime = clickTime + that.annotationPauseTime - 90
-                        }
+                    
                         that.player.seek(targetTime)
                         targetTime = that.secondsToMMSS(targetTime)
                         that.annotateEnd = targetTime
                         that.endDragTime = targetTime
                         
-                        //In case that cropWidth < 0, the crop__space should be drawn again
+                        // In case that cropWidth < 0, the crop__space should be drawn again
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
@@ -597,8 +627,6 @@
                         clickTime = that.secondsToMMSS(clickTime)
                     }
                 })
-
-                console.log('Annotation pause time: ' + this.annotationPauseTime)
 
             },
             annotate() {
@@ -807,6 +835,18 @@
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
+                if (canon === 'All') {
+                    if (this.isAll !== '') {
+                        this.isAll = ''
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
+                    }
+                    else { 
+                        this.isAll = 'All'
+                        event.currentTarget.style.backgroundColor = "#39425C"
+                        event.currentTarget.style.color = "#FFFFFF"
+                    }
+                }
             },
             showAll(event) {
                 var categoryBtn = $(event.currentTarget.parentElement)
@@ -913,6 +953,46 @@
                 console.log('sum = ' + sum)
                 //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
             },
+            setTimes() {
+                if (this.annotationPauseTime < 90) {
+                    this.times[0] = { min: this.secondsToMMSS(0) }
+                    this.times[1] = { min: this.secondsToMMSS(18) }
+                    this.times[2] = { min: this.secondsToMMSS(36) }
+                    this.times[3] = { min: this.secondsToMMSS(54) }
+                    this.times[4] = { min: this.secondsToMMSS(72) }
+                    this.times[5] = { min: this.secondsToMMSS(90) }
+                    this.times[6] = { min: this.secondsToMMSS(108) }
+                    this.times[7] = { min: this.secondsToMMSS(126) }
+                    this.times[8] = { min: this.secondsToMMSS(144) }
+                    this.times[9] = { min: this.secondsToMMSS(162) }
+                    this.times[10] = { min: this.secondsToMMSS(180) }
+                } else if (this.annotationPauseTime > 90 && (this.videoDuration - this.annotationPauseTime) > 90) {
+                    this.times[0] = { min: this.secondsToMMSS(this.annotationPauseTime - 90) }
+                    this.times[1] = { min: this.secondsToMMSS(18 + this.annotationPauseTime - 90) }
+                    this.times[2] = { min: this.secondsToMMSS(36 + this.annotationPauseTime - 90) }
+                    this.times[3] = { min: this.secondsToMMSS(54 + this.annotationPauseTime - 90) }
+                    this.times[4] = { min: this.secondsToMMSS(72 + this.annotationPauseTime - 90) }
+                    this.times[5] = { min: this.secondsToMMSS(90 + this.annotationPauseTime - 90) }
+                    this.times[6] = { min: this.secondsToMMSS(108 + this.annotationPauseTime - 90) }
+                    this.times[7] = { min: this.secondsToMMSS(126 + this.annotationPauseTime - 90) }
+                    this.times[8] = { min: this.secondsToMMSS(144 + this.annotationPauseTime - 90) }
+                    this.times[9] = { min: this.secondsToMMSS(162 + this.annotationPauseTime - 90) }
+                    this.times[10] = { min: this.secondsToMMSS(180 + this.annotationPauseTime - 90) }
+                } else if ((this.videoDuration - this.annotationPauseTime) < 90) {
+                    this.times[0] = { min: this.secondsToMMSS(this.videoDuration - 180) }
+                    this.times[1] = { min: this.secondsToMMSS(this.videoDuration - 162) }
+                    this.times[2] = { min: this.secondsToMMSS(this.videoDuration - 144) }
+                    this.times[3] = { min: this.secondsToMMSS(this.videoDuration - 126) }
+                    this.times[4] = { min: this.secondsToMMSS(this.videoDuration - 108) }
+                    this.times[5] = { min: this.secondsToMMSS(this.videoDuration - 90) }
+                    this.times[6] = { min: this.secondsToMMSS(this.videoDuration - 72) }
+                    this.times[7] = { min: this.secondsToMMSS(this.videoDuration - 54) }
+                    this.times[8] = { min: this.secondsToMMSS(this.videoDuration - 36) }
+                    this.times[9] = { min: this.secondsToMMSS(this.videoDuration - 18) }
+                    this.times[10] = { min: this.secondsToMMSS(this.videoDuration) }
+                }
+                
+            },
             hooping() {
                 var that = this
 
@@ -943,9 +1023,9 @@
                                 $('.timeline-card').eq(j).css('background-color', 'white')
                             } 
                                 if (this.getPosition() > allEndTime[j]) {
-                                    $('.timeline-card').eq(j).fadeOut(700); 
+                                        $('.timeline-card').eq(j).fadeOut(700); 
                                 } else {
-                                    $('.timeline-card').eq(j).fadeIn(700);
+                                        $('.timeline-card').eq(j).fadeIn(700);
                                 }
                         }
                     }
@@ -1072,6 +1152,7 @@
         height: 80px;
         border-radius: 0;
         background-color: #39425C;
+        border-bottom: 1px solid #27314d;
         display: flex;
     }
     .videoline__now-time {
@@ -1156,11 +1237,13 @@
             background-color: #F2C94C;
         }
         .crop__time-label {
-            color: #fff;
             z-index: 200;
-            padding: 0px;
-            font-size: 8px;
-            
+            padding: 2px 5px;
+            font-size: 9px;
+            font-weight: 700;
+            color: rgb(25, 30, 42);
+            background: #F2C94C;
+            border-radius: 15px;
         }
 
             .crop__start .crop__time-label { 
@@ -1200,28 +1283,27 @@
 
     .times {
         height: 30px;
-        border-top: 1px solid #000;
         background-color: #39425C;
         display: flex;
+        border-top: 1px solid #27314d;
         justify-content: space-between;
         align-items: flex-end;
     }
         .times-min {
             width: 1px;
             height: 70%;
-            font-size: 8px;
-            color: #FFF;
-            background-color: #FFF;
+            font-size: 9px;
+            color: #ccc7c7; /*  rgb(25, 30, 42)*/
             border-right: 1px solid #FFF;
         }
-        .times-sec {
+        /*.times-sec {
             width: 1px;
             height: 40%;
             font-size: 7px;
             color: #FFF;
             background-color: #FFF;
             border-right: 1px solid #FFF;
-        }
+        } */
 
 .videoline-progress {
     /*z-index: 95;*/
@@ -1298,6 +1380,7 @@
 
 
     .annotate-fields {
+        padding: 5px;
         display: flex;
         background-color: #39425C;
     }
