@@ -1016,7 +1016,8 @@
                     } 
                     else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j]) {
                         $('.timeline-card').eq(j).css('background-color', 'yellow')
-                        $('.timeline-card').eq(j).after($('.timeline-card').eq(0)).fadeIn()
+                        // Insert current card (j), after the first card (0)
+                        $('.timeline-card').eq(j).after($('.timeline-card').eq(0))
                     }
                 }
             },
