@@ -1018,14 +1018,6 @@
                         $('.timeline-card').eq(j).css('background-color', 'yellow')
                         $('.timeline-card').eq(j).after($('.timeline-card').eq(0)).fadeIn()
                     }
-
-                        // if (this.videoCurrentTime > allEndTime[j]) {
-                        //     console.log(allEndTime[j])
-                        //     //$('.timeline-card').eq(j).fadeOut(700); 
-                        // }
-                        // else {
-                            //$('.timeline-card').eq(j).fadeIn(700);
-                        //}
                 }
             },
             moreAnnotations() {
