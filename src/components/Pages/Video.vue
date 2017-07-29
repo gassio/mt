@@ -355,11 +355,6 @@
                 }
             })
 
-            this.player.on('time', function(event) {
-                // Color a card when videoCurrentTime is between card from and end
-                that.hooping()
-            })
-
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
                 axis: "x",
@@ -407,6 +402,9 @@
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
+
+            // Color a card when videoCurrentTime is between card from and end
+            this.hooping()
         },
         methods: {
             annotating() {
@@ -993,6 +991,7 @@
                 
             },
             hooping() {
+                console.log("HOOPING()")
                 var that = this
 
                 var allCards = $('.timeline-card')
@@ -1001,7 +1000,6 @@
                 var allTimeString = []
                 var k = 0;
                 for (k=0; k < allCards.length; k++) {
-                    // ga to be changed                    
                     allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
                     allStartTime[k] = allTimeString[k].substring(0,5)
                     allEndTime[k] = allTimeString[k].substring(8,13)
@@ -1010,29 +1008,25 @@
                     allEndTime[k] = that.mmssToSeconds(allEndTime[k])
                 }
                 
-                this.player.on('time', function(event) {
-                    if (that.player.getState() === 'playing') {
-                        that.videoCurrentTime = this.getPosition()
-                        var j=0;
-                        for (j=0; j < allCards.length; j++) {
-                            if (this.getPosition() > allStartTime[j] && this.getPosition() < allEndTime[j]) {
-                                $('.timeline-card').eq(j).css('background-color', 'yellow')
-                            }
-                            if (this.getPosition() < allStartTime[j] || this.getPosition() > allEndTime[j]) {
-                                $('.timeline-card').eq(j).css('background-color', 'white')
-                            } 
-                            // TO DO GASSI
-                                // if (this.getPosition() > allEndTime[j]) {
-                                //     $('.timeline-card').eq(allCards.length-1).after($('.timeline-card').eq(j));
-                                //     console.log(allEndTime[j])
-                                //     //$('.timeline-card').eq(j).fadeOut(700); 
-                                // }
-                                // // else {
-                                //     //$('.timeline-card').eq(j).fadeIn(700);
-                                // //}
-                        }
+                var j=0;
+                for (j=0; j < allCards.length; j++) {
+
+                    if (this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) {
+                        $('.timeline-card').eq(j).css('background-color', 'white')
+                    } 
+                    else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j]) {
+                        $('.timeline-card').eq(j).css('background-color', 'yellow')
+                        $('.timeline-card').eq(j).after($('.timeline-card').eq(0)).fadeIn()
                     }
-                })
+
+                        // if (this.videoCurrentTime > allEndTime[j]) {
+                        //     console.log(allEndTime[j])
+                        //     //$('.timeline-card').eq(j).fadeOut(700); 
+                        // }
+                        // else {
+                            //$('.timeline-card').eq(j).fadeIn(700);
+                        //}
+                }
             },
             moreAnnotations() {
                 var moreAnnotations = $('.more-annotations')
