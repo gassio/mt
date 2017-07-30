@@ -399,6 +399,7 @@
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
             this.videoAnnotations = this.$store.state.videos[this.id].annotations
+            console.log("UPDATED()")
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
@@ -733,9 +734,7 @@
             deleteAnnotation(event) {
                 var that = this
 
-                // var editingCard = event.currentTarget.parentElement.parentElement
                 var editingCard = $(event.currentTarget).parent().parent()
-                // console.log(editingCard)
 
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
@@ -744,7 +743,9 @@
                 var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
                 // Hide .edit-buttons
-                $(event.currentTarget).hide(); $(event.currentTarget).siblings('.edit-buttons').hide()
+                $(event.currentTarget).hide()
+                $(event.currentTarget).siblings('.edit-buttons').hide()
+
                 // Are you sure to Delete annotation?
                 swal({
                     title: "Delete ''" + cardTitle + "'' annotation?",
@@ -759,6 +760,8 @@
                             id: that.id,
                             cardID: cardID,
                         })
+
+                        // editingCard.remove()
                     },
                 )
             },
@@ -991,33 +994,32 @@
                 
             },
             hooping() {
-                console.log("HOOPING()")
                 var that = this
 
                 var allCards = $('.timeline-card')
                 var allStartTime = []
                 var allEndTime = []
                 var allTimeString = []
-                var k = 0;
-                for (k=0; k < allCards.length; k++) {
-                    allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText
-                    allStartTime[k] = allTimeString[k].substring(0,5)
-                    allEndTime[k] = allTimeString[k].substring(8,13)
+                for (var k=0, l = allCards.length; k < l; k++) {
+                    allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText // 00:05 - 00:10
+                    allStartTime[k] = allTimeString[k].substring(0,5)  // 00:05 
+                    allEndTime[k] = allTimeString[k].substring(8,13) // 00:10 
 
                     allStartTime[k] = that.mmssToSeconds(allStartTime[k])
                     allEndTime[k] = that.mmssToSeconds(allEndTime[k])
                 }
                 
-                var j=0;
-                for (j=0; j < allCards.length; j++) {
+                for (var j=0, l = allCards.length; j < l; j++) {
 
                     if (this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) {
                         $('.timeline-card').eq(j).css('background-color', 'white')
                     } 
-                    else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j]) {
+                    else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && $('.timeline-card').eq(j).css('background-color') === 'rgb(255, 255, 255)') {
                         $('.timeline-card').eq(j).css('background-color', 'yellow')
-                        // Insert current card (j), after the first card (0)
+
+                        // Animate current card (j), after the first card (0)
                         $('.timeline-card').eq(j).after($('.timeline-card').eq(0))
+                        $('.timeline-card').eq(j).effect('bounce',{times: 2}, 500)
                     }
                 }
             },
@@ -1407,6 +1409,7 @@
 
             .annotate-desc-text {
                 margin-left: 60px;
+                font-style: italic;
             }
 
             .annotate-effectiveness {

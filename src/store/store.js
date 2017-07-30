@@ -358,15 +358,9 @@ export const store = new Vuex.Store({
 
         },
         DELETE_ANNOTATION: (state, payload) => {
-            var newAnnotations = state.videos[payload.id].annotations
-            newAnnotations = newAnnotations.filter(function(a){
-                return a.id !== payload.cardID
-            })
-            // Update annotations[]
-            state.videos[payload.id].annotations = newAnnotations
-
-            // Sorting annotations[] by from property
-            newAnnotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
+            _.remove(state.videos[payload.id].annotations, function(a) {
+                return a.id === payload.cardID
+            });
         },
         // future
         retrieveVideosByClass: (state, className) => {
