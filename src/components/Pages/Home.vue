@@ -48,38 +48,21 @@
 			</div>
 		</div>
 
-		<div class= "home-content">
-			<div class="home-card" v-for="vid in videos" v-if="vid.vidStudent === 'Ben Domino'">
-				<div class="home-card-container column">
-					<div class="columns is-gapless is-marginless">
-						<div class="column">
-                            <router-link :to="'/video/' + vid.videoID"  tag="a" >
-                                <img :src="vid.vidThumb" class="home-card-video-thumbnail" alt="video-thumbnail">
-                            </router-link>
-						</div>
+		<div class="home-content">
+			<div class="home-card" v-for="v in videos">
+				<router-link :to="'/video/' + v.videoID" class="home-card-thumbnail" tag="div">
+					<img :src="v.thumb" alt="video-thumbnail" class="home-card-thumbnail-image">
+				</router-link>
+				<div class="home-card-text">
+					<div class="home-card-details">
+						<p class="home-card-description">{{ v.title }}</p>
+						<p class="home-card-semester">Spring '17</p>
+						<p class="home-card-date">July 2017</p>
 					</div>
-					<div class="columns is-gapless is-marginless">
-						<div class="column">
-							<p class="home-card-description">{{ vid.vidDesc }}</p>
-						</div>
-					</div>
-					<div class="columns is-gapless is-marginless">
-						<div class="column">
-							<p class="home-card-semester">Spring '17</p>
-						</div>
-					</div>
-					<div class="columns is-gapless is-marginless">
-						<div class="column">
-							<p class="home-card-date">May 14</p>
-						</div>
-					</div>
-					<div class="columns is-gapless is-marginless">
-						<div class="home-card-effectiveness-bar column is-8">
-							<progress class="progress is-small" value="75" max="100"></progress>
-						</div>
-						<div class="column is-4">
-							<p class="home-card-effectiveness-label">75% effective</p>
-						</div>
+					<div class="home-card-effectiveness">
+						<p class="home-card-effectiveness-genre">Thesis Talk</p>
+						<progress class="timeline-card-effectiveness-bar progress is-small" value="75" max="100"></progress>
+						<p class="home-card-effectiveness-label">75%</p>
 					</div>
 				</div>
 			</div>
@@ -96,15 +79,12 @@
 </template>
 
 <script>
-    import { eventBus } from '../../main'
-
     export default {
-        data() {
-            return {
-                videos: eventBus.videos,
-                videoAnnotations: eventBus.allAnnotations
-            }
-        }
+		computed: {
+            videos() {
+                return this.$store.getters.videos
+            },
+		}
     }
 </script>
 
@@ -198,7 +178,8 @@
 			.home-card-description{
 				padding-left: 10px !important;
 				padding-right: 10px !important;
-				font-size:22px
+				font-size:22px;
+				color: #A90931;
 			}
 			.home-card-semester{
 				padding-left: 20px !important;
