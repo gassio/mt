@@ -1011,16 +1011,29 @@
                 
                 for (var j=0, l = allCards.length; j < l; j++) {
 
-                    if (this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) {
-                        $('.timeline-card').eq(j).css('background-color', 'white')
-                    } 
-                    else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && $('.timeline-card').eq(j).css('background-color') === 'rgb(255, 255, 255)') {
+                    if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && (
+                        $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)" || $('.timeline-card').eq(j).css('background-color') === "rgba(0, 0, 0, 0)")) 
+                    {
                         $('.timeline-card').eq(j).css('background-color', 'yellow')
+                        var firstCard = $('.timeline-card').eq(0)
+                        $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
+                        $('.timeline-card').eq(j).insertBefore(firstCard)
+                        console.log('in')
+                    } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)") {
+                        $('.timeline-card').eq(j).css('background-color', 'white')
+                        console.log('out')
+                    } 
 
-                        // Animate current card (j), after the first card (0)
-                        $('.timeline-card').eq(j).after($('.timeline-card').eq(0))
-                        $('.timeline-card').eq(j).effect('bounce',{times: 2}, 500)
-                    }
+                    // if (this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) {
+                    //     // $('.timeline-card').eq(j).css('background-color', 'white')
+                    // } 
+                    // else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] ) {
+                    //     // $('.timeline-card').eq(j).css('background-color', 'yellow')
+
+                    //     // Animate current card (j), after the first card (0)
+                    //     // $('.timeline-card').eq(j).after($('.timeline-card').eq(0))
+                    //     $('.timeline-card').eq(j).effect('bounce',{times: 2}, 500)
+                    // }
                 }
             },
             moreAnnotations() {
