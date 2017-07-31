@@ -255,8 +255,7 @@
 </template>
 
 <script>
-    import { eventBus } from '../../main'
-    import AnnotatePath from '../AnnotatePath.vue'
+    import { mapMutations } from 'vuex'
 
     export default {
         data() {
@@ -301,6 +300,7 @@
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
+                refreshVar: 0
             }
         },
         mounted() {          
@@ -752,19 +752,26 @@
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
-                    cancelButtonColor: 'gray',
+                    cancelButtonColor: 'gdray',
                     confirmButtonText: 'Delete'
                     }).then(function () {
+                        // Refresh fix
+                        that.player.seek(that.mmssToSeconds(that.videoAnnotations[that.id].from))
+                        
                         // Delete from store
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
                         })
 
-                        // editingCard.remove()
                     },
                 )
             },
+            // ...mapMutations([
+            //     'DELETE_ANNOTATION',
+            //     'EDIT_ANNOTATION',
+            //     'ADD_ANNOTATION'
+            // ]),
             annotateModeActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
                 for (var i=0; i < children.length; i++) {
@@ -933,9 +940,6 @@
             },
             showAnnotateMenu() {
                 $('.annotate-menu').show()
-            },
-            goBack() {
-                eventBus.navigateBack(this)
             },
             paintTimes() {
                 var minPos = $('.videoline').offset().left
