@@ -87,7 +87,7 @@
 			<div class="home-card-add-new">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<p>Add new video</p>
-				<span>Or drop it here</span>
+				<!--<span>Or drop it here</span>-->
 			</div>
 			
 		</div>

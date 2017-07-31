@@ -157,11 +157,11 @@
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
-                        <a class="card-menu-link" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -174,7 +174,7 @@
 
                         <!-- v-show="isAll === ''" -->
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
-                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle"> 
+                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle" title="Click to seek annotation"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
@@ -1535,7 +1535,7 @@
             overflow: auto;
             padding: 15px !important;
         }
-            .timeline-card{
+            .timeline-card {
                 background: none;
                 padding: 15px !important;
                 margin-bottom: 20px;
