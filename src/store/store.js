@@ -362,6 +362,20 @@ export const store = new Vuex.Store({
                 return a.id === payload.cardID
             });
         },
+        ADD_CLASS: state => {
+            var classes = state.classes
+
+                var newClass = {
+                    "title": "Material Science Engineering",
+                    "section": "16.S982",
+                    "spring": 'Spring 17',
+                    "videosCount": "34",
+                    "classID": "1",
+                    "jwPlaylistID": "2INkSmd7",
+                }
+
+            classes.push(newClass)
+        },
         // future
         retrieveVideosByClass: (state, className) => {
             for (var i=0; i < state.videos.length; i++) {

@@ -21,7 +21,7 @@
 					        </div>
 
 							<div class="classes-card add-new-class-container">
-								<div class="add-new-class">
+								<div class="add-new-class" @click="ADD_CLASS()">
 									<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 									<p>Create new class</p>
 									<span>A class contains student videos</span>
@@ -36,7 +36,9 @@
     </div>      
 </template>
 
-<script>    
+<script>
+	import { mapMutations } from 'vuex' 
+
     export default {
         data() {
             return { 
@@ -46,6 +48,9 @@
         mounted() {
         },
         methods: {
+			...mapMutations([
+				'ADD_CLASS'
+            ]),
             // It is not used because of line 6: 
             // <router-link :to=" 'classes/' + p.replace(/ /g, '-') " tag="a">{{ p }}</router-link>
             // fixPlaylistNames() {
