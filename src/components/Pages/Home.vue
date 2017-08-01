@@ -1,30 +1,4 @@
 <template>
-    <!-- <div class="content home container">
-
-        <div class="tabs">
-            <ul>
-                <li class="is-active"><a>All videos</a></li>
-                <li><a>Spring '17</a></li>
-                <li><a>Winter '16</a></li>
-            </ul>
-        </div>
-
-        <div class="v-videos">
-            <div class="v-video" v-for="vid in videos" v-if="vid.vidStudent === 'Ben Domino'">
-                <router-link :to="'/video/' + vid.videoID"  tag="a" >
-                    <img class="video-thumb" :src="vid.vidThumb">
-                </router-link>
-                <span class="video-title">Title: {{ vid.vidTitle }}</span>
-                <span class="video-duration">Duration: {{ vid.vidDuration }}</span>
-                <span class="video-desc">Description: {{ vid.vidDesc }}</span>
-                <span class="video-student">Student: {{ vid.vidStudent }}</span>
-                <p>----------------------------</p>
-                <span class="video-playlist">Playlist id: <strong>{{ vid.playlistID }}</strong></span>
-                <span class="video-id">Video id: {{ vid.videoID }}</span>
-            </div>
-        </div>
-    </div> -->
-
     <div class= "container">
 
 		<div class= "home-tabs">
@@ -49,25 +23,29 @@
 		</div>
 
 		<div class="home-content">
-			<div class="home-card" v-for="v in videos">
-				<router-link :to="'/video/' + v.videoID" class="home-card-thumbnail" tag="div">
-					<img :src="v.thumb" alt="video-thumbnail" class="home-card-thumbnail-image">
+
+			<div class="videocard" v-for="v in videos">
+				<router-link :to="'/video/' + v.videoID" class="videocard-thumbnail" tag="a">
+					<img :src="v.thumb" alt="video-thumbnail" class="videocard-thumbnail-image">
 				</router-link>
-				<div class="home-card-text">
-					<div class="home-card-details">
-						<p class="home-card-description">{{ v.title }}</p>
-						<p class="home-card-semester">Spring '17</p>
-						<p class="home-card-date">July 2017</p>
+				<div class="videocard-content">
+					<div class="videocard-details">
+						<p class="videocard-description">{{ v.title }}</p>
+						<p class="videocard-semester">Spring '17</p>
+						<p class="videocard-date">July 2017</p>
 					</div>
-					<div class="home-card-effectiveness">
-						<p class="home-card-effectiveness-genre">Thesis Talk</p>
-						<progress class="timeline-card-effectiveness-bar progress is-small" value="75" max="100"></progress>
-						<p class="home-card-effectiveness-label">75%</p>
-					</div>
+					<div class="videocard-foot">
+						<span class="videocard-genre">Thesis Talk</span>
+						<div class="videocard-effectiveness">
+							<progress value="75" max="100"></progress>
+							<p class="home-card-effectiveness-label">75%</p>
+						</div>
+					</div>				
 				</div>
+				
 			</div>
 			
-			<div class="home-card-add-new">
+			<div class="videocard-add-new">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<p>Add new video</p>
 				<!--<span>Or drop it here</span>-->
@@ -122,12 +100,13 @@
 /**************************************************************************/
 
 /*-------------- CARD ---------------- */
-.home-tabs{
+.home-tabs {
 	min-width: 770px;
 	width: 100%;
 	height: 60px;
+	border-bottom: 1px solid #E8E9EA;
 }
-	.home-tabs-semester{
+	.home-tabs-semester {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -136,15 +115,14 @@
 		width: 100%;
 		height: 60px;
 	}
-		.home-tabs-semester-button{
+		.home-tabs-semester-button {
 			background: none;
 			border: none;
 			padding-left: 10px;
 			padding-right: 10px;
-			border-bottom: solid 2px rgba(0, 0, 0, .3);
 		}
 
-	.home-genre-selection{
+	.home-genre-selection {
 		display: flex;
 		flex-direction: row;
 		width: 100%;
@@ -153,7 +131,7 @@
 		line-height: 60px;
 	}
 
-.home-content{
+.home-content {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
@@ -163,62 +141,82 @@
 	height: 100%;
 }
 
-	.home-card {
+
+
+	.videocard {
 		height:auto;
 		width: calc(100% /3 - 20px);
 		margin: 10px;
+		border-radius: 3px;
+		border: 1px solid rgba(170, 178, 200, 0.25);
 	}	
-		.home-card-container{
-			padding: 0px !important;
+		.videocard-video-thumbnail{
+			width: 100%;
 		}
-			.home-card-video-thumbnail{
-				width: 100%;
+
+		.videocard-content {
+			padding: 25px 25px 5px 25px;
+		}
+
+			.videocard-details {
 			}
+				.videocard-description {
+					font-size: 1em;
+					padding: 0;
+					margin: 0;
+				}
 			
-			.home-card-description{
-				padding-left: 10px !important;
-				padding-right: 10px !important;
-				font-size:22px;
-				color: #A90931;
-			}
-			.home-card-semester{
-				padding-left: 20px !important;
-				padding-right: 10px !important;
-				font-size:18px
-			}
-			.home-card-date{
-				padding-left: 20px !important;
-				padding-right: 10px !important;
-				font-size:12px
-			}
-			.home-card-effectiveness-bar{
-				margin-top: 6px !important;
-				padding-left: 20px !important;
-				padding-right: 10px !important;
-			}
-			.home-card-effectiveness-label{
-				padding-left: 20px !important;
-				padding-right: 20px !important;
-			}		
-			
-			.home-card-add-new {
+				.videocard-semester,
+				.videocard-date {
+					font-size: 0.8em;
+					padding: 0;
+					margin: 0;
+				}
+
+			.videocard-foot {
+				border-top: 1px solid rgba(170, 178, 200, 0.25);
+				margin-top: 30px;
+				padding-top: 10px;
+				font-size: 0.8em;
 				display: flex;
-				flex-direction:column;
-				justify-content: center;
-				align-items: center;
-				height:280px;
-				color: #A90931;
-				background-color: #FFF;
-				width: calc(100% /3 - 20px);
-				margin: 10px;
-				border: 1px dashed #DADDE2;
 			}
-			.home-card-add-new p {
-				color: #A90931;
-				font-size: 30px;
-			}
-			.home-card-add-new span {
-				color: #6B6B6B;
-			}
+				.videocard-genre {
+					width: 50%;
+				}
+				.videocard-effectiveness {
+					width: 50%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+				}
+
+					.videocard-effectiveness-bar {
+					  background-color: red !important;
+					}
+
+					.videocard-effectiveness-label {
+					}
+
+					
+		
+	.videocard-add-new {
+		display: flex;
+		flex-direction:column;
+		justify-content: center;
+		align-items: center;
+		height:280px;
+		color: #A90931;
+		background-color: #FFF;
+		width: calc(100% /3 - 20px);
+		margin: 10px;
+		border: 1px dashed #DADDE2;
+	}
+	.videocard-add-new p {
+		color: #A90931;
+		font-size: 30px;
+	}
+	.videocard-add-new span {
+		color: #6B6B6B;
+	}
 
 </style>
