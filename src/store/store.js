@@ -201,15 +201,14 @@ export const store = new Vuex.Store({
             {
                 "title": "Material Science Engineering",
                 "section": "16.S982",
-                "spring": 'Spring 17',
-                "videosCount": "34",
-                "classID": "1",
+                "semester": 'Spring 17',
+                "classID": 1,
                 "jwPlaylistID": "2INkSmd7",
             },
             // {
             //     "title": "Mathematics Class",
             //     "section": "16.S979",
-            //     "spring": 'Spring 17',
+            //     "semester": 'Spring 17',
             //     "videosCount": "22",
             //     "classID": "2",
             //     "jwPlaylistID": "k5WSiplm",
@@ -362,19 +361,10 @@ export const store = new Vuex.Store({
                 return a.id === payload.cardID
             });
         },
-        ADD_CLASS: state => {
+        ADD_CLASS: (state, payload) => {
             var classes = state.classes
-
-                var newClass = {
-                    "title": "Material Science Engineering",
-                    "section": "16.S982",
-                    "spring": 'Spring 17',
-                    "videosCount": "34",
-                    "classID": "1",
-                    "jwPlaylistID": "2INkSmd7",
-                }
-
-            classes.push(newClass)
+            // console.log(payload.newClassObj)
+            classes.push(payload.newClassObj)
         },
         // future
         retrieveVideosByClass: (state, className) => {

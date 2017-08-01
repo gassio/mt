@@ -12,59 +12,82 @@
 						
 						<div class="classes-of-semester">
 							<!-- CLASS CARD - start -->
-                            <div class="classes-card" v-for="c in classes">   
-                                <router-link :to="'classes/' + c.title.replace(/ /g, '-')" tag="a" class="">
-                                    <i class="fa fa-book fa-5x" aria-hidden="true"></i>
-                                    <p class="classes-card-title"> {{c.section}} {{c.spring}} {{ c.title }}</p>
-                                    <span class="classes-card-details">{{c.videosCount}} videos, 2 instructors</span>
-                                </router-link><!-- end -->
-					        </div>
+							<router-link class="classes-card" :to="'classes/' + c.title.replace(/ /g, '-')" tag="a" v-for="c in classes"> 
+								<i class="fa fa-book fa-5x" aria-hidden="true"></i>
+								<p class="classes-card-title"> {{c.section}} {{c.semester}} {{ c.title }}</p>
+								<span class="classes-card-details"></span>
+							</router-link><!-- end -->
 
-							<div class="classes-card add-new-class-container">
-								<div class="add-new-class" @click="ADD_CLASS()">
+							<a class="classes-card add-new-class-container" @click="dialogVisible = true">
+								<!--<div class="add-new-class">-->
 									<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 									<p>Create new class</p>
-									<span>A class contains student videos</span>
-								</div>
-							</div>						
+									<!--<span>A class contains student videos</span>-->
+								<!--</div>-->
+							</a>						
 						</div>
 					</div>
 				</div>	
 			</div><!-- end -->
 		</div>
+		<el-dialog title="Add new class" :visible.sync="dialogVisible">
+			<el-form :model="newClass">
+				<el-form-item label="Class name" :label-width="formLabelWidth">
+					<el-input v-model="newClass.title" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="Section" :label-width="formLabelWidth">
+					<el-input v-model="newClass.section" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="Semester" :label-width="formLabelWidth">
+				<el-select v-model="newClass.semester" placeholder="Please select a semester">
+					<el-option label="Winter '17" value="Winter '17"></el-option>
+					<el-option label="Spring'17" value="Spring '17"></el-option>
+				</el-select>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialogVisible = false">Cancel</el-button>
+				<el-button class="add-class-btn" @click="addClass(); dialogVisible = false;">Add Class</el-button>
+			</span>
+		</el-dialog>
+
         <router-view></router-view>
     </div>      
 </template>
 
 <script>
-	import { mapMutations } from 'vuex' 
+    import { mapGetters } from 'vuex'
+	import { mapMutations } from 'vuex'
 
     export default {
         data() {
             return { 
-                // playlistNamesURI: [],
+                dialogVisible: false,
+				formLabelWidth: '120px',
+				newClass: {
+					title: '',
+					section: '',
+					semester: '',
+					jwPlaylistID: 'needs-backend'
+				}
             }
         },
         mounted() {
         },
         methods: {
-			...mapMutations([
-				'ADD_CLASS'
-            ]),
-            // It is not used because of line 6: 
-            // <router-link :to=" 'classes/' + p.replace(/ /g, '-') " tag="a">{{ p }}</router-link>
-            // fixPlaylistNames() {
-            //     for (var i=0; i < this.playlistNamesURI.length; ++i) {
-            //         this.playlistNamesURI[i] = this.playlistNamesURI[i].replace(/ /g, "-")
-            //     }
-            // }
+			addClass() {	
+				this.$store.commit('ADD_CLASS', { 
+					newClassObj: this.newClass
+				})
+				this.newClass = {}
+			}
+
         },
         computed: {
-            // Store: playlistNames[] array
-            classes() {
-                return this.$store.getters.classes
-            }
-        },
+            ...mapGetters([
+				'classes'
+            ])
+        }
     }
 </script>
 
@@ -105,7 +128,8 @@
 				border-bottom: 2px solid;
 			}
 			
-/*-------------- CLASS CARD ---------------- */			
+/*-------------- CLASS CARD ---------------- */		
+
 		.classes-of-semester {
 			display: flex;
 			flex-direction: row;
@@ -121,52 +145,22 @@
 				margin: 20px;
 				height: auto;
 				transition:  box-shadow 0.5s ease;
-				display:flex; 
-				align-items:center;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
 			}
-
-			@media screen and (min-width: 0px) {
-				.classes-card{
-					width: 100%;
-				}
-			}
-			
-			@media screen and (min-width: 426px){
-				.classes-card{
-					width: calc(100% /2 - 40px);
-				}
-			}
-			
-			@media screen and (min-width: 600px){
-				.classes-card{
-					width: calc(100% /3 - 40px);
-				}
-			}
-			
-			@media screen and (min-width: 1024px){
-				.classes-card{
-					width: calc(100% /4 - 40px);
-				}	
-			}
-				.classes-card a {
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-				}
-
-				.classes-card i {
-					color: #6B6B6B;
-				}
-
-				.classes-card:hover{
-					box-shadow: 3px 3px 9px 0px rgba(0,0,0,0.5);
+				.classes-card:hover {
 					cursor: pointer;
-				}	
-				.classes-card-title{
+					transition: 0.2s;
+					-webkit-transition: 0.2s;
+					background-color: #A90931;
+					color: #FFF !important;
+				}
+
+				.classes-card-title {
 					text-align: center;
 					font-size: 18px;
-					color: #A90931;
 				}
 				.classes-card-details {
 					text-align: center;
@@ -174,29 +168,55 @@
 				}
 
 		.add-new-class-container {
-			border: 1px dashed #DADDE2;
-			background-color: #FFF;
-		}
-
-		.add-new-class {
 			display: flex;
 			flex-direction: column;
-			align-items: center;
-			align-content: center;
+			justify-content: center;
 			text-align: center;
+			background-color: #FFF;
+			border: 1px dashed #DADDE2;
 		}
 
-			.add-new-class i {
-				font-size: ;
-				color: #A90931;
+			.add-new-class-container i {
+				font-size: 42px;
 			}
-			.add-new-class p {
+			.add-new-class-container p {
 				font-size: 24px;
-				color: #A90931;
 			}
-			.add-new-class span {
+			.add-new-class-container span {
 				font-size: 14px;
-				color: #6B6B6B;
 			}
+
+
+	.dialog-footer .el-button.add-class-btn {
+		background: #A90931;
+		color: #fff;
+		border: none;
+	}
+
+
+@media screen and (min-width: 0px) {
+	.classes-card{
+		width: 100%;
+	}
+}
+
+@media screen and (min-width: 426px){
+	.classes-card{
+		width: calc(100% /2 - 40px);
+	}
+}
+
+@media screen and (min-width: 600px){
+	.classes-card{
+		width: calc(100% /3 - 40px);
+	}
+}
+
+@media screen and (min-width: 1024px){
+	.classes-card{
+		width: calc(100% /4 - 40px);
+	}	
+}
+
 
 </style>

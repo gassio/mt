@@ -255,6 +255,7 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
     import { mapMutations } from 'vuex'
 
     export default {
@@ -767,11 +768,6 @@
                     },
                 )
             },
-            // ...mapMutations([
-            //     'DELETE_ANNOTATION',
-            //     'EDIT_ANNOTATION',
-            //     'ADD_ANNOTATION'
-            // ]),
             annotateModeActiveItemProblem(event) {
                 var children = event.currentTarget.parentNode.children
                 for (var i=0; i < children.length; i++) {
@@ -1061,19 +1057,31 @@
                 } else {
                     moreLessBtn.siblings().hide()
                 }
-            }
+            },
+            // ...mapMutations([
+            //     'DELETE_ANNOTATION',
+            //     'EDIT_ANNOTATION',
+            //     'ADD_ANNOTATION'
+            // ]),
         },
         computed: {
-            videos() {
-                return this.$store.getters.videos
-            },
-            currentVideoID() {
-                return this.$store.getters.currentVideoID
-            },
-            canons() {
-                return this.$store.getters.canons
-            }
-        },
+            ...mapGetters([
+                'videos',
+                'currentVideoID',
+                'canons'
+            ])
+        }
+        //  {
+        //     videos() {
+        //         return this.$store.getters.videos
+        //     },
+        //     currentVideoID() {
+        //         return this.$store.getters.currentVideoID
+        //     },
+        //     canons() {
+        //         return this.$store.getters.canons
+        //     }
+        // },
     }
 </script>
 
