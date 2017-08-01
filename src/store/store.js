@@ -4,6 +4,8 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
+// test
+
 export const store = new Vuex.Store({
     state: {
         // JWPlayer DB
