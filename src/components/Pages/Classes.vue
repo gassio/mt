@@ -12,7 +12,7 @@
 						
 						<div class="classes-of-semester">
 							<!-- CLASS CARD - start -->
-							<router-link class="classes-card" :to="'classes/' + c.title.replace(/ /g, '-')" tag="a" v-for="c in classes"> 
+							<router-link class="classes-card" :to="'classes/' + c.title.replace(/ /g, '-')" v-for="c in classes" :key="c.classID">
 								<i class="fa fa-book fa-5x" aria-hidden="true"></i>
 								<p class="classes-card-title"> {{c.section}} {{c.semester}} {{ c.title }}</p>
 								<span class="classes-card-details"></span>
