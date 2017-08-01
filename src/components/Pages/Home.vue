@@ -35,7 +35,7 @@
 						<p class="videocard-date">July 2017</p>
 					</div>
 					<div class="videocard-foot">
-						<span class="videocard-genre">Thesis Talk</span>
+						<span class="videocard-genre"><i class="fa fa-commenting-o" aria-hidden="true"></i> {{ v.genre }}</span>
 						<div class="videocard-effectiveness">
 							<progress value="75" max="100"></progress>
 							<p class="home-card-effectiveness-label">75%</p>
@@ -45,7 +45,7 @@
 				
 			</div>
 			
-			<div class="videocard-add-new">
+			<div class="videocard-add-new" @click="UPLOAD_VIDEO()">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<p>Add new video</p>
 				<!--<span>Or drop it here</span>-->
@@ -57,12 +57,20 @@
 </template>
 
 <script>
+	import { mapGetters } from 'vuex'
+	import { mapMutations } from 'vuex'
+
     export default {
+		methods: {
+			...mapMutations([
+				'UPLOAD_VIDEO'
+			]),
+		},
 		computed: {
-            videos() {
-                return this.$store.getters.videos
-            },
-		}
+            ...mapGetters([
+				'videos'
+            ])
+        }
     }
 </script>
 
@@ -211,12 +219,18 @@
 		margin: 10px;
 		border: 1px dashed #DADDE2;
 	}
-	.videocard-add-new p {
-		color: #A90931;
-		font-size: 30px;
+	.videocard-add-new:hover {
+		color: #FFF;
+		cursor: pointer;
+		transition: 0.2s;
+		-webkit-transition: 0.2s;
+		background-color: #A90931;
 	}
-	.videocard-add-new span {
-		color: #6B6B6B;
-	}
+
+			.videocard-add-new p {
+				font-size: 30px;
+			}
+			.videocard-add-new span {
+			}
 
 </style>

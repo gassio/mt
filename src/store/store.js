@@ -55,6 +55,7 @@ export const store = new Vuex.Store({
                 "jwVideoID": "BYmoWNeA", // mediaID
                 "jwPlaylistID": "2INkSmd7",
                 "class": "Material Science Engineering",
+                "genre" : 'Thesis talk',
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -156,6 +157,7 @@ export const store = new Vuex.Store({
                 "jwVideoID": "OTEe0Dn3", // mediaID
                 "jwPlaylistID": "2INkSmd7",
                 "class": "Material Science Engineering",
+                "genre" : 'Elevator pitch',
                 "categories": [
                     {
                         "name": "Posture & Stance",
@@ -365,6 +367,9 @@ export const store = new Vuex.Store({
             var classes = state.classes
             // console.log(payload.newClassObj)
             classes.push(payload.newClassObj)
+        },
+        UPLOAD_VIDEO: state => {
+            alert('Backend tasks need to be done...')
         },
         // future
         retrieveVideosByClass: (state, className) => {
