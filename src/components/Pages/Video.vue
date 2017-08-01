@@ -75,10 +75,14 @@
                             </div>
                             <div class="annotate-effectiveness field">
                                 <label class="label">Set effectiveness:</label>
-                                <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
+                                <el-rate
+                                    v-model="annotateRating"
+                                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+                                </el-rate>
+                                <!--<el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
                                         show-stops 
                                         show-tooltip class="annotate-effectiveness-slider">
-                                </el-slider>
+                                </el-slider>-->
                             </div>
                             <div class="annotate-comment field">
                                 <label class="label">Comment:</label>
@@ -1754,6 +1758,10 @@
 
 .progress.is-info {
     background-color: #313A53 !important; 
+}
+
+.el-rate__icon {
+    font-size: 26px;
 }
 
 
