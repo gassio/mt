@@ -1,9 +1,11 @@
 <template>
     <div class="video container">
         <div class="spacer">
-            <button class="button is-white player-spacer-button" @click="goBack()">
+        <router-link :to="{ path: '/'}">
+            <button class="button is-white player-spacer-button">
                 <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ videos[id].title }}
             </button> 
+        </router-link>
              <button class="button is-white player-spacer-button">
                 <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
             </button> 
@@ -146,8 +148,12 @@
                                     <button class="button" @click="edit()">Edit</button>
                                 </div>
                             </div>
-                            <input type="text" v-model="editStart">
-                            <input type="text" v-model="editEnd">
+                            <div class="field" style="color: #fff; font-size: 0.8em;">
+                                Start time:
+                                <input type="text" v-model="editStart">
+                                End time:
+                                <input type="text" v-model="editEnd">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -195,7 +201,13 @@
                                 </div>
                                 <div class="columns is-gapless is-marginless">
                                     <div class="timeline-card-effectiveness-bar column is-8">
-                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
+                                        
+                                        <el-rate
+                                            v-model="card.rating"
+                                            disabled
+                                            text-color="#ff9900">
+                                        </el-rate>
+                                        <!--<progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>-->
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
