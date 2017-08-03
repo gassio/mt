@@ -361,9 +361,16 @@ export const store = new Vuex.Store({
 
         },
         DELETE_ANNOTATION: (state, payload) => {
-            _.remove(state.videos[payload.id].annotations, function(a) {
-                return a.id === payload.cardID
-            });
+            var annotations = state.videos[payload.id].annotations
+            annotations.splice(payload.cardID, 1)
+
+            for (var i=0, l = annotations.length; i < l; i++) {
+                annotations[i].id = i
+            }
+            // LODASH implementation
+            // _.remove(state.videos[payload.id].annotations, function(a) {
+            //     return a.id === payload.cardID
+            // });
         },
         ADD_CLASS: (state, payload) => {
             var classes = state.classes

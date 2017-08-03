@@ -773,7 +773,7 @@
                     confirmButtonText: 'Delete'
                     }).then(function () {
                         // Refresh fix
-                        that.player.seek(that.mmssToSeconds(that.videoAnnotations[that.id].from))
+                        // that.player.seek(that.mmssToSeconds(that.videoAnnotations[that.id].from))
                         
                         // Delete from store
                         that.$store.commit('DELETE_ANNOTATION', {
