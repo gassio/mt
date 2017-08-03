@@ -362,10 +362,12 @@ export const store = new Vuex.Store({
         },
         DELETE_ANNOTATION: (state, payload) => {
             var annotations = state.videos[payload.id].annotations
-            annotations.splice(payload.cardID, 1)
 
             for (var i=0, l = annotations.length; i < l; i++) {
-                annotations[i].id = i
+                if (annotations[i].id === payload.cardID) {
+                    annotations.splice(i, 1)
+                    return
+                }
             }
             // LODASH implementation
             // _.remove(state.videos[payload.id].annotations, function(a) {
