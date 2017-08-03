@@ -81,7 +81,7 @@
 
 <style>
     body {
-        font-family: 'Proxima Nova Alt', sans-serif; /*Source Sans Pro*/
+        font-family: 'Proxima Nova Alt', 'Source Sans Pro', 'Segoe UI', sans-serif;
         font-weight: 400;
         line-height: 24px;
         height: 100%;
