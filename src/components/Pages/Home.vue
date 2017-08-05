@@ -61,6 +61,9 @@
 	import { mapMutations } from 'vuex'
 
     export default {
+		mounted() {
+			this.$store.commit('CALCULATE_TOTAL_GRADES', {id: 1})
+		},
 		methods: {
 			...mapMutations([
 				'UPLOAD_VIDEO'

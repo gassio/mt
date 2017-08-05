@@ -382,6 +382,19 @@ export const store = new Vuex.Store({
         UPLOAD_VIDEO: state => {
             alert('Backend tasks need to be done...')
         },
+        CALCULATE_TOTAL_GRADES: (state, payload) => {
+            var annotations = state.videos[payload.id].annotations
+            var sumRating = []
+
+            for (var i=0, l = annotations.length; i < l; i++) {
+                sumRating[i] = sumRating[i] + annotations[i].rating
+            }
+            // for (var i=0, l = annotations.length; i < l; i++) { 
+            //     sumRating[i] = sumRating[i] / annotations[i].length
+            // }
+            // console.log('SUM RATING = ' + sumRating[0])
+            
+        },
         // future
         retrieveVideosByClass: (state, className) => {
             for (var i=0; i < state.videos.length; i++) {
