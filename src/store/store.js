@@ -8,216 +8,8 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
     state: {
-        // JWPlayer DB
-        // playlistIDs: ['ccPaHVIt'], // For the phase 1 we will use only one playlist/class
-        // playlistNames: ['Mathematics Class', 'NasaClass'],
-        // classNames: ['Mathematics Class', 'NasaClass'],        
-        // MongoDB
-        videos: [
-            {
-                "title": "How To Sound Smart In Your Tedx Talk",
-                "videoID": 0,
-                "link": "http://content.jwplatform.com/videos/BYmoWNeA-DgOi1siB.mp4",
-                "thumb": "http://content.jwplatform.com/thumbs/BYmoWNeA-720.jpg",
-                "sources": [
-                    {
-                        "width": 720,
-                        "type": "application/vnd.apple.mpegurl",
-                        "file": "https://cdn.jwplayer.com/manifests/BYmoWNeA.m3u8",
-                        "height": 406
-                    },
-                    {
-                        "width": 320,
-                        "height": 180,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-S2DagQP7.mp4",
-                        "label": "180p"
-                    },
-                    {
-                        "width": 480,
-                        "height": 270,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-9B9NyP5t.mp4",
-                        "label": "270p"
-                    },
-                    {
-                        "width": 720,
-                        "height": 406,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-DgOi1siB.mp4",
-                        "label": "406p"
-                    },
-                    {
-                        "type": "audio/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/BYmoWNeA-BX5mUTQc.m4a",
-                        "label": "AAC Audio"
-                    }
-                ],
-                "duration": "355",
-                "jwVideoID": "BYmoWNeA", // mediaID
-                "jwPlaylistID": "2INkSmd7",
-                "class": "Material Science Engineering",
-                "genre" : 'Thesis talk',
-                "categories": [
-                    {
-                        "name": "Posture & Stance",
-                        "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-                        "canon": "Delivery"
-                    }
-                ],
-                "annotations": [
-                    {
-                        "category": "Posture & Stance",
-                        "canon": "Delivery",
-                        "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-                        "from": "00:05",
-                        "to": "00:10",
-                        "rating": 3,
-                        "author": "Ben Domino",
-                        "id": 0,
-                        "sorting": "00:08" // or videoDuration - from
-                    },
-                    {
-                        "category": "Graphics",
-                        "canon": "Visual",
-                        "comment": "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).",
-                        "from": "00:56",
-                        "to": "01:23",
-                        "rating": 4,
-                        "author": "Ben Domino",
-                        "id": 1
-                    },
-                    {
-                        "category": "Terms",
-                        "canon": "Structure",
-                        "comment": "There are many variations of passages of Lorem Ipsum available.",
-                        "from": "03:32",
-                        "to": "03:56",
-                        "rating": 4,
-                        "author": "Ben Domino",
-                        "id": 2
-                    },
-                    {
-                        "category": "Graphics",
-                        "canon": "Visual",
-                        "comment": "Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.",
-                        "from": "05:21",
-                        "to": "06:23",
-                        "rating": 4,
-                        "author": "Ben Domino",
-                        "id": 3
-                    }
-                ]
-            },
-            {
-                "title": "Programming Your Mind For Success",
-                "videoID": 1,
-                "link": "https://cdn.jwplayer.com/previews/OTEe0Dn3",
-                "thumb": "https://cdn.jwplayer.com/thumbs/OTEe0Dn3-720.jpg",
-                "sources": [
-                    {
-                        "width": 1280,
-                        "type": "application/vnd.apple.mpegurl",
-                        "file": "https://cdn.jwplayer.com/manifests/OTEe0Dn3.m3u8",
-                        "height": 720
-                    },
-                    {
-                        "width": 320,
-                        "height": 180,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-S2DagQP7.mp4",
-                        "label": "180p"
-                    },
-                    {
-                        "width": 480,
-                        "height": 270,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-9B9NyP5t.mp4",
-                        "label": "270p"
-                    },
-                    {
-                        "width": 720,
-                        "height": 406,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-DgOi1siB.mp4",
-                        "label": "406p"
-                    },
-                    {
-                        "width": 1280,
-                        "height": 720,
-                        "type": "video/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-34JmzxrC.mp4",
-                        "label": "720p"
-                    },
-                    {
-                        "type": "audio/mp4",
-                        "file": "https://cdn.jwplayer.com/videos/OTEe0Dn3-BX5mUTQc.m4a",
-                        "label": "AAC Audio"
-                    }
-                ],
-                "duration": "931",
-                "jwVideoID": "OTEe0Dn3", // mediaID
-                "jwPlaylistID": "2INkSmd7",
-                "class": "Material Science Engineering",
-                "genre" : 'Elevator pitch',
-                "categories": [
-                    {
-                        "name": "Posture & Stance",
-                        "description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-                        "canon": "Delivery"
-                    }
-                ],
-                "annotations": [
-                    {
-                        "category": "Graphics",
-                        "canon": "Visual",
-                        "comment": "Lorem hahah",
-                        "from": "00:02",
-                        "to": "00:05",
-                        "rating": 4,
-                        "author": "Ben Domino",
-                        "id": 0
-                    },
-                    {
-                        "category": "Posture & Stance",
-                        "canon": "Delivery",
-                        "comment": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat sunt pariatur, perferendis..",
-                        "from": "00:07",
-                        "to": "00:13",
-                        "rating": 3,
-                        "author": "Ben Domino",
-                        "id": 1,
-                    },
-                    {
-                        "category": "Terms",
-                        "canon": "Structure",
-                        "comment": "Lorem hahah",
-                        "from": "00:15",
-                        "to": "00:20",
-                        "rating": 4,
-                        "author": "Ben Domino",
-                        "id": 2
-                    },
-                ]
-            }
-        ],
-        classes: [
-            {
-                "title": "Material Science Engineering",
-                "section": "16.S982",
-                "semester": 'Spring 17',
-                "classID": 1,
-                "jwPlaylistID": "2INkSmd7",
-            },
-            // {
-            //     "title": "Mathematics Class",
-            //     "section": "16.S979",
-            //     "semester": 'Spring 17',
-            //     "videosCount": "22",
-            //     "classID": "2",
-            //     "jwPlaylistID": "k5WSiplm",
-            // },   
-        ],
+        videos: [],
+        classes: [],
         canons: [
             { 
                 name: 'Structure', 
@@ -333,20 +125,18 @@ export const store = new Vuex.Store({
                 type: 'admin' // admin, professor, technical-instructor, communicational-instructor, student, 
             }
         ],
-
-        currentVideoID: null
+        currentVideoID: null,
     },
     mutations: {
-        setCurrentVideoID: (state, id) => {
-            state.currentVideoID = id
-        },
+        // POST
         ADD_ANNOTATION: (state, payload) => {
             var annotations = state.videos[payload.id].annotations
             annotations.push(payload.annotation)
 
             // Sorting annotations[] by from property
-            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
         },
+        // PUT
         EDIT_ANNOTATION: (state, payload) => {
             var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
             var annotations = state.videos[payload.id].annotations
@@ -360,6 +150,7 @@ export const store = new Vuex.Store({
             annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} ); 
 
         },
+        // DELETE
         DELETE_ANNOTATION: (state, payload) => {
             var annotations = state.videos[payload.id].annotations
 
@@ -369,40 +160,90 @@ export const store = new Vuex.Store({
                     return
                 }
             }
-            // LODASH implementation
-            // _.remove(state.videos[payload.id].annotations, function(a) {
-            //     return a.id === payload.cardID
-            // });
         },
         ADD_CLASS: (state, payload) => {
             var classes = state.classes
-            // console.log(payload.newClassObj)
             classes.push(payload.newClassObj)
         },
-        UPLOAD_VIDEO: state => {
-            alert('Backend tasks need to be done...')
+        UPLOAD_VIDEO: (state, payload) => {
+            videos.push(payload.newVideo)
         },
-        CALCULATE_TOTAL_GRADES: (state, payload) => {
-            var annotations = state.videos[payload.id].annotations
-            var sumRating = []
-
-            for (var i=0, l = annotations.length; i < l; i++) {
-                sumRating[i] = sumRating[i] + annotations[i].rating
-            }
-            // for (var i=0, l = annotations.length; i < l; i++) { 
-            //     sumRating[i] = sumRating[i] / annotations[i].length
-            // }
-            // console.log('SUM RATING = ' + sumRating[0])
-            
+        setCurrentVideoID: (state, id) => {
+            state.currentVideoID = id
         },
-        // future
-        retrieveVideosByClass: (state, className) => {
-            for (var i=0; i < state.videos.length; i++) {
-                if (state.videos[i].class != className) {
-                    state.videos.pop(state.videos[i])
-                }
-            }
+        FETCH_VIDEOS: (state, newVideos) => {
+            state.videos = newVideos
+        },
+        FETCH_CLASSES: (state, newClasses) => {
+            state.classes = newClasses
         }
+    },
+    actions: {
+        fetchVideos: function ({ commit }) {
+            axios.get("http://localhost:3000/videos")
+                .then(function (response)
+                {
+                    commit('FETCH_VIDEOS', response.data )
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
+        uploadVideo: function ({ commit }, payload) {
+             axios.post("http://localhost:3000/videos", payload)
+                .then(function (response)
+                {
+                    commit('UPLOAD_VIDEO', payload)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
+        // TODO
+        // addAnnotation: function ({ commit }, payload) {
+        //     axios.post("http://localhost:3000/videos/", ) // {  annotations: [ payload.annotation ]}
+        //     .then(response => {
+        //         commit('ADD_ANNOTATION', payload)
+        //     })
+        //     .catch(function (err) {
+        //         console.log('Oxi addAnnotation()')
+        //     })
+        // },
+        fetchClasses: function ({ commit }) {
+            axios.get("http://localhost:3000/classes")
+                .then(function (response)
+                {
+                    commit('FETCH_CLASSES', response.data )
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
+        addClass: function ({ commit }, payload) {
+            axios.post("http://localhost:3000/classes/", payload.newClassObj)
+            .then(response => {
+                commit('ADD_CLASS', payload)
+            })
+            .catch(function (err) {
+                console.log('Oxi addClass()')
+            })
+        },
+    // LOAD_JW_VIDEOS: function ({ commit, state }) {
+        //     for (var i=0; i < state.playlistIDs.length; ++i) {
+        //         var url = 'https://cdn.jwplayer.com/v2/playlists/' + state.playlistIDs[i]
+
+        //         axios.get(url)
+        //             .then(function (response)
+        //             {
+        //                 // Here we commit a mutation
+        //                 // videos is a parameter of the mutation
+        //                 commit('SET_JW_VIDEOS', { videos: response.data })
+        //             })
+        //             .catch(function (err) {
+        //                 console.log(err)
+        //             })
+        //     } 
+        // }
     },
     getters: {
         videos: state => {
@@ -420,30 +261,27 @@ export const store = new Vuex.Store({
     }
 })
 
-        // ACTION
-        // LOAD_JW_VIDEOS: function ({ commit, state }) {
-        //     for (var i=0; i < state.playlistIDs.length; ++i) {
-        //         var url = 'https://cdn.jwplayer.com/v2/playlists/' + state.playlistIDs[i]
+        // MUTATIONS
+        // CALCULATE_TOTAL_GRADES: (state, payload) => {
+        //     var annotations = state.videos[payload.id].annotations
+        //     var sumRating = []
 
-        //         axios.get(url)
-        //             .then(function (response)
-        //             {
-        //                 // Here we commit a mutation
-        //                 // videos is a parameter of the mutation
-        //                 commit('SET_JW_VIDEOS', { videos: response.data })
-        //             })
-        //             .catch(function (err) {
-        //                 console.log(err)
-        //             })
-        //     } 
-        // }
-
-
-        // MUTATION
-        // Sets the jw videos object in the state
-        // SET_JW_VIDEOS: (state, { videos }) => {
-        //     state.jwVideos = videos.playlist
+        //     for (var i=0, l = annotations.length; i < l; i++) {
+        //         sumRating[i] = sumRating[i] + annotations[i].rating
+        //     }
+        //     // for (var i=0, l = annotations.length; i < l; i++) { 
+        //     //     sumRating[i] = sumRating[i] / annotations[i].length
+        //     // }
+        //     // console.log('SUM RATING = ' + sumRating[0])
+            
         // },
+        // retrieveVideosByClass: (state, className) => {
+        //     for (var i=0; i < state.videos.length; i++) {
+        //         if (state.videos[i].class != className) {
+        //             state.videos.pop(state.videos[i])
+        //         }
+        //     }
+        // }
 
         // SORTING ARRAY BY FROM PROPERTY 
         // function compare(a,b) {

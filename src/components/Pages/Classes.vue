@@ -76,7 +76,7 @@
         },
         methods: {
 			addClass() {	
-				this.$store.commit('ADD_CLASS', { 
+				this.$store.dispatch('addClass', { 
 					newClassObj: this.newClass
 				})
 				this.newClass = {}

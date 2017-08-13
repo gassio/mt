@@ -320,6 +320,9 @@
                 refreshVar: 0
             }
         },
+        created() {
+            // this.$store.dispatch('fetchVideos')
+        },
         mounted() {          
             var that = this
 
@@ -657,10 +660,15 @@
                         id: this.videoAnnotations.length
                     }
                 }
-                this.$store.commit('ADD_ANNOTATION', {
+
+                this.$store.dispatch('addAnnotation', {
                     annotation: card, 
                     id: this.id
                 })
+                // this.$store.commit('ADD_ANNOTATION', {
+                //     annotation: card, 
+                //     id: this.id
+                // })
 
                 // Reset default design states (no annotating)
                 this.annotateComment = ''

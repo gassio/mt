@@ -45,7 +45,7 @@
 				
 			</div>
 			
-			<div class="videocard-add-new" @click="UPLOAD_VIDEO()">
+			<div class="videocard-add-new" @click="">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<p>Add new video</p>
 				<!--<span>Or drop it here</span>-->
@@ -62,12 +62,27 @@
 
     export default {
 		mounted() {
-			this.$store.commit('CALCULATE_TOTAL_GRADES', {id: 1})
+			// Εκκρεμεί trigger event στο click
+			// this.$store.dispatch('uploadVideo', { 
+			// 	title: '',
+			// 	videoID: '',
+			// 	link: '',
+			// 	thumb: '',
+			// 	sources: [],
+			// 	duration: '19',
+			// 	jwVideoID: '',
+			// 	jwPlaylistID: '',
+			// 	class: '',
+			// 	genre: '',
+			// 	categories:  {
+			// 		"name": "Posture & Stance",
+			// 		"description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
+			// 		"canon": "Delivery"
+			// 	},
+			// 	annotations: []
+			// })
 		},
 		methods: {
-			...mapMutations([
-				'UPLOAD_VIDEO'
-			]),
 		},
 		computed: {
             ...mapGetters([

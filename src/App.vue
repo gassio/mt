@@ -11,41 +11,10 @@
 
     export default {
         created() {
-            // this.fetchClasses()
+            this.$store.dispatch('fetchVideos')
+            this.$store.dispatch('fetchClasses')
         },
-        mounted() {
-            // for (var i=0; i < eventBus.feeds.length; ++i) {
-            //     var url = 'https://cdn.jwplayer.com/v2/playlists/' + eventBus.feeds[i]
-
-            //     this.axios.get(url)
-            //         .then(function (response)
-            //         {
-            //             var title = response.data.title;
-            //             eventBus.playlistNames.push(title)
-
-            //             var playlist = response.data.playlist
-
-            //             for (var i=0; i < playlist.length; ++i) {
-            //                 var video = { 
-            //                     vidTitle: playlist[i].title, 
-            //                     vidLink: playlist[i].link, 
-            //                     vidThumb: playlist[i].image, 
-            //                     vidDuration: playlist[i].duration, 
-            //                     vidDesc: playlist[i].description, 
-            //                     vidStudent: playlist[i].student, 
-            //                     playlistID: playlist[i].feedid,
-            //                     videoID: playlist[i].mediaid,
-            //                     vidSources: playlist[i].sources,
-            //                     vidPlaylistName: title,
-            //                     vidAnnotations: eventBus.allAnnotations
-            //                 }
-            //                 eventBus.videos.push(video)
-            //             }
-            //         })
-            //         .catch(function (error) {
-            //             console.log(error)
-            //         })
-            // }  
+        mounted() { 
         },
         methods: {
             // JSON call in order to fetch the playlists (classes) of JW database
