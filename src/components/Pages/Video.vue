@@ -321,7 +321,6 @@
             }
         },
         created() {
-            // this.$store.dispatch('fetchVideos')
         },
         mounted() {          
             var that = this
@@ -411,6 +410,7 @@
             })
 
             // this.player.setControls(false);
+
         },
         updated() {
             // Fixes unknown man picture bug
@@ -661,14 +661,12 @@
                     }
                 }
 
-                this.$store.dispatch('addAnnotation', {
+                // Action implementation remaining. Second phase.
+                this.$store.commit('ADD_ANNOTATION', {
                     annotation: card, 
-                    id: this.id
+                    id: this.id,
+                    videoObj: this.$store.getters.videos[this.id]
                 })
-                // this.$store.commit('ADD_ANNOTATION', {
-                //     annotation: card, 
-                //     id: this.id
-                // })
 
                 // Reset default design states (no annotating)
                 this.annotateComment = ''
@@ -749,7 +747,8 @@
                     rating: this.editRating,
                     comment: this.editComment,
                     from: this.editStart,
-                    to: this.editEnd
+                    to: this.editEnd,
+                    videoObj: this.$store.getters.videos[this.id]
                 })
 
                 this.isEditFields = false
@@ -787,8 +786,8 @@
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
+                            videoObj: that.$store.getters.videos[that.id]
                         })
-
                     },
                 )
             },
