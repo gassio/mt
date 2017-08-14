@@ -12,6 +12,62 @@ export const store = new Vuex.Store({
         classes: [],
         canons: [
             { 
+                name: 'Moves', 
+                categories: [
+                { 
+                    name: 'Introduction',
+                    mvs: [
+                        { desc: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+                        { desc: 'States the value of the present research and explains why it was conducted' },
+                        { desc: 'Discusses the definitions of key terms' },
+                        { desc: 'Summarizes and previews the methods used' },
+                        { desc: 'Presents basic equations' }
+                    ]
+                },
+                { 
+                    name: 'Methodology',
+                    mvs: [
+                        { desc: 'Describes materials and instrumentation in the study' },
+                        { desc: 'Describes tasks (actions) in the study' },
+                        { desc: 'Describes the procedures of an experiment (activities)'},
+                        { desc: 'Presents justification of techniques ' },
+                        { desc: 'Describes variables in the study' },
+                        { desc: 'Describes the procedures used in data analysis' },
+                    ]
+                },
+                { 
+                    name: 'Results and Discussion',
+                    mvs: [
+                        { desc: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research'},
+                        { desc: 'States the value of the present research and explains why it was conducted'},
+                        { desc: 'Discusses the definitions of key terms  '},
+                        { desc: 'Summarizes and previews the methods used '},
+                        { desc: 'Presents basic equations'},
+                    ]
+                },
+                { 
+                    name: 'Conclusion',
+                    mvs: [
+                        { desc: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research'},
+                        { desc: 'States the value of the present research and explains why it was conducted'},
+                        { desc: 'Discusses the definitions of key terms  '},
+                        { desc: 'Summarizes and previews the methods used '},
+                        { desc: 'Presents basic equations'},
+                    ]
+                },
+                { 
+                    name: 'Question and Answer',
+                    mvs: [
+                        { desc: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research'},
+                        { desc: 'States the value of the present research and explains why it was conducted'},
+                        { desc: 'Discusses the definitions of key terms  '},
+                        { desc: 'Summarizes and previews the methods used '},
+                        { desc: 'Presents basic equations'},
+                    ]
+                }
+                ]
+            },
+            { 
                 name: 'Structure', 
                 categories: [
                 { 
@@ -29,6 +85,60 @@ export const store = new Vuex.Store({
                 { 
                     name: 'Central moves',
                     desc: 'Uses the central rhetorical moves for each section appropriately '
+                }
+                ]
+            },
+            { 
+                name: 'Style', 
+                categories: [
+                    { 
+                        name: 'Coherence ',
+                        desc: 'Uses transitions at the sentence level to connect key concepts and parts of the argument'
+                    },
+                    { 
+                        name: 'Concision',
+                        desc: 'Uses the fewest possible words to explain the concepts for the audience, avoiding unnecessary repetition'
+                    },
+                    { 
+                        name: 'Flow',
+                        desc: 'Uses structures such as given/new or three-part structures to help the audience follow the argument'
+                    },
+                    { 
+                        name: 'Emphasis',
+                        desc: 'Uses specific words or phrases to draw attention to important concepts'
+                    },
+                    { 
+                        name: 'Figures of Speech',
+                        desc: 'Uses analogies, metaphors or other rhetorical devices to enhance the concepts and make the speech memorable'
+                    },
+                    { 
+                        name: 'Figures of Sound',
+                        desc: 'Uses auditory cues at the sentence (e.g. patterned parallelism) or word level (e.g. alliteration) to make the oral delivery more memorable'
+                    }
+                ]
+            },
+            { 
+                name: 'Visuals', 
+                categories: [
+                { 
+                    name: 'Pictorial cues',
+                    desc: 'Uses primarily pictorial cues (limited text)'
+                },
+                { 
+                    name: 'Slide titles',
+                    desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
+                },
+                { 
+                    name: 'Image-text highlight',
+                    desc: 'Images and text highlight/focus audience on key points'
+                },
+                { 
+                    name: 'Graphics',
+                    desc: 'Graphics show relevant data/concepts to support the claims'
+                },
+                { 
+                    name: 'Memorable images',
+                    desc: 'Memorable images provide necessary context to support the oral discussion'
                 }
                 ]
             },
@@ -56,65 +166,7 @@ export const store = new Vuex.Store({
                     desc: 'Technical and informal language are both employed as appropriate'
                 }
                 ]
-            },
-            { 
-                name: 'Visual', 
-                categories: [
-                { 
-                    name: 'Pictorial cues',
-                    desc: 'Uses primarily pictorial cues (limited text)'
-                },
-                { 
-                    name: 'Slide titles',
-                    desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
-                },
-                { 
-                    name: 'Image-text highlight',
-                    desc: 'Images and text highlight/focus audience on key points'
-                },
-                { 
-                    name: 'Graphics',
-                    desc: 'Graphics show relevant data/concepts to support the claims'
-                },
-                { 
-                    name: 'Memorable images',
-                    desc: 'Memorable images provide necessary context to support the oral discussion'
-                }
-                ]
-            },
-            { 
-                name: 'Style', 
-                categories: [
-                { 
-                    name: 'Coherence ',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Concision',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Flow',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Emphasis',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Figures of Speech',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Figures of Sound',
-                    desc: 'To do...'
-                },
-                { 
-                    name: 'Tropes',
-                    desc: 'To do...'
-                }
-            ]
-            },
+            }
         ],
         user: [ 
             {

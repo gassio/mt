@@ -62,6 +62,8 @@
                         <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
                             <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
                         </nav>
+                        <!-- MOVES -->
+                        
                     </div>
                     <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
                         <div class="annotate-fields-left">
@@ -75,12 +77,18 @@
                                 <p class="annotate-desc-text" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
                                 <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false">X</span></div>
                             </div>
+                            <div class="annotate-subcategories" v-if="annotateCanon === 'Moves'">
+                                <label class="label">Choose move:</label>
+                                <el-checkbox-group v-model="checkMoveCategories">
+                                    <el-checkbox v-for="mv in canons[0].categories[0].mvs" :label="mv.desc"></el-checkbox>
+                                </el-checkbox-group>
+                                <!--<el-select v-model="annotateSubCategory" placeholder="Choose move:">
+                                    <el-option v-for="mv in canons[0].categories[0].mvs" :key="mv.desc" :label="mv.desc" :value="mv.desc">
+                                    </el-option>
+                                </el-select>-->
+                            </div>
                             <div class="annotate-effectiveness field">
                                 <label class="label">Set effectiveness:</label>
-                                <!--<el-rate
-                                    v-model="annotateRating"
-                                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
-                                </el-rate>-->
                                 <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
                                         show-stops 
                                         show-tooltip class="annotate-effectiveness-slider">
@@ -170,7 +178,7 @@
                         <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
                         <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
                         <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Visual')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visual</span></a>
+                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visuals</span></a>
                         <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
@@ -184,7 +192,7 @@
 
                         <!-- v-show="isAll === ''" -->
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
-                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisual || card.canon === isStyle" title="Click to seek annotation"> 
+                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" title="Click to seek annotation"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
@@ -286,6 +294,7 @@
                 videoCurrentTimeMMSS: 0,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
+                annotateSubCategory: '',
                 annotateRating: 1,
                 annotateComment: '',
                 annotateStart: null,
@@ -309,7 +318,7 @@
                 isMoves: 'Moves',
                 isStructure: 'Structure',
                 isDelivery: 'Delivery',
-                isVisual: 'Visual',
+                isVisuals: 'Visuals',
                 isStyle: 'Style',
                 isAll: '',
                 times: [],
@@ -317,7 +326,7 @@
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
-                refreshVar: 0
+                checkMoveCategories: []          
             }
         },
         created() {
@@ -410,7 +419,8 @@
             })
 
             // this.player.setControls(false);
-
+            
+            console.log(this.$store.state.canons[0].categories)
         },
         updated() {
             // Fixes unknown man picture bug
@@ -837,14 +847,14 @@
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 } 
-                if (canon === 'Visual') {
-                    if (this.isVisual !== '') {
-                        this.isVisual = ''
+                if (canon === 'Visuals') {
+                    if (this.isVisuals !== '') {
+                        this.isVisuals = ''
                         event.currentTarget.style.backgroundColor = "transparent"
                         event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
-                        this.isVisual = 'Visual'
+                        this.isVisuals = 'Visuals'
                         event.currentTarget.style.backgroundColor = "#39425C"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
@@ -880,7 +890,7 @@
                 this.isMoves = 'Moves'
                 this.isStructure = 'Structure'
                 this.isDelivery = 'Delivery'
-                this.isVisual = 'Visual'
+                this.isVisuals = 'Visuals'
                 this.isStyle = 'Style'
                 
                 $(categoryBtn).siblings('.card-menu-link').css({
@@ -895,7 +905,7 @@
                 this.isMoves = ''
                 this.isStructure = ''
                 this.isDelivery = ''
-                this.isVisual = ''
+                this.isVisuals = ''
                 this.isStyle = ''
                 
                 $(categoryBtn).siblings('.card-menu-link').css({
