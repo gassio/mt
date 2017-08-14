@@ -61,8 +61,10 @@
 	import { mapMutations } from 'vuex'
 
     export default {
+		created() {
+			this.$store.dispatch('getAllVideos')
+		},
 		mounted() {
-			// Εκκρεμεί trigger event στο click
 		},
 		methods: {
 			uploadVid() {

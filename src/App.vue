@@ -10,31 +10,9 @@
     import MyHeader from './components/Layout/MyHeader.vue'
 
     export default {
-        created() {
-            this.$store.dispatch('fetchVideos')
-            this.$store.dispatch('fetchClasses')
-        },
         mounted() { 
         },
         methods: {
-            // JSON call in order to fetch the playlists (classes) of JW database
-            // feeds[] are playlist ids
-            fetchClasses() {
-                var that = this
-                for (var i=0; i < this.playlistIDs.length; ++i) {
-                    var url = 'https://cdn.jwplayer.com/v2/playlists/' + this.playlistIDs[i]
-
-                    this.axios.get(url)
-                        .then(function (response) {
-                            var title = response.data.title;
-                            that.$store.state.playlistNames.push(title)
-
-                        })
-                        .catch(function (error) {
-                            console.log(error)
-                        })
-                } 
-            },
         },
         computed: {
             // Store: playlistIDs[] array

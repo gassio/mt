@@ -72,6 +72,9 @@
 				}
             }
         },
+		created() {
+			this.$store.dispatch('fetchClasses')
+		},
         mounted() {
         },
         methods: {

@@ -331,6 +331,7 @@
             }
         },
         created() {
+            this.$store.dispatch('getVideo', this.id)
         },
         mounted() {          
             var that = this
