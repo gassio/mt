@@ -77,14 +77,14 @@
                             </div>
                             <div class="annotate-effectiveness field">
                                 <label class="label">Set effectiveness:</label>
-                                <el-rate
+                                <!--<el-rate
                                     v-model="annotateRating"
                                     :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
-                                </el-rate>
-                                <!--<el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
+                                </el-rate>-->
+                                <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
                                         show-stops 
                                         show-tooltip class="annotate-effectiveness-slider">
-                                </el-slider>-->
+                                </el-slider>
                             </div>
                             <div class="annotate-comment field">
                                 <label class="label">Comment:</label>
@@ -202,12 +202,12 @@
                                 <div class="columns is-gapless is-marginless">
                                     <div class="timeline-card-effectiveness-bar column is-8">
                                         
-                                        <el-rate
+                                        <!--<el-rate
                                             v-model="card.rating"
                                             disabled
-                                            text-color="#ff9900">
+                                            text-color="#ff9900">-->
                                         </el-rate>
-                                        <!--<progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>-->
+                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
@@ -1414,6 +1414,7 @@
         }
             .el-slider { width: 80%}
             .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }
+            .el-slider__button { width: 25px; height: 25px; }
             .el-slider__stop { border-radius: 0 !important;}
 
             .el-slider__runway { height: 40px !important;}
