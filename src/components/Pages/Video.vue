@@ -74,34 +74,34 @@
                         
                         <div class="annotate-fields-right">
                             <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                                <p class="annotate-desc-text" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
+                                <div class="annotate-desc-text" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">
+                                    <h1>{{ cat.name }}</h1>
+                                    <p>{{ cat.desc }}</p>
+                                </div>
                                 <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false">X</span></div>
-                            </div>
+                            </div>  
                             <div class="annotate-subcategories" v-if="annotateCanon === 'Moves'">
-                                <label class="label">Choose move:</label>
-                                <el-checkbox-group v-model="checkMoveCategories">
-                                    <el-checkbox v-for="mv in canons[0].categories[0].mvs" :label="mv.desc"></el-checkbox>
-                                </el-checkbox-group>
-                                <!--<el-select v-model="annotateSubCategory" placeholder="Choose move:">
-                                    <el-option v-for="mv in canons[0].categories[0].mvs" :key="mv.desc" :label="mv.desc" :value="mv.desc">
+                                <label class="label">Choose move</label>
+                                <el-select v-model="selectedMove" v-for="cat in canons[0].categories" v-if="cat.name === annotateCategory" placeholder="Choose move:">
+                                    <el-option v-for="mv in cat.mvs" :key="mv.desc" :label="mv.desc" :value="mv.desc">
                                     </el-option>
-                                </el-select>-->
+                                    <el-option label="Other" value="Other"></el-option>
+                                </el-select>
                             </div>
-                            <div class="annotate-effectiveness field">
-                                <label class="label">Set effectiveness:</label>
-                                <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
-                                        show-stops 
-                                        show-tooltip class="annotate-effectiveness-slider">
-                                </el-slider>
-                            </div>
-                            <div class="annotate-comment field">
+                            <div class="annotate-comment field" v-show="selectedMove === 'Other'">
                                 <label class="label">Comment:</label>
                                 <p class="control">
                                     <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." 
                                             v-model="annotateComment">
                                     </textarea>
                                 </p>
-                                
+                            </div>
+                            <div class="annotate-effectiveness field">
+                                <label class="label">Set effectiveness</label>
+                                <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
+                                        show-stops 
+                                        show-tooltip class="annotate-effectiveness-slider">
+                                </el-slider>
                             </div>
                             <div class="annotate-submit">
                                 <button class="button" @click="annotate()">Annotate</button>
@@ -326,7 +326,8 @@
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
-                checkMoveCategories: []          
+                selectedMove: '',
+                otherMoveSelected: false       
             }
         },
         created() {
@@ -658,12 +659,20 @@
 
             },
             annotate() {
+                // If other is enable, then show the annotation comment 
+                var theComment = ''
+
+                if (this.selectedMove === 'Other')
+                    theComment = this.annotateComment
+                else
+                    theComment = this.selectedMove
+
                 for (var i=0; i <= this.videoAnnotations.length; i++) {
                     var card = { 
                         author: "Ben Domino",
                         canon: this.annotateCanon,
                         category: this.annotateCategory,
-                        comment: this.annotateComment,
+                        comment: theComment,
                         from: this.annotateStart,
                         to: this.annotateEnd, 
                         rating: this.annotateRating,
@@ -1462,14 +1471,21 @@
             width: 90%;
         }
             .annotate-desc {
-                display: flex;
+                display: flex ;
                 justify-content: center;
             }
 
             .annotate-desc-text {
                 margin-left: 60px;
-                font-style: italic;
             }
+                .annotate-desc-text h1{
+                    color: #FFF;
+                    font-size: 1.3em;
+                    text-transform: uppercase;
+                }
+                .annotate-desc-text p{
+                    font-style: italic;
+                }
 
             .annotate-effectiveness {
                 display: flex;
@@ -1794,5 +1810,18 @@
     font-size: 26px;
 }
 
+.el-checkbox-group {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.el-checkbox+.el-checkbox { 
+    margin-left: 0 !important; 
+}
+
+.el-select {
+    display: flex !important;
+    width: 80%;
+}
 
 </style>
