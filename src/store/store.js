@@ -288,7 +288,7 @@ export const store = new Vuex.Store({
              axios.post("http://localhost:3000/videos", payload)
                 .then(function (response)
                 {
-                    //commit('UPLOAD_VIDEO', payload)
+                    commit('UPLOAD_VIDEO', payload)
                 })
                 .catch(function (err) {
                     console.log(err)
@@ -333,22 +333,7 @@ export const store = new Vuex.Store({
                 console.log('Oxi addClass()')
             })
         },
-    // LOAD_JW_VIDEOS: function ({ commit, state }) {
-        //     for (var i=0; i < state.playlistIDs.length; ++i) {
-        //         var url = 'https://cdn.jwplayer.com/v2/playlists/' + state.playlistIDs[i]
 
-        //         axios.get(url)
-        //             .then(function (response)
-        //             {
-        //                 // Here we commit a mutation
-        //                 // videos is a parameter of the mutation
-        //                 commit('SET_JW_VIDEOS', { videos: response.data })
-        //             })
-        //             .catch(function (err) {
-        //                 console.log(err)
-        //             })
-        //     } 
-        // }
     },
     getters: {
         videos: state => {
@@ -365,6 +350,23 @@ export const store = new Vuex.Store({
         }
     }
 })
+
+        // LOAD_JW_VIDEOS: function ({ commit, state }) {
+        //     for (var i=0; i < state.playlistIDs.length; ++i) {
+        //         var url = 'https://cdn.jwplayer.com/v2/playlists/' + state.playlistIDs[i]
+
+        //         axios.get(url)
+        //             .then(function (response)
+        //             {
+        //                 // Here we commit a mutation
+        //                 // videos is a parameter of the mutation
+        //                 commit('SET_JW_VIDEOS', { videos: response.data })
+        //             })
+        //             .catch(function (err) {
+        //                 console.log(err)
+        //             })
+        //     } 
+        // }
 
         // MUTATIONS
         // CALCULATE_TOTAL_GRADES: (state, payload) => {

@@ -45,13 +45,44 @@
 				
 			</div>
 			
-			<div class="videocard-add-new" @click="uploadVid()">
+			<!--<el-upload class="upload-demo" action="http://localhost:3000/videos" :before-upload="openModal" drag>
+				<i class="el-icon-upload" style="color:#A90931;"></i>
+				<p>Upload video</p>
+			</el-upload>-->
+
+			<div class="videocard-add-new">
+				<input type="file" accept="video/*" name="file" id="file" class="inputfile">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
-				<p>Add new video</p>
-				<!--<span>Or drop it here</span>-->
+				<label for="file" class="up-label">Upload video</label>
 			</div>
 			
 		</div>
+
+		<el-dialog title="Upload video" :visible.sync="dialogVisible">
+			<el-form :model="newVideo">
+				<el-form-item label="Video title" :label-width="formLabelWidth">
+					<el-input v-model="newVideo.title" auto-complete="off"></el-input>
+				</el-form-item>
+				<el-form-item label="Semester" :label-width="formLabelWidth">
+					<el-select v-model="newVideo.semester" placeholder="Please select a semester">
+						<el-option label="Winter '17" value="Winter '17"></el-option>
+						<el-option label="Spring'17" value="Spring '17"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="Genre" :label-width="formLabelWidth">
+					<el-select v-model="newVideo.genre" placeholder="Please select a genre">
+						<el-option label="Thesis proposal" value="Thesis proposal"></el-option>
+						<el-option label="Progress work" value="Progress work"></el-option>
+						<el-option label="Conference talk" value="Conference talk"></el-option>
+						<el-option label="Elevator pitch" value="Elevator pitch"></el-option>
+					</el-select>
+				</el-form-item>
+			</el-form>
+			<span slot="footer" class="dialog-footer">
+				<el-button @click="dialogVisible = false">Cancel</el-button>
+				<el-button class="upload-video-btn" @click="uploadVid(); dialogVisible = false;">Upload video</el-button>
+			</span>
+		</el-dialog>
 	</div>    
 
 </template>
@@ -61,31 +92,41 @@
 	import { mapMutations } from 'vuex'
 
     export default {
-		created() {
-			this.$store.dispatch('getAllVideos')
-		},
-		mounted() {
-		},
-		methods: {
-			uploadVid() {
-				this.$store.dispatch('uploadVideo', { 
-					title: 'TEST',
+		data() {
+			return {
+				dialogVisible: false,
+				formLabelWidth: '120px',
+				newVideo: {
+					title: '',
 					videoID: 100,
 					link: '',
 					thumb: '',
 					sources: [],
-					duration: '19',
+					duration: '',
 					jwVideoID: '',
 					jwPlaylistID: '',
 					class: '',
 					genre: '',
-					categories:  {
-						"name": "Posture & Stance",
-						"description": "Posture and stance project confidence, and allow speaker to interact with audience and screen",
-						"canon": "Delivery"
-					},
+					categories:  {},
 					annotations: []
-				})
+				}
+			}
+		},
+		created() {
+			this.$store.dispatch('getAllVideos')
+		},
+		mounted() {
+			var that = this
+			$('.inputfile').change(function(){
+				that.openModal()
+			})
+		},
+		methods: {
+			uploadVid() {
+				this.$store.dispatch('uploadVideo', this.newVideo)
+			},
+			openModal() {
+				this.dialogVisible = true
 			}
 		},
 		computed: {
@@ -252,7 +293,52 @@
 			.videocard-add-new p {
 				font-size: 30px;
 			}
-			.videocard-add-new span {
+			.videocard-add-new i {
+				pointer-events: none;
+				position: relative;
+    			top: 100px;
 			}
 
+	/* ==============================================
+                #TRUMPS
+	================================================= */
+	
+	.dialog-footer .el-button.upload-video-btn {
+		background: #A90931;
+		color: #fff;
+		border: none;
+	}
+
+	.inputfile {
+		width: 0.1px;
+		height: 0.1px;
+		opacity: 0;
+		overflow: hidden;
+		position: absolute;
+		z-index: -1;
+	}
+	.inputfile + label {
+		font-size: 1.25em;
+		font-weight: 700;
+		color: white;
+		background-color: black;
+		display: inline-block;
+	}
+
+	.inputfile:focus + label,
+	.inputfile + label:hover {
+		background-color: red;
+	}
+	.inputfile + label {
+		cursor: pointer; /* "hand" cursor */
+	}
+	.inputfile:focus + label {
+		outline: 1px dotted #000;
+		outline: -webkit-focus-ring-color auto 5px;
+	}
+
+	.up-label {
+		padding: 100px 135px 100px 135px;
+    	font-size: 1.7em;
+	}
 </style>
