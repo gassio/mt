@@ -3,7 +3,7 @@
         <div class="spacer">
         <router-link :to="{ path: '/'}">
             <button class="button is-white player-spacer-button">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ videos[id].title }}
+                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.$store.state.videos.title }}
             </button> 
         </router-link>
              <button class="button is-white player-spacer-button">
@@ -187,16 +187,15 @@
                             </div>
                         </div>
                     </nav>
-                    <div class="timeline-content column is-10"> <!-- v-if="filterCanon === 'All'" -->
+                    <div class="timeline-content column is-10">
                         <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
 
-                        <!-- v-show="isAll === ''" -->
                         <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
                              v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" title="Click to seek annotation"> 
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
-                                        <p class="timeline-card-title">{{ card.category }}</p>  <!-- {{ card.id }} -->
+                                        <p class="timeline-card-title">{{ card.category }}</p> {{ card.id }}
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -331,7 +330,6 @@
             }
         },
         created() {
-            this.$store.dispatch('getVideo', this.id)
         },
         mounted() {          
             var that = this
@@ -339,6 +337,8 @@
             this.id = parseInt(this.id)
             
             this.$store.commit('setCurrentVideoID', this.id)
+            
+            this.$store.dispatch('getVideo', this.id)
             
             this.videoDuration = this.videos[this.id].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
@@ -430,7 +430,7 @@
 
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
-            this.videoAnnotations = this.$store.state.videos[this.id].annotations
+            this.videoAnnotations = this.$store.state.videos.annotations
             console.log("UPDATED()")
             
             // Show "Sroll down for more" when there are more than 5 cards
@@ -685,7 +685,7 @@
                 this.$store.commit('ADD_ANNOTATION', {
                     annotation: card, 
                     id: this.id,
-                    videoObj: this.$store.getters.videos[this.id]
+                    videoObj: this.$store.state.videos
                 })
 
                 // Reset default design states (no annotating)
@@ -806,7 +806,7 @@
                         that.$store.commit('DELETE_ANNOTATION', {
                             id: that.id,
                             cardID: cardID,
-                            videoObj: that.$store.getters.videos[that.id]
+                            videoObj: that.$store.state.videos
                         })
                     },
                 )
