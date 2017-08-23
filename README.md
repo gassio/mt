@@ -22,7 +22,7 @@ npm run build
 
 ```
 
-## Create dummy JSON data (different folder)
+## Create dummy JSON data (different project)
 
 ``` bash
 # install json-server package
