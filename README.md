@@ -1,6 +1,6 @@
 # Metalogon
 
-![alt text](http://url/to/img.png)
+![alt text](https://github.com/gassio/mt/blob/master/src/assets/Metalogon-screen.png)
 
 ## Build Setup
 
