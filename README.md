@@ -1,5 +1,7 @@
 # Metalogon
 
+![alt text](http://url/to/img.png)
+
 ## Build Setup
 
 ``` bash
