@@ -5,6 +5,8 @@
 ## Setup on localhost 
 
 ``` bash
+# Clone repo
+
 # install vue.js - one time
 npm install vue
 
