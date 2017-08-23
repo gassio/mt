@@ -25,7 +25,7 @@ npm run build
 ## Create dummy JSON data (different project)
 
 ``` bash
-# install json-server package (https://github.com/typicode/json-server)
+# install json-server package
 npm install -g json-server
 
 # Create the db.json file
@@ -33,7 +33,6 @@ Copy from here: https://github.com/gassio/mt/blob/master/src/store/db.json
 
 # watch db
 json-server --watch db.json
-
 
 ```
 
