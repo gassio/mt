@@ -1,13 +1,12 @@
 # Metalogon
 
-Live (click at "home" link)
-> https://gassio.github.io/metalogon/
+![alt text](https://github.com/gassio/mt/blob/master/src/assets/Metalogon-screen.png)
 
-![alt text](https://raw.githubusercontent.com/gassio/metalogon/master/src/assets/mockup.png)
-
-## Build Setup
+## Setup on localhost 
 
 ``` bash
+# Clone repo
+
 # install vue.js - one time
 npm install vue
 
@@ -19,15 +18,23 @@ npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
-
---------------------------------------------
-
+-
 # build for production with minification
 npm run build
 
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
 
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+## Create dummy JSON data (different project)
+
+``` bash
+# install json-server package
+npm install -g json-server
+
+# Create the db.json file
+# Copy from here: https://github.com/gassio/mt/blob/master/src/store/db.json
+
+# watch db
+json-server --watch db.json
+
+```
 
