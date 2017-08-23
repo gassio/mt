@@ -25,7 +25,7 @@ npm run build
 ## Create dummy JSON data (different project)
 
 ``` bash
-# install json-server package
+# install json-server package (https://github.com/typicode/json-server)
 npm install -g json-server
 
 # Create the db.json file
