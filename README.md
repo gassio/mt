@@ -24,5 +24,16 @@ npm run build
 
 ```
 
+## Create dummy JSON data 
+
+``` bash
+# install json-server package
+npm install -g json-server
+
+# watch db
+json-server --watch db.json
+
+
+```
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
 
