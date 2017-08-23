@@ -1,10 +1,5 @@
 # Metalogon
 
-Live (click at "home" link)
-> https://gassio.github.io/metalogon/
-
-![alt text](https://raw.githubusercontent.com/gassio/metalogon/master/src/assets/mockup.png)
-
 ## Build Setup
 
 ``` bash
