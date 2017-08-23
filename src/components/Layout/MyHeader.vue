@@ -11,8 +11,8 @@
                     <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
                 </div>
                 <div class="head__nav-right">
-                    <li class="head__add-video"><a>+ Upload Video</a></li>
-                    <li class="head__add-video">Ben Domino | Student</li>
+                    <!--<li class="head__add-video"><a>+ Upload Video</a></li>
+                    <li class="head__add-video">Ben Domino | Student</li>-->
                 </div>
             </ul>
         </div>
