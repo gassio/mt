@@ -29,7 +29,7 @@ npm run build
 npm install -g json-server
 
 # Create the db.json file
-#Copy from here: https://github.com/gassio/mt/blob/master/src/store/db.json
+# Copy from here: https://github.com/gassio/mt/blob/master/src/store/db.json
 
 # watch db
 json-server --watch db.json
