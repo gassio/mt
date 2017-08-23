@@ -82,7 +82,7 @@
                             </div>  
                             <div class="annotate-subcategories" v-if="annotateCanon === 'Moves'">
                                 <label class="label">Choose move</label>
-                                <el-select v-model="selectedMove" v-for="cat in canons[0].categories" v-if="cat.name === annotateCategory" placeholder="Choose move:">
+                                <el-select v-model="selectedMove" v-for="cat in canons[0].categories" v-if="cat.name === annotateCategory" :key="cat.name" placeholder="Choose move:">
                                     <el-option v-for="mv in cat.mvs" :key="mv.desc" :label="mv.desc" :value="mv.desc">
                                     </el-option>
                                     <el-option label="Other" value="Other"></el-option>
@@ -195,7 +195,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
-                                        <p class="timeline-card-title">{{ card.category }}</p> {{ card.id }}
+                                        <p class="timeline-card-title">{{ card.category }}</p> <!--{{ card.id }}-->
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>

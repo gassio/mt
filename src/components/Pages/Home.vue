@@ -4,11 +4,11 @@
 		<div class= "home-tabs">
 			<div class= "columns is-mobile is-gapless is-marginless">
 				<div class= "column is-9">
-					<div class= "home-tabs-semester">
+					<!--<div class= "home-tabs-semester">
 						<button id="all" class="home-tabs-semester-button" style="width: 60px" type="button">All</button>
 						<button id="spring17" class="home-tabs-semester-button" type="button">Spring '17</button>
 						<button id="winter16" class="home-tabs-semester-button" type="button">Winter '16</button>
-					</div>
+					</div>-->
 				</div>
 				<div class= "column is-3">
 					<div class= "home-genre-selection">
