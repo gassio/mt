@@ -25,7 +25,7 @@
 		<div class="home-content">
 
 			<div class="videocard" v-for="v in videos">
-				<router-link :to="'/video/' + v.videoID" class="videocard-thumbnail" tag="a">
+				<router-link :to="'/video/' + v.id" class="videocard-thumbnail" tag="a">
 					<img :src="v.thumb" alt="video-thumbnail" class="videocard-thumbnail-image">
 				</router-link>
 				<div class="videocard-content">

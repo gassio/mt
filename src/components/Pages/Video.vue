@@ -3,7 +3,7 @@
         <div class="spacer">
         <router-link :to="{ path: '/'}">
             <button class="button is-white player-spacer-button">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.$store.state.videos.title }}
+                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
             </button> 
         </router-link>
              <button class="button is-white player-spacer-button">
@@ -67,7 +67,7 @@
                     </div>
                     <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
                         <div class="annotate-fields-left">
-                            <button class="button annotate-fields-left-back" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true;">
+                            <button class="button annotate-fields-left-back" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true; selectedMove = 'Other'">
                                 <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
                             </button>
                         </div>
@@ -78,7 +78,7 @@
                                     <h1>{{ cat.name }}</h1>
                                     <p>{{ cat.desc }}</p>
                                 </div>
-                                <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false">X</span></div>
+                                <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false; selectedMove = 'Other'">X</span></div>
                             </div>  
                             <div class="annotate-subcategories" v-if="annotateCanon === 'Moves'">
                                 <label class="label">Choose move</label>
@@ -109,8 +109,6 @@
                         </div>
                         
                     </div>
-
-
                 </div>
 
                 <div class="edit" v-show="isEditing">
@@ -195,7 +193,7 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
-                                        <p class="timeline-card-title">{{ card.category }}</p> <!--{{ card.id }}-->
+                                        <p class="timeline-card-title">{{ card.category }}</p>
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -325,7 +323,7 @@
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
-                selectedMove: '',
+                selectedMove: 'Other',
                 otherMoveSelected: false       
             }
         },
@@ -334,13 +332,13 @@
         mounted() {          
             var that = this
 
-            this.id = parseInt(this.id)
+            // this.id = parseInt(this.id)
             
-            this.$store.commit('setCurrentVideoID', this.id)
+            // this.$store.commit('setCurrentVideoID', this.id)
             
             this.$store.dispatch('getVideo', this.id)
             
-            this.videoDuration = this.videos[this.id].duration
+            this.videoDuration = this.videos[0].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
             
             // Change the color and background of All in cards menu so that it looks active
@@ -355,13 +353,13 @@
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
             // So, we get the last object - 1 = sourcesLength - 2 
-            var sourcesLength = this.videos[this.id].sources.length
+            var sourcesLength = this.videos[0].sources.length
             var correctSource = sourcesLength - 2
 
             this.player = jwplayer('player')            
             this.player.setup({
-                file: this.videos[this.id].sources[correctSource].file,
-                image: this.videos[this.id].thumb,
+                file: this.videos[0].sources[correctSource].file,
+                image: this.videos[0].thumb,
                 "height": $('.player').height(),
                 // events
             });
@@ -430,7 +428,7 @@
 
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
-            this.videoAnnotations = this.$store.state.videos.annotations
+            this.videoAnnotations = this.videos.annotations
             console.log("UPDATED()")
             
             // Show "Sroll down for more" when there are more than 5 cards
@@ -447,6 +445,7 @@
                 this.isAnnotateMenu = true
                 this.annotateRating = null
                 this.annotateComment = ''
+                this.selectedMove = 'Other'
                 this.player.pause()
 
                 this.annotationPauseTime = this.player.getPosition();
@@ -668,24 +667,23 @@
                 else
                     theComment = this.selectedMove
 
-                for (var i=0; i <= this.videoAnnotations.length; i++) {
-                    var card = { 
-                        author: "Ben Domino",
-                        canon: this.annotateCanon,
-                        category: this.annotateCategory,
-                        comment: theComment,
-                        from: this.annotateStart,
-                        to: this.annotateEnd, 
-                        rating: this.annotateRating,
-                        id: this.videoAnnotations.length
-                    }
+                var card = { 
+                    author: 'Ben Domino',
+                    canon: this.annotateCanon,
+                    category: this.annotateCategory,
+                    comment: theComment,
+                    from: this.annotateStart,
+                    to: this.annotateEnd, 
+                    rating: this.annotateRating,
+                    id: Math.floor((Math.random() * 1000000)),
                 }
 
-                // Action implementation remaining. Second phase.
-                this.$store.commit('ADD_ANNOTATION', {
+                this.videos.annotations.push(card)
+
+                this.$store.dispatch('addAnnotation', {
+                    video: this.videos,
                     annotation: card, 
-                    id: this.id,
-                    videoObj: this.$store.state.videos
+                    id: this.id
                 })
 
                 // Reset default design states (no annotating)
@@ -697,9 +695,9 @@
                 this.isAnnotateMenu = false
                 this.isAnnotateFields = false
                 this.isVideoline = false
+                this.selectedMove = 'Other'
 
                 this.player.seek(this.annotationPauseTime)
-
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
@@ -750,7 +748,6 @@
                 // Render edit comment
                 var cardComment = $(editingCard).find('.timeline-card-description').text()
                 this.editComment = cardComment
-                
             },
             edit() {
                 var editingCard = this.editingCard
@@ -759,17 +756,35 @@
                 var cardID = $(editingCard).find('.timeline-card-id').text()
                 cardID = parseInt(cardID)
 
-                // Update data
-                var that = this
-                this.$store.commit('EDIT_ANNOTATION', {
-                    id: this.id,
-                    cardID: cardID,
-                    rating: this.editRating,
+                var card = { 
+                    // id: this.videos.annotation,
+                    author: 'Ben Domino',
+                    category: this.annotateCategory,
+                    canon: this.annotateCanon,
                     comment: this.editComment,
                     from: this.editStart,
                     to: this.editEnd,
-                    videoObj: this.$store.getters.videos[this.id]
+                    rating: this.editRating,
+                }
+
+                // Update data
+                var that = this
+                this.$store.dispatch('editAnnotation', {
+                    video: this.videos,
+                    annotation: card, 
+                    id: this.id
                 })
+
+                // this.$store.commit('EDIT_ANNOTATION', {
+                //     id: this.id,
+                //     cardID: cardID,
+                //     rating: this.editRating,
+                //     comment: this.editComment,
+                //     from: this.editStart,
+                //     to: this.editEnd,
+                //     videoObj: this.$store.getters.videos[this.id]
+                // })
+
 
                 this.isEditFields = false
                 this.isEditing = false
@@ -783,12 +798,13 @@
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card-id').text()
                 cardID = parseInt(cardID)
-
-                var cardTitle = $(editingCard).find('.timeline-card-title').text()
+                console.log("cardID", cardID)
 
                 // Hide .edit-buttons
                 $(event.currentTarget).hide()
                 $(event.currentTarget).siblings('.edit-buttons').hide()
+
+                var cardTitle = $(editingCard).find('.timeline-card-title').text()
 
                 // Are you sure to Delete annotation?
                 swal({
@@ -801,12 +817,17 @@
                     }).then(function () {
                         // Refresh fix
                         // that.player.seek(that.mmssToSeconds(that.videoAnnotations[that.id].from))
-                        
-                        // Delete from store
-                        that.$store.commit('DELETE_ANNOTATION', {
+
+                        // Delete from STATE
+                        for (var i=0, l = that.videos.annotations.length; i < l; i++) {
+                            if (that.videos.annotations[i].id === cardID) 
+                                that.videos.annotations.splice(i, 1)
+                        }
+
+                        that.$store.dispatch('deleteAnnotation', {
                             id: that.id,
-                            cardID: cardID,
-                            videoObj: that.$store.state.videos
+                            video: that.videos,
+                            cardID: cardID
                         })
                     },
                 )
@@ -1636,7 +1657,7 @@
                 }
 
                 .timeline-card-id{
-                    visibility: hidden;
+                    /*visibility: hidden;*/
                 }
 
                 .timeline-card-edit {

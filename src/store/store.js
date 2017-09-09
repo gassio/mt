@@ -182,103 +182,24 @@ export const store = new Vuex.Store({
             }
         ],
         currentVideoID: null,
-        },
-    mutations: {
-        ADD_ANNOTATION: (state, payload) => {
-            var annotations = state.videos.annotations
-            annotations.push(payload.annotation)
-
-            // Sorting annotations[] by from property
-            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
-
-            var url = "http://localhost:3000/videos/" + payload.id
-            axios.put(url, payload.videoObj)
-                .then(response => {
-                    console.log(payload.videoObj)
-                    console.log('Success annotate!')
-                })
-                .catch(function (err) {
-                    console.log('Error annotation add...')
-                })
-        },
-        EDIT_ANNOTATION: (state, payload) => {
-            var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
-            var annotations = state.videos[payload.id].annotations
-            
-            currentAnnotation.rating = payload.rating
-            currentAnnotation.comment = payload.comment
-            currentAnnotation.from = payload.from
-            currentAnnotation.to = payload.to
-
-            // Sorting annotations[] by from property
-            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
-
-            var url = "http://localhost:3000/videos/" + payload.id
-            axios.put(url, payload.videoObj)
-                .then(response => {
-                    console.log(payload.videoObj)
-                    console.log('Success edit!')
-                })
-                .catch(function (err) {
-                    console.log('Error annotation edit...')
-                })
-        },
-        DELETE_ANNOTATION: (state, payload) => {
-            var annotations = state.videos.annotations
-
-            for (var i=0, l = annotations.length; i < l; i++) {
-                if (annotations[i].id === payload.cardID) {
-                    annotations.splice(i, 1)
-                    break
-                }
-            }
-
-            var url = "http://localhost:3000/videos/" + payload.id
-            axios.put(url, payload.videoObj)
-                .then(response => {
-                    console.log(payload.videoObj) // state.videos[payload.id]
-                    console.log('Success delete!')
-                })
-                .catch(function (err) {
-                    console.log('Error annotation delete...')
-                })
-        },
-        ADD_CLASS: (state, payload) => {
-            var classes = state.classes
-            classes.push(payload.newClassObj)
-        },
-        UPLOAD_VIDEO: (state, payload) => {
-            state.videos.push(payload)
-        },
-        setCurrentVideoID: (state, id) => {
-            state.currentVideoID = id
-        },
-        GET_ALL_VIDEOS: (state, newVideos) => {
-            state.videos = newVideos
-        },
-        GET_VIDEO: (state, video) => {
-            state.videos = video
-        },
-        FETCH_CLASSES: (state, newClasses) => {
-            state.classes = newClasses
-        }
     },
     actions: {
+        // VIDEOS
         getAllVideos: function ({ commit }) {
-            axios.get("http://localhost:3000/videos")
+            axios.get("http://localhost:3000/rest/video")
                 .then(function (response)
                 {
-                    commit('GET_ALL_VIDEOS', response.data )
+                    commit('GET_ALL_VIDEOS', response.data.data )
                 })
                 .catch(function (err) {
                     console.log(err)
                 })
         },
         getVideo: function ({ commit }, payload) {
-            axios.get("http://localhost:3000/videos/" + payload)
+            axios.get("http://localhost:3000/rest/video/" + payload)
                 .then(function (response)
                 {
-                    commit('GET_VIDEO', response.data)
+                    commit('GET_VIDEO', response.data.data)
                 })
                 .catch(function (err) {
                     console.log(err)
@@ -313,7 +234,41 @@ export const store = new Vuex.Store({
                 .catch(function (err) {
                     console.log(err)
                 })
-        },  
+        },
+        // ANNOTATIONS
+        addAnnotation: function ({ commit }, payload) {
+            var theVideo = payload.video
+
+            axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
+                .then(response => {
+                    // commit('ADD_ANNOTATION', payload)
+                })
+                .catch(function (err) {
+                    console.log('Error annotation add...', err)
+                })
+        },
+        editAnnotation: function ({ commit }, payload) {
+            var theVideo = payload.video
+            
+            axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
+                .then(response => {
+                    // commit('EDIT_ANNOTATION', payload)
+                })
+                .catch(function (err) {
+                    console.log('Error annotation edit...', err)
+                })
+        },
+        deleteAnnotation: function ({ commit }, payload) {
+            var theVideo = payload.video
+            
+            axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
+                .then(response => {
+                    // commit('DELETE_ANNOTATION', payload)
+                })
+                .catch(function (err) {
+                    console.log('Error annotation delete...', err)
+                })
+        },
         fetchClasses: function ({ commit }) {
             axios.get("http://localhost:3000/classes")
                 .then(function (response)
@@ -334,6 +289,62 @@ export const store = new Vuex.Store({
             })
         },
 
+    },
+    mutations: {
+        ADD_ANNOTATION: (state, payload) => {
+            var annotations = state.videos.annotations
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+        },
+        EDIT_ANNOTATION: (state, payload) => {
+            var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
+            var annotations = state.videos[payload.id].annotations
+            
+            currentAnnotation.rating = payload.rating
+            currentAnnotation.comment = payload.comment
+            currentAnnotation.from = payload.from
+            currentAnnotation.to = payload.to
+
+            // Sorting annotations[] by from property
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+
+            var url = "http://localhost:3000/videos/" + payload.id
+            axios.put(url, payload.videoObj)
+                .then(response => {
+                    console.log(payload.videoObj)
+                    console.log('Success edit!')
+                })
+                .catch(function (err) {
+                    console.log('Error annotation edit...')
+                })
+        },
+        DELETE_ANNOTATION: (state, payload) => {
+            var annotations = state.videos.annotations
+
+            for (var i=0, l = annotations.length; i < l; i++) {
+                if (annotations[i].id === payload.video.videoAnnotations._id)
+                    annotations.splice(i, 1)
+            }
+        },
+        ADD_CLASS: (state, payload) => {
+            var classes = state.classes
+            classes.push(payload.newClassObj)
+        },
+        UPLOAD_VIDEO: (state, payload) => {
+            state.videos.push(payload)
+        },
+        setCurrentVideoID: (state, id) => {
+            state.currentVideoID = id
+        },
+        GET_ALL_VIDEOS: (state, newVideos) => {
+            state.videos = newVideos
+        },
+        GET_VIDEO: (state, video) => {
+            state.videos = video
+        },
+        FETCH_CLASSES: (state, newClasses) => {
+            state.classes = newClasses
+        }
     },
     getters: {
         videos: state => {
