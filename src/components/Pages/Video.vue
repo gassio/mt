@@ -682,7 +682,6 @@
 
                 this.$store.dispatch('addAnnotation', {
                     video: this.videos,
-                    annotation: card, 
                     id: this.id
                 })
 
@@ -756,22 +755,20 @@
                 var cardID = $(editingCard).find('.timeline-card-id').text()
                 cardID = parseInt(cardID)
 
-                var card = { 
-                    // id: this.videos.annotation,
-                    author: 'Ben Domino',
-                    category: this.annotateCategory,
-                    canon: this.annotateCanon,
-                    comment: this.editComment,
-                    from: this.editStart,
-                    to: this.editEnd,
-                    rating: this.editRating,
+                for (var i=0, l = this.videos.annotations.length; i < l; i++) {
+                    if (this.videos.annotations[i].id === cardID) {
+                        this.videos.annotations[i].comment =  this.editComment
+                        this.videos.annotations[i].from = this.editStart
+                        this.videos.annotations[i].to = this.editEnd
+                        this.videos.annotations[i].rating =  this.editRating
+                    }
                 }
 
                 // Update data
                 var that = this
                 this.$store.dispatch('editAnnotation', {
                     video: this.videos,
-                    annotation: card, 
+                    // annotation: card, 
                     id: this.id
                 })
 
