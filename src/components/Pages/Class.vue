@@ -2,30 +2,30 @@
      <div class="class container">
         <div class="class-go-back">
             <router-link :to="{ path: '/classes'}">
-                <button class="button class-go-back-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp Go back</button>
+                <button class="button class-go-back-button"> <i class="fa fa-chevron-left" aria-hidden="true"></i>&nbsp All classes</button>
             </router-link>
         </div>
         <div class= "class-of-semester">
-            <div class="class-of-semester-title"><p>{{ replaceUnderscores(id) }}</p></div>
+            <div class="class-of-semester-title"><p>{{ this.classes.title }}</p></div>
         </div><!-- end -->
         
         <!-- MAIN CONTENT - start -->
         <div class="class-content">
             <div class="v-videos fx-dir-col">
-                <div class="v-video fx-dir-row" v-for="vid in videos" v-if="vid.class === replaceUnderscores(id)">
+                <div class="v-video fx-dir-row" v-for="v in videos">
                     <!-- CLASS CARD - start -->
-                    <router-link :to="'/video/' + vid.videoID"  tag="a" class="class-card columns is-gapless">
+                    <router-link :to="'/video/' + v.id"  tag="a" class="class-card columns is-gapless">
                         <div class="class-card-image column is-2 is-gapless is-marginless">
-                            <img :src="vid.thumb" alt="video-thumbnail" class="class-card-image-thumbnail">	
+                            <img :src="v.thumb" alt="video-thumbnail" class="class-card-image-thumbnail">	
                         </div>
                         <div class="class-card-description column is-7 is-gapless is-marginless has-text-left">
-                            <p class= "class-card-description-title">{{ vid.title }}</p>
-                            <p class= "class-card-description-details">Duration: {{ vid.duration }} | Video id: {{ vid.videoID }} | Playlist id: {{ vid.jwPlaylistID }} | JW Video id: {{ vid.jwVideoID }}</p>
+                            <p class= "class-card-description-title">{{ v.title }}</p>
+                            <p class= "class-card-description-details">Duration: {{ v.duration }} | Class: {{ v.class }}</p>
                         </div>
                         <div class="class-card-genre column is-3 is-gapless is-marginless">
                             <strong class="class-card-genre-color">Thesis Proposal</strong> &nbsp&nbsp<i class="fa fa-book fa-2x" aria-hidden="true"></i>
                         </div>
-                    </router-link><!-- end -->
+                    </router-link>
                 </div>
             </div>
         </div><!-- end -->
@@ -35,64 +35,32 @@
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+
     export default {
         data() {
             return { 
                 id: this.$route.params.id
             }
         },
+        created() {
+            this.$store.dispatch('getClass', this.id)
+            this.$store.dispatch('getAllVideos')
+        },
         mounted(){
-            // this.$store.commit('retrieveVideosByClass', this.id)
+            // this.$store.commit('GET_CLASS_VIDEOS', this.classes.id)
+        },
+        updated() {
         },
         methods: {
-            // setClasses() {
-            //     this.$store.commit('setClasses')
-            // },
-            // fetchVideoByClass() {
-            //     // to do: correct id in the URL
-            //     var url = 'https://cdn.jwplayer.com/v2/playlists/' + this.playlistIDs[i]
 
-            //     this.axios.get(url)
-            //         .then(function (response)
-            //         {
-            //             var playlist = response.data.playlist
-
-            //             for (var i=0; i < playlist.length; ++i) {
-            //                 var video = { 
-            //                     vidTitle: playlist[i].title, 
-            //                     vidLink: playlist[i].link, 
-            //                     vidThumb: playlist[i].image, 
-            //                     vidDuration: playlist[i].duration, 
-            //                     vidDesc: playlist[i].description, 
-            //                     vidStudent: playlist[i].student, 
-            //                     playlistID: playlist[i].feedid,
-            //                     videoID: playlist[i].mediaid,
-            //                     vidSources: playlist[i].sources,
-            //                     vidPlaylistName: title,
-            //                     vidAnnotations: eventBus.allAnnotations
-            //                 }
-            //                 eventBus.videos.push(video)
-            //             }
-            //         })
-            //         .catch(function (error) {
-            //             console.log(error)
-            //         })
-            // },
-            replaceUnderscores(str) {
-                return str.replace(/\-/g,' ')
-            }
         },
         computed: {
-            playlistIDs() {
-                return this.$store.state.playlistIDs
-            },
-            videos() {
-                return this.$store.state.videos
-            },
-            classNames() {
-                return this.$store.state.classNames
-            },
-        },
+            ...mapGetters([
+				'classes',
+                'videos'
+            ])
+        }
     }
 </script>
 

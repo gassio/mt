@@ -31,8 +31,7 @@
 				<div class="videocard-content">
 					<div class="videocard-details">
 						<p class="videocard-description">{{ v.title }}</p>
-						<p class="videocard-semester">Spring '17</p>
-						<p class="videocard-date">July 2017</p>
+						<p class="videocard-semester">{{ v.class }}</p>
 					</div>
 					<div class="videocard-foot">
 						<span class="videocard-genre"><i class="fa fa-commenting-o" aria-hidden="true"></i> {{ v.genre }}</span>

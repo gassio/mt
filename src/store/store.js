@@ -172,15 +172,6 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
-        user: [ 
-            {
-                firstName: 'Nikos',
-                lastName: 'Dimitriou',
-                email: 'nikos@gmail.com',
-                password: '123',
-                type: 'admin' // admin, professor, technical-instructor, communicational-instructor, student, 
-            }
-        ],
         currentVideoID: null,
     },
     actions: {
@@ -205,6 +196,7 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
+        // todo
         uploadVideo: function ({ commit }, payload) {
              axios.post("http://localhost:3000/videos", payload)
                 .then(function (response)
@@ -215,6 +207,7 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
+        // todo
         updateVideo: function ({ commit }, payload) {
              axios.put("http://localhost:3000/videos", payload)
                 .then(function (response)
@@ -225,6 +218,7 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
+        // todo
         deleteVideo: function ({ commit }, payload) {
              axios.delete("http://localhost:3000/videos", payload)
                 .then(function (response)
@@ -241,7 +235,7 @@ export const store = new Vuex.Store({
 
             axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
                 .then(response => {
-                    // commit('ADD_ANNOTATION', payload)
+
                 })
                 .catch(function (err) {
                     console.log('Error annotation add...', err)
@@ -252,7 +246,6 @@ export const store = new Vuex.Store({
             
             axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
                 .then(response => {
-                    // commit('EDIT_ANNOTATION', payload)
                 })
                 .catch(function (err) {
                     console.log('Error annotation edit...', err)
@@ -263,34 +256,62 @@ export const store = new Vuex.Store({
             
             axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
                 .then(response => {
-                    // commit('DELETE_ANNOTATION', payload)
                 })
                 .catch(function (err) {
                     console.log('Error annotation delete...', err)
                 })
         },
-        fetchClasses: function ({ commit }) {
-            axios.get("http://localhost:3000/classes")
+        // CLASSES
+        getAllClasses: function ({ commit }) {
+            axios.get("http://localhost:3000/rest/class")
                 .then(function (response)
                 {
-                    commit('FETCH_CLASSES', response.data )
+                    commit('GET_ALL_CLASSES', response.data.data )
                 })
                 .catch(function (err) {
                     console.log(err)
                 })
         },
-        addClass: function ({ commit }, payload) {
-            axios.post("http://localhost:3000/classes/", payload.newClassObj)
+        getClass: function ({ commit }, payload) {
+            axios.get("http://localhost:3000/rest/class/" +payload)
+                .then(function (response)
+                {
+                    commit('GET_CLASS', response.data.data )
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
+        createClass: function ({ commit }, payload) {
+            axios.post("http://localhost:3000/rest/class/", payload.newClass)
             .then(response => {
                 commit('ADD_CLASS', payload)
             })
             .catch(function (err) {
-                console.log('Oxi addClass()')
+                console.log('Oxi createClass()')
             })
         },
 
     },
     mutations: {
+        // VIDEOS
+        GET_ALL_VIDEOS: (state, newVideos) => {
+            state.videos = newVideos
+        },
+        GET_VIDEO: (state, video) => {
+            state.videos = video
+        },
+        // (NOT USED)
+        GET_CLASS_VIDEOS: (state, classTitle) => {
+            for (var i=0, l = state.videos.length; i < l; i++) {
+                if (state.videos[i].class !== classTitle) 
+                    state.videos.splice(i,1)
+            }
+        },
+        UPLOAD_VIDEO: (state, payload) => {
+            state.videos.push(payload)
+        },
+        // ANNOTATIONS (NOT USED)
         ADD_ANNOTATION: (state, payload) => {
             var annotations = state.videos.annotations
             // Sorting annotations[] by from property
@@ -326,25 +347,17 @@ export const store = new Vuex.Store({
                     annotations.splice(i, 1)
             }
         },
+        // CLASSES
+        GET_ALL_CLASSES: (state, newClasses) => {
+            state.classes = newClasses
+        },
+        GET_CLASS: (state, theClass) => {
+            state.classes = theClass
+        },
         ADD_CLASS: (state, payload) => {
             var classes = state.classes
-            classes.push(payload.newClassObj)
+            classes.push(payload.newClass)
         },
-        UPLOAD_VIDEO: (state, payload) => {
-            state.videos.push(payload)
-        },
-        setCurrentVideoID: (state, id) => {
-            state.currentVideoID = id
-        },
-        GET_ALL_VIDEOS: (state, newVideos) => {
-            state.videos = newVideos
-        },
-        GET_VIDEO: (state, video) => {
-            state.videos = video
-        },
-        FETCH_CLASSES: (state, newClasses) => {
-            state.classes = newClasses
-        }
     },
     getters: {
         videos: state => {

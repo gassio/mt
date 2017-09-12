@@ -12,9 +12,9 @@
 						
 						<div class="classes-of-semester">
 							<!-- CLASS CARD - start -->
-							<router-link class="classes-card" :to="'classes/' + c.title.replace(/ /g, '-')" v-for="c in classes" :key="c.classID">
+							<router-link class="classes-card" :to="'classes/' + c.id" v-for="c in classes" :key="c.id">
 								<i class="fa fa-book fa-5x" aria-hidden="true"></i>
-								<p class="classes-card-title"> {{c.section}} {{c.semester}} {{ c.title }}</p>
+								<p class="classes-card-title"> {{c.spring}} {{ c.title }}</p>
 								<span class="classes-card-details"></span>
 							</router-link><!-- end -->
 
@@ -35,19 +35,14 @@
 				<el-form-item label="Class name" :label-width="formLabelWidth">
 					<el-input v-model="newClass.title" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="Section" :label-width="formLabelWidth">
-					<el-input v-model="newClass.section" auto-complete="off"></el-input>
+				<el-form-item label="Spring" :label-width="formLabelWidth">
+					<el-input v-model="newClass.spring" auto-complete="off"></el-input>
 				</el-form-item>
-				<el-form-item label="Semester" :label-width="formLabelWidth">
-				<el-select v-model="newClass.semester" placeholder="Please select a semester">
-					<el-option label="Winter '17" value="Winter '17"></el-option>
-					<el-option label="Spring'17" value="Spring '17"></el-option>
-				</el-select>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="dialogVisible = false">Cancel</el-button>
-				<el-button class="add-class-btn" @click="addClass(); dialogVisible = false;">Add Class</el-button>
+				<el-button class="add-class-btn" @click="createClass(); dialogVisible = false;">Add Class</el-button>
 			</span>
 		</el-dialog>
 
@@ -66,25 +61,24 @@
 				formLabelWidth: '120px',
 				newClass: {
 					title: '',
-					section: '',
-					semester: '',
-					jwPlaylistID: 'needs-backend'
+					spring: '',
 				}
             }
         },
 		created() {
-			this.$store.dispatch('fetchClasses')
+			this.$store.dispatch('getAllClasses')
 		},
         mounted() {
         },
+		updated() {
+		},
         methods: {
-			addClass() {	
-				this.$store.dispatch('addClass', { 
-					newClassObj: this.newClass
+			createClass() {	
+				this.$store.dispatch('createClass', { 
+					newClass: this.newClass
 				})
 				this.newClass = {}
 			}
-
         },
         computed: {
             ...mapGetters([
