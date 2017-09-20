@@ -1,11 +1,14 @@
 var express = require('express');
-var path = require('path');
-var serveStatic = require('serve-static');
-
 var app = express();
-app.use(serveStatic(__dirname + "/docs"));
 
-var port = process.env.PORT || 5000;
-app.listen(port);
+app.set('port', (process.env.PORT || 5000));
 
-console.log('server started '+ port);
+app.use(express.static(__dirname + "/dist"));
+
+app.listen(app.get('port'), function() {
+    console.log('Node app is running on port', app.get('port'));
+});
+  
+
+// app.listen(port);
+// console.log('server started '+ port);
