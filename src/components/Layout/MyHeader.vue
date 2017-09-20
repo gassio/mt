@@ -4,7 +4,7 @@
             
             <ul class="head__nav">
                 <div class="head__nav-left">
-                <router-link to="/" tag="h1" class="head__logo title"> <i class="fa fa-circle-o" aria-hidden="true"></i><a>Metalogon</a></router-link>
+                <router-link to="/" tag="h1" class="head__logo title"><a>Metalogon</a></router-link>
                     <router-link to="/" tag="li" class="head__nav-item" active-class="head__nav-item-active" exact><a class="head__nav-item-link">Home</a></router-link>
                     <router-link to="/library" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Library</a></router-link>
                     <router-link to="/wiki" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Wiki</a></router-link>

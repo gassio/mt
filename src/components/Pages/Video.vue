@@ -328,17 +328,23 @@
             }
         },
         created() {
+            console.log("#CREATED()")
+
+            this.$store.dispatch('getVideo', this.id)
         },
-        mounted() {          
+        mounted() {
+            console.log("#MOUNTED()")     
             var that = this
 
-            // this.id = parseInt(this.id)
+            // Temporary solution for MOUNTED() cycle because of Vuex stuff.
+            // Trying to get the index (vIndex) of the video that the same id with the params.id
+            var vIndex; 
+            for (var i=0, l = this.videos.length; i < l; i++) {
+                if (this.videos[i].id === this.id) 
+                    vIndex = i
+            }
             
-            // this.$store.commit('setCurrentVideoID', this.id)
-            
-            this.$store.dispatch('getVideo', this.id)
-            
-            this.videoDuration = this.videos[0].duration
+            this.videoDuration = this.videos[vIndex].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
             
             // Change the color and background of All in cards menu so that it looks active
@@ -347,19 +353,18 @@
             // allButton.style.color = "#FFFFFF";
             $('.card-menu a').css('background-color', '#39425C')
             $('.card-menu a').css('color', '#FFF')
-            
 
             // Get the correct source of the video. 
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
-            // So, we get the last object - 1 = sourcesLength - 2 
-            var sourcesLength = this.videos[0].sources.length
+            // So, we get the last object - 1 = sourcesLength - 2
+            var sourcesLength = this.videos[vIndex].sources.length
             var correctSource = sourcesLength - 2
 
             this.player = jwplayer('player')            
             this.player.setup({
-                file: this.videos[0].sources[correctSource].file,
-                image: this.videos[0].thumb,
+                file: this.videos[vIndex].sources[correctSource].file,
+                image: this.videos[vIndex].thumb,
                 "height": $('.player').height(),
                 // events
             });
@@ -418,9 +423,9 @@
                 }
             })
 
+            // this.$store.commit('SORT_ANNOTATIONS')
             // this.player.setControls(false);
             
-            console.log(this.$store.state.canons[0].categories)
         },
         updated() {
             // Fixes unknown man picture bug
@@ -696,7 +701,8 @@
                 this.isVideoline = false
                 this.selectedMove = 'Other'
 
-                this.player.seek(this.annotationPauseTime)
+                // Seek to previous paused time.
+                this.player.seek(this.mmssToSeconds(this.annotateStart))
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
@@ -1654,7 +1660,7 @@
                 }
 
                 .timeline-card-id{
-                    /*visibility: hidden;*/
+                    visibility: hidden;
                 }
 
                 .timeline-card-edit {

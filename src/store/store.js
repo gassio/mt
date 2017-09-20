@@ -235,7 +235,7 @@ export const store = new Vuex.Store({
 
             axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
                 .then(response => {
-
+                    theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
                 })
                 .catch(function (err) {
                     console.log('Error annotation add...', err)
@@ -256,6 +256,7 @@ export const store = new Vuex.Store({
             
             axios.put("http://localhost:3000/rest/video/"+payload.id, theVideo)
                 .then(response => {
+                    theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
                 })
                 .catch(function (err) {
                     console.log('Error annotation delete...', err)
@@ -325,27 +326,32 @@ export const store = new Vuex.Store({
             currentAnnotation.comment = payload.comment
             currentAnnotation.from = payload.from
             currentAnnotation.to = payload.to
-
+            
             // Sorting annotations[] by from property
             annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
-
+            
             var url = "http://localhost:3000/videos/" + payload.id
             axios.put(url, payload.videoObj)
-                .then(response => {
-                    console.log(payload.videoObj)
-                    console.log('Success edit!')
-                })
-                .catch(function (err) {
-                    console.log('Error annotation edit...')
-                })
+            .then(response => {
+                console.log(payload.videoObj)
+                console.log('Success edit!')
+            })
+            .catch(function (err) {
+                console.log('Error annotation edit...')
+            })
         },
         DELETE_ANNOTATION: (state, payload) => {
             var annotations = state.videos.annotations
-
+            
             for (var i=0, l = annotations.length; i < l; i++) {
                 if (annotations[i].id === payload.video.videoAnnotations._id)
                     annotations.splice(i, 1)
             }
+        },
+        // Sorting annotations by from property
+        SORT_ANNOTATIONS: (state) => {
+            var annotations = state.videos.annotations
+            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
         },
         // CLASSES
         GET_ALL_CLASSES: (state, newClasses) => {
