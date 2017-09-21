@@ -151,7 +151,7 @@
                                     </textarea>
                                 </p>
                                 <div class="annotate-submit">
-                                    <button class="button" @click="edit()">Edit</button>
+                                    <button class="button" @click="edit()">Save</button>
                                 </div>
                             </div>
                             <div class="field" style="color: #fff; font-size: 0.8em;">
@@ -194,6 +194,7 @@
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
                                         <p class="timeline-card-title">{{ card.category }}</p>
+                                        <p class="" style="font-size: 12px">{{ card.label }}</p>
                                     </div>
                                     <div class="column is-4">
                                         <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
@@ -672,10 +673,24 @@
                 else
                     theComment = this.selectedMove
 
+                // Find the description of the chosen annotate category.
+                var descIndex, annotateDesc
+                for (var i = 0, l = this.canons.length; i < l; i++) {
+                    if (this.annotateCanon === this.canons[i].name)
+                        descIndex = i
+                }
+                var annotateCategories = this.canons[descIndex].categories
+                for (var i = 0, l = annotateCategories.length; i < l; i++) {
+                    if (this.annotateCategory === annotateCategories[i].name)
+                        annotateDesc = annotateCategories[i].desc
+                }
+                console.log("annotateDesc = ", annotateDesc)
+
                 var card = { 
-                    author: 'Ben Domino',
+                    author: 'User',
                     canon: this.annotateCanon,
                     category: this.annotateCategory,
+                    label: annotateDesc, // category description
                     comment: theComment,
                     from: this.annotateStart,
                     to: this.annotateEnd, 
@@ -690,6 +705,8 @@
                     id: this.id
                 })
 
+                this.player.seek(this.mmssToSeconds(this.annotateStart))
+
                 // Reset default design states (no annotating)
                 this.annotateComment = ''
                 this.annotateStart = null
@@ -702,7 +719,6 @@
                 this.selectedMove = 'Other'
 
                 // Seek to previous paused time.
-                this.player.seek(this.mmssToSeconds(this.annotateStart))
             },
             editing(event) {
                 // Hide the Edit and Delete buttons
@@ -823,8 +839,10 @@
 
                         // Delete from STATE
                         for (var i=0, l = that.videos.annotations.length; i < l; i++) {
-                            if (that.videos.annotations[i].id === cardID) 
+                            if (that.videos.annotations[i].id === cardID) {
+                                console.log("anno id = ", that.videos.annotations[i].id)
                                 that.videos.annotations.splice(i, 1)
+                            }
                         }
 
                         that.$store.dispatch('deleteAnnotation', {
@@ -998,7 +1016,7 @@
                 return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
             },
             mmssToSeconds(timeMMSS) {
-                var timeMMSS = timeMMSS.split(':')
+                var timeMMSS = timeMMSS.split(":")
                 return (+timeMMSS[0]) * 60 + (+timeMMSS[1]) // in sec
             },
             showAnnotateMenu() {
