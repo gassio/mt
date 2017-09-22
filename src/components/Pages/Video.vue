@@ -188,45 +188,32 @@
                     <div class="timeline-content column is-10">
                         <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
 
-                        <div class="timeline-card columns is-gapless" v-for="card in videoAnnotations" 
-                             v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" title="Click to seek annotation"> 
-                            <div class="column" @click="seekCard($event)">
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column is-8">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
-                                        <p class="" style="font-size: 12px">{{ card.label }}</p>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
-                                    </div>
+                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle"> 
+                            <div class="timeline-card__header">
+                                <div class="timeline-card__title-container">
+                                    <span class="timeline-card__title">{{ card.category }}</span>
+                                    <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
                                 </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column">
-                                        <p class="timeline-card-description">{{ card.comment }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="timeline-card-effectiveness-bar column is-8">
-                                        
-                                        <!--<el-rate
-                                            v-model="card.rating"
-                                            disabled
-                                            text-color="#ff9900">-->
-                                        </el-rate>
-                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <p class="timeline-card-author">by {{ card.author }}</p>
+                                <p class="timeline-card__desc">"{{ card.label }}" </p>
+                                
+                            </div>
+                            <div class="timeline-card__body">
+                                <p style="display: flex;font-size: 12px; padding:0; margin:0;">COMMENT:</p>
+                                <p class="timeline-card__comment">{{ card.comment }}</p>
+                                <div class="timeline-card__effectiveness">
+                                    <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
+                                    <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
+                                    <!--<el-rate v-model="card.rating" disabled text-color="#ff9900"></el-rate>-->
                                 </div>
                             </div>
-                            <div class="timeline-card-edit">
-                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-                                <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
-                                <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+                            <div class="timeline-card__footer">
+                                <p class="timeline-card__author">by {{ card.author }}</p>
+                                <span class="timeline-card__id">{{ card.id }}</span>
+                                <div class="timeline-card__edit-container">
+                                    <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
+                                    <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
+                                    <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
+                                </div>
                             </div>
                         </div>
 
@@ -235,30 +222,30 @@
                             <div class="column" @click="seekCard($event)">
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column is-8">
-                                        <p class="timeline-card-title">{{ card.category }}</p>
+                                        <p class="timeline-card__title">{{ card.category }}</p>
                                     </div>
                                     <div class="column is-4">
-                                        <p class="timeline-card-time">{{ card.from }} - {{ card.to }} <span class="timeline-card-id">{{ card.id }}</span></p>
+                                        <p class="timeline-card__time">{{ card.from }} - {{ card.to }} <span class="timeline-card__id">{{ card.id }}</span></p>
                                     </div>
                                 </div>
                                 <div class="columns is-gapless is-marginless">
                                     <div class="column">
-                                        <p class="timeline-card-description">{{ card.comment }}</p>
+                                        <p class="timeline-card__comment">{{ card.comment }}</p>
                                     </div>
                                 </div>
                                 <div class="columns is-gapless is-marginless">
-                                    <div class="timeline-card-effectiveness-bar column is-8">
+                                    <div class="timeline-card__effectiveness column is-8">
                                         <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     </div>
                                     <div class="column is-4">
-                                        <p class="timeline-card-effectiveness-label">{{ card.rating }} / 5 effective</p>
+                                        <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
                                     </div>
                                 </div>
                                 <div class="columns is-gapless is-marginless">
-                                    <p class="timeline-card-author">by {{ card.author }}</p>
+                                    <p class="timeline-card__author">by {{ card.author }}</p>
                                 </div>
                             </div>
-                            <div class="timeline-card-edit">
+                            <div class="timeline-card__edit-container">
                                 <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                                 <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
                                 <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
@@ -435,7 +422,6 @@
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
             this.videoAnnotations = this.videos.annotations
-            console.log("UPDATED()")
             
             // Show "Sroll down for more" when there are more than 5 cards
             this.moreAnnotations()
@@ -724,20 +710,18 @@
                 // Hide the Edit and Delete buttons
                 $(event.currentTarget).hide(); $(event.currentTarget.parentElement).find('.edit-buttons').hide()
 
-                // <div class="timeline-card">
                 // The card that is being editing. It is a DOM object. 
-                var editingCard = event.currentTarget.parentElement.parentElement
+                // <div class="timeline-card">
+                var editingCard = event.currentTarget.parentElement.parentElement.parentElement
                 this.editingCard = editingCard
 
                 // Setting flags
                 this.isEditing = true
                 this.isEditFields = true
                 this.player.pause()
-                // this.isVideoline = true
 
-                // Setting from + end annotate times
-                // ga to be changed
-                var time = editingCard.children[0].children[0].children[1].children[0].innerText // 03:05 - 03:17               
+                // Setting from + to annotate times
+                var time = $(editingCard).find('.timeline-card__time').text() // 03:05 - 03:17
                 var startTime = time.substring(0,5); // 03:05
                 this.editStart = startTime
                 var endTime = time.substring(8,13); // 03:17
@@ -762,19 +746,19 @@
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
                 // Render edit effectiveness
-                var cardRating = $(editingCard).find('.timeline-card-effectiveness-label').text().slice(0,1) // e.g. '3' in string
+                var cardRating = $(editingCard).find('.timeline-card__effectiveness-label').text().slice(0,1) // e.g. '3' in string
                 cardRating = parseInt(cardRating) // string => int
                 this.editRating = cardRating
 
                 // Render edit comment
-                var cardComment = $(editingCard).find('.timeline-card-description').text()
+                var cardComment = $(editingCard).find('.timeline-card__comment').text()
                 this.editComment = cardComment
             },
             edit() {
                 var editingCard = this.editingCard
 
                 // Get annotation id
-                var cardID = $(editingCard).find('.timeline-card-id').text()
+                var cardID = $(editingCard).find('.timeline-card__id').text()
                 cardID = parseInt(cardID)
 
                 for (var i=0, l = this.videos.annotations.length; i < l; i++) {
@@ -815,7 +799,7 @@
                 var editingCard = $(event.currentTarget).parent().parent()
 
                 // Get annotation id
-                var cardID = $(editingCard).find('.timeline-card-id').text()
+                var cardID = $(editingCard).find('.timeline-card__id').text()
                 cardID = parseInt(cardID)
                 console.log("cardID", cardID)
 
@@ -823,7 +807,7 @@
                 $(event.currentTarget).hide()
                 $(event.currentTarget).siblings('.edit-buttons').hide()
 
-                var cardTitle = $(editingCard).find('.timeline-card-title').text()
+                var cardTitle = $(editingCard).find('.timeline-card__title').text()
 
                 // Are you sure to Delete annotation?
                 swal({
@@ -936,36 +920,6 @@
                     }
                 }
             },
-            showAll(event) {
-                var categoryBtn = $(event.currentTarget.parentElement)
-
-                this.isMoves = 'Moves'
-                this.isStructure = 'Structure'
-                this.isDelivery = 'Delivery'
-                this.isVisuals = 'Visuals'
-                this.isStyle = 'Style'
-                
-                $(categoryBtn).siblings('.card-menu-link').css({
-                    backgroundColor: "#39425C",
-                    color: "#FFF"
-                })
-
-            },
-            hideAll(event) {
-                var categoryBtn = $(event.currentTarget.parentElement)
-
-                this.isMoves = ''
-                this.isStructure = ''
-                this.isDelivery = ''
-                this.isVisuals = ''
-                this.isStyle = ''
-                
-                $(categoryBtn).siblings('.card-menu-link').css({
-                    backgroundColor: "#FFF",
-                    color: "#39425C"
-                })
-
-            },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
                 this.annotateModeActiveItemProblem(event)
@@ -979,8 +933,7 @@
             },
             seekCard(event) {
                 // this.isAnnotating = true;
-                // ga to be changed                
-                var time = event.currentTarget.children[0].children[1].children[0].innerText // 03:05 - 03:17
+                var time = $(event.currentTarget).find('.timeline-card__time').text()
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
                 var endTime = time.substring(8,13); // 03:17
@@ -1086,7 +1039,7 @@
                 var allEndTime = []
                 var allTimeString = []
                 for (var k=0, l = allCards.length; k < l; k++) {
-                    allTimeString[k] = allCards[k].children[0].children[0].children[1].children[0].innerText // 00:05 - 00:10
+                    allTimeString[k] = allCards[k].children[0].children[0].children[1].innerText // 00:05 - 00:10
                     allStartTime[k] = allTimeString[k].substring(0,5)  // 00:05 
                     allEndTime[k] = allTimeString[k].substring(8,13) // 00:10 
 
@@ -1648,84 +1601,118 @@
                 /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
-                .timeline-card-title {
-                    font-size: 1.1em;
-                    font-style: bold;
+                .timeline-card__header {
+
                 }
-                .timeline-card-time {
-                    font-size: 0.8em;
-                }
-                .timeline-card-description {
-                     font-size: 0.8em;
-                }
-                .timeline-card-effectiveness-bar {
-                    margin-top: 6px !important;
-                    padding-right: 10px !important;
-                }
-                    .timeline-card-effectiveness-bar progress::-webkit-progress-value { 
-                        border-radius: 1px !important; 
-                        background-color: #39425C !important; 
+                    .timeline-card__title-container {
+                        display: flex;
+                        justify-content: space-between;
+                    }
+                    
+                    .timeline-card__title {
+                        font-size: 1.2em;
+                        font-style: bold;
+                        text-transform: uppercase;
+                    }
+                    .timeline-card__time {
+                        font-size: 0.8em;
+                    }
+                    .timeline-card__desc {
+                        margin-top: 2px;
+                        font-size: 0.8em;
+                        line-height: 1.4em;
                     }
 
-                .timeline-card-effectiveness-label {
-                    font-size: 0.8em;
-                    text-align: right;
+                .timeline-card__body {
+                    margin-top: 10px;
                 }
-                .timeline-card-author {
-                    font-size: 0.8em;
-                    opacity: 0.7;
-                    margin-top: 5px;
-                }
+                    .timeline-card__comment {
+                        font-size: 0.8em;
+                        line-height: 1.4em;
+                    }
 
-                .timeline-card-id{
-                    visibility: hidden;
-                }
-
-                .timeline-card-edit {
+                .timeline-card__footer {
+                    margin-top: -10px;
                     display: flex;
-                    flex-direction: column;
-                    margin-left: 10px;
+                    justify-content: space-between;
                 }
 
-
-                .edit-buttons {
-                    display: none;
-                    justify-content: center;
-                    align-items: center;
-                    color: #FFFFFF;
-                }
-                    .edit-buttons-moreLess {
-                        height: 36px;
-                        width: 42px;
+                    .timeline-card__effectiveness {
+                        margin-top: 10px !important;
+                        display: flex;
                     }
-                    .edit-buttons-moreLess:hover {
+                        .timeline-card__effectiveness progress {
+                            width: 75%;
+                            margin-top: 5px;
+                        }
+                        .timeline-card__effectiveness progress::-webkit-progress-value { 
+                            border-radius: 1px !important; 
+                            background-color: #39425C !important;
+                        }
+
+                        .timeline-card__effectiveness-label {
+                            width: 25%;
+                            text-align: right;
+                            font-size: 0.8em;
+                        }
+                    .timeline-card__author {
+                        opacity: 0.7;
+                        font-size: 0.8em;
+                        margin-top: 5px;
+                        display: flex;
+                        align-self: flex-end;
+                    }
+
+                    .timeline-card__id {
+                        visibility: hidden;
+                        font-size: 0.4em;
+                    }
+
+                    .timeline-card__edit-container {
+                        display: flex;
+                        flex-direction: column;
+                        margin-left: 10px;
+                    }
+
+
+                    .edit-buttons {
+                        display: none;
+                        justify-content: center;
+                        align-items: center;
+                        color: #FFFFFF;
+                    }
+                        .edit-buttons-moreLess {
+                            height: 36px;
+                            width: 42px;
+                        }
+                        .edit-buttons-moreLess:hover {
+                            background-color: #FFFFFF !important;
+                        color: #6B6B6B !important;
+                        box-shadow: inset 0 0 0 2px #6B6B6B;
+                        }
+                        .edit-buttons-edit {
+                            background-color: #159D1A;
+                            opacity:0.8;
+                        }
+                        .edit-buttons-edit:hover {
                         background-color: #FFFFFF !important;
-                       color: #6B6B6B !important;
-                       box-shadow: inset 0 0 0 2px #6B6B6B;
-                    }
-                    .edit-buttons-edit {
-                        background-color: #159D1A;
-                        opacity:0.8;
-                    }
-                    .edit-buttons-edit:hover {
-                       background-color: #FFFFFF !important;
-                       color: #003300 !important;
-                       box-shadow: inset 0 0 0 3px #003300;
-                    }
-                    .edit-buttons-delete {
-                        background-color: #BC1715;
-                    }
-                    +.edit-buttons-delete:hover {
-                       background-color: #FFFFFF !important;
-                       color: #A90931 !important;
-                       box-shadow: inset 0 0 0 3px #A90931;
-                    }
+                        color: #003300 !important;
+                        box-shadow: inset 0 0 0 3px #003300;
+                        }
+                        .edit-buttons-delete {
+                            background-color: #BC1715;
+                        }
+                        +.edit-buttons-delete:hover {
+                        background-color: #FFFFFF !important;
+                        color: #A90931 !important;
+                        box-shadow: inset 0 0 0 3px #A90931;
+                        }
 
 
-                .timeline-card-edit button:hover {
-                    color: #FFF;
-                    background-color: #272424;
-                }
+                    .timeline-card__edit-container button:hover {
+                        color: #FFF;
+                        background-color: #272424;
+                    }
 
 
 /* ==============================================
