@@ -91,13 +91,15 @@
                             <div class="annotate-comment field" v-show="selectedMove === 'Other'">
                                 <label class="label">Comment:</label>
                                 <p class="control">
-                                    <textarea class="textarea" placeholder="It is always a good idea to include strategy hint..." 
+                                    <textarea class="textarea" 
+                                    placeholder="[Name]
+You might also want to include a concrete strategy recommendation." 
                                             v-model="annotateComment">
                                     </textarea>
                                 </p>
                             </div>
                             <div class="annotate-effectiveness field">
-                                <label class="label">Set effectiveness</label>
+                                <label class="label">Effectiveness rating</label>
                                 <el-slider v-model="annotateRating" :step="1" :min="0" :max="5" 
                                         show-stops 
                                         show-tooltip class="annotate-effectiveness-slider">
@@ -173,11 +175,11 @@
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
                 <div class="cards-content columns is-gapless is-marginless">
                     <nav class="card-menu column is-2">
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visuals</span></a>
-                        <a class="card-menu-link" title="Toggle canon" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
+                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
+                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
+                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visuals</span></a>
+                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -189,16 +191,16 @@
                         <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
 
                         <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle"> 
-                            <div class="timeline-card__header">
+                            <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
                                     <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
                                 </div>
-                                <p class="timeline-card__desc">"{{ card.label }}" </p>
+                                <p class="timeline-card__desc">{{ card.label }}</p>
                                 
                             </div>
                             <div class="timeline-card__body">
-                                <p style="display: flex;font-size: 12px; padding:0; margin:0;">COMMENT:</p>
+                                <p class="timeline-card__body-title">COMMENT:</p>
                                 <p class="timeline-card__comment">{{ card.comment }}</p>
                                 <div class="timeline-card__effectiveness">
                                     <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
@@ -1601,7 +1603,7 @@
                 /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
-                .timeline-card__header {
+                .timeline-card__head {
 
                 }
                     .timeline-card__title-container {
@@ -1624,8 +1626,13 @@
                     }
 
                 .timeline-card__body {
-                    margin-top: 10px;
+                    margin-top: 10px;   
                 }
+                    .timeline-card__body-title {
+                        font-size: 12px; 
+                        display: flex;
+                    }
+
                     .timeline-card__comment {
                         font-size: 0.8em;
                         line-height: 1.4em;

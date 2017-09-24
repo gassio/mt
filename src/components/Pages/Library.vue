@@ -1,6 +1,6 @@
 <template>
     <div class="about container">
-        <h1>Library</h1>
+        <h1>Comming soon.</h1>
         <router-view></router-view>
     </div>
 </template>
