@@ -23,7 +23,7 @@
                             <p class= "class-card-description-details">Duration: {{ v.duration }} | Class: {{ v.class }}</p>
                         </div>
                         <div class="class-card-genre column is-3 is-gapless is-marginless">
-                            <strong class="class-card-genre-color">Thesis Proposal</strong> &nbsp&nbsp<i class="fa fa-book fa-2x" aria-hidden="true"></i>
+                            <strong class="class-card-genre-color">{{ v.genre }}</strong> &nbsp&nbsp<i class="fa fa-book fa-2x" aria-hidden="true"></i>
                         </div>
                     </router-link>
                 </div>

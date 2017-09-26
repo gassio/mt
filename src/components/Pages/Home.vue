@@ -13,10 +13,10 @@
 				<div class= "column is-3">
 					<div class= "home-genre-selection">
 						<p>Genre: &nbsp </p>
-						<select>
-							<option value="volvo">All genres</option>
-							<option value="saab">???</option>
-						</select>
+						<el-select v-model="currentGenre" filterable placeholder="Select">
+							<el-option v-for="genre in genres" :key="genre.name" :label="genre.name" :value="genre.name">
+							</el-option>
+						</el-select>
 					</div>
 				</div>
 			</div>
@@ -24,7 +24,7 @@
 
 		<div class="home-content">
 
-			<div class="videocard" v-for="v in videos">
+			<div class="videocard" v-for="v in videos" v-show="v.genre === currentGenre">
 				<router-link :to="'/video/' + v.id" class="videocard-thumbnail" tag="a">
 					<img :src="v.thumb" alt="video-thumbnail" class="videocard-thumbnail-image">
 				</router-link>
@@ -108,7 +108,15 @@
 					genre: '',
 					categories:  {},
 					annotations: []
-				}
+				},
+				genres: [
+					{ name: 'Elevator pitch' },
+					{ name: 'Lab presentation' },
+					{ name: 'Thesis talk' },
+					{ name: 'Progress work' },
+					{ name: 'Conference talk' },
+				],
+				currentGenre: 'Lab presentation'
 			}
 		},
 		created() {
