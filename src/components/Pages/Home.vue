@@ -32,6 +32,7 @@
 					<div class="videocard-details">
 						<p class="videocard-description">{{ v.title }}</p>
 						<p class="videocard-semester">{{ v.class }}</p>
+						<p class="videocard-date">{{ v.presentedAt }}</p> <!--.substring(0,9) -->
 					</div>
 					<div class="videocard-foot">
 						<span class="videocard-genre"><i class="fa fa-commenting-o" aria-hidden="true"></i> {{ v.genre }}</span>
