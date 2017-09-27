@@ -89,7 +89,7 @@
                                 </el-select>
                             </div>
                             <div class="annotate-comment field" v-show="selectedMove === 'Other'">
-                                <label class="label">Comment:</label>
+                                <label class="label">Comment</label>
                                 <p class="control">
                                     <textarea class="textarea" 
                                     placeholder="[Name]

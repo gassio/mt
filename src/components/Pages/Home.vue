@@ -3,17 +3,17 @@
 
 		<div class= "home-tabs">
 			<div class= "columns is-mobile is-gapless is-marginless">
-				<div class= "column is-9">
+				<div class= "column is-8">
 					<!--<div class= "home-tabs-semester">
 						<button id="all" class="home-tabs-semester-button" style="width: 60px" type="button">All</button>
 						<button id="spring17" class="home-tabs-semester-button" type="button">Spring '17</button>
 						<button id="winter16" class="home-tabs-semester-button" type="button">Winter '16</button>
 					</div>-->
 				</div>
-				<div class= "column is-3">
+				<div class= "column is-4">
 					<div class= "home-genre-selection">
 						<p>Genre: &nbsp </p>
-						<el-select v-model="currentGenre" filterable placeholder="Select">
+						<el-select v-model="currentGenre" filterable placeholder="Select" style="width: 210px;">
 							<el-option v-for="genre in genres" :key="genre.name" :label="genre.name" :value="genre.name">
 							</el-option>
 						</el-select>
@@ -114,8 +114,8 @@
 					{ name: 'Elevator pitch' },
 					{ name: 'Lab presentation' },
 					{ name: 'Thesis talk' },
-					{ name: 'Progress work' },
-					{ name: 'Conference talk' },
+					{ name: 'Progress report' },
+					{ name: 'Conference talk' }
 				],
 				currentGenre: 'Lab presentation'
 			}
@@ -206,7 +206,7 @@
 		flex-direction: row;
 		width: 100%;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-end;
 		line-height: 60px;
 	}
 
