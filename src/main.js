@@ -23,6 +23,10 @@ const router = new VueRouter({
   mode: 'history'
 })
 
+Vue.filter('sliceDate', function(value) {
+  return value.slice(0,10)
+})
+
 new Vue({
   el: '#app',
   router,
