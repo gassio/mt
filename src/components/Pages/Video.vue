@@ -6,9 +6,9 @@
                 <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
             </button> 
         </router-link>
-             <button class="button is-white player-spacer-button">
-                <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp See Grades
-            </button> 
+             <!--<button class="button is-white player-spacer-button">
+                <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp Holistic grades
+            </button> -->
         </div>
         <div class="main-content columns is-gapless is-marginless">
             <div class="player column is-8">

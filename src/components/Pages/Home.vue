@@ -36,19 +36,11 @@
 					</div>
 					<div class="videocard-foot">
 						<span class="videocard-genre"><i class="fa fa-commenting-o" aria-hidden="true"></i> {{ v.genre }}</span>
-						<div class="videocard-effectiveness">
-							<progress value="75" max="100"></progress>
-							<p class="home-card-effectiveness-label">75%</p>
-						</div>
+
 					</div>				
 				</div>
 				
 			</div>
-			
-			<!--<el-upload class="upload-demo" action="http://localhost:3000/videos" :before-upload="openModal" drag>
-				<i class="el-icon-upload" style="color:#A90931;"></i>
-				<p>Upload video</p>
-			</el-upload>-->
 
 			<div class="videocard-add-new">
 				<input type="file" accept="video/*" name="file" id="file" class="inputfile">
