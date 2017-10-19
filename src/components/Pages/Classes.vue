@@ -1,30 +1,25 @@
 <template>
     <div class="classes">
         <div class="container">
-			<!-- MAIN CONTENT - start -->
 			<div class="classes-main columns is-gapless is-marginless">
 				<div class="classes-content">
 					<div class="classes-content-single-semester">
-						<!-- SEMESTER - start -->
 						<div class="classes-semester">
-							<div class="classes-semester-title"><p><strong>Spring 2017</strong></p></div>
+							<div class="classes-semester-title"><p><strong>Fall 2017</strong></p></div>
 						</div><!-- end -->
 						
 						<div class="classes-of-semester">
-							<!-- CLASS CARD - start -->
 							<router-link class="classes-card" :to="'classes/' + c.id" v-for="c in classes" :key="c.id">
 								<i class="fa fa-book fa-5x" aria-hidden="true"></i>
 								<p class="classes-card-title"> {{c.spring}} {{ c.title }}</p>
 								<span class="classes-card-details"></span>
 							</router-link><!-- end -->
 
+							<!--
 							<a class="classes-card add-new-class-container" @click="dialogVisible = true">
-								<!--<div class="add-new-class">-->
-									<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
-									<p>Create new class</p>
-									<!--<span>A class contains student videos</span>-->
-								<!--</div>-->
-							</a>						
+								<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
+								<p>Create new class</p>
+							</a>-->						
 						</div>
 					</div>
 				</div>	

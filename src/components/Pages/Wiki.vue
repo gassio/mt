@@ -1,6 +1,6 @@
 <template>
     <div class="wiki container">
-        <h1>Comming soon.</h1>
+        <h1>Coming soon.</h1>
         <router-view></router-view>
     </div>
 </template>

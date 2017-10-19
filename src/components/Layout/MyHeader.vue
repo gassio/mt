@@ -6,9 +6,9 @@
                 <div class="head__nav-left">
                 <router-link to="/" tag="h1" class="head__logo title"><a>Metalogon</a></router-link>
                     <router-link to="/" tag="li" class="head__nav-item" active-class="head__nav-item-active" exact><a class="head__nav-item-link">Home</a></router-link>
+                    <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
                     <router-link to="/library" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Library</a></router-link>
                     <router-link to="/wiki" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Wiki</a></router-link>
-                    <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
                 </div>
                 <div class="head__nav-right">
                     <!--<li class="head__add-video"><a>+ Upload Video</a></li>
@@ -84,7 +84,7 @@
                 }
                 .head__nav-item:hover {
                     background-color: #8F082A;
-                    border-radius: 20px;
+                    border-radius: 3px;
                 }
 
                 .head__add-video{
@@ -93,12 +93,12 @@
                     .head__add-video a{
                         color: #FFFFFF !important;
                         background: #B6AC1C;
-                        border-radius: 20px;
+                        border-radius: 3px;
                         padding: 10px 16px;
                     }
     .head__nav-item-active {
       background-color: #8F082A;
-      border-radius: 20px;
+      border-radius: 3px;
       padding: 10px 16px;
     }
 </style>

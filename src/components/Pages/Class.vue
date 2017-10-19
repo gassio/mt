@@ -20,7 +20,7 @@
                         </div>
                         <div class="class-card-description column is-7 is-gapless is-marginless has-text-left">
                             <p class= "class-card-description-title">{{ v.title }}</p>
-                            <p class= "class-card-description-details">Duration: {{ v.duration }} | Class: {{ v.class }}</p>
+                            <p class= "class-card-description-details">Duration: {{ secondsToMMSS(v.duration) }} | Class: {{ v.class }}</p>
                         </div>
                         <div class="class-card-genre column is-3 is-gapless is-marginless">
                             <strong class="class-card-genre-color">{{ v.genre }}</strong> &nbsp&nbsp<i class="fa fa-book fa-2x" aria-hidden="true"></i>
@@ -53,7 +53,14 @@
         updated() {
         },
         methods: {
+            secondsToMMSS(s) {
+                s = Number(s);
 
+                var m = Math.floor(s % 3600 / 60);
+                var s = Math.floor(s % 3600 % 60);
+
+                return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+            }
         },
         computed: {
             ...mapGetters([

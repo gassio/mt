@@ -177,17 +177,17 @@ export const store = new Vuex.Store({
     actions: {
         // VIDEOS
         getAllVideos: function ({ commit }) {
-            axios.get("http://agtheodorides.dyndns.org:8081/rest/video")
+            axios.get("https://metalogon-api.herokuapp.com/rest/video")
                 .then(function (response)
                 {
                     commit('GET_ALL_VIDEOS', response.data.data )
                 })
                 .catch(function (err) {
-                    console.log(err)
+                    console.log(err + 'Not ...')
                 })
         },
         getVideo: function ({ commit }, payload) {
-            axios.get("http://agtheodorides.dyndns.org:8081/rest/video/" + payload)
+            axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
                 .then(function (response)
                 {
                     commit('GET_VIDEO', response.data.data)
@@ -233,7 +233,7 @@ export const store = new Vuex.Store({
         addAnnotation: function ({ commit }, payload) {
             var theVideo = payload.video
 
-            axios.put("http://agtheodorides.dyndns.org:8081/rest/video/"+payload.id, theVideo)
+            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
                     theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
                 })
@@ -244,7 +244,7 @@ export const store = new Vuex.Store({
         editAnnotation: function ({ commit }, payload) {
             var theVideo = payload.video
             
-            axios.put("http://agtheodorides.dyndns.org:8081/rest/video/"+payload.id, theVideo)
+            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
                 })
                 .catch(function (err) {
@@ -254,7 +254,7 @@ export const store = new Vuex.Store({
         deleteAnnotation: function ({ commit }, payload) {
             var theVideo = payload.video
             
-            axios.put("http://agtheodorides.dyndns.org:8081/rest/video/"+payload.id, theVideo)
+            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
                     theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
                 })
@@ -264,7 +264,7 @@ export const store = new Vuex.Store({
         },
         // CLASSES
         getAllClasses: function ({ commit }) {
-            axios.get("http://agtheodorides.dyndns.org:8081/rest/class")
+            axios.get("https://metalogon-api.herokuapp.com/rest/class")
                 .then(function (response)
                 {
                     commit('GET_ALL_CLASSES', response.data.data )
@@ -274,7 +274,7 @@ export const store = new Vuex.Store({
                 })
         },
         getClass: function ({ commit }, payload) {
-            axios.get("http://agtheodorides.dyndns.org:8081/rest/class/" +payload)
+            axios.get("https://metalogon-api.herokuapp.com/rest/class/" +payload)
                 .then(function (response)
                 {
                     commit('GET_CLASS', response.data.data )
@@ -284,7 +284,7 @@ export const store = new Vuex.Store({
                 })
         },
         createClass: function ({ commit }, payload) {
-            axios.post("http://agtheodorides.dyndns.org:8081/rest/class/", payload.newClass)
+            axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
             .then(response => {
                 commit('ADD_CLASS', payload)
             })

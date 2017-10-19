@@ -42,11 +42,13 @@
 				
 			</div>
 
+			<!--
 			<div class="videocard-add-new">
 				<input type="file" accept="video/*" name="file" id="file" class="inputfile">
 				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 				<label for="file" class="up-label">Upload video</label>
 			</div>
+			-->
 			
 		</div>
 
@@ -75,7 +77,7 @@
 				<el-button class="upload-video-btn" @click="uploadVid(); dialogVisible = false;">Upload video</el-button>
 			</span>
 		</el-dialog>
-	</div>    
+	</div>
 
 </template>
 
@@ -100,7 +102,8 @@
 					class: '',
 					genre: '',
 					categories:  {},
-					annotations: []
+					annotations: [],
+					loading: true
 				},
 				genres: [
 					{ name: 'Elevator pitch' },
@@ -127,6 +130,13 @@
 			},
 			openModal() {
 				this.dialogVisible = true
+			},
+			open4() {
+				this.$notify({
+					title: 'Warning',
+					message: 'This is a warning message',
+					type: 'warning'
+				});
 			}
 		},
 		computed: {
