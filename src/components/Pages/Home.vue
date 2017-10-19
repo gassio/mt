@@ -27,6 +27,7 @@
 			<div class="videocard" v-for="v in videos" v-show="v.genre === currentGenre">
 				<router-link :to="'/video/' + v.id" class="videocard-thumbnail" tag="a">
 					<img :src="v.thumb" alt="video-thumbnail" class="videocard-thumbnail-image">
+					<!--<div class="el-badge item"><span class="el-badge__content">{{ v.annotations.length }}</span></div>-->
 				</router-link>
 				<div class="videocard-content">
 					<div class="videocard-details">
@@ -309,6 +310,38 @@
     			top: 100px;
 			}
 
+
+
+			
+
+/* ==============================================
+                #ANNOTATION-BADGE
+	================================================= */
+
+    .el-badge {
+        position: relative;
+        vertical-align: middle;
+        display: inline-block;
+		top: -120px;
+    }
+
+    .el-badge__content {
+        background-color: #A90931;
+        border-radius: 10px;
+        color: #fff;
+        display: inline-block;
+        font-size: 12px;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 6px;
+        text-align: center;
+        border: 1px solid #fff;
+    }
+
+
+
+
+
 	/* ==============================================
                 #TRUMPS
 	================================================= */
@@ -351,4 +384,5 @@
 		padding: 100px 135px 100px 135px;
     	font-size: 1.7em;
 	}
+
 </style>

@@ -16,7 +16,8 @@
                     <!-- CLASS CARD - start -->
                     <router-link :to="'/video/' + v.id"  tag="a" class="class-card columns is-gapless">
                         <div class="class-card-image column is-2 is-gapless is-marginless">
-                            <img :src="v.thumb" alt="video-thumbnail" class="class-card-image-thumbnail">	
+                            <img :src="v.thumb" alt="video-thumbnail" class="class-card-image-thumbnail">
+                            <!--<div class="el-badge item"><span class="el-badge__content">{{ v.annotations.length }}</span></div>	-->
                         </div>
                         <div class="class-card-description column is-7 is-gapless is-marginless has-text-left">
                             <p class= "class-card-description-title">{{ v.title }}</p>
@@ -173,5 +174,27 @@
         .class-card-genre-color{
             color: #6B6B6B;
         }
+
+/*-------------- ANNOTATION BADGE ---------------- */
+
+    .el-badge {
+        position: relative;
+        vertical-align: middle;
+        display: inline-block;
+        left: -190px;
+    }
+
+    .el-badge__content {
+        background-color: #A90931;
+        border-radius: 10px;
+        color: #fff;
+        display: inline-block;
+        font-size: 12px;
+        height: 18px;
+        line-height: 18px;
+        padding: 0 6px;
+        text-align: center;
+        border: 1px solid #fff;
+    }
 					
 </style>
