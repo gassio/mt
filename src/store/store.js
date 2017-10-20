@@ -4,7 +4,15 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-// test
+// import { Loading } from 'element-ui';
+// let loadingInstance = Loading.service({ fullscreen: true });
+
+let errorHTML = `
+    <div style="padding-top:50px;">
+        <h1 style="font-size:28px">We couldn't load the presentation videos</h1>
+        <p style="padding-top:5px; font-size:18px">We have a problem with our server</p>
+    </div>
+`
 
 export const store = new Vuex.Store({
     state: {
@@ -177,13 +185,13 @@ export const store = new Vuex.Store({
     actions: {
         // VIDEOS
         getAllVideos: function ({ commit }) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/video")
+            axios.get("https://metalogon-api.herokuapp.com/rest/vide")
                 .then(function (response)
                 {
                     commit('GET_ALL_VIDEOS', response.data.data )
                 })
                 .catch(function (err) {
-                    console.log(err + 'Not ...')
+                    $('.home').html(errorHTML)
                 })
         },
         getVideo: function ({ commit }, payload) {
@@ -193,7 +201,7 @@ export const store = new Vuex.Store({
                     commit('GET_VIDEO', response.data.data)
                 })
                 .catch(function (err) {
-                    console.log(err)
+                    $('.video').html(errorHTML)
                 })
         },
         // todo
@@ -270,7 +278,7 @@ export const store = new Vuex.Store({
                     commit('GET_ALL_CLASSES', response.data.data )
                 })
                 .catch(function (err) {
-                    console.log(err)
+                    $('.classes').html(errorHTML)
                 })
         },
         getClass: function ({ commit }, payload) {

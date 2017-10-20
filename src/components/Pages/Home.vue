@@ -1,5 +1,5 @@
 <template>
-    <div class= "container">
+    <div class= "home container">
 
 		<div class= "home-tabs">
 			<div class= "columns is-mobile is-gapless is-marginless">
@@ -117,6 +117,14 @@
 			}
 		},
 		created() {
+			// let fullscreenLoading = true;
+
+			// setTimeout(() => {
+			// 	fullscreenLoading = false;
+			// }, 1000);
+
+			// this.$loading({ fullscreen: fullscreenLoading })
+
 			this.$store.dispatch('getAllVideos')
 		},
 		mounted() {

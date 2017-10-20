@@ -1,6 +1,5 @@
 <template>
-    <div class="classes">
-        <div class="container">
+        <div class="classes container">
 			<div class="classes-main columns is-gapless is-marginless">
 				<div class="classes-content">
 					<div class="classes-content-single-semester">
@@ -24,7 +23,6 @@
 					</div>
 				</div>	
 			</div><!-- end -->
-		</div>
 		<el-dialog title="Add new class" :visible.sync="dialogVisible">
 			<el-form :model="newClass">
 				<el-form-item label="Class name" :label-width="formLabelWidth">
