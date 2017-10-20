@@ -10,7 +10,7 @@ Vue.use(Vuex)
 let errorHTML = `
     <div style="padding-top:50px;">
         <h1 style="font-size:28px">We couldn't load the presentation videos</h1>
-        <p style="padding-top:5px; font-size:18px">We have a problem with our server</p>
+        <p style="padding-top:5px; font-size:18px">Please contact your administrator</p>
     </div>
 `
 
