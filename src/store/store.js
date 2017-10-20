@@ -185,7 +185,7 @@ export const store = new Vuex.Store({
     actions: {
         // VIDEOS
         getAllVideos: function ({ commit }) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/vide")
+            axios.get("https://metalogon-api.herokuapp.com/rest/videο")
                 .then(function (response)
                 {
                     commit('GET_ALL_VIDEOS', response.data.data )
