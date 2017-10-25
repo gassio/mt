@@ -4,8 +4,8 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-// import { Loading } from 'element-ui';
-// let loadingInstance = Loading.service({ fullscreen: true });
+import { Loading } from 'element-ui';
+let loadingInstance = Loading.service({ fullscreen: true });    
 
 let errorHTML = `
     <div style="padding-top:50px;">
@@ -305,9 +305,11 @@ export const store = new Vuex.Store({
     mutations: {
         // VIDEOS
         GET_ALL_VIDEOS: (state, newVideos) => {
+            loadingInstance.close()
             state.videos = newVideos
         },
         GET_VIDEO: (state, video) => {
+            loadingInstance.close()
             state.videos = video
         },
         // (NOT USED)
@@ -363,9 +365,11 @@ export const store = new Vuex.Store({
         },
         // CLASSES
         GET_ALL_CLASSES: (state, newClasses) => {
+            loadingInstance.close()
             state.classes = newClasses
         },
         GET_CLASS: (state, theClass) => {
+            loadingInstance.close()
             state.classes = theClass
         },
         ADD_CLASS: (state, payload) => {
