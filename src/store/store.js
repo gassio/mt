@@ -204,6 +204,16 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
+        getVideoAnnotations: function ({ commit }, payload) {
+            axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
+                .then(function (response)
+                {
+                    commit('GET_VIDEO_ANNOTATIONS', response.data.data.annotations)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
         // todo
         uploadVideo: function ({ commit }, payload) {
              axios.post("http://localhost:3000/videos", payload)
@@ -238,9 +248,9 @@ export const store = new Vuex.Store({
                 })
         },
         // ANNOTATIONS
-        addAnnotation: function ({ commit }, payload) {
+        addAnnotation: function ({ commit, state }, payload) {
             var theVideo = payload.video
-
+               
             axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
                     theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
@@ -300,7 +310,6 @@ export const store = new Vuex.Store({
                 console.log('Oxi createClass()')
             })
         },
-
     },
     mutations: {
         // VIDEOS
@@ -311,6 +320,9 @@ export const store = new Vuex.Store({
         GET_VIDEO: (state, video) => {
             loadingInstance.close()
             state.videos = video
+        },
+        GET_VIDEO_ANNOTATIONS: (state, newAnnos) => {
+            state.videos.annotations = newAnnos
         },
         // (NOT USED)
         GET_CLASS_VIDEOS: (state, classTitle) => {

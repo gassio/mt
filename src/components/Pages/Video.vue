@@ -435,6 +435,10 @@ You might also want to include a concrete strategy recommendation."
             annotating() {
                 var that = this
 
+                // CHECKING for new annotations in current video (for real time annotating)
+                this.$store.dispatch('getVideoAnnotations', this.id)
+                console.log(this.videos.annotations)
+
                 this.isAnnotating = true
                 this.isAnnotateMenu = true
                 this.annotateRating = null
@@ -488,7 +492,6 @@ You might also want to include a concrete strategy recommendation."
                     this.endDragTime = this.secondsToMMSS(this.videoDuration)
                 } 
 
-    
                 // START
                 $( ".crop__start" ).draggable({
                     cursor: "col-resize",
@@ -650,7 +653,6 @@ You might also want to include a concrete strategy recommendation."
                         clickTime = that.secondsToMMSS(clickTime)
                     }
                 })
-
             },
             annotate() {
                 // If other is enable, then show the annotation comment 
@@ -686,8 +688,8 @@ You might also want to include a concrete strategy recommendation."
                     id: Math.floor((Math.random() * 1000000)),
                 }
 
+                // Pushing new annotation in current video
                 this.videos.annotations.push(card)
-
                 this.$store.dispatch('addAnnotation', {
                     video: this.videos,
                     id: this.id
@@ -709,6 +711,10 @@ You might also want to include a concrete strategy recommendation."
                 // Seek to previous paused time.
             },
             editing(event) {
+                // CHECKING for new annotations in current video (for real time annotating)
+                this.$store.dispatch('getVideoAnnotations', this.id)
+                console.log(this.videos.annotations)
+
                 // Hide the Edit and Delete buttons
                 $(event.currentTarget).hide(); $(event.currentTarget.parentElement).find('.edit-buttons').hide()
 
@@ -797,6 +803,10 @@ You might also want to include a concrete strategy recommendation."
             },
             deleteAnnotation(event) {
                 var that = this
+                
+                // CHECKING for new annotations in current video (for real time annotating)
+                this.$store.dispatch('getVideoAnnotations', this.id)
+                console.log(this.videos.annotations)
 
                 var editingCard = $(event.currentTarget).parent().parent()
 
@@ -813,7 +823,7 @@ You might also want to include a concrete strategy recommendation."
 
                 // Are you sure to Delete annotation?
                 swal({
-                    title: "Delete ''" + cardTitle + "'' annotation?",
+                    title: "Delete annotation?",
                     type: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#d33',
@@ -934,6 +944,10 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = true
             },
             seekCard(event) {
+                // CHECKING for new annotations in current video (for real time annotating)
+                this.$store.dispatch('getVideoAnnotations', this.id)
+                console.log(this.videos.annotations)
+                
                 // this.isAnnotating = true;
                 var time = $(event.currentTarget).find('.timeline-card__time').text()
                 var startTime = time.substring(0,5); // 03:05
