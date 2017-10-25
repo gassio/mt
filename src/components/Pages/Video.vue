@@ -412,9 +412,6 @@ You might also want to include a concrete strategy recommendation."
                 stop(event) {
                 }
             })
-
-            // this.$store.commit('SORT_ANNOTATIONS')
-            // this.player.setControls(false);
             
         },
         updated() {
@@ -437,7 +434,6 @@ You might also want to include a concrete strategy recommendation."
 
                 // CHECKING for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
-                console.log(this.videos.annotations)
 
                 this.isAnnotating = true
                 this.isAnnotateMenu = true
@@ -713,7 +709,6 @@ You might also want to include a concrete strategy recommendation."
             editing(event) {
                 // CHECKING for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
-                console.log(this.videos.annotations)
 
                 // Hide the Edit and Delete buttons
                 $(event.currentTarget).hide(); $(event.currentTarget.parentElement).find('.edit-buttons').hide()
@@ -806,7 +801,6 @@ You might also want to include a concrete strategy recommendation."
                 
                 // CHECKING for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
-                console.log(this.videos.annotations)
 
                 var editingCard = $(event.currentTarget).parent().parent()
 
@@ -946,7 +940,6 @@ You might also want to include a concrete strategy recommendation."
             seekCard(event) {
                 // CHECKING for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
-                console.log(this.videos.annotations)
                 
                 // this.isAnnotating = true;
                 var time = $(event.currentTarget).find('.timeline-card__time').text()
