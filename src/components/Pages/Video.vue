@@ -938,9 +938,6 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = true
             },
             seekCard(event) {
-                // CHECKING for new annotations in current video (for real time annotating)
-                this.$store.dispatch('getVideoAnnotations', this.id)
-                
                 // this.isAnnotating = true;
                 var time = $(event.currentTarget).find('.timeline-card__time').text()
                 var startTime = time.substring(0,5); // 03:05
