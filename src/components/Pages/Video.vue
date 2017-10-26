@@ -385,7 +385,7 @@ You might also want to include a concrete strategy recommendation."
             this.videoAnnotations = this.videos.annotations
             
             // Show "Sroll down for more" when there are more than 5 cards
-            this.moreAnnotations()
+            // this.moreAnnotations()
 
             // Color a card when videoCurrentTime is between card from and end
             this.hooping()
@@ -1021,39 +1021,30 @@ You might also want to include a concrete strategy recommendation."
                     if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && (
                         $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)" || $('.timeline-card').eq(j).css('background-color') === "rgba(0, 0, 0, 0)")) 
                     {
+                        console.log('in')
                         $('.timeline-card').eq(j).css('background-color', 'yellow')
                         var firstCard = $('.timeline-card').eq(0)
                         $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
                         $('.timeline-card').eq(j).insertBefore(firstCard)
-                        console.log('in')
+                        if ($('.timeline-content').scrollTop !== 0) 
+                            $('.timeline-content').animate({scrollTop:0}, 500)
                     } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)") {
-                        $('.timeline-card').eq(j).css('background-color', 'white')
                         console.log('out')
+                        $('.timeline-card').eq(j).css('background-color', 'white')
                     } 
-
-                    // if (this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) {
-                    //     // $('.timeline-card').eq(j).css('background-color', 'white')
-                    // } 
-                    // else if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] ) {
-                    //     // $('.timeline-card').eq(j).css('background-color', 'yellow')
-
-                    //     // Animate current card (j), after the first card (0)
-                    //     // $('.timeline-card').eq(j).after($('.timeline-card').eq(0))
-                    //     $('.timeline-card').eq(j).effect('bounce',{times: 2}, 500)
-                    // }
                 }
             },
-            moreAnnotations() {
-                var moreAnnotations = $('.more-annotations')
-                var mydiv  = $('.timeline-content');
-                var clientHeight = $(mydiv).height() + 160; // head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
-                var windowHeight = $(window).height();
-                if (clientHeight > windowHeight) {
-                    moreAnnotations.css('display', 'flex')
-                } else {
-                    moreAnnotations.css('display', 'none')
-                }
-            },
+            // moreAnnotations() {
+            //     var moreAnnotations = $('.more-annotations')
+            //     var mydiv  = $('.timeline-content');
+            //     var clientHeight = $(mydiv).height() + 160; // head=70px, spacer=70px, mydiv.padding=20px,  TOTAL:160px
+            //     var windowHeight = $(window).height();
+            //     if (clientHeight > windowHeight) {
+            //         moreAnnotations.css('display', 'flex')
+            //     } else {
+            //         moreAnnotations.css('display', 'none')
+            //     }
+            // },
             toggleEditDelete(event) {
                 var moreLessBtn = $(event.currentTarget)
 
@@ -1556,7 +1547,8 @@ You might also want to include a concrete strategy recommendation."
         padding-bottom: 10px !important;
         padding-left: 10px !important;
         padding-right: 10px !important;
-        height: 100%;
+        height: 600px;
+        overflow-y: scroll;
     }
 
         .timeline {
