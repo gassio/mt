@@ -440,7 +440,8 @@ You might also want to include a concrete strategy recommendation."
                 this.annotateRating = null
                 this.annotateComment = ''
                 this.selectedMove = 'Other'
-                this.player.pause()
+                if (this.player.getState() === 'playing') 
+                    this.player.pause()
 
                 this.annotationPauseTime = this.player.getPosition();
                 
@@ -800,7 +801,7 @@ You might also want to include a concrete strategy recommendation."
                 var that = this
                 
                 // CHECKING for new annotations in current video (for real time annotating)
-                this.$store.dispatch('getVideoAnnotations', this.id)
+                // this.$store.dispatch('getVideoAnnotations', this.id)
 
                 var editingCard = $(event.currentTarget).parent().parent()
 
