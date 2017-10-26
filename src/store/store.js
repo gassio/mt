@@ -316,6 +316,7 @@ export const store = new Vuex.Store({
         GET_ALL_VIDEOS: (state, newVideos) => {
             loadingInstance.close()
             state.videos = newVideos
+            state.videos.sort(function(a,b) {return (a.presentedAt < b.presentedAt) ? 1 : ((b.presentedAt < a.presentedAt) ? -1 : 0);} );            
         },
         GET_VIDEO: (state, video) => {
             loadingInstance.close()

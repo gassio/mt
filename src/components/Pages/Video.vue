@@ -1,14 +1,15 @@
 <template>
     <div class="video container">
-        <div class="spacer">
-        <router-link :to="{ path: '/'}">
-            <button class="button is-white player-spacer-button">
-                <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
-            </button> 
-        </router-link>
-             <!--<button class="button is-white player-spacer-button">
-                <i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i>&nbsp Holistic grades
-            </button> -->
+        <div class="video__breadcrumb spacer columns is-gapless is-marginless">
+            <router-link :to="{ path: '/'}" class="video__breadcrumb-title column is-8">
+                <button class="video__breadcrumb-title-btn button is-white">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
+                </button>
+            </router-link>
+
+            <div class="video-timer column is-4">
+                <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
+            </div>
         </div>
         <div class="main-content columns is-gapless is-marginless">
             <div class="player column is-8">
@@ -188,7 +189,7 @@ You might also want to include a concrete strategy recommendation."
                         </div>
                     </nav>
                     <div class="timeline-content column is-10">
-                        <div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>
+                        <!--<div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>-->
 
                         <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle"> 
                             <div class="timeline-card__head">
@@ -218,48 +219,9 @@ You might also want to include a concrete strategy recommendation."
                                 </div>
                             </div>
                         </div>
-
-                        <!--< <div v-show="isAll === 'All'" class="all-card columns is-gapless" v-for="card in videoAnnotations"> 
-                        ALL
-                            <div class="column" @click="seekCard($event)">
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column is-8">
-                                        <p class="timeline-card__title">{{ card.category }}</p>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card__time">{{ card.from }} - {{ card.to }} <span class="timeline-card__id">{{ card.id }}</span></p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="column">
-                                        <p class="timeline-card__comment">{{ card.comment }}</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <div class="timeline-card__effectiveness column is-8">
-                                        <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
-                                    </div>
-                                    <div class="column is-4">
-                                        <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
-                                    </div>
-                                </div>
-                                <div class="columns is-gapless is-marginless">
-                                    <p class="timeline-card__author">by {{ card.author }}</p>
-                                </div>
-                            </div>
-                            <div class="timeline-card__edit-container">
-                                <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
-                                <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
-                                <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
-                            </div>
-                        </div> -->
                     </div>
             </div>
         </div>
-            <!-- <router-link :to=" '/video/' + id + '/edit' ">d
-                <button class="button is-warning">Edit</button>d
-            </router-link>
-            <router-view></router-view> -->
         </div>
         
     </div>
@@ -1146,10 +1108,11 @@ You might also want to include a concrete strategy recommendation."
 }
 
 /* ==============================================
-                #SPACER
+                #VIDEO-BREADCRUMB
 ================================================= */
-.spacer {
-    height: 70px;
+
+.video__breadcrumb {
+    height: 60px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -1158,20 +1121,33 @@ You might also want to include a concrete strategy recommendation."
     padding: 10px;
 }
 
-    .player-spacer-button {
-        transition: background-color 0.5s ease;
-        color: #39425C !important;
-        padding: 10px !important;
-        height: 100% !important;
-        background-color: none !important;
-    }
-    .player-spacer-button:hover {
-        background-color: #A90931 !important;
-        color: #FFFFFF !important;
+    .video__breadcrumb-title {
+        /*width: 72%;*/
     }
 
+        .video__breadcrumb-title-btn  {
+            transition: background-color 0.5s ease;
+            color: #39425C !important;
+            padding: 10px !important;
+            height: 100% !important;
+            background-color: none !important;
+        }
+        .video__breadcrumb-title-btn:hover {
+            background-color: #A90931 !important;
+            color: #FFFFFF !important;
+        }
 
-
+        .video-timer {
+            /*width: 28%;*/
+            height: 50px;
+            font-size: 2em;
+            text-align: center;
+            color: #39425C;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
 
 /* ==============================================
@@ -1582,17 +1558,6 @@ You might also want to include a concrete strategy recommendation."
         padding-right: 10px !important;
         height: 100%;
     }
-        .timeline-content-current-video-time {
-            width: 100%;
-            height: 50px;
-            font-size: 2em;
-            text-align: center;
-            color: #39425C;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
 
         .timeline {
             height:100%;
@@ -1602,7 +1567,7 @@ You might also want to include a concrete strategy recommendation."
         }
             .timeline-card {
                 background: none;
-                padding: 15px !important;
+                /*padding: 15px !important;*/
                 margin-bottom: 20px;
                 box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
                 /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/

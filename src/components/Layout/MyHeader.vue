@@ -1,6 +1,6 @@
 <template>
     <div class="page">
-        <div class="head  container">
+        <div class="head container">
             
             <ul class="head__nav">
                 <div class="head__nav-left">
@@ -33,14 +33,13 @@
 <style>
 .page {
     width: 100%;
-    height: 70px;
     background: #A90931;
 }
     .head {
-      display: flex;
-      background-color: #A90931;
-      height: 70px;
+      height: 60px;
       color: #FFF;
+      background-color: #A90931;
+      display: flex;
     }
 
         .head__logo {
