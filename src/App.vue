@@ -28,6 +28,7 @@
 
 <style>
 
+
     [v-cloak] > * { 
         display:none; 
     }
@@ -71,6 +72,17 @@
 
     .fx-dir-row {
         flex-direction: row !important;
+    }
+
+    ::-webkit-scrollbar {
+	    width: 5px;
+        height: 8px;
+        background-color: #ddd;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: gray;
+        border-radius: 5px;
     }
 
 </style>
