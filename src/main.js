@@ -24,7 +24,8 @@ const router = new VueRouter({
 })
 
 Vue.filter('sliceDate', function(value) {
-  return value.slice(0,10)
+  if (typeof value !== 'undefined') 
+    return value.slice(0,10)
 })
 
 new Vue({
