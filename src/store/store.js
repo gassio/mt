@@ -181,6 +181,14 @@ export const store = new Vuex.Store({
             }
         ],
         currentVideoID: null,
+        uploadVideoProps: {
+            protocol: '',
+            address: '',
+            path: '',
+            key: '',
+            token: ''
+        },
+        uploadUrl: ''        
     },
     actions: {
         // VIDEOS
@@ -214,37 +222,52 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
-        // todo
-        uploadVideo: function ({ commit }, payload) {
-             axios.post("http://localhost:3000/videos", payload)
+        // UPLOAD VIDEO
+        createJwVideo: function ({ commit, state }) {
+             axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                 .then(function (response)
                 {
-                    commit('UPLOAD_VIDEO', payload)
+                    commit('CREATE_JW_VIDEO', response.data.data)
+                    console.log('Action: createJwVideo')
+                    console.log(state.uploadUrl)
                 })
                 .catch(function (err) {
                     console.log(err)
                 })
         },
-        // todo
-        updateVideo: function ({ commit }, payload) {
-             axios.put("http://localhost:3000/videos", payload)
-                .then(function (response)
-                {
-                    //commit('UPLOAD_VIDEO', payload)
+        uploadVideoToLink: function ({ commit, state }) {
+                // let data = new FormData();
+                // data.append('title', 'hello!');
+                
+                // let request = new XMLHttpRequest();
+                // request.open('POST', state.uploadUrl);
+                // request.send(data);
+
+                // let tempFormData = new FormData();
+                // tempFormData.set('title', 'hello!');
+                // axios({
+                //     method: 'POST',
+                //     url: state.uploadUrl,
+                //     data: tempFormData,
+                //     config: { headers: { 'Content-Type': 'multipart/form-data' }}
+                // })
+                //     .then(function (response) {
+                //         console.log('Action: uploadVideoToLink') 
+                //     })
+                //     .catch(function (err) {
+                //         console.log(err)
+                //     })
+
+                $.ajax({
+                    type: 'POST',
+                    url: state.uploadUrl,
+                    contentType: 'multipart/form-data'                    
                 })
-                .catch(function (err) {
-                    console.log(err)
+                .done(function(data) {
+                    console.log(data)
                 })
-        },
-        // todo
-        deleteVideo: function ({ commit }, payload) {
-             axios.delete("http://localhost:3000/videos", payload)
-                .then(function (response)
-                {
-                    //commit('DELETE_VIDEO', payload)
-                })
-                .catch(function (err) {
-                    console.log(err)
+                .fail(function() {
+                    alert( "error" );
                 })
         },
         // ANNOTATIONS
@@ -332,8 +355,14 @@ export const store = new Vuex.Store({
                     state.videos.splice(i,1)
             }
         },
-        UPLOAD_VIDEO: (state, payload) => {
-            state.videos.push(payload)
+        CREATE_JW_VIDEO: (state, payload) => {      
+            state.uploadVideoProps.protocol = payload.link.protocol
+            state.uploadVideoProps.address = payload.link.address
+            state.uploadVideoProps.path = payload.link.path
+            state.uploadVideoProps.key = payload.link.query.key
+            state.uploadVideoProps.token = payload.link.query.token
+            state.uploadUrl = state.uploadVideoProps.protocol + '://' + state.uploadVideoProps.address + state.uploadVideoProps.path + '?key=' + state.uploadVideoProps.key + '&token=' + state.uploadVideoProps.token
+            // api_format=xml&
         },
         // ANNOTATIONS (NOT USED)
         ADD_ANNOTATION: (state, payload) => {
@@ -402,6 +431,12 @@ export const store = new Vuex.Store({
         },
         canons: state => {
             return state.canons
+        },
+        uploadVideoProps: state => {
+            return state.uploadVideoProps
+        },
+        uploadUrl: state => {
+            return state.uploadUrl
         }
     }
 })

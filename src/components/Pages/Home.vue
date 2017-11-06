@@ -43,13 +43,23 @@
 				
 			</div>
 
-			<!--
-			<div class="videocard-add-new">
-				<input type="file" accept="video/*" name="file" id="file" class="inputfile">
-				<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
-				<label for="file" class="up-label">Upload video</label>
+			<!--<form class="videocard-add-new" method="POST" :action="uploadUrl" enctype="multipart/form-data">
+				<input @click="createJwVideo()" type="file" name="file" />
+				<button type="submit">Upload</button>-->
+			</form>
+
+			<div>
+				<input @click="createJwVideo()" type="file" name="file" />
 			</div>
-			-->
+			<div>
+				<button @click="uploadVideoToLink()" type="submit">Upload</button>
+			</div>
+
+
+
+					<!--<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
+					<input type="file" accept="video/*" name="file" id="file" class="inputfile">
+					<label for="file" class="up-label">Upload video</label>-->
 			
 		</div>
 
@@ -113,29 +123,23 @@
 					{ name: 'Progress report' },
 					{ name: 'Conference talk' }
 				],
-				currentGenre: 'Lab presentation'
+				currentGenre: 'Lab presentation',
+				// uploadUrl: ''
 			}
 		},
 		created() {
-			// let fullscreenLoading = true;
-
-			// setTimeout(() => {
-			// 	fullscreenLoading = false;
-			// }, 1000);
-
-			// this.$loading({ fullscreen: fullscreenLoading })
-
 			this.$store.dispatch('getAllVideos')
 		},
 		mounted() {
-			var that = this
-			$('.inputfile').change(function(){
-				that.openModal()
-			})
 		},
 		methods: {
-			uploadVid() {
-				this.$store.dispatch('uploadVideo', this.newVideo)
+			createJwVideo() {
+				this.$store.dispatch('createJwVideo')
+				// this.uploadUrl = this.uploadVideoProps.protocol + '://' + this.uploadVideoProps.address + this.uploadVideoProps.path + '?api_format=xml&key=' + this.uploadVideoProps.key + '&token=' + this.uploadVideoProps.token
+				// that.openModal()
+			},
+			uploadVideoToLink() {
+				this.$store.dispatch('uploadVideoToLink')
 			},
 			openModal() {
 				this.dialogVisible = true
@@ -150,8 +154,17 @@
 		},
 		computed: {
             ...mapGetters([
-				'videos'
-            ])
+				'videos', 'uploadVideoProps', 'uploadUrl'
+            ]),
+
+			// uploadUrl: {
+			// 	get: function () {
+
+			// 	},
+			// 	set: function () {
+
+			// 	}
+			// }
         }
     }
 </script>
