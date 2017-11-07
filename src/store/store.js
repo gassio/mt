@@ -243,12 +243,19 @@ export const store = new Vuex.Store({
                 // request.open('POST', state.uploadUrl);
                 // request.send(data);
 
-                // let tempFormData = new FormData();
-                // tempFormData.set('title', 'hello!');
+                const data = new FormData();
+                data.append('action', 'ADD');
+                data.append('param', 0);
+                data.append('secondParam', 0);
+                data.append('file', new Blob(['test payload'], { type: 'text/csv' }));
+                axios.post(state.uploadUrl)
+                    .then( response => alert('Success upload') )
+                    .catch( error => console.log(error.response) )
+
                 // axios({
                 //     method: 'POST',
                 //     url: state.uploadUrl,
-                //     data: tempFormData,
+                //     data: data,
                 //     config: { headers: { 'Content-Type': 'multipart/form-data' }}
                 // })
                 //     .then(function (response) {
@@ -258,17 +265,17 @@ export const store = new Vuex.Store({
                 //         console.log(err)
                 //     })
 
-                $.ajax({
-                    type: 'POST',
-                    url: state.uploadUrl,
-                    contentType: 'multipart/form-data'                    
-                })
-                .done(function(data) {
-                    console.log(data)
-                })
-                .fail(function() {
-                    alert( "error" );
-                })
+                // $.ajax({
+                //     type: 'POST',
+                //     url: state.uploadUrl,
+                //     contentType: 'multipart/form-data'                    
+                // })
+                // .done(function(data) {
+                //     console.log(data)
+                // })
+                // .fail(function() {
+                //     alert( "error" );
+                // })
         },
         // ANNOTATIONS
         addAnnotation: function ({ commit, state }, payload) {
@@ -361,7 +368,7 @@ export const store = new Vuex.Store({
             state.uploadVideoProps.path = payload.link.path
             state.uploadVideoProps.key = payload.link.query.key
             state.uploadVideoProps.token = payload.link.query.token
-            state.uploadUrl = state.uploadVideoProps.protocol + '://' + state.uploadVideoProps.address + state.uploadVideoProps.path + '?key=' + state.uploadVideoProps.key + '&token=' + state.uploadVideoProps.token
+            state.uploadUrl = state.uploadVideoProps.protocol + '://' + state.uploadVideoProps.address + state.uploadVideoProps.path + '?api_format=xml&key=' + state.uploadVideoProps.key + '&token=' + state.uploadVideoProps.token
             // api_format=xml&
         },
         // ANNOTATIONS (NOT USED)

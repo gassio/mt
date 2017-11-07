@@ -43,17 +43,18 @@
 				
 			</div>
 
-			<!--<form class="videocard-add-new" method="POST" :action="uploadUrl" enctype="multipart/form-data">
+			<!--<form class="videocard-add-new" method="POST" :action="uploadUrl" enctype="multipart/form-data" @submit="onSubmit()">
 				<input @click="createJwVideo()" type="file" name="file" />
-				<button type="submit">Upload</button>-->
-			</form>
+				<button type="submit">Upload</button>
+			</form>-->
 
+			<!--
 			<div>
 				<input @click="createJwVideo()" type="file" name="file" />
 			</div>
 			<div>
 				<button @click="uploadVideoToLink()" type="submit">Upload</button>
-			</div>
+			</div>-->
 
 
 
@@ -61,6 +62,10 @@
 					<input type="file" accept="video/*" name="file" id="file" class="inputfile">
 					<label for="file" class="up-label">Upload video</label>-->
 			
+
+			<vueDropzone id="dropzone" :options="dropzoneOptions" @vdropzone-drag-drop()()="dropzoneDragDrop()" @vdropzone-sending()="dropzoneSending(file,xhr,formData)">
+    		</vueDropzone>
+
 		</div>
 
 		<el-dialog title="Upload video" :visible.sync="dialogVisible">
@@ -96,6 +101,9 @@
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
+	import vue2Dropzone from 'vue2-dropzone'
+	import 'vue2-dropzone/dist/vue2Dropzone.css'
+
     export default {
 		data() {
 			return {
@@ -124,7 +132,11 @@
 					{ name: 'Conference talk' }
 				],
 				currentGenre: 'Lab presentation',
-				// uploadUrl: ''
+				dropzoneOptions: {
+					url: this.uploadUrl,
+					thumbnailWidth: 150,
+					headers: { "My-Awesome-Header": "header value" }
+				}
 			}
 		},
 		created() {
@@ -150,22 +162,33 @@
 					message: 'This is a warning message',
 					type: 'warning'
 				});
+			},
+			ale() {
+				alert('Uploading...')
+			},
+			onSubmit() {
+				let that = this
+				axios.post(that.uploadUrl)
+                    .then( response => alert('Success upload') )
+                    .catch( error => console.log(error.response) )
+			},
+			// DROPZONE UPLOAD
+			dropzoneDragDrop() {
+				this.$store.dispatch('createJwVideo')
+				this.dropzoneOptions.url = this.uploadUrl
+			},
+			dropzoneSending() {
+
 			}
 		},
 		computed: {
             ...mapGetters([
 				'videos', 'uploadVideoProps', 'uploadUrl'
             ]),
-
-			// uploadUrl: {
-			// 	get: function () {
-
-			// 	},
-			// 	set: function () {
-
-			// 	}
-			// }
-        }
+        },
+		components: {
+			vueDropzone : vue2Dropzone
+		}
     }
 </script>
 
