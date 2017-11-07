@@ -63,7 +63,7 @@
 					<label for="file" class="up-label">Upload video</label>-->
 			
 
-			<vueDropzone id="dropzone" :options="dropzoneOptions" @vdropzone-drag-drop()()="dropzoneDragDrop()" @vdropzone-sending()="dropzoneSending(file,xhr,formData)">
+			<vueDropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
     		</vueDropzone>
 
 		</div>
@@ -133,7 +133,7 @@
 				],
 				currentGenre: 'Lab presentation',
 				dropzoneOptions: {
-					url: this.uploadUrl,
+					url: "http://test.com",
 					thumbnailWidth: 150,
 					headers: { "My-Awesome-Header": "header value" }
 				}
@@ -173,12 +173,21 @@
                     .catch( error => console.log(error.response) )
 			},
 			// DROPZONE UPLOAD
-			dropzoneDragDrop() {
+			dropzoneFileAdded() {
 				this.$store.dispatch('createJwVideo')
-				this.dropzoneOptions.url = this.uploadUrl
 			},
-			dropzoneSending() {
-
+			dropzoneSending(file, xhr, formData) {
+				let that = this
+				$.ajax({
+                    type: 'POST',
+                    url: that.uploadUrl,
+                    contentType: 'multipart/form-data'                    
+                })
+                .done(data => console.log(data))
+                .fail(error => console.log(error))
+					
+				// console.log('up url = ', this.uploadUrl)
+				// this.dropzoneOptions.url = this.uploadUrl
 			}
 		},
 		computed: {

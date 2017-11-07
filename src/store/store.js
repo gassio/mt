@@ -228,8 +228,8 @@ export const store = new Vuex.Store({
                 .then(function (response)
                 {
                     commit('CREATE_JW_VIDEO', response.data.data)
-                    console.log('Action: createJwVideo')
-                    console.log(state.uploadUrl)
+                    // console.log('Action: createJwVideo')
+                    // console.log(state.uploadUrl)
                 })
                 .catch(function (err) {
                     console.log(err)
