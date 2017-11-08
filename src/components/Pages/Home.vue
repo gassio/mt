@@ -69,31 +69,6 @@
 
 		</div>
 
-		<el-dialog title="Upload video" :visible.sync="dialogVisible">
-			<el-form :model="newVideo">
-				<el-form-item label="Video title" :label-width="formLabelWidth">
-					<el-input v-model="newVideo.title" auto-complete="off"></el-input>
-				</el-form-item>
-				<el-form-item label="Semester" :label-width="formLabelWidth">
-					<el-select v-model="newVideo.semester" placeholder="Please select a semester">
-						<el-option label="Winter '17" value="Winter '17"></el-option>
-						<el-option label="Spring'17" value="Spring '17"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="Genre" :label-width="formLabelWidth">
-					<el-select v-model="newVideo.genre" placeholder="Please select a genre">
-						<el-option label="Thesis proposal" value="Thesis proposal"></el-option>
-						<el-option label="Progress work" value="Progress work"></el-option>
-						<el-option label="Conference talk" value="Conference talk"></el-option>
-						<el-option label="Elevator pitch" value="Elevator pitch"></el-option>
-					</el-select>
-				</el-form-item>
-			</el-form>
-			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">Cancel</el-button>
-				<el-button class="upload-video-btn" @click="uploadVid(); dialogVisible = false;">Upload video</el-button>
-			</span>
-		</el-dialog>
 	</div>
 
 </template>
@@ -106,23 +81,6 @@
     export default {
 		data() {
 			return {
-				dialogVisible: false,
-				formLabelWidth: '120px',
-				newVideo: {
-					title: '',
-					videoID: 100,
-					link: '',
-					thumb: '',
-					sources: [],
-					duration: '',
-					jwVideoID: '',
-					jwPlaylistID: '',
-					class: '',
-					genre: '',
-					categories:  {},
-					annotations: [],
-					loading: true
-				},
 				genres: [
 					{ name: 'Elevator pitch' },
 					{ name: 'Lab presentation' },
@@ -139,21 +97,10 @@
 		mounted() {
 		},
 		methods: {
-			
-			openModal() {
-				this.dialogVisible = true
-			},
-			open4() {
-				this.$notify({
-					title: 'Warning',
-					message: 'This is a warning message',
-					type: 'warning'
-				});
-			}
 		},
 		computed: {
             ...mapGetters([
-				'videos', 'uploadVideoProps', 'uploadUrl'
+				'videos'
             ]),
         },
 		components: {

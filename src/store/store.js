@@ -180,15 +180,7 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
-        currentVideoID: null,
-        uploadVideoProps: {
-            protocol: '',
-            address: '',
-            path: '',
-            key: '',
-            token: ''
-        },
-        uploadUrl: ''        
+        currentVideoID: null,     
     },
     actions: {
         // VIDEOS
@@ -222,7 +214,7 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
-        // UPLOAD VIDEO
+        // NOT
         createJwVideo: function ({ commit, state }) {
              axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                 .then(function (response)
@@ -235,6 +227,7 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
+        // NOT
         uploadVideoToLink: function ({ commit, state }) {
                 // let data = new FormData();
                 // data.append('title', 'hello!');
@@ -362,6 +355,7 @@ export const store = new Vuex.Store({
                     state.videos.splice(i,1)
             }
         },
+        // (NOT USED)
         CREATE_JW_VIDEO: (state, payload) => {      
             state.uploadVideoProps.protocol = payload.link.protocol
             state.uploadVideoProps.address = payload.link.address
