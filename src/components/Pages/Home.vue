@@ -63,8 +63,9 @@
 					<label for="file" class="up-label">Upload video</label>-->
 			
 
-			<vueDropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
-    		</vueDropzone>
+			
+
+			<upload-video></upload-video>
 
 		</div>
 
@@ -100,9 +101,7 @@
 <script>
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
-
-	import vue2Dropzone from 'vue2-dropzone'
-	import 'vue2-dropzone/dist/vue2Dropzone.css'
+	import UploadVideo from '../Extra/UploadVideo.vue'
 
     export default {
 		data() {
@@ -132,11 +131,6 @@
 					{ name: 'Conference talk' }
 				],
 				currentGenre: 'Lab presentation',
-				dropzoneOptions: {
-					url: "http://test.com",
-					thumbnailWidth: 150,
-					headers: { "My-Awesome-Header": "header value" }
-				}
 			}
 		},
 		created() {
@@ -145,14 +139,7 @@
 		mounted() {
 		},
 		methods: {
-			createJwVideo() {
-				this.$store.dispatch('createJwVideo')
-				// this.uploadUrl = this.uploadVideoProps.protocol + '://' + this.uploadVideoProps.address + this.uploadVideoProps.path + '?api_format=xml&key=' + this.uploadVideoProps.key + '&token=' + this.uploadVideoProps.token
-				// that.openModal()
-			},
-			uploadVideoToLink() {
-				this.$store.dispatch('uploadVideoToLink')
-			},
+			
 			openModal() {
 				this.dialogVisible = true
 			},
@@ -162,32 +149,6 @@
 					message: 'This is a warning message',
 					type: 'warning'
 				});
-			},
-			ale() {
-				alert('Uploading...')
-			},
-			onSubmit() {
-				let that = this
-				axios.post(that.uploadUrl)
-                    .then( response => alert('Success upload') )
-                    .catch( error => console.log(error.response) )
-			},
-			// DROPZONE UPLOAD
-			dropzoneFileAdded() {
-				this.$store.dispatch('createJwVideo')
-			},
-			dropzoneSending(file, xhr, formData) {
-				let that = this
-				$.ajax({
-                    type: 'POST',
-                    url: that.uploadUrl,
-                    contentType: 'multipart/form-data'                    
-                })
-                .done(data => console.log(data))
-                .fail(error => console.log(error))
-					
-				// console.log('up url = ', this.uploadUrl)
-				// this.dropzoneOptions.url = this.uploadUrl
 			}
 		},
 		computed: {
@@ -196,7 +157,7 @@
             ]),
         },
 		components: {
-			vueDropzone : vue2Dropzone
+			'upload-video': UploadVideo
 		}
     }
 </script>
@@ -391,7 +352,7 @@
         border: 1px solid #fff;
     }
 
-
+	
 
 
 
