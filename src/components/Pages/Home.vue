@@ -63,9 +63,7 @@
 					<label for="file" class="up-label">Upload video</label>-->
 			
 
-			
-
-			<upload-video></upload-video>
+			<upload-video :keyTokenUrl="uploadUrl"></upload-video>
 
 		</div>
 
@@ -74,9 +72,11 @@
 </template>
 
 <script>
+	import axios from 'axios'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
+
 
     export default {
 		data() {
@@ -93,14 +93,16 @@
 		},
 		created() {
 			this.$store.dispatch('getAllVideos')
+			this.$store.dispatch('createUploadUrl')
 		},
 		mounted() {
+			console.log('ektos toy component  ', this.uploadUrl)
 		},
 		methods: {
 		},
 		computed: {
             ...mapGetters([
-				'videos'
+				'videos', 'uploadUrl'
             ]),
         },
 		components: {

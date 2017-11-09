@@ -49,9 +49,8 @@
                     key: '',
                     token: ''
                 },
-                uploadUrl: '' ,
                 dropzoneOptions: {
-					url: this.getKeyToken() || '/',
+                    url: this.keyTokenUrl,
 					thumbnailWidth: 150,
 					headers: { "My-Awesome-Header": "header value" }
 				},
@@ -74,42 +73,22 @@
 				},
             }
         },
+        props: {
+            keyTokenUrl: {
+                type: String
+            }
+        },
         created() {
             console.log('created.')
         },
         mounted() {
             console.log("mounted.")
-            this.getKeyToken()
-            this.dropzoneOptions.url = this.getKeyToken()
-            console.log('d: ', this.dropzoneOptions.url)
+            console.log('entos toy component  ', this.keyTokenUrl)
         },
         updated() {
             console.log("updated.")
         },
         methods: {
-            getKeyToken() {
-                 let that = this
-                 let upUrl = ''
-
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://metalogon-api.herokuapp.com/rest/jwvideo',
-                })
-                .done(data => {
-                    let theData = data.data
-                    that.uploadVideoProps.protocol = theData.link.protocol
-                    that.uploadVideoProps.address = theData.link.address
-                    that.uploadVideoProps.path = theData.link.path
-                    that.uploadVideoProps.key = theData.link.query.key
-                    that.uploadVideoProps.token = theData.link.query.token
-
-                    upUrl = that.uploadVideoProps.protocol + '://' + that.uploadVideoProps.address + that.uploadVideoProps.path + '?api_format=xml&key=' + that.uploadVideoProps.key + '&token=' + that.uploadVideoProps.token
-                    // that.uploadUrl = that.uploadVideoProps.protocol + '://' + that.uploadVideoProps.address + that.uploadVideoProps.path + '?api_format=xml&key=' + that.uploadVideoProps.key + '&token=' + that.uploadVideoProps.token
-                })
-                .fail(error => console.log(error))
-
-                return upUrl
-            },
             dropzoneMounted() {
                 console.log('dropzone mounted.')
                 // console.log('upload url = ', this.uploadUrl)
@@ -124,13 +103,12 @@
             dropzoneProcessing(file) {
                 console.log('processing.')
 
-                this.dropzoneOptions.url = this.uploadUrl
+                // this.dropzoneOptions.url = this.uploadUrl
 				// this.dialogVisible = true
             },
 			dropzoneSending(file, xhr, formData) {
                 console.log('sending.')
                 // this.dropzoneOptions.url = this.uploadUrl
-                console.log('upload url = ', this.uploadUrl)
 
                 // formData.append('title', 'hello!');
                 // xhr.open('POST', this.uploadUrl);
@@ -148,15 +126,6 @@
 				// // console.log('up url = ', this.uploadUrl)
 				// // this.dropzoneOptions.url = this.uploadUrl
 			},
-            // ale() {
-			// 	alert('Uploading...')
-			// },
-			// onSubmit() {
-			// 	let that = this
-			// 	axios.post(that.uploadUrl)
-            //         .then( response => alert('Success upload') )
-            //         .catch( error => console.log(error.response) )
-			// },
         },
         computed: {
             ...mapGetters([

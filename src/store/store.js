@@ -180,7 +180,8 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
-        currentVideoID: null,     
+        currentVideoID: null,
+        uploadUrl: ''  
     },
     actions: {
         // VIDEOS
@@ -215,13 +216,11 @@ export const store = new Vuex.Store({
                 })
         },
         // NOT
-        createJwVideo: function ({ commit, state }) {
+        createUploadUrl: function ({ commit, state }) {
              axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                 .then(function (response)
                 {
-                    commit('CREATE_JW_VIDEO', response.data.data)
-                    // console.log('Action: createJwVideo')
-                    // console.log(state.uploadUrl)
+                    commit('CREATE_UPLOAD_URL', response.data.data)
                 })
                 .catch(function (err) {
                     console.log(err)
@@ -356,14 +355,8 @@ export const store = new Vuex.Store({
             }
         },
         // (NOT USED)
-        CREATE_JW_VIDEO: (state, payload) => {      
-            state.uploadVideoProps.protocol = payload.link.protocol
-            state.uploadVideoProps.address = payload.link.address
-            state.uploadVideoProps.path = payload.link.path
-            state.uploadVideoProps.key = payload.link.query.key
-            state.uploadVideoProps.token = payload.link.query.token
-            state.uploadUrl = state.uploadVideoProps.protocol + '://' + state.uploadVideoProps.address + state.uploadVideoProps.path + '?api_format=xml&key=' + state.uploadVideoProps.key + '&token=' + state.uploadVideoProps.token
-            // api_format=xml&
+        CREATE_UPLOAD_URL: (state, payload) => {      
+            state.uploadUrl = payload.link.protocol + '://' + payload.link.address + payload.link.path + '?api_format=xml&key=' + payload.link.query.key + '&token=' + payload.link.query.token
         },
         // ANNOTATIONS (NOT USED)
         ADD_ANNOTATION: (state, payload) => {
