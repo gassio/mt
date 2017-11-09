@@ -221,6 +221,7 @@ export const store = new Vuex.Store({
                 .then(function (response)
                 {
                     commit('CREATE_UPLOAD_URL', response.data.data)
+                    console.log('http call...')
                 })
                 .catch(function (err) {
                     console.log(err)

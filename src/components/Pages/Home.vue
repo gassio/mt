@@ -63,7 +63,7 @@
 					<label for="file" class="up-label">Upload video</label>-->
 			
 
-			<upload-video :keyTokenUrl="uploadUrl"></upload-video>
+			<upload-video></upload-video>
 
 		</div>
 
@@ -92,10 +92,12 @@
 			}
 		},
 		created() {
+			console.log('PARENT created()')
 			this.$store.dispatch('getAllVideos')
-			this.$store.dispatch('createUploadUrl')
+			// this.$store.dispatch('createUploadUrl')
 		},
 		mounted() {
+			console.log('PARENT mounted()')
 			console.log('ektos toy component  ', this.uploadUrl)
 		},
 		methods: {

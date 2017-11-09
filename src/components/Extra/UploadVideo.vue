@@ -1,7 +1,17 @@
 <template>
     <div class="videocard">
-        <vueDropzone id="dropzone" :options="dropzoneOptions" @vdropzone-mounted="dropzoneMounted" @vdropzone-drop="dropzoneDrop($event)" @vdropzone-sending="dropzoneSending" @vdropzone-processing="dropzoneProcessing">
-        </vueDropzone>
+
+-        <vue-dropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
+        </vue-dropzone>
+
+
+        <!--<form :action="myCallback()" class="dropzone">
+        </form>
+       
+        <div class="upvid">
+        </div>
+        
+        <button v-on:click="loadKeyToken()">Load key & token</button>-->
         
 		<el-dialog title="Upload video" :visible.sync="dialogVisible">
 			<el-form :model="newVideo">
@@ -36,12 +46,16 @@
     import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
+    // import dropzone from 'dropzone'
+	// import 'dropzone/dist/dropzone.css'
+
     import vue2Dropzone from 'vue2-dropzone'
-	import 'vue2-dropzone/dist/vue2Dropzone.css'
+    import 'vue2-dropzone/dist/vue2Dropzone.css'
 
     export default {
         data() {
             return {
+                myDropzone: null,
                 uploadVideoProps: {
                     protocol: '',
                     address: '',
@@ -50,7 +64,7 @@
                     token: ''
                 },
                 dropzoneOptions: {
-                    url: this.keyTokenUrl,
+                    url: '/',
 					thumbnailWidth: 150,
 					headers: { "My-Awesome-Header": "header value" }
 				},
@@ -73,22 +87,60 @@
 				},
             }
         },
-        props: {
-            keyTokenUrl: {
-                type: String
-            }
-        },
         created() {
-            console.log('created.')
+			console.log('CHILD created()')
         },
         mounted() {
-            console.log("mounted.")
-            console.log('entos toy component  ', this.keyTokenUrl)
-        },
-        updated() {
-            console.log("updated.")
+			console.log('CHILD mounted()')
+
+            // $("div.upvid").dropzone({ 
+            //     url: '/', 
+            //     thumbnailWidth: 80,
+            //     thumbnailHeight: 80
+            // });
+
+            // this.loadKeyToken()
+            // .then( theUrl => {
+            // })
+
+                // this.$store.dispatch('createUploadUrl')
+
+            // var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+            //     url: "/target-url", // Set the url
+            //     thumbnailWidth: 80,
+            //     thumbnailHeight: 80,
+            //     parallelUploads: 20,
+            //     previewTemplate: previewTemplate,
+            //     autoQueue: false, // Make sure the files aren't queued until manually added
+            //     previewsContainer: "#previews", // Define the container to display the previews
+            //     clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+            // });
+
+            // axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+            //     .then( function (response) {
+            //         let theData = response.data.data
+            //         let theLink = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+            //         console.log(theLink)
+            //         return theLink
+            //     }),
+
         },
         methods: {
+            createJwVideo() {
+                let that = this
+                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                    .then( response => {
+                            let theData = response.data.data
+                            that.uploadUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+                        })
+                        .catch( error => { 
+                            console.log(error.response) 
+                        })
+            },
+            createUploadUrl(theLink) {
+                axios.post(theLink)
+                console.log()
+            },
             dropzoneMounted() {
                 console.log('dropzone mounted.')
                 // console.log('upload url = ', this.uploadUrl)
@@ -100,6 +152,19 @@
                 // this.$store.dispatch('uploadVideoToLink')
 
 			},
+            dropzoneFileAdded: async function () {
+                // ASSI
+                // var denxero = await this.createJwVideo()
+                // var denxero2 = await this.createUploadUrl(this.uploadUrl)
+
+                // this.loadKeyToken()
+                // .then( theLink => {
+                //     that.dropzoneOptions.url = await theLink
+                //     console.log(this.dropzoneOptions.url)
+                // })
+
+
+            },
             dropzoneProcessing(file) {
                 console.log('processing.')
 
@@ -129,32 +194,15 @@
         },
         computed: {
             ...mapGetters([
-				'videos' 
+				'videos', 'uploadUrl'
             ]),
         },
         components: {
-			vueDropzone : vue2Dropzone,
-		}
+            'vue-dropzone': vue2Dropzone
+        }
     }
 
-// axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
-//     .then( function (response) 
-//     {
-//         let theData = response.data.data
 
-//         that.uploadVideoProps.protocol = theData.link.protocol
-//         that.uploadVideoProps.address = theData.link.address
-//         that.uploadVideoProps.path = theData.link.path
-//         that.uploadVideoProps.key = theData.link.query.key
-//         that.uploadVideoProps.token = theData.link.query.token
-
-//         that.uploadUrl = that.uploadVideoProps.protocol + '://' + that.uploadVideoProps.address + that.uploadVideoProps.path + '?api_format=xml&key=' + that.uploadVideoProps.key + '&token=' + that.uploadVideoProps.token
-//         that.dropzoneOptions.url = that.uploadUrl
-//     })
-//     .catch( function (error) 
-//     { 
-//         console.log(error.response) 
-//     })
 
 </script>
 
