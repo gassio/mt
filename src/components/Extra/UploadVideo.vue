@@ -1,11 +1,12 @@
 <template>
     <div class="videocard">
 
--        <vue-dropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
+
+
+-        <!--<vue-dropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
         </vue-dropzone>
 
-
-        <!--<form :action="myCallback()" class="dropzone">
+        <form :action="myCallback()" class="dropzone">
         </form>
        
         <div class="upvid">
@@ -13,8 +14,8 @@
         
         <button v-on:click="loadKeyToken()">Load key & token</button>-->
         
-		<el-dialog title="Upload video" :visible.sync="dialogVisible">
-			<el-form :model="newVideo">
+		<el-dialog title="Upload video" :visible.sync="uploadingVideo" :before-close="closeDialog">
+			<!--<el-form :model="newVideo">
 				<el-form-item label="Video title" :label-width="formLabelWidth">
 					<el-input v-model="newVideo.title" auto-complete="off"></el-input>
 				</el-form-item>
@@ -36,7 +37,7 @@
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="dialogVisible = false">Cancel</el-button>
 				<el-button class="upload-video-btn" @click="uploadVid(); dialogVisible = false;">Upload video</el-button>
-			</span>
+			</span>-->
 		</el-dialog>
     </div>
 </template>
@@ -46,11 +47,11 @@
     import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
-    // import dropzone from 'dropzone'
-	// import 'dropzone/dist/dropzone.css'
+    import dropzone from 'dropzone'
+	import 'dropzone/dist/dropzone.css'
 
-    import vue2Dropzone from 'vue2-dropzone'
-    import 'vue2-dropzone/dist/vue2Dropzone.css'
+    // import vue2Dropzone from 'vue2-dropzone'
+    // import 'vue2-dropzone/dist/vue2Dropzone.css'
 
     export default {
         data() {
@@ -63,12 +64,22 @@
                     key: '',
                     token: ''
                 },
-                dropzoneOptions: {
-                    url: '/',
-					thumbnailWidth: 150,
-					headers: { "My-Awesome-Header": "header value" }
-				},
-                dialogVisible: false,
+                // dropzoneOptions: {
+                //     url: axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                //             .then( response => {
+                //                 let theUrl
+                //                 let theData = response.data.data
+                //                 theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+                //                 return axios.post(theUrl)
+                //                     .then( response => {
+                //                         console.log('ICXN ', theUrl)
+                //                         return theUrl
+                //                     })
+                //             }),
+				// 	thumbnailWidth: 150,
+				// 	headers: { "My-Awesome-Header": "header value" }
+				// },
+                dialogVisible: true,
                 formLabelWidth: '120px',
                 newVideo: {
 					title: '',
@@ -126,19 +137,26 @@
 
         },
         methods: {
+            closeDialog() {
+                this.$store.commit('SET_UPLOADING_VIDEO_AS_FALSE')
+            },
             createJwVideo() {
                 let that = this
                 axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                     .then( response => {
-                            let theData = response.data.data
-                            that.uploadUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
-                        })
-                        .catch( error => { 
-                            console.log(error.response) 
-                        })
+                        console.log('createjwvideo call...')
+                        let theData = response.data.data
+                        that.uploadUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+                    })
+                    .catch( error => { 
+                        console.log(error.response) 
+                    })
             },
             createUploadUrl(theLink) {
                 axios.post(theLink)
+                    .then( response => {
+                        console.log('createuploadurl call...')
+                    })
                 console.log()
             },
             dropzoneMounted() {
@@ -153,7 +171,7 @@
 
 			},
             dropzoneFileAdded: async function () {
-                // ASSI
+                
                 // var denxero = await this.createJwVideo()
                 // var denxero2 = await this.createUploadUrl(this.uploadUrl)
 
@@ -192,14 +210,17 @@
 				// // this.dropzoneOptions.url = this.uploadUrl
 			},
         },
+        updated() {
+            
+        },
         computed: {
             ...mapGetters([
-				'videos', 'uploadUrl'
+				'videos', 'uploadUrl', 'uploadingVideo'
             ]),
         },
-        components: {
-            'vue-dropzone': vue2Dropzone
-        }
+        // components: {
+        //     'vue-dropzone': vue2Dropzone
+        // }
     }
 
 

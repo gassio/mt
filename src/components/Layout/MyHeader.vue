@@ -9,10 +9,9 @@
                     <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
                     <router-link to="/library" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Library</a></router-link>
                     <router-link to="/wiki" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Wiki</a></router-link>
+                    <li class="head__add-video"><a v-on:click="setUploadingVideoAsTrue()">+ Upload video</a></li>
                 </div>
                 <div class="head__nav-right">
-                    <!--<li class="head__add-video"><a>+ Upload Video</a></li>
-                    <li class="head__add-video">Ben Domino | Student</li>-->
                 </div>
             </ul>
         </div>
@@ -20,13 +19,25 @@
 </template>
 
 <script>
-    import { eventBus } from '../../main'
+	import { mapGetters } from 'vuex'
+	import { mapMutations } from 'vuex'
 
     export default {
         data() {
             return {
             }
-        }
+        },
+        methods: {
+            // Setting uploading video dialog state as true.
+            setUploadingVideoAsTrue() {
+                this.$store.commit('SET_UPLOADING_VIDEO_AS_TRUE')
+            }
+        },
+        computed: {
+            ...mapGetters([
+				'uploadingVideo'
+            ])
+        },
     }
 </script>
 
@@ -86,14 +97,22 @@
                     border-radius: 3px;
                 }
 
-                .head__add-video{
-                    margin-left: 20px;
+                .head__add-video {
+                    margin-left: 50px;
                 }
-                    .head__add-video a{
+                    .head__add-video a {
                         color: #FFFFFF !important;
                         background: #B6AC1C;
                         border-radius: 3px;
                         padding: 10px 16px;
+                        font-size: 0.9em;
+                    }
+                    .head__add-video a:hover {
+                        color: #FFFFFF !important;
+                        background: #9C9418;
+                        border-radius: 3px;
+                        padding: 10px 16px;
+                        transition: 0.2s;
                     }
     .head__nav-item-active {
       background-color: #8F082A;

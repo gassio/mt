@@ -181,6 +181,7 @@ export const store = new Vuex.Store({
             }
         ],
         currentVideoID: null,
+        uploadingVideo: false,
         uploadUrl: ''  
     },
     actions: {
@@ -413,6 +414,13 @@ export const store = new Vuex.Store({
             var classes = state.classes
             classes.push(payload.newClass)
         },
+        // Setting uploading video dialog state (true, false)
+        SET_UPLOADING_VIDEO_AS_TRUE: (state) => {
+            state.uploadingVideo = true
+        },
+        SET_UPLOADING_VIDEO_AS_FALSE: (state) => {
+            state.uploadingVideo = false
+        },
     },
     getters: {
         videos: state => {
@@ -432,6 +440,9 @@ export const store = new Vuex.Store({
         },
         uploadUrl: state => {
             return state.uploadUrl
+        },
+        uploadingVideo: state => {
+            return state.uploadingVideo
         }
     }
 })
