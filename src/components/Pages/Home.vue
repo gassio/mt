@@ -62,7 +62,6 @@
 					<input type="file" accept="video/*" name="file" id="file" class="inputfile">
 					<label for="file" class="up-label">Upload video</label>-->
 			
-
 			<upload-video></upload-video>
 
 		</div>

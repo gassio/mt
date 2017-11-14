@@ -9,7 +9,7 @@
                     <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
                     <router-link to="/library" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Library</a></router-link>
                     <router-link to="/wiki" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Wiki</a></router-link>
-                    <li class="head__add-video"><a v-on:click="setUploadingVideoAsTrue()">+ Upload video</a></li>
+                    <!-- <li class="head__add-video"><a v-on:click="setUploadingVideoAsTrue()">+ Upload video</a></li> -->
                 </div>
                 <div class="head__nav-right">
                 </div>

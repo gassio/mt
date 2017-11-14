@@ -421,6 +421,9 @@ export const store = new Vuex.Store({
         SET_UPLOADING_VIDEO_AS_FALSE: (state) => {
             state.uploadingVideo = false
         },
+        SET_UPLOAD_URL: (state, payload) => {
+            state.uploadUrl = payload
+        },
     },
     getters: {
         videos: state => {
