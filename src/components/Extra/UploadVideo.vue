@@ -102,9 +102,6 @@
                             // previewContainer: '.uploadvid__progress'
                         })
 
-                        that.dropzoneInstance.on("addedfile", (file) => {
-                            console.log(file)
-                        })
 
                         that.dropzoneInstance.on("totaluploadprogress", (progress) => {
                             this.uploadProgress = progress
