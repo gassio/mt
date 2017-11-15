@@ -242,39 +242,8 @@
 
 					.videocard-effectiveness-label {
 					}
-
 					
 		
-	.videocard-add-new {
-		display: flex;
-		flex-direction:column;
-		justify-content: center;
-		align-items: center;
-		height:280px;
-		color: #A90931;
-		background-color: #FFF;
-		width: calc(100% /3 - 20px);
-		margin: 10px;
-		border: 1px dashed #DADDE2;
-	}
-	.videocard-add-new:hover {
-		color: #FFF;
-		cursor: pointer;
-		transition: 0.2s;
-		-webkit-transition: 0.2s;
-		background-color: #A90931;
-	}
-
-			.videocard-add-new p {
-				font-size: 30px;
-			}
-			.videocard-add-new i {
-				pointer-events: none;
-				position: relative;
-    			top: 100px;
-			}
-
-
 
 			
 

@@ -1,16 +1,9 @@
 <template>
-    <div class="videocard">
-
-        <!--<vue-dropzone id="dropzone" :options="dropzoneOptions" @vdropzone-file-added="dropzoneFileAdded" @vdropzone-sending="dropzoneSending">
-        </vue-dropzone>
-
-        <form :action="myCallback()" class="dropzone">
-        </form>
-       
-        <div class="upvid">
-        </div>-->
-        
-        <button @click="createJwVideo()">Load key & token</button> 
+    <div class="home__upload-video">
+        <div class="upload-video__container" @click="createJwVideo()">
+            <i class="fa fa-plus fa-3x" aria-hidden="true"></i>
+            <span class="upload-video__text">Click to upload video</span>
+        </div>
         
 		<el-dialog class="uploadvid" title="Upload video" :visible.sync="visible" :before-close="closeDialog">
             <div class="uploadvid__area">
@@ -150,11 +143,11 @@
 	/* ==============================================
 					#VUE-DROPZONE
 		================================================= */
+
 /* Disable files preview  */
 .dz-preview {
     display: none;
 }
-
 
 
 .uploadvid {
@@ -172,5 +165,45 @@
             display: flex;
             align-self: center;
         }
+        
 
+
+
+
+/* ==============================================
+					#ADD-VIDEO-BUTTON
+		================================================= */
+
+    .home__upload-video {
+		display: flex;
+		flex-direction:column;
+		justify-content: center;
+		align-items: center;
+		height:280px;
+		color: #A90931;
+		background-color: #FFF;
+		width: calc(100% /3 - 20px);
+		margin: 10px;
+		border: 1px dashed #DADDE2;
+	}
+	.home__upload-video:hover {
+		color: #FFF;
+		cursor: pointer;
+		transition: 0.2s;
+		-webkit-transition: 0.2s;
+		background-color: #A90931;
+	}
+
+        .upload-video__container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .upload-video__text {
+                font-size: 1.4em;
+            }
 </style>
