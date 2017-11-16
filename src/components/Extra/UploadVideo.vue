@@ -107,6 +107,25 @@
                             this.uploadProgress = progress
                         })
 
+                        that.dropzoneInstance.on("success", () => {
+                            console.log('SUCCESS')
+                            console.log('jwVideoId = ', theData.link.query.key)
+                            // GET ('metalogon.com/jwconversion/?videoId=' + theData.link.query.key)
+                            //  if (data.conversions[lastIndex].status === 'ready')
+                            //      GET /https://cdn.jwplayer.com/v2/media/ + theData.link.query.key
+                            //          link = playlist.link
+                            //          thumb = playlist.image
+                            //          duration = playlist.duration
+                            //          jwVideoId = theData.link.query.key
+                            //          sources = playlist.sources
+
+                            // {videoObj}
+                            // from jw: link, thumb, duration, jwVideoId, sources
+                            // from user: title, class, genre, presentedAt
+
+                            // POST ('metalogon.com/video', {videoObj}) 
+                        })
+
                         that.dropzoneInstance.on("dragover", event => {
                             $('.uploadvid__area').css('background-color', 'red')
                         })
