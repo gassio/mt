@@ -110,14 +110,31 @@
                         that.dropzoneInstance.on("success", () => {
                             console.log('SUCCESS')
                             console.log('jwVideoId = ', theData.link.query.key)
-                            // GET ('metalogon.com/jwconversion/?videoId=' + theData.link.query.key)
-                            //  if (data.conversions[lastIndex].status === 'ready')
-                            //      GET /https://cdn.jwplayer.com/v2/media/ + theData.link.query.key
-                            //          link = playlist.link
-                            //          thumb = playlist.image
-                            //          duration = playlist.duration
-                            //          jwVideoId = theData.link.query.key
-                            //          sources = playlist.sources
+
+                            let link, thumb, duration, sources
+
+                            let intervalID = setInterval(function () {
+                                axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion/?videoId=" + theData.link.query.key)
+                                    .then( response => {
+                                        console.log('jwconversion get...')
+                                        let conversions = response.data.data.conversions
+                                        for (var i = 0, l = conversions.length; i < l; i++) {
+                                            console.log('Total conversions = ', l)
+                                            console.log(conversions[i].status)
+                                        }
+                                        for (var i = 0, l = conversions.length; i < l; i++) {
+                                            if (conversions[i].status === 'ready' && conversions[i].template.name === '720p') {
+                                                
+                                                link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                                                // thumb = response.data.playlist.image
+                                                // duration = response.data.playlist.duration
+                                                clearInterval(intervalID)
+                                            }
+                                        }
+                                    })
+                            }, 5000)
+
+                            console.log('thumb: ', thumb)
 
                             // {videoObj}
                             // from jw: link, thumb, duration, jwVideoId, sources
