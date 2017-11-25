@@ -102,45 +102,72 @@
                             // previewContainer: '.uploadvid__progress'
                         })
 
-
-                        that.dropzoneInstance.on("totaluploadprogress", (progress) => {
-                            this.uploadProgress = progress
+                        // User enters video details (title, class, genre, presentedAt)
+                        that.dropzoneInstance.on("addedfile", (file) => {
+                            alert('Video title, class, genre, presentedAT ...')
                         })
 
+                        // SUCCESS 
                         that.dropzoneInstance.on("success", () => {
                             console.log('SUCCESS')
                             console.log('jwVideoId = ', theData.link.query.key)
 
-                            let link, thumb, duration, sources
+                            // GET link & duration
+                            let link, duration
+                            let thumb
 
                             let intervalID = setInterval(function () {
                                 axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion/?videoId=" + theData.link.query.key)
                                     .then( response => {
-                                        console.log('jwconversion get...')
+                                        console.log('----- GET link, duration ----')
                                         let conversions = response.data.data.conversions
+
                                         for (var i = 0, l = conversions.length; i < l; i++) {
-                                            console.log('Total conversions = ', l)
-                                            console.log(conversions[i].status)
-                                        }
-                                        for (var i = 0, l = conversions.length; i < l; i++) {
-                                            if (conversions[i].status === 'ready' && conversions[i].template.name === '720p') {
-                                                
+                                            if (conversions[i].status === 'Ready' && conversions[i].template.name === '720p') {
                                                 link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
-                                                // thumb = response.data.playlist.image
-                                                // duration = response.data.playlist.duration
+                                                duration = conversions[i].duration
+                                                console.log('|> Link: ', link)
+                                                console.log('|> Duration: ', duration)
+                                                // Clear interval
                                                 clearInterval(intervalID)
+                                                // POST video
+                                                axios.post('https://metalogon-api.herokuapp.com/rest/video/', {
+                                                    "title": "Test",
+                                                    "link": link,
+                                                    "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
+                                                    "duration": duration,
+                                                    "class": "Materials Science and Engineering",
+                                                    "jwVideoId": theData.link.query.key,
+                                                    "genre": "Lab presentation",
+                                                    "presentedAt": "2017-11-25T00:00:00.000Z",
+                                                    "annotations": []
+                                                    }).then( response => {
+                                                        console.log('-----')
+                                                        console.log('POST video')
+                                                    })
                                             }
                                         }
                                     })
                             }, 5000)
-
-                            console.log('thumb: ', thumb)
+                            
+                            // GET thumb
+                            // let intervalID2 = setInterval(function () {
+                            //     axios.get("https://cdn.jwplayer.com/v2/media/" + theData.link.query.key)
+                            //         .then( response => {
+                            //             console.log('----- GET thumb ----')
+                            //             thumb = response.data.playlist.image
+                            //             console.log('|> Thumb: ', thumb)
+                            //             clearInterval(intervalID2)
+                            //         })
+                            // }, 5000)
 
                             // {videoObj}
-                            // from jw: link, thumb, duration, jwVideoId, sources
-                            // from user: title, class, genre, presentedAt
+                            // JW: link, duration, thumb, jwVideoId, 
+                            // USER: title, class, genre, presentedAt
+                        })
 
-                            // POST ('metalogon.com/video', {videoObj}) 
+                        that.dropzoneInstance.on("totaluploadprogress", (progress) => {
+                            this.uploadProgress = progress
                         })
 
                         that.dropzoneInstance.on("dragover", event => {
@@ -162,7 +189,7 @@
             ...mapGetters([
 				'videos', 'uploadUrl', 'uploadingVideo'
             ]),
-        },
+        }
         // components: {
         //     'vue-dropzone': vue2Dropzone
         // }
@@ -173,6 +200,9 @@
 </script>
 
 <style>
+
+/* .el-dialog__wrapper, .uploadvid { z-index: 2000 !important; } */
+
 	/* ==============================================
 					#VUE-DROPZONE
 		================================================= */
