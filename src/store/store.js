@@ -216,60 +216,21 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
-        // NOT
-        createUploadUrl: function ({ commit, state }) {
-             axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
-                .then(function (response)
-                {
-                    commit('CREATE_UPLOAD_URL', response.data.data)
-                    console.log('http call...')
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        },
-        // NOT
-        uploadVideoToLink: function ({ commit, state }) {
-                // let data = new FormData();
-                // data.append('title', 'hello!');
-                
-                // let request = new XMLHttpRequest();
-                // request.open('POST', state.uploadUrl);
-                // request.send(data);
-
-                const data = new FormData();
-                data.append('action', 'ADD');
-                data.append('param', 0);
-                data.append('secondParam', 0);
-                data.append('file', new Blob(['test payload'], { type: 'text/csv' }));
-                axios.post(state.uploadUrl)
-                    .then( response => alert('Success upload') )
-                    .catch( error => console.log(error.response) )
-
-                // axios({
-                //     method: 'POST',
-                //     url: state.uploadUrl,
-                //     data: data,
-                //     config: { headers: { 'Content-Type': 'multipart/form-data' }}
-                // })
-                //     .then(function (response) {
-                //         console.log('Action: uploadVideoToLink') 
-                //     })
-                //     .catch(function (err) {
-                //         console.log(err)
-                //     })
-
-                // $.ajax({
-                //     type: 'POST',
-                //     url: state.uploadUrl,
-                //     contentType: 'multipart/form-data'                    
-                // })
-                // .done(function(data) {
-                //     console.log(data)
-                // })
-                // .fail(function() {
-                //     alert( "error" );
-                // })
+        createVideo: function ({ commit }, payload) {
+            axios.post('https://metalogon-api.herokuapp.com/rest/video/', {
+                "title": "Test",
+                "link": payload.link,
+                "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
+                "duration": payload.duration,
+                "class": "Materials Science and Engineering",
+                "jwVideoId": payload.key,
+                "genre": "Lab presentation",
+                "presentedAt": "2017-11-25T00:00:00.000Z",
+                "annotations": []
+                }).then( response => {
+                    console.log('-----')
+                    console.log('POST video')
+                }).catch( response => console.log(response.error))
         },
         // ANNOTATIONS
         addAnnotation: function ({ commit, state }, payload) {

@@ -5,14 +5,44 @@
             <span class="upload-video__text">Click to upload video</span>
         </div>
         
-		<el-dialog class="uploadvid" title="Upload video" :visible.sync="visible" :before-close="closeDialog">
+		<el-dialog class="uploadvid" title="Upload video" :visible.sync="visible" :before-close="closeDialog" >
             <div class="uploadvid__area">
                 <span class="uploadvid__text">Drop videos here or click to upload</span>
             </div>
-            <div class="uploadvid__progress">
-                <span>Upload progress {{ uploadProgress }} %</span>
-            </div>
 		</el-dialog>
+
+        <el-dialog class="uploadvid__metadata" title="Add video metadata" :visible.sync="visible2" :before-close="closeDialog2">
+            <el-form ref="form" :model="uploadVidMetadata" label-width="120px">
+                <el-form-item label="Title">
+                    <el-input v-model="uploadVidMetadata.title"></el-input>
+                </el-form-item>
+                <el-form-item label="Class">
+                    <el-input v-model="uploadVidMetadata.class"></el-input>
+                </el-form-item>
+                <el-form-item label="Genre">
+                    <el-select v-model="uploadVidMetadata.genre" placeholder="select the video genre">
+                    <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
+                    <el-option label="Lab presentation" value="Lab presentation"></el-option>
+                    <el-option label="Thesis talk" value="Thesis talk"></el-option>
+                    <el-option label="Progress report" value="Progress report"></el-option>
+                    <el-option label="Conference talk" value="Conference talk"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Presentation date">
+                    <el-col :span="11">
+                        <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentationDate" style="width: 100%;"></el-date-picker>
+                    </el-col>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary">Start upload</el-button>
+                    <el-button @click="visible2 = false">Cancel</el-button>
+                </el-form-item>
+            </el-form>
+		</el-dialog>
+
+		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="visible3">
+            <el-progress :percentage="parseInt(uploadProgress)" :stroke-width="14"></el-progress> 
+        </el-dialog>
     </div>
 </template>
 
@@ -23,9 +53,6 @@
 
     import Dropzone from 'dropzone'
 	import 'dropzone/dist/dropzone.css'
-
-    // import vue2Dropzone from 'vue2-dropzone'
-    // import 'vue2-dropzone/dist/vue2Dropzone.css'
 
     export default {
         data() {
@@ -38,50 +65,29 @@
                     key: '',
                     token: ''
                 },
-                visible: false,
+                visible: false, // Upload screen modal
+                visible2: false, // Upload video metadata modal
+                visible3: false, // Upload video progress modal
                 dropzoneInstance: null,
                 uploadProgress: 0,
                 dialogVisible: true,
                 formLabelWidth: '120px',
-                newVideo: {
+                uploadVidMetadata: {
 					title: '',
-					videoID: 100,
-					link: '',
-					thumb: '',
-					sources: [],
-					duration: '',
-					jwVideoID: '',
-					jwPlaylistID: '',
 					class: '',
-					genre: '',
-					categories:  {},
-					annotations: [],
-					loading: true
+                    genre: '',
+                    presentationDate: ''
 				},
             }
         },
-        created() {
-			console.log('CHILD created()')
-        },
-        mounted() {
-			console.log('CHILD mounted()')
-
-            // var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
-            //     url: "/target-url", // Set the url
-            //     thumbnailWidth: 80,
-            //     thumbnailHeight: 80,
-            //     parallelUploads: 20,
-            //     previewTemplate: previewTemplate,
-            //     autoQueue: false, // Make sure the files aren't queued until manually added
-            //     previewsContainer: "#previews", // Define the container to display the previews
-            //     clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
-            // });
-
-        },
         methods: {
+            // Upload screen modal
             closeDialog() {
-                // this.$store.commit('SET_UPLOADING_VIDEO_AS_FALSE')
                 this.visible = false
+            },
+            // Upload video metadata modal
+            closeDialog2() {
+                this.visible2 = false
             },
             createJwVideo() {
                 let that = this
@@ -91,12 +97,11 @@
                     .then( response => {
                         let theData = response.data.data
                         var theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
-                        // var theUrl = theData.link.protocol + '://' + theData.link.address + '/progress?token=' + theData.link.query.token + "&callback=callback"
                         that.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log('after commit url ', that.uploadUrl)
 
                         // Creating dropzone
-                        that.dropzoneInstance = new Dropzone('.uploadvid__area', { 
+                        that.dropzoneInstance = new Dropzone('.uploadvid__text', { 
                             url: that.uploadUrl,
                             createImageThumbnails: false
                             // previewContainer: '.uploadvid__progress'
@@ -104,7 +109,9 @@
 
                         // User enters video details (title, class, genre, presentedAt)
                         that.dropzoneInstance.on("addedfile", (file) => {
-                            alert('Video title, class, genre, presentedAT ...')
+                            this.visible = false
+                            this.visible2 = true
+                            this.visible3 = true
                         })
 
                         // SUCCESS 
@@ -130,21 +137,11 @@
                                                 console.log('|> Duration: ', duration)
                                                 // Clear interval
                                                 clearInterval(intervalID)
+
                                                 // POST video
-                                                axios.post('https://metalogon-api.herokuapp.com/rest/video/', {
-                                                    "title": "Test",
-                                                    "link": link,
-                                                    "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
-                                                    "duration": duration,
-                                                    "class": "Materials Science and Engineering",
-                                                    "jwVideoId": theData.link.query.key,
-                                                    "genre": "Lab presentation",
-                                                    "presentedAt": "2017-11-25T00:00:00.000Z",
-                                                    "annotations": []
-                                                    }).then( response => {
-                                                        console.log('-----')
-                                                        console.log('POST video')
-                                                    })
+                                                that.$store.dispatch('createVideo', {
+                                                    link: link, duration: duration, key: theData.link.query.key
+                                                })
                                             }
                                         }
                                     })
@@ -166,20 +163,25 @@
                             // USER: title, class, genre, presentedAt
                         })
 
+                        that.dropzoneInstance.on("error", (errorMessage) => {
+                            console.log(errorMessage)
+                        })
+
                         that.dropzoneInstance.on("totaluploadprogress", (progress) => {
                             this.uploadProgress = progress
                         })
 
                         that.dropzoneInstance.on("dragover", event => {
-                            $('.uploadvid__area').css('background-color', 'red')
+                            $('.uploadvid__area').css('background-color', '#8F082A')
+                            // $('.uploadvid__area').css('border', '3px dashed orange')
                         })
 
                         that.dropzoneInstance.on("dragleave", event => {
-                            $('.uploadvid__area').css('background-color', 'white')
+                            $('.uploadvid__area').css('background-color', '#FFF')
                         })
 
                         that.dropzoneInstance.on("drop", event => {
-                            $('.uploadvid__area').css('background-color', 'white')
+                            $('.uploadvid__area').css('background-color', '#8F082A')
                         })
                     })
                     .catch( error => { console.log(error.response) })
@@ -216,17 +218,39 @@
 .uploadvid {
     margin: 0;
     padding: 0;
+    position: fixed;
+    overflow: hidden;
 }	
+    .uploadvid .el-dialog {
+        width: 100%;
+        height: 100%;
+    }
+
+    .uploadvid .el-dialog__body {
+        height: 80%;
+        padding: 25px 10px;
+    }
+
 	.uploadvid__area {
-        height: 150px;
-        border: 3px dashed #ccc;
+        height: 100%;
+        border: 3px solid #ccc;
         display: flex;
         justify-content: center;
+	}
+	.uploadvid__area:hover {
+        transition: 0.40s;
+        color: #FFF;
+        border: none;
+        background-color: #8F082A !important;
 	}
         .uploadvid__text {
             font-size: 1.4em;
             display: flex;
+            justify-content: center;
             align-self: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
         }
         
 
