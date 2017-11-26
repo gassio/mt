@@ -11,7 +11,7 @@
             </div>
 		</el-dialog>
 
-        <el-dialog class="uploadvid__metadata" title="Add video metadata" :visible.sync="visible2" :before-close="closeDialog2">
+        <el-dialog class="uploadvid__metadata" title="Video details" :visible.sync="visible2" :before-close="closeDialog2">
             <el-form ref="form" :model="uploadVidMetadata" label-width="120px">
                 <el-form-item label="Title">
                     <el-input v-model="uploadVidMetadata.title"></el-input>
@@ -20,7 +20,7 @@
                     <el-input v-model="uploadVidMetadata.class"></el-input>
                 </el-form-item>
                 <el-form-item label="Genre">
-                    <el-select v-model="uploadVidMetadata.genre" placeholder="select the video genre">
+                    <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
                     <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
                     <el-option label="Lab presentation" value="Lab presentation"></el-option>
                     <el-option label="Thesis talk" value="Thesis talk"></el-option>
