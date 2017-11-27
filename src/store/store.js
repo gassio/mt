@@ -221,16 +221,20 @@ export const store = new Vuex.Store({
                 "title": "Test",
                 "link": payload.link,
                 "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
-                "duration": payload.duration,
+                "duration": parseInt(payload.duration),
                 "class": "Materials Science and Engineering",
                 "jwVideoId": payload.key,
                 "genre": "Lab presentation",
                 "presentedAt": "2017-11-25T00:00:00.000Z",
                 "annotations": []
-                }).then( response => {
+                })
+                .then( response => {
                     console.log('-----')
                     console.log('POST video')
-                }).catch( response => console.log(response.error))
+                    // GA
+                    // commit mutation remaining
+                })
+                .catch( response => console.log(response.error))
         },
         // ANNOTATIONS
         addAnnotation: function ({ commit, state }, payload) {

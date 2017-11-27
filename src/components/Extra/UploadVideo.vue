@@ -52,7 +52,9 @@
 	import { mapMutations } from 'vuex'
 
     import Dropzone from 'dropzone'
-	import 'dropzone/dist/dropzone.css'
+    import 'dropzone/dist/dropzone.css'
+    
+    import { Loading } from 'element-ui';
 
     export default {
         data() {
@@ -118,6 +120,9 @@
                 // SUCCESS 
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
+                    let loadingInstance = Loading.service({ fullscreen: true }); 
+                    // Close modal
+                    that.visible3 = false
 
                     // GET link & duration
                     let link, duration
@@ -136,14 +141,19 @@
                                         console.log('|> Link: ', link)
                                         console.log('|> Duration: ', duration)
 
-                                        // POST video
-                                         this.$store.dispatch('createVideo', {
-                                            link: link, duration: duration, key: key
+                                        // GA
+                                        // pass object 
+                                        // POST video uploadVidMetadata {} to the request
+                                         that.$store.dispatch('createVideo', {
+                                            link: link, 
+                                            duration: duration, 
+                                            key: theData.link.query.key
                                         })
 
                                         // Clear interval
                                         clearInterval(intervalID)
-
+                                        // Close loading bar
+                                        loadingInstance.close()
                                     }
                                 }
                             })
