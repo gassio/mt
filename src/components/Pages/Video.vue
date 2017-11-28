@@ -315,7 +315,9 @@ You might also want to include a concrete strategy recommendation."
 
             this.player = jwplayer('player')            
             this.player.setup({
-                file: this.videos[vIndex].sources[correctSource].file,
+                // If the video has sources (old way) then play the file: sources.[correctSource].file
+                // Else the video has no sources and has instead a link field (new way) then play the file: link
+                file: (this.videos[vIndex].sources.length !== 0) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
                 image: this.videos[vIndex].thumb,
                 "height": $('.player').height(),
                 // events

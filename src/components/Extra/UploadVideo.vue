@@ -120,6 +120,12 @@
                 // SUCCESS 
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
+                    
+                    // GA
+                    // A message label is needed.
+                    // Something like this: "Synchronizing video..."
+
+                    // Shows loading spinner
                     let loadingInstance = Loading.service({ fullscreen: true }); 
                     // Close modal
                     that.visible3 = false
@@ -166,6 +172,7 @@
                             })
                     }, 5000)
                     
+                    // GA
                     // GET thumb
                     // let intervalID2 = setInterval(function () {
                     //     axios.get("https://cdn.jwplayer.com/v2/media/" + theData.link.query.key)
