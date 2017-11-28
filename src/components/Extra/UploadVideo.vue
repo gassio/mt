@@ -141,15 +141,22 @@
                                         console.log('|> Link: ', link)
                                         console.log('|> Duration: ', duration)
 
-                                        // GA
                                         // pass object 
                                         // POST video uploadVidMetadata {} to the request
                                          that.$store.dispatch('createVideo', {
-                                            link: link, 
-                                            duration: duration, 
-                                            key: theData.link.query.key
+                                            "title": that.uploadVidMetadata.title,
+                                            "link": link,
+                                            "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
+                                            "duration": parseInt(duration),
+                                            "class": that.uploadVidMetadata.class,
+                                            "jwVideoId": theData.link.query.key,
+                                            "genre": that.uploadVidMetadata.genre,
+                                            "presentedAt": that.uploadVidMetadata.presentedAt,
+                                            "annotations": []
                                         })
 
+                                        // Clearing modal form
+                                        this.uploadVidMetadata = { title: '', class: '', genre: '', presentationDate: ''}
                                         // Clear interval
                                         clearInterval(intervalID)
                                         // Close loading bar
@@ -200,12 +207,6 @@
                 this.visible3 = true
                 this.visible2 = false
                 this.dropzoneInstance.processQueue()
-                this.uploadVidMetadata = {
-                    title: '',
-					class: '',
-                    genre: '',
-                    presentationDate: ''
-                }
             }
         },
         computed: {
