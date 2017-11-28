@@ -1071,17 +1071,6 @@ You might also want to include a concrete strategy recommendation."
                 'canons'
             ])
         }
-        //  {
-        //     videos() {
-        //         return this.$store.getters.videos
-        //     },
-        //     currentVideoID() {
-        //         return this.$store.getters.currentVideoID
-        //     },
-        //     canons() {
-        //         return this.$store.getters.canons
-        //     }
-        // },
     }
 </script>
 

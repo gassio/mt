@@ -34,7 +34,7 @@
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="uploading()">Start upload</el-button>
+                    <el-button type="primary" @click="startUpload()">Start upload</el-button>
                     <el-button @click="visible2 = false">Cancel</el-button>
                 </el-form-item>
             </el-form>
@@ -75,16 +75,6 @@
             }
         },
         methods: {
-            closeUploadDragndrop() {
-                this.visible = false
-            },
-            closeUploadMetadata() {
-                this.visible2 = false
-            },
-            closeUploadProgress() {
-                this.visible3 = false
-                this.dropzoneInstance.removeAllFiles(true)
-            },
             createJwVideo() {
                 let that = this
                 this.visible = true
@@ -97,11 +87,11 @@
                         that.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
-                        that.uploadingJwVideo(theData)
+                        that.createVideo(theData)
                     })
                     .catch( error => console.log(error.response))
             },
-            uploadingJwVideo(theData) {
+            createVideo(theData) {
                 var that = this 
 
                 // Creating dropzone
@@ -120,7 +110,7 @@
                 // SUCCESS 
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
-                    
+
                     // GA
                     // A message label is needed.
                     // Something like this: "Synchronizing video..."
@@ -149,7 +139,7 @@
 
                                         // pass object 
                                         // POST video uploadVidMetadata {} to the request
-                                         that.$store.dispatch('createVideo', {
+                                            that.$store.dispatch('createVideo', {
                                             "title": that.uploadVidMetadata.title,
                                             "link": link,
                                             "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
@@ -210,10 +200,20 @@
                     $('.uploadvid__area').css('background-color', '#8F082A')
                 })   
             },
-            uploading() {
+            startUpload() {
                 this.visible3 = true
                 this.visible2 = false
                 this.dropzoneInstance.processQueue()
+            },
+            closeUploadDragndrop() {
+                this.visible = false
+            },
+            closeUploadMetadata() {
+                this.visible2 = false
+            },
+            closeUploadProgress() {
+                this.visible3 = false
+                this.dropzoneInstance.removeAllFiles(true)
             }
         },
         computed: {
