@@ -225,6 +225,25 @@ actions: {
             })
             .catch( response => console.log(response.error))
     },
+    editVideo: function ({ commit }, payload) {
+        axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.videoId, 
+                payload.linkDurationThumb)
+            .then( response => {
+                console.log('-----')
+                console.log('PUT video')
+                commit('EDIT_VIDEO', payload.linkDurationThumb, payload.videoId)
+            })
+            .catch( response => console.log(response.error))
+    },
+    deleteVideo: function ({ commit }, payload) {
+        axios.delete('https://metalogon-api.herokuapp.com/rest/video/', payload)
+            .then( response => {
+                console.log('-----')
+                console.log('DELETE video')
+                commit('DELETE_VIDEO', payload)
+            })
+            .catch( response => console.log(response.error))
+    },
     // ANNOTATIONS
     addAnnotation: function ({ commit, state }, payload) {
         var theVideo = payload.video
@@ -306,6 +325,23 @@ mutations: {
     CREATE_VIDEO: (state, payload) => {
         var videos = state.videos
         videos.push(payload)
+    },
+    EDIT_VIDEO: (state, payload) => {
+        var videos = state.videos
+        for (var i=0, l = state.videos.length; i < l; i++) {
+            if (videos[i].id === payload.videoId) {
+                
+            } 
+        }
+        
+        videos.push(payload)
+    },
+    DELETE_VIDEO: (state, payload) => {
+        var videos = state.videos
+        for (var i=0, l = annotations.length; i < l; i++) {
+            if (videos[i].id === payload.video.id)
+                videos.splice(i, 1)              
+        }
     },
     // (NOT USED)
     GET_CLASS_VIDEOS: (state, classTitle) => {

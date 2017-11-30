@@ -5,42 +5,45 @@
             <span class="upload-video__text">Click to upload video</span>
         </div>
         
-		<el-dialog class="uploadvid" title="Upload video" :visible.sync="visible" :before-close="closeUploadDragndrop">
+		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
             <div class="uploadvid__area">
                 <span class="uploadvid__text">Drop videos here or click to upload</span>
             </div>
 		</el-dialog>
 
-        <el-dialog class="uploadvid__metadata" title="Video details" :visible.sync="visible2" :close-on-click-modal="false">
+        <el-dialog class="uploadvid__metadata" title="Video details" :visible.sync="modalMetadataIsOpen" :close-on-click-modal="false">
             <el-form ref="form" :model="uploadVidMetadata" label-width="120px">
                 <el-form-item label="Title">
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
                 <el-form-item label="Class">
+                    <!-- <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" v-for="c in uploadVidMetadata.class"> -->
+                        <!-- <el-option :label="c.title" :value="c.title"></el-option> -->
+                    <!-- </el-select> -->
                     <el-input v-model="uploadVidMetadata.class"></el-input>
                 </el-form-item>
                 <el-form-item label="Genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
-                    <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
-                    <el-option label="Lab presentation" value="Lab presentation"></el-option>
-                    <el-option label="Thesis talk" value="Thesis talk"></el-option>
-                    <el-option label="Progress report" value="Progress report"></el-option>
-                    <el-option label="Conference talk" value="Conference talk"></el-option>
+                        <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
+                        <el-option label="Lab presentation" value="Lab presentation"></el-option>
+                        <el-option label="Thesis talk" value="Thesis talk"></el-option>
+                        <el-option label="Progress report" value="Progress report"></el-option>
+                        <el-option label="Conference talk" value="Conference talk"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Presentation date">
                     <el-col :span="11">
-                        <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentationDate" style="width: 100%;"></el-date-picker>
+                        <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentedAt" style="width: 100%;"></el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="startUpload()">Start upload</el-button>
-                    <el-button @click="visible2 = false">Cancel</el-button>
+                    <el-button @click="modalMetadataIsOpen = false">Cancel</el-button>
                 </el-form-item>
             </el-form>
 		</el-dialog>
 
-		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="visible3" :before-close="closeUploadProgress" :close-on-click-modal="false">
+		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="modalProgressIsOpen" :before-close="closeModalProgress" :close-on-click-modal="false">
             <el-progress :percentage="parseInt(uploadProgress)" :stroke-width="14"></el-progress> 
         </el-dialog>
     </div>
@@ -53,31 +56,36 @@
 
     import Dropzone from 'dropzone'
     import 'dropzone/dist/dropzone.css'
-    
-    import { Loading } from 'element-ui';
 
+    import { Loading } from 'element-ui';
+    
     export default {
         data() {
             return {
-                visible: false, // Upload screen modal
-                visible2: false, // Upload video metadata modal
-                visible3: false, // Upload video progress modal
                 dropzoneInstance: null,
+                modalDragDropIsOpen: false,
+                modalMetadataIsOpen: false,
+                modalProgressIsOpen: false,
                 uploadProgress: 0,
-                dialogVisible: true,
-                formLabelWidth: '120px',
                 uploadVidMetadata: {
 					title: '',
 					class: '',
                     genre: '',
-                    presentationDate: ''
-				},
+                    presentedAt: ''
+                },
             }
+        },
+        created() {
+            // this.$store.dispatch('getAllClasses')
         },
         methods: {
             createJwVideo() {
                 let that = this
-                this.visible = true
+                this.modalDragDropIsOpen = true
+                
+                // for (var i = 0, l = this.classes.length; l < i; i++) {
+                //     this.uploadVidMetadata.class.push(this.classes[i].title )
+                // }
 
                 axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                     .then( response => {
@@ -103,29 +111,22 @@
 
                 // User enters video details (title, class, genre, presentedAt)
                 this.dropzoneInstance.on("addedfile", (file) => {
-                    this.visible = false
-                    this.visible2 = true
+                    this.modalDragDropIsOpen = false
+                    this.modalMetadataIsOpen = true
                 })
 
-                // SUCCESS 
+                // Event fired when the uploading process reaches 100%.  
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
-
-                    // GA
+                    
                     // A message label is needed.
                     // Something like this: "Synchronizing video..."
-
                     // Shows loading spinner
-                    let loadingInstance = Loading.service({ fullscreen: true }); 
-                    // Close modal
-                    that.visible3 = false
-
-                    // GET link & duration
-                    let link, duration
-                    let thumb
+                    var loadingInstance = Loading.service({ fullscreen: true }); 
+                    let link, duration, thumb
 
                     let intervalID = setInterval(function () {
-                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion/?videoId=" + theData.link.query.key)
+                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + theData.link.query.key)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -137,46 +138,52 @@
                                         console.log('|> Link: ', link)
                                         console.log('|> Duration: ', duration)
 
-                                        // pass object 
-                                        // POST video uploadVidMetadata {} to the request
-                                            that.$store.dispatch('createVideo', {
-                                            "title": that.uploadVidMetadata.title,
-                                            "link": link,
-                                            "thumb": "http://web.mit.edu/zhaox/www/image/2014_07_14_MIT_logo_2.jpg",
-                                            "duration": parseInt(duration),
-                                            "class": that.uploadVidMetadata.class,
+                                        // pass object video 
+                                        that.$store.dispatch('createVideo', {
                                             "jwVideoId": theData.link.query.key,
+                                            "title": that.uploadVidMetadata.title,
+                                            "class": that.uploadVidMetadata.class,
                                             "genre": that.uploadVidMetadata.genre,
                                             "presentedAt": that.uploadVidMetadata.presentedAt,
+                                            "link": link,
+                                            "duration": parseInt(duration),
+                                            "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
                                             "annotations": []
                                         })
-
-                                        // Clearing modal form
-                                        this.uploadVidMetadata = { title: '', class: '', genre: '', presentationDate: ''}
-                                        // Clear interval
-                                        clearInterval(intervalID)
                                         // Close loading bar
                                         loadingInstance.close()
+                                        // Clear interval
+                                        clearInterval(intervalID)
+
+                                        // Clearing modal form
+                                        that.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+
+                                        // axios.put("https://metalogon-api.herokuapp.com/rest/video/" + that.id, 
+                                        //     { "link": link, "duration": duration }
+                                        // )
+                                        // .then( (response) => console.log('PUT video: /', that.id))
+                                        // .catch( (error) => console.log('Not PUT video: ', error))
+                                                // that.$store.dispatch('editVideo', {
+                                                //     videoId: that.id,
+                                                //     linkDurationThumb: {
+                                                //         link: link,
+                                                //         duration: duration
+                                                //     }
+                                                // })
                                     }
                                 }
                             })
+                            .catch( (error) => console.log(error))
                     }, 5000)
-                    
-                    // GA
-                    // GET thumb
-                    // let intervalID2 = setInterval(function () {
-                    //     axios.get("https://cdn.jwplayer.com/v2/media/" + theData.link.query.key)
-                    //         .then( response => {
-                    //             console.log('----- GET thumb ----')
-                    //             thumb = response.data.playlist.image
-                    //             console.log('|> Thumb: ', thumb)
-                    //             clearInterval(intervalID2)
-                    //         })
-                    // }, 5000)
+                
 
-                    // {videoObj}
-                    // JW: link, duration, thumb, jwVideoId, 
-                    // USER: title, class, genre, presentedAt
+                    let uploadedId, 
+                        uploadedTitle = that.uploadVidMetadata.title;
+
+                    
+                    // Closing the progress modal
+                    this.modalProgressIsOpen = false
+
                 })
 
                 this.dropzoneInstance.on("error", (errorMessage) => {
@@ -201,28 +208,38 @@
                 })   
             },
             startUpload() {
-                this.visible3 = true
-                this.visible2 = false
+                this.modalProgressIsOpen = true
+                this.modalMetadataIsOpen = false
                 this.dropzoneInstance.processQueue()
             },
-            closeUploadDragndrop() {
-                this.visible = false
+            closeModalDragDrop() {
+                this.modalDragDropIsOpen = false
             },
-            closeUploadMetadata() {
-                this.visible2 = false
-            },
-            closeUploadProgress() {
-                this.visible3 = false
+            closeModalProgress() {
+                this.modalProgressIsOpen = false
                 this.dropzoneInstance.removeAllFiles(true)
             }
         },
         computed: {
             ...mapGetters([
-				'videos', 'uploadUrl'
+				'videos', 'uploadUrl', 'classes'
             ]),
         }
     }
 
+
+// axios.get("https://metalogon-api.herokuapp.com/rest/video")
+//     .then(function (response)
+//     {
+//         let vids = response.data.data
+//         for (let i=0, l=vids.length; i<l; i++) {
+//             if (uploadedTitle === vids[i].title) {
+//                 uploadedId = vids[i].id
+//                 console.log('uploadedId: ', uploadedId)
+//                 that.$router.push({ path: '/video/' + uploadedId })
+//             }
+//         }
+//     })
 
 
 </script>
