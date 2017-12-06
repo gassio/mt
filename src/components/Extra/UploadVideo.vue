@@ -17,10 +17,10 @@
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
                 <el-form-item label="Class">
-                    <!-- <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" v-for="c in uploadVidMetadata.class"> -->
-                        <!-- <el-option :label="c.title" :value="c.title"></el-option> -->
-                    <!-- </el-select> -->
-                    <el-input v-model="uploadVidMetadata.class"></el-input>
+                    <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" v-for="c in classes" v-bind:key="c.title">
+                        <el-option :label="c.title" :value="c.title"></el-option>
+                    </el-select>
+                    <!-- <el-input v-model="uploadVidMetadata.class"></el-input> -->
                 </el-form-item>
                 <el-form-item label="Genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
@@ -76,7 +76,7 @@
             }
         },
         created() {
-            // this.$store.dispatch('getAllClasses')
+            this.$store.dispatch('getAllClasses')
         },
         methods: {
             createJwVideo() {
