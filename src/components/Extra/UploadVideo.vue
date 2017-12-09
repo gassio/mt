@@ -106,7 +106,8 @@
                 this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
                     url: this.uploadUrl,
                     createImageThumbnails: false,
-                    autoProcessQueue: false
+                    autoProcessQueue: false,
+                    timeout: 900000
                 })
 
                 // User enters video details (title, class, genre, presentedAt)
