@@ -78,14 +78,13 @@
         created() {
             this.$store.dispatch('getAllClasses')
         },
+        mounted() { 
+            
+        },
         methods: {
             createJwVideo() {
                 let that = this
                 this.modalDragDropIsOpen = true
-                
-                // for (var i = 0, l = this.classes.length; l < i; i++) {
-                //     this.uploadVidMetadata.class.push(this.classes[i].title )
-                // }
 
                 axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                     .then( response => {
@@ -95,35 +94,55 @@
                         that.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
-                        that.createVideo(theData)
+                        that.createVideo(theData, theData.link.query.key)
                     })
-                    .catch( error => console.log(error.response))
+                    .catch( error => console.log("Couldn't post jwvideo \n", error))
             },
-            createVideo(theData) {
-                var that = this 
-
+            createVideo(theData, jwVideoId) {
+                var that = this
+                
                 // Creating dropzone
-                this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
-                    url: this.uploadUrl,
-                    createImageThumbnails: false,
-                    autoProcessQueue: false,
-                    timeout: 900000
-                })
+                if (this.dropzoneInstance === null) {
+                    this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
+                        url: 'http://www.test.com', // this.uploadUrl
+                        createImageThumbnails: false,
+                        autoProcessQueue: false,
+                        timeout:  50000, // 900000,
+                        headers: {
+                            // 'Access-Control-Allow-Origin': '*',
+                            // 'Access-Control-Allow-Credentials': 'true',
+                            // 'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
+                            // 'Access-Control-Allow-Headers': "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, username",
+                            'Access-Control-Request-Headers': "access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,cache-control,x-requested-with"
+                        }, 
+                        init: function() {
+                            this.on("error", function(file, errorMessage) { console.log("Error event \n", errorMessage) })
+                            this.on("canceled", function(file) { console.log("Canceled event") })
+                            this.on("complete", function(file) { console.log("Complete event") })
+                            this.on("processing", function(file) { console.log("Processing event") })
+                        }
+                    })
+                }
+
+                // Sets the dropzone object url
+                this.dropzoneInstance.options.url = this.uploadUrl
+                console.log('this url: ', this.dropzoneInstance.options.url)
 
                 // User enters video details (title, class, genre, presentedAt)
                 this.dropzoneInstance.on("addedfile", (file) => {
                     this.modalDragDropIsOpen = false
                     this.modalMetadataIsOpen = true
+                    console.log("Added file.")
                 })
 
-                // Event fired when the uploading process reaches 100%.  
+                // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
                     
                     // A message label is needed.
                     // Something like this: "Synchronizing video..."
                     // Shows loading spinner
-                    var loadingInstance = Loading.service({ fullscreen: true }); 
+                    var loadingInstance = Loading.service({ fullscreen: true, text: "Video synchronizing..." }); 
                     let link, duration, thumb
 
                     let intervalID = setInterval(function () {
@@ -174,7 +193,7 @@
                                     }
                                 }
                             })
-                            .catch( (error) => console.log(error))
+                            .catch( (error) => console.log("Couldn't get conversions \n ", error))
                     }, 5000)
                 
 
@@ -187,12 +206,25 @@
 
                 })
 
-                this.dropzoneInstance.on("error", (errorMessage) => {
-                    console.log(errorMessage)
-                })
+                // this.dropzoneInstance.on("error", (file, errorMessage) => {
+                //     // axios.delete("https://metalogon-api.herokuapp.com/rest/jwvideo/" + jwVideoId)
+                //     //     .then( response => { console.log("jwVideo object " + jwVideoId + " deleted!")})
+                //     //     .catch( error => console.log(error.response))
+                    
+                //     console.log("Error event \n", errorMessage)
+                // })
+
+                // this.dropzoneInstance.on("canceled", (file) => {
+                //     console.log("Canceled event")
+                // })
+                
+                // this.dropzoneInstance.on("complete", (file) => {
+                //     console.log("Complete event")
+                // })
 
                 this.dropzoneInstance.on("totaluploadprogress", (progress) => {
                     this.uploadProgress = progress
+                    console.log("Progress event \n ", progress)
                 })
 
                 this.dropzoneInstance.on("dragover", event => {
@@ -209,9 +241,10 @@
                 })   
             },
             startUpload() {
-                this.modalProgressIsOpen = true
                 this.modalMetadataIsOpen = false
+                this.modalProgressIsOpen = true
                 this.dropzoneInstance.processQueue()
+
             },
             closeModalDragDrop() {
                 this.modalDragDropIsOpen = false

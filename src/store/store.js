@@ -5,7 +5,7 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 import { Loading } from 'element-ui';
-let loadingInstance = Loading.service({ fullscreen: true });    
+let loadingInstance = Loading.service({ fullscreen: true, text: "Loading presentations..." });    
 
 let errorHTML = `
 <div style="padding-top:50px;">
