@@ -1,9 +1,13 @@
 <template>
     <div class="home__upload-video">
-        <div class="upload-video__container" @click="createJwVideo()">
+        <div class="upload-video__container" @click="modalMaintenanceIsOpen = true"> <!-- createJwVideo() -->
             <i class="fa fa-plus fa-3x" aria-hidden="true"></i>
             <span class="upload-video__text">Click to upload video</span>
         </div>
+
+        <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
+             <span>Coming soon.</span>
+        </el-dialog>
         
 		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
             <div class="uploadvid__area">
@@ -63,6 +67,7 @@
         data() {
             return {
                 dropzoneInstance: null,
+                modalMaintenanceIsOpen: false,
                 modalDragDropIsOpen: false,
                 modalMetadataIsOpen: false,
                 modalProgressIsOpen: false,
@@ -250,6 +255,9 @@
             closeModalProgress() {
                 this.modalProgressIsOpen = false
                 this.dropzoneInstance.removeAllFiles(true)
+            },
+            closeModalMaintenance() {
+                this.modalMaintenanceIsOpen = false
             }
         },
         computed: {
