@@ -90,7 +90,7 @@
                     .then( response => {
                         let theData = response.data.data
 
-                        var theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+                        var theUrl = 'https' + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
                         that.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
