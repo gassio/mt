@@ -107,20 +107,18 @@
                         url: 'http://www.test.com', // this.uploadUrl
                         createImageThumbnails: false,
                         autoProcessQueue: false,
-                        timeout:  50000, // 900000,
-                        headers: {
-                            // 'Access-Control-Allow-Origin': '*',
+                        timeout:  900000, //50000 ,
+                        // headers: {
+                            // 'Access-Control-Allow-Headers' : 'Cache-Control',
+                            // 'Access-Control-Allow-Origin': 'https://metalogon-api.herokuapp.com/rest/',
+                            // 'Access-Control-Request-Headers': "X-File-Name",
+                            // 'Content-Type': "application/json; charset=utf-8",
+                            // 'Access-Control-Allow-Methods': 'GET, HEAD, POST',
+                            // 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
+                            // 'Cache-Control': "public",
                             // 'Access-Control-Allow-Credentials': 'true',
-                            // 'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT,DELETE',
-                            // 'Access-Control-Allow-Headers': "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Authorization, username",
-                            'Access-Control-Request-Headers': "access-control-allow-credentials,access-control-allow-headers,access-control-allow-methods,access-control-allow-origin,cache-control,x-requested-with"
-                        }, 
-                        init: function() {
-                            this.on("error", function(file, errorMessage) { console.log("Error event \n", errorMessage) })
-                            this.on("canceled", function(file) { console.log("Canceled event") })
-                            this.on("complete", function(file) { console.log("Complete event") })
-                            this.on("processing", function(file) { console.log("Processing event") })
-                        }
+                            // "Access-Control-Max-Age": "3600",
+                        // }, 
                     })
                 }
 
