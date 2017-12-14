@@ -1,15 +1,19 @@
 <template>
     <div class="home__upload-video">
-        <div class="upload-video__container" @click="modalMaintenanceIsOpen = true"> <!-- createJwVideo() -->
+        <div class="upload-video__container" @click="createJwVideo()"> <!-- loadUrlPOC() -->
             <i class="fa fa-plus fa-3x" aria-hidden="true"></i>
             <span class="upload-video__text">Click to upload video</span>
         </div>
 
-        <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
+        <!-- <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
              <span>Coming soon.</span>
-        </el-dialog>
+        </el-dialog> -->
         
 		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
+            <!-- <form class="uploadvid__form" method="POST" action="" enctype="multipart/form-data">
+                <input type="file" name="file" />
+                <button type="submit">Upload</button>
+            </form> -->
             <div class="uploadvid__area">
                 <span class="uploadvid__text">Drop videos here or click to upload</span>
             </div>
@@ -48,7 +52,7 @@
 		</el-dialog>
 
 		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="modalProgressIsOpen" :before-close="closeModalProgress" :close-on-click-modal="false">
-            <el-progress :percentage="parseInt(uploadProgress)" :stroke-width="14"></el-progress> 
+            <el-progress :percentage="parseFloat(uploadProgress.toFixed(2))" :stroke-width="14"></el-progress> 
         </el-dialog>
     </div>
 </template>
@@ -112,18 +116,11 @@
                         url: 'http://www.test.com', // this.uploadUrl
                         createImageThumbnails: false,
                         autoProcessQueue: false,
-                        timeout:  900000, //50000 ,
-                        // headers: {
-                            // 'Access-Control-Allow-Headers' : 'Cache-Control',
-                            // 'Access-Control-Allow-Origin': 'https://metalogon-api.herokuapp.com/rest/',
-                            // 'Access-Control-Request-Headers': "X-File-Name",
-                            // 'Content-Type': "application/json; charset=utf-8",
-                            // 'Access-Control-Allow-Methods': 'GET, HEAD, POST',
-                            // 'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8',
-                            // 'Cache-Control': "public",
-                            // 'Access-Control-Allow-Credentials': 'true',
-                            // "Access-Control-Max-Age": "3600",
-                        // }, 
+                        timeout:  1800000, // 30min 
+                        headers: {
+                            'Cache-Control': null,
+                            'X-Requested-With': null,
+                        }, 
                     })
                 }
 
@@ -209,21 +206,21 @@
 
                 })
 
-                // this.dropzoneInstance.on("error", (file, errorMessage) => {
-                //     // axios.delete("https://metalogon-api.herokuapp.com/rest/jwvideo/" + jwVideoId)
-                //     //     .then( response => { console.log("jwVideo object " + jwVideoId + " deleted!")})
-                //     //     .catch( error => console.log(error.response))
+                this.dropzoneInstance.on("error", (file, errorMessage) => {
+                    // axios.delete("https://metalogon-api.herokuapp.com/rest/jwvideo/" + jwVideoId)
+                    //     .then( response => { console.log("jwVideo object " + jwVideoId + " deleted!")})
+                    //     .catch( error => console.log(error.response))
                     
-                //     console.log("Error event \n", errorMessage)
-                // })
+                    console.log("Error event \n", errorMessage)
+                })
 
-                // this.dropzoneInstance.on("canceled", (file) => {
-                //     console.log("Canceled event")
-                // })
+                this.dropzoneInstance.on("canceled", (file) => {
+                    console.log("Canceled event")
+                })
                 
-                // this.dropzoneInstance.on("complete", (file) => {
-                //     console.log("Complete event")
-                // })
+                this.dropzoneInstance.on("complete", (file) => {
+                    console.log("Complete event")
+                })
 
                 this.dropzoneInstance.on("totaluploadprogress", (progress) => {
                     this.uploadProgress = progress
@@ -258,7 +255,26 @@
             },
             closeModalMaintenance() {
                 this.modalMaintenanceIsOpen = false
-            }
+            },
+            loadUrlPOC() {
+                let that = this
+                this.modalDragDropIsOpen = true
+
+                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                    .then( response => {
+                        let theData = response.data.data
+                        let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+                        that.$store.commit('SET_UPLOAD_URL', theUrl)
+                        console.log("Upload url created. The url is ", theUrl)
+
+                        // document.getElementsByClassName('form.uploadvid__form').action = theUrl;
+                        $("form.uploadvid__form").attr("action", theUrl); 
+                        console.log('Form action assigned!')
+                    })
+                    .catch( error => { 
+                        console.log("Couldn't post jwvideo \n", error)
+                    })
+            },
         },
         computed: {
             ...mapGetters([
@@ -376,4 +392,10 @@
             .upload-video__text {
                 font-size: 1.4em;
             }
+
+
+/* ==============================================
+					#TRUMPS
+    ================================================= */
+
 </style>
