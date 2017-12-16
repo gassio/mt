@@ -26,8 +26,8 @@ const router = new VueRouter({
 
 Vue.filter('sliceDate', function(value) {
   // Checks if presentedAt value exists in the video object
-  if (typeof value !== 'undefined') 
-    return value.slice(0,10)
+  if (typeof value !== 'undefined')
+    return value.toString().slice(0,10)
 })
 
 new Vue({

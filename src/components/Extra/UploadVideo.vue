@@ -10,27 +10,26 @@
         </el-dialog> -->
         
 		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
-            <!-- <form class="uploadvid__form" method="POST" action="" enctype="multipart/form-data">
-                <input type="file" name="file" />
-                <button type="submit">Upload</button>
-            </form> -->
+                <!-- <form id="mydropo" class="uploadvid__area" method="POST" action="" enctype="multipart/form-data">
+                    <input type="file" name="file" class="uploadvid__text" />
+                </form> -->
             <div class="uploadvid__area">
                 <span class="uploadvid__text">Drop videos here or click to upload</span>
             </div>
 		</el-dialog>
 
         <el-dialog class="uploadvid__metadata" title="Video details" :visible.sync="modalMetadataIsOpen" :close-on-click-modal="false">
-            <el-form ref="form" :model="uploadVidMetadata" label-width="120px">
-                <el-form-item label="Title">
+            <el-form ref="form" :model="uploadVidMetadata" label-width="120px" :rules="uploadVidMetadataRules">
+                <el-form-item label="Title" prop="title">
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
-                <el-form-item label="Class">
+                <el-form-item label="Class" prop="class">
                     <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" v-for="c in classes" v-bind:key="c.title">
                         <el-option :label="c.title" :value="c.title"></el-option>
                     </el-select>
                     <!-- <el-input v-model="uploadVidMetadata.class"></el-input> -->
                 </el-form-item>
-                <el-form-item label="Genre">
+                <el-form-item label="Genre" prop="genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
                         <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
                         <el-option label="Lab presentation" value="Lab presentation"></el-option>
@@ -39,13 +38,13 @@
                         <el-option label="Conference talk" value="Conference talk"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Presentation date">
+                <el-form-item label="Presentation date" prop="presentationDate">
                     <el-col :span="11">
                         <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentedAt" style="width: 100%;"></el-date-picker>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="startUpload()">Start upload</el-button>
+                    <el-button type="primary" @click="startUpload('ruleForm')">Start upload</el-button>
                     <el-button @click="modalMetadataIsOpen = false">Cancel</el-button>
                 </el-form-item>
             </el-form>
@@ -82,13 +81,27 @@
                     genre: '',
                     presentedAt: ''
                 },
+                uploadVidMetadataRules: {
+                    title: [
+                        { required: true, message: 'Please input video title', trigger: 'blur' },
+                    ],
+                    class: [
+                        { required: true, message: 'Please select class', trigger: 'blur' },
+                    ],
+                    genre: [
+                        { required: true, message: 'Please select genre', trigger: 'blur' },
+                    ],
+                    presentationDate: [
+                        { required: true, message: 'Please choose date', trigger: 'blur' },
+                    ],
+                }
             }
         },
         created() {
             this.$store.dispatch('getAllClasses')
         },
-        mounted() { 
-            
+        mounted() {
+
         },
         methods: {
             createJwVideo() {
@@ -114,27 +127,42 @@
                 if (this.dropzoneInstance === null) {
                     this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
                         url: 'http://www.test.com', // this.uploadUrl
-                        createImageThumbnails: false,
                         autoProcessQueue: false,
-                        timeout:  1800000, // 30min 
+                        parallelUploads: 100,
+                        maxFiles: 1,
+                        timeout: 1800000, // 30min 
                         headers: {
                             'Cache-Control': null,
                             'X-Requested-With': null,
-                        }, 
+                        }
                     })
                 }
 
-                // Sets the dropzone object url
+                // Sets the dropzone url
                 this.dropzoneInstance.options.url = this.uploadUrl
                 console.log('this url: ', this.dropzoneInstance.options.url)
 
-                // User enters video details (title, class, genre, presentedAt)
+                // DROPZONE EVENTS
+
+                // File added 
+                // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
                     this.modalDragDropIsOpen = false
                     this.modalMetadataIsOpen = true
                     console.log("Added file.")
                 })
 
+                // this.dropzoneInstance.on("sending", (file, xhr, formData) => {
+                //     console.log('xhr status: ', xhr.status)
+                //     console.log('xhr statusText: ', xhr.statusText)
+                // })
+
+                // Updates the upload progress bar
+                this.dropzoneInstance.on("totaluploadprogress", (progress) => {
+                    this.uploadProgress = progress
+                    console.log("Progress event \n ", progress)
+                })
+                
                 // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', theData.link.query.key)
@@ -206,30 +234,18 @@
 
                 })
 
-                this.dropzoneInstance.on("error", (file, errorMessage) => {
-                    // axios.delete("https://metalogon-api.herokuapp.com/rest/jwvideo/" + jwVideoId)
-                    //     .then( response => { console.log("jwVideo object " + jwVideoId + " deleted!")})
-                    //     .catch( error => console.log(error.response))
-                    
-                    console.log("Error event \n", errorMessage)
+                this.dropzoneInstance.on("error", (files, response) => {
+                    that.modalProgressIsOpen = false
+                    swal('Upload again.', 'The process was stopped...', 'warning')
                 })
 
-                this.dropzoneInstance.on("canceled", (file) => {
-                    console.log("Canceled event")
-                })
-                
-                this.dropzoneInstance.on("complete", (file) => {
-                    console.log("Complete event")
+                this.dropzoneInstance.on("canceled", (files, response) => {
+                    console.log('canceled')
                 })
 
-                this.dropzoneInstance.on("totaluploadprogress", (progress) => {
-                    this.uploadProgress = progress
-                    console.log("Progress event \n ", progress)
-                })
-
+                // UI events
                 this.dropzoneInstance.on("dragover", event => {
                     $('.uploadvid__area').css('background-color', '#8F082A')
-                    // $('.uploadvid__area').css('border', '3px dashed orange')
                 })
 
                 this.dropzoneInstance.on("dragleave", event => {
@@ -240,11 +256,18 @@
                     $('.uploadvid__area').css('background-color', '#8F082A')
                 })   
             },
-            startUpload() {
-                this.modalMetadataIsOpen = false
-                this.modalProgressIsOpen = true
-                this.dropzoneInstance.processQueue()
-
+            startUpload(formName) {
+                this.$refs[formName].validate(
+                    (valid) => {
+                        if (valid) {
+                            this.modalMetadataIsOpen = false
+                            this.modalProgressIsOpen = true
+                            this.dropzoneInstance.processQueue()
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    })
             },
             closeModalDragDrop() {
                 this.modalDragDropIsOpen = false
@@ -260,6 +283,19 @@
                 let that = this
                 this.modalDragDropIsOpen = true
 
+                this.dropzoneInstance = new Dropzone('#mydropo', { 
+                        url: 'http://www.test.com', // this.uploadUrl
+                        uploadMultiple: true,
+                        autoProcessQueue: false,
+                        parallelUploads: 100,
+                        maxFiles: 1,
+                        timeout:  3000,// 1800000, // 30min 
+                        headers: {
+                            'Cache-Control': null,
+                            'X-Requested-With': null,
+                        }, 
+                })
+
                 axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                     .then( response => {
                         let theData = response.data.data
@@ -268,8 +304,12 @@
                         console.log("Upload url created. The url is ", theUrl)
 
                         // document.getElementsByClassName('form.uploadvid__form').action = theUrl;
-                        $("form.uploadvid__form").attr("action", theUrl); 
+                        $("form.uploadvid__area").attr("action", theUrl); 
                         console.log('Form action assigned!')
+
+                        $("form.uploadvid__area input:file").change(function() {
+                            that.modalMetadataIsOpen = true
+                        })
                     })
                     .catch( error => { 
                         console.log("Couldn't post jwvideo \n", error)
