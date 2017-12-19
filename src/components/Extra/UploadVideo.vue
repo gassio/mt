@@ -19,7 +19,7 @@
 		</el-dialog>
 
         <el-dialog class="uploadvid__metadata" title="Video details" :visible.sync="modalMetadataIsOpen" :close-on-click-modal="false">
-            <el-form ref="form" :model="uploadVidMetadata" label-width="120px" :rules="uploadVidMetadataRules">
+            <el-form :model="uploadVidMetadata" ref="uploadVidMetadata" label-width="120px" :rules="uploadVidMetadataRules">
                 <el-form-item label="Title" prop="title">
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
@@ -38,13 +38,15 @@
                         <el-option label="Conference talk" value="Conference talk"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Presentation date" prop="presentationDate">
+                <el-form-item label="Presentation date" required>
                     <el-col :span="11">
-                        <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentedAt" style="width: 100%;"></el-date-picker>
+                        <el-form-item prop="presentedAt">
+                            <el-date-picker type="date" placeholder="Pick a date" v-model="uploadVidMetadata.presentedAt" style="width: 100%;"></el-date-picker>
+                        </el-form-item>
                     </el-col>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="startUpload('ruleForm')">Start upload</el-button>
+                    <el-button type="primary" @click="startUpload('uploadVidMetadata')">Start upload</el-button>
                     <el-button @click="modalMetadataIsOpen = false">Cancel</el-button>
                 </el-form-item>
             </el-form>
@@ -91,8 +93,8 @@
                     genre: [
                         { required: true, message: 'Please select genre', trigger: 'blur' },
                     ],
-                    presentationDate: [
-                        { required: true, message: 'Please choose date', trigger: 'blur' },
+                    presentedAt: [
+                        { type: 'date', required: true, message: 'Please choose date', trigger: 'blur' },
                     ],
                 }
             }
@@ -105,7 +107,7 @@
         },
         methods: {
             createJwVideo() {
-                let that = this
+                let that = this 
                 this.modalDragDropIsOpen = true
 
                 axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
@@ -116,11 +118,11 @@
                         that.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
-                        that.createVideo(theData, theData.link.query.key)
+                        that.createVideo(theData.link.query.key)
                     })
                     .catch( error => console.log("Couldn't post jwvideo \n", error))
             },
-            createVideo(theData, jwVideoId) {
+            createVideo(jwVideoId) {
                 var that = this
                 
                 // Creating dropzone
@@ -143,19 +145,18 @@
                 console.log('this url: ', this.dropzoneInstance.options.url)
 
                 // DROPZONE EVENTS
-
                 // File added 
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
+                    // Resets the value of metadataModal fields
+                    this.uploadVidMetadata.title = '';this.uploadVidMetadata.class = '';this.uploadVidMetadata.genre = '';this.uploadVidMetadata.presentedAt = '';
+                    // Closes and opens the modals
                     this.modalDragDropIsOpen = false
                     this.modalMetadataIsOpen = true
+                    // Sets the title field as the added file.name 
+                    this.uploadVidMetadata.title = file.name
                     console.log("Added file.")
                 })
-
-                // this.dropzoneInstance.on("sending", (file, xhr, formData) => {
-                //     console.log('xhr status: ', xhr.status)
-                //     console.log('xhr statusText: ', xhr.statusText)
-                // })
 
                 // Updates the upload progress bar
                 this.dropzoneInstance.on("totaluploadprogress", (progress) => {
@@ -165,16 +166,15 @@
                 
                 // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
-                    console.log('Jwvideo object created. The key is: ', theData.link.query.key)
+                    console.log('Jwvideo object created. The key is: ', jwVideoId)
                     
-                    // A message label is needed.
-                    // Something like this: "Synchronizing video..."
                     // Shows loading spinner
                     var loadingInstance = Loading.service({ fullscreen: true, text: "Video synchronizing..." }); 
                     let link, duration, thumb
 
+                    // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + theData.link.query.key)
+                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -185,10 +185,10 @@
                                         duration = conversions[i].duration
                                         console.log('|> Link: ', link)
                                         console.log('|> Duration: ', duration)
-
-                                        // pass object video 
+                                        
+                                        // POST video 
                                         that.$store.dispatch('createVideo', {
-                                            "jwVideoId": theData.link.query.key,
+                                            "jwVideoId": jwVideoId,
                                             "title": that.uploadVidMetadata.title,
                                             "class": that.uploadVidMetadata.class,
                                             "genre": that.uploadVidMetadata.genre,
@@ -198,37 +198,24 @@
                                             "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
                                             "annotations": []
                                         })
+
                                         // Close loading bar
                                         loadingInstance.close()
-                                        // Clear interval
+
                                         clearInterval(intervalID)
 
                                         // Clearing modal form
                                         that.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
-
-                                        // axios.put("https://metalogon-api.herokuapp.com/rest/video/" + that.id, 
-                                        //     { "link": link, "duration": duration }
-                                        // )
-                                        // .then( (response) => console.log('PUT video: /', that.id))
-                                        // .catch( (error) => console.log('Not PUT video: ', error))
-                                                // that.$store.dispatch('editVideo', {
-                                                //     videoId: that.id,
-                                                //     linkDurationThumb: {
-                                                //         link: link,
-                                                //         duration: duration
-                                                //     }
-                                                // })
                                     }
                                 }
                             })
                             .catch( (error) => console.log("Couldn't get conversions \n ", error))
                     }, 5000)
-                
 
+                
                     let uploadedId, 
                         uploadedTitle = that.uploadVidMetadata.title;
 
-                    
                     // Closing the progress modal
                     this.modalProgressIsOpen = false
 
@@ -236,7 +223,7 @@
 
                 this.dropzoneInstance.on("error", (files, response) => {
                     that.modalProgressIsOpen = false
-                    swal('Upload again.', 'The process was stopped...', 'warning')
+                    swal(that.uploadVidMetadata.title, 'The uploading was stopped...', 'info')
                 })
 
                 this.dropzoneInstance.on("canceled", (files, response) => {
@@ -245,15 +232,14 @@
 
                 // UI events
                 this.dropzoneInstance.on("dragover", event => {
-                    $('.uploadvid__area').css('background-color', '#8F082A')
+                    $('.uploadvid__area').css('border', '8px dashed #ccc')
                 })
 
                 this.dropzoneInstance.on("dragleave", event => {
-                    $('.uploadvid__area').css('background-color', '#FFF')
+                    $('.uploadvid__area').css('border', 'none')
                 })
 
                 this.dropzoneInstance.on("drop", event => {
-                    $('.uploadvid__area').css('background-color', '#8F082A')
                 })   
             },
             startUpload(formName) {
@@ -372,15 +358,11 @@
 
 	.uploadvid__area {
         height: 100%;
-        border: 3px solid #ccc;
         display: flex;
         justify-content: center;
 	}
 	.uploadvid__area:hover {
-        transition: 0.40s;
-        color: #FFF;
-        border: none;
-        background-color: #8F082A !important;
+        border: 8px dashed #ccc;
 	}
         .uploadvid__text {
             font-size: 1.4em;
