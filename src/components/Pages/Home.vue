@@ -76,7 +76,6 @@
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 
-
     export default {
 		data() {
 			return {
@@ -92,7 +91,6 @@
 		},
 		created() {
 			this.$store.dispatch('getAllVideos')
-			// this.$store.dispatch('createUploadUrl')
 		},
 		mounted() {
 		},
@@ -314,5 +312,13 @@
 		padding: 100px 135px 100px 135px;
     	font-size: 1.7em;
 	}
+
+	.mt-loading {
+		background-color: #F0F3F4;
+		/* e6ecedd1 */
+	}
+		.mt-loading .el-loading-spinner .path {
+			stroke: gray;
+		}
 
 </style>

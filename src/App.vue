@@ -10,7 +10,9 @@
     import MyHeader from './components/Layout/MyHeader.vue'
 
     export default {
-        mounted() { 
+        mounted() {
+            // "Metalogon" label to Loading feature
+            $('.mt-loading .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
         },
         methods: {
         },
