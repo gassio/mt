@@ -5,10 +5,6 @@
             <span class="upload-video__text">Click to upload video</span>
         </div>
 
-        <!-- <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
-             <span>Coming soon.</span>
-        </el-dialog> -->
-        
 		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
                 <!-- <form id="mydropo" class="uploadvid__area" method="POST" action="" enctype="multipart/form-data">
                     <input type="file" name="file" class="uploadvid__text" />
@@ -55,6 +51,18 @@
 		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="modalProgressIsOpen" :before-close="closeModalProgress" :close-on-click-modal="false">
             <el-progress :percentage="parseFloat(uploadProgress.toFixed(2))" :stroke-width="14"></el-progress> 
         </el-dialog>
+
+		<el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false">
+            <div class="uploadvid__sync-load" v-loading="modalSyncOpen" 
+                element-loading-text="Processing your file..." 
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+        </el-dialog>
+
+        <!-- <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
+             <span>Coming soon.</span>
+        </el-dialog> -->
+        
     </div>
 </template>
 
@@ -76,6 +84,7 @@
                 modalDragDropIsOpen: false,
                 modalMetadataIsOpen: false,
                 modalProgressIsOpen: false,
+                modalSyncOpen: false,
                 uploadProgress: 0,
                 uploadVidMetadata: {
 					title: '',
@@ -103,7 +112,6 @@
             this.$store.dispatch('getAllClasses')
         },
         mounted() {
-
         },
         methods: {
             createJwVideo() {
@@ -168,8 +176,9 @@
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
                     
+                    that.modalSyncOpen = true
+
                     // Shows loading spinner
-                    var loadingInstance = Loading.service({ fullscreen: true, text: "Video synchronizing..." }); 
                     let link, duration, thumb
 
                     // Fetching link and duration
@@ -200,7 +209,7 @@
                                         })
 
                                         // Close loading bar
-                                        loadingInstance.close()
+                                        that.modalSyncOpen = false            
 
                                         clearInterval(intervalID)
 
@@ -223,7 +232,6 @@
 
                 this.dropzoneInstance.on("error", (files, response) => {
                     that.modalProgressIsOpen = false
-                    swal(that.uploadVidMetadata.title, 'The uploading was stopped...', 'info')
                 })
 
                 this.dropzoneInstance.on("canceled", (files, response) => {
@@ -260,6 +268,7 @@
             },
             closeModalProgress() {
                 this.modalProgressIsOpen = false
+                this.openMsgUploadStopped()
                 this.dropzoneInstance.removeAllFiles(true)
             },
             closeModalMaintenance() {
@@ -301,6 +310,12 @@
                         console.log("Couldn't post jwvideo \n", error)
                     })
             },
+            openMsgUploadStopped(vidTitle) {
+                this.$message({
+                    message: 'Video uploading was stopped...',
+                    showClose: true
+                })
+            }
         },
         computed: {
             ...mapGetters([
@@ -419,5 +434,17 @@
 /* ==============================================
 					#TRUMPS
     ================================================= */
+
+    .uploadvid__sync .el-loading-text {
+        font-size: 1.5em;
+    }
+
+    .uploadvid__sync .uploadvid__sync-load {
+        padding: 10em 0 5em 0;        
+    }
+
+    .el-message__group p{
+        font-size: 1.2em;
+    }
 
 </style>

@@ -96,13 +96,18 @@
     .mt-loading {
       background-color: #F0F3F4; /* e6ecedd1 */
     }
-    .mt-loading .el-loading-spinner .path {
+    .el-loading-spinner .path {
       stroke: gray;
+      stroke-width: 4px;
     }
 
     /* Elemefe loading styles */
     .el-loading-mask {
       background-color: none;
+    }
+
+    p.el-loading-text {
+        color: gray !important;
     }
 
 </style>
