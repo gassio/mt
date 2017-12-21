@@ -74,6 +74,11 @@
         flex-direction: row !important;
     }
 
+
+/* ==============================================
+                #APP-SCROLLBAR
+	================================================= */
+
     ::-webkit-scrollbar {
 	    width: 5px;
         height: 8px;
@@ -83,6 +88,21 @@
     ::-webkit-scrollbar-thumb {
         background: gray;
         border-radius: 5px;
+    }
+/* ==============================================
+                #LOADING SCREEN
+	================================================= */
+
+    .mt-loading {
+      background-color: #F0F3F4; /* e6ecedd1 */
+    }
+    .mt-loading .el-loading-spinner .path {
+      stroke: gray;
+    }
+
+    /* Elemefe loading styles */
+    .el-loading-mask {
+      background-color: none;
     }
 
 </style>
