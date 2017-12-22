@@ -12,7 +12,8 @@
     export default {
         mounted() {
             // "Metalogon" label to Loading feature
-            $('.mt-loading .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
+            this.$loading({ fullscreen: true })
+            $('.el-loading-mask .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
         },
         methods: {
         },
@@ -92,22 +93,18 @@
 /* ==============================================
                 #LOADING SCREEN
 	================================================= */
-
-    .mt-loading {
-      background-color: #F0F3F4; /* e6ecedd1 */
-    }
-    .el-loading-spinner .path {
-      stroke: gray;
-      stroke-width: 4px;
-    }
-
-    /* Elemefe loading styles */
+    
     .el-loading-mask {
-      background-color: none;
+      background-color: #F0F3F4 !important; /* e6ecedd1 */
     }
 
-    p.el-loading-text {
-        color: gray !important;
-    }
+        .el-loading-spinner .path {
+        stroke: gray !important;
+        stroke-width: 4px !important;
+        }
+
+        p.el-loading-text {
+            color: gray !important;
+        }
 
 </style>
