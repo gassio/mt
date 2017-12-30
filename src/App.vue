@@ -6,7 +6,6 @@
 </template>
 
 <script>
-    import { eventBus } from './main'
     import MyHeader from './components/Layout/MyHeader.vue'
 
     export default {

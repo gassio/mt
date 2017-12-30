@@ -1,6 +1,5 @@
 <template>
-    <div class="page">
-        <div class="head container">
+        <header class="head">
             
             <ul class="head__nav">
                 <div class="head__nav-left">
@@ -14,8 +13,7 @@
                 <div class="head__nav-right">
                 </div>
             </ul>
-        </div>
-    </div>
+        </header>
 </template>
 
 <script>
@@ -42,81 +40,79 @@
 </script>
 
 <style>
-.page {
+
+.head {
     width: 100%;
-    background: #A90931;
+    height: 60px;
+    color: #FFF;
+    background-color: #A90931;
+    display: flex;
 }
-    .head {
-      height: 60px;
-      color: #FFF;
-      background-color: #A90931;
-      display: flex;
+
+    .head__logo {
+        padding-top: 20px;
+        font-size: 24px;
+        font-weight: bold;
     }
-
-        .head__logo {
-          padding-top: 20px;
-          font-size: 24px;
-          font-weight: bold;
+        .head__logo i {
+            color: #FFF;
+            padding-right: 5px;
         }
-            .head__logo i {
-                color: #FFF;
-                padding-right: 5px;
+
+    .head__nav {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        color: #FFF;
+        margin-left: 60px;
+        padding:0;
+    }
+        .head__nav-left{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+        
+        .head__nav-right {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-right: 60px;
+        }
+            .head__nav-item {
+                margin-left: 20px;
+                padding: 10px 16px;
+            }
+            .head__nav-item a{
+                color: #FFFFFF;
+            }
+            .head__nav-item:hover {
+                background-color: #8F082A;
+                border-radius: 3px;
             }
 
-        .head__nav {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          width: 100%;
-          color: #FFF;
-          margin-left: 60px;
-          padding:0;
-        }
-            .head__nav-left{
-                display: flex;
-                flex-direction: row;
-                align-items: center;
+            .head__add-video {
+                margin-left: 50px;
             }
-            
-            .head__nav-right {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                margin-right: 60px;
-            }
-                .head__nav-item {
-                    margin-left: 20px;
-                    padding: 10px 16px;
-                }
-                .head__nav-item a{
-                    color: #FFFFFF;
-                }
-                .head__nav-item:hover {
-                    background-color: #8F082A;
+                .head__add-video a {
+                    color: #FFFFFF !important;
+                    background: #B6AC1C;
                     border-radius: 3px;
+                    padding: 10px 16px;
+                    font-size: 0.9em;
                 }
-
-                .head__add-video {
-                    margin-left: 50px;
+                .head__add-video a:hover {
+                    color: #FFFFFF !important;
+                    background: #9C9418;
+                    border-radius: 3px;
+                    padding: 10px 16px;
+                    transition: 0.2s;
                 }
-                    .head__add-video a {
-                        color: #FFFFFF !important;
-                        background: #B6AC1C;
-                        border-radius: 3px;
-                        padding: 10px 16px;
-                        font-size: 0.9em;
-                    }
-                    .head__add-video a:hover {
-                        color: #FFFFFF !important;
-                        background: #9C9418;
-                        border-radius: 3px;
-                        padding: 10px 16px;
-                        transition: 0.2s;
-                    }
-    .head__nav-item-active {
-      background-color: #8F082A;
-      border-radius: 3px;
-      padding: 10px 16px;
-    }
+.head__nav-item-active {
+    background-color: #8F082A;
+    border-radius: 3px;
+    padding: 10px 16px;
+}
 </style>
