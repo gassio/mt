@@ -1,17 +1,17 @@
 <template>
-    <div class= "home container">
+    <div class= "admin container">
 
-		<div class= "home__head">
+		<div class="admin__head">
 			<div class= "columns is-mobile is-gapless is-marginless">
 				<div class= "column is-8">
-					<!--<div class= "home__head-semester">
-						<button id="all" class="home__head-semester-button" style="width: 60px" type="button">All</button>
-						<button id="spring17" class="home__head-semester-button" type="button">Spring '17</button>
-						<button id="winter16" class="home__head-semester-button" type="button">Winter '16</button>
+					<!--<div class= "admin__head-semester">
+						<button id="all" class="admin__head-semester-button" style="width: 60px" type="button">All</button>
+						<button id="spring17" class="admin__head-semester-button" type="button">Spring '17</button>
+						<button id="winter16" class="admin__head-semester-button" type="button">Winter '16</button>
 					</div>-->
 				</div>
 				<div class= "column is-4">
-					<div class= "home-genre-selection">
+					<div class= "admin-genre-selection">
 						<p>Genre: &nbsp </p>
 						<el-select v-model="currentGenre" filterable placeholder="Select" style="width: 210px;">
 							<el-option v-for="genre in genres" :key="genre.name" :label="genre.name" :value="genre.name">
@@ -22,7 +22,7 @@
 			</div>
 		</div>
 
-		<div class="home__content">
+		<div class="admin__content">
 
 			<div class="videocard" v-for="v in videos" v-show="v.genre === currentGenre" v-bind:key="v.id">
 				<router-link class="videocard-thumbnail" :to="'/video/' + v.id" tag="a">
@@ -118,17 +118,17 @@
 
 
 /* ==============================================
-                #HOME-PAGE
+                #admin-PAGE
 	================================================= */
 
 /*-------------- CARD ---------------- */
-.home__head {
+.admin__head {
 	min-width: 770px;
 	width: 100%;
 	height: 60px;
 	border-bottom: 1px solid #E8E9EA;
 }
-	.home__head-semester {
+	.admin__head-semester {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -137,14 +137,14 @@
 		width: 100%;
 		height: 60px;
 	}
-		.home__head-semester-button {
+		.admin__head-semester-button {
 			background: none;
 			border: none;
 			padding-left: 10px;
 			padding-right: 10px;
 		}
 
-	.home-genre-selection {
+	.admin-genre-selection {
 		display: flex;
 		flex-direction: row;
 		width: 100%;
@@ -153,7 +153,7 @@
 		line-height: 60px;
 	}
 
-.home__content {
+.admin__content {
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;

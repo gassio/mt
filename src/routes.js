@@ -1,3 +1,4 @@
+import Admin from './components/Admin/AdminPage.vue'
 import Home from './components/Pages/Home.vue'
 import Library from './components/Pages/Library.vue'
 import Wiki from './components/Pages/Wiki.vue'
@@ -14,5 +15,6 @@ export const routes = [
     { path: '/classes/:id', component: Class },
     { path: '/video/:id', component: Video, children: [
         { path: 'edit', component: VideoEdit }
-    ] }
+    ] },
+    { path: '/admin', component: Admin },
 ]
