@@ -1,20 +1,27 @@
 <template>
-        <header class="head">
-            
-            <ul class="head__nav">
-                <div class="head__nav-left">
-                <router-link to="/" tag="h1" class="head__logo title"><a>Metalogon</a></router-link>
-                    <router-link to="/" tag="li" class="head__nav-item" active-class="head__nav-item-active" exact><a class="head__nav-item-link">Home</a></router-link>
-                    <router-link to="/classes" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Classes</a></router-link>
-                    <router-link to="/library" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Library</a></router-link>
-                    <router-link to="/wiki" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a>Wiki</a></router-link>
-                    <router-link to="/admin" class="head__nav-item" tag="li" active-class="head__nav-item-active"><a style="color:grey">admin</a></router-link>
-                    <!-- <li class="head__add-video"><a v-on:click="setUploadingVideoAsTrue()">+ Upload video</a></li> -->
+    <nav class="head navbar" role="navigation">
+        <div class="container">
+
+            <div class="navbar-brand">
+                <router-link to="/" tag="span" class="navbar-item">
+                    <img src="../../assets/logo-white.png" width="112" height="28">
+                </router-link>
+            </div>
+
+            <div class="navbar-menu">
+                <div class="navbar-start">
+                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
+                    <router-link to="/classes" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Classes</router-link>
+                    <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Wiki</router-link>
+                    <router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
+                    <router-link to="/admin" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin</router-link>
                 </div>
-                <div class="head__nav-right">
+                <div class="navbar-end">
+                    <div class="navbar-item"></div>
                 </div>
-            </ul>
-        </header>
+            </div>
+        </div>
+    </nav>
 </template>
 
 <script>
@@ -43,9 +50,9 @@
 <style>
 
 .head {
-    width: 100%;
-    height: 60px;
-    color: #FFF;
+    /* width: 100%; */
+    /* height: 60px; */
+    /* color: #FFF; */
     background-color: #A90931;
     display: flex;
 }
@@ -86,12 +93,12 @@
                 margin-left: 20px;
                 padding: 10px 16px;
             }
-            .head__nav-item a{
-                color: #FFFFFF;
+            .head__nav-item{
+                color: #FFFFFF !important;
             }
             .head__nav-item:hover {
-                background-color: #8F082A;
-                border-radius: 3px;
+                background-color: #8F082A !important;
+                color: #FFF;
             }
 
             .head__add-video {
