@@ -9,11 +9,9 @@
             <div class="class-of-semester-title"><p>{{ this.classes.title }}</p></div>
         </div><!-- end -->
         
-        <!-- MAIN CONTENT - start -->
         <div class="class-content">
             <div class="v-videos fx-dir-col">
-                <div class="v-video fx-dir-row" v-for="v in videos">
-                    <!-- CLASS CARD - start -->
+                <div class="v-video fx-dir-row" v-for="v in videos" v-bind:key="v.id">
                     <router-link :to="'/video/' + v.id"  tag="a" class="class-card columns is-gapless">
                         <div class="class-card-image column is-2 is-gapless is-marginless">
                             <img :src="v.thumb" alt="video-thumbnail" class="class-card-image-thumbnail">
@@ -29,7 +27,7 @@
                     </router-link>
                 </div>
             </div>
-        </div><!-- end -->
+        </div>
         
         <router-view></router-view>
     </div>      

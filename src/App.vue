@@ -106,4 +106,9 @@
             color: gray !important;
         }
 
+        body {
+        display: relative;
+      }
+
+
 </style>

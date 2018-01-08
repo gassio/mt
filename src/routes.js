@@ -1,4 +1,3 @@
-import Admin from './components/Admin/AdminPage.vue'
 import Home from './components/Pages/Home.vue'
 import Library from './components/Pages/Library.vue'
 import Wiki from './components/Pages/Wiki.vue'
@@ -6,6 +5,9 @@ import Classes from './components/Pages/Classes.vue'
 import Class from './components/Pages/Class.vue'
 import Video from './components/Pages/Video.vue'
 import VideoEdit from './components/Pages/VideoEdit.vue'
+import Admin from './components/Admin/AdminPage.vue'
+import Admin2 from './components/Admin/Admin2.vue'
+import Admin3 from './components/Admin/Admin3.vue'
 
 export const routes = [
     { path: '/', component: Home },
@@ -17,4 +19,6 @@ export const routes = [
         { path: 'edit', component: VideoEdit }
     ] },
     { path: '/admin', component: Admin },
+    { path: '/admin2', component: Admin2 },
+    { path: '/admin3', component: Admin3 },
 ]
