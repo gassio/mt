@@ -2,11 +2,11 @@
 
 		<div class="admin">
 			
-			<div class="columns" id="mail-app">
+			<div class="admin__body columns">
 
-				<div class="column is-10 messages hero is-fullheight" id="message-feed">
+				<div class="admin__main column is-10">
 
-					<div class="columns">
+					<div class="admin_featured columns">
 
 						<div class="column is-4">
 							<div class="card">
@@ -68,44 +68,74 @@
 						</div>
 					</div>
 
-					<div class="columns">
-						<article class="media">
-							<figure class="media-left">
-								<p class="image is-64x64">
-								<img src="https://bulma.io/images/placeholders/128x128.png">
-								</p>
-							</figure>
-							<div class="media-content">
-								<div class="content">
-								<p>
-									<strong>John Smith</strong> <small>@johnsmith</small> <small>31m</small>
-									<br>
-									Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare magna eros, eu pellentesque tortor vestibulum ut. Maecenas non massa sem. Etiam finibus odio quis feugiat facilisis.
-								</p>
+					<div class="admin__classvideos">
+
+							<article class="media">
+								<figure class="media-left" style="margin:10px">
+									<p class="image" style="width:250px">
+										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
+									</p>
+								</figure>
+								<div class="media-content" style="align-self: center;">
+									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
+									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
 								</div>
-								<!-- <nav class="level is-mobile">
-								<div class="level-left">
-									<a class="level-item">
-									<span class="icon is-small"><i class="fa fa-reply"></i></span>
-									</a>
-									<a class="level-item">
-									<span class="icon is-small"><i class="fa fa-retweet"></i></span>
-									</a>
-									<a class="level-item">
-									<span class="icon is-small"><i class="fa fa-heart"></i></span>
-									</a>
+								<div class="media-right" style="align-self: center;">
+									<div class="" style="display:flex;justify-content: center;">
+										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+									</div>
+									<div class="">
+										<p>Annotations: 34</p>
+										<p>Overall rating: 4.3</p>
+									</div>
 								</div>
-								</nav> -->
-							</div>
-							<div class="media-right">
-								<button class="delete"></button>
-							</div>
-						</article>						
+							</article>
+							<article class="media">
+								<figure class="media-left" style="margin:10px">
+									<p class="image" style="width:250px">
+										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
+									</p>
+								</figure>
+								<div class="media-content" style="align-self: center;">
+									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
+									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
+								</div>
+								<div class="media-right" style="align-self: center;">
+									<div class="" style="display:flex;justify-content: center;">
+										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+									</div>
+									<div class="">
+										<p>Annotations: 34</p>
+										<p>Overall rating: 4.3</p>
+									</div>
+								</div>
+							</article>
+							<article class="media">
+								<figure class="media-left" style="margin:10px">
+									<p class="image" style="width:250px">
+										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
+									</p>
+								</figure>
+								<div class="media-content" style="align-self: center;">
+									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
+									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
+								</div>
+								<div class="media-right" style="align-self: center;">
+									<div class="" style="display:flex;justify-content: center;">
+										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+									</div>
+									<div class="">
+										<p>Annotations: 34</p>
+										<p>Overall rating: 4.3</p>
+									</div>
+								</div>
+							</article>
+							
 					</div>
 
 				</div>
 
-				<aside class="column is-2 aside hero is-fullheight">
+				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="main">
 						<a href="#" class="item active"><span class="name">Metalogon Home</span></a>
@@ -117,18 +147,12 @@
 				</aside>
 
 			</div>
-			<footer class="footer">
+			
+			<footer class="footer" style="padding: 2rem;">
 				<div class="container">
 					<div class="content has-text-centered">
-					<p>
-						<strong>Bulma Templates</strong> by <a href="https://github.com/dansup">Daniel Supernault</a>. The source code is licensed
-						<a href="http://opensource.org/licenses/mit-license.php">MIT</a>.
-					</p>
-					<p>
-						<a class="icon" href="https://github.com/dansup/bulma-templates">
-						<i class="fa fa-github"></i>
-						</a>
-					</p>
+						<p style="margin: 0.2rem;"><strong>©Metalogon</strong> by Andreas Karatsolis.</p>
+						<p>Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
 					</div>
 				</div>
 			</footer>					
