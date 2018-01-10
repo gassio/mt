@@ -55,7 +55,7 @@
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
 										<div class="star-video" @click="featureVideo($event)">
-											<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
 											<p class="is-marginless">Rating: 4.3</p>
@@ -144,8 +144,15 @@
 			featureVideo(event) {
 				var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 				for (var i = 0, l = this.videos.length; i < l; i++) {
-					if (this.videos[i].title === eventTitle ) {
-						this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+					if (this.videos[i].title === eventTitle) {
+							if (this.videos[i].featured === false) {
+								this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+								$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
+							} 
+							else {
+								this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
+								$(event.currentTarget).css('color', '#4a4a4a')
+							}
 					}
 				}
 			}
@@ -199,6 +206,7 @@
 .star-video {
 	display:flex;
 	justify-content: center;
+	cursor: pointer;
 }
 
 	/* .star-video i:hover {

@@ -327,6 +327,15 @@ mutations: {
             }
         }
     },
+    UNFEATURE_VIDEO: (state, payload) => {
+        for (var i = 0, l = state.videos.length; i < l; i++) {
+            if (state.videos[i].title === payload) {
+                Vue.set(state.videos[i], 'featured', false)
+                console.log(state.videos[i].title)
+                console.log(state.videos[i])
+            }
+        }
+    },
     GET_VIDEO: (state, video) => {
         loadingInstance.close()
         state.videos = video
