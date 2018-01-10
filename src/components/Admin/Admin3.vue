@@ -58,7 +58,7 @@
 											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
-											<p class="is-marginless">Rating: 4.3</p>
+											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
 											<p class="is-marginless">Annotations: 34</p>
 											<!-- <p class="is-marginless">Lab presentation </p> -->
 											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
@@ -87,7 +87,7 @@
 				<div class="container">
 					<div class="content has-text-centered">
 						<p style="margin: 0.2rem;"><strong>©Metalogon</strong> by Andreas Karatsolis.</p>
-						<p>Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
+						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
 					</div>
 				</div>
 			</footer>					
@@ -405,7 +405,7 @@
   padding-top: 0;
   margin-bottom: 3px;
   font-size:12px;
-  color: #AAAAA;
+  color: #AAAAAA;
 }
 .action-buttons .pg a{
   font-size:12px;
