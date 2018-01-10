@@ -14,9 +14,9 @@
                     <router-link to="/classes" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Classes</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Wiki</router-link>
                     <router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
-                    <router-link to="/admin" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin</router-link>
-                    <router-link to="/admin2" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin2</router-link>
-                    <router-link to="/admin3" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin3</router-link>
+                    <!-- <router-link to="/admin" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin</router-link>
+                    <router-link to="/admin2" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">admin2</router-link> -->
+                    <router-link to="/admin3" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active"><strong>Admin</strong></router-link>
                 </div>
                 <div class="navbar-end">
                     <div class="navbar-item"></div>

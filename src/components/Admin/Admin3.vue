@@ -6,71 +6,41 @@
 
 				<div class="admin__main column is-10">
 
-					<div class="admin_featured columns">
+					<h3 class="featured__heading title is-size-4">Featured videos</h3>
 
-						<div class="column is-4">
-							<div class="card">
-								<div class="card-image">
-									<figure class="image">
-										<img src="https://cdn.jwplayer.com/thumbs/PWGQS5HM-720.jpg" alt="Placeholder image">
-									</figure>
-								</div>
-								<div class="card-content">
-									<div class="media-content">
-										<p class="title is-4">Mechanical Properties Of Crystals And Glasses - Group 5</p>
-										<p class="subtitle is-6">Materials Science and Engineering</p>
-										<em>2017-10-16</em>
-										<p><i class="commenting icon"></i>Lab presentation</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="column is-4">
-							<div class="card">
-								<div class="card-image">
-									<figure class="image">
-										<img src="https://cdn.jwplayer.com/thumbs/PWGQS5HM-720.jpg" alt="Placeholder image">
-									</figure>
-								</div>
-								<div class="card-content">
-									<div class="media-content">
-										<p class="title is-4">Mechanical Properties Of Crystals And Glasses - Group 5</p>
-										<p class="subtitle is-6">Materials Science and Engineering</p>
-										<em>2017-10-16</em>
-										<p><i class="commenting icon"></i>Lab presentation</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="column is-4">
-							<div class="card">
-								<div class="card-image">
-									<figure class="image">
-										<img src="https://cdn.jwplayer.com/thumbs/PWGQS5HM-720.jpg" alt="Placeholder image">
-									</figure>
-								</div>
-								<div class="card-content">
-									<div class="media-content">
-										<p class="title is-4">Mechanical Properties Of Crystals And Glasses - Group 5</p>
-										<p class="subtitle is-6">Materials Science and Engineering</p>
-										<em>2017-10-16</em>
-										<p><i class="commenting icon"></i>Lab presentation</p>
-									</div>
-								</div>
-							</div>
-						</div>
+					<div class="admin__featured">
+							<div class="container">
 
+								<div class="ftdcard card" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
+									<div class="card-image">
+										<figure class="image">
+											<img :src="v.thumb" alt="Placeholder image">
+										</figure>
+									</div>
+									<div class="card-content">
+										<div class="media-content">
+											<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
+											<p class="subtitle is-6">{{ v.class }}</p>
+											<p>{{ v.genre }}</p>
+											<p>{{ v.presentedAt | sliceDate }}</p>
+										</div>
+									</div>
+								</div>
+
+							</div>
 					</div>
 
-					<div class="columns">
+					<!-- <div class="columns">
 						<div class="column is-2 container">
 							<a class="button is-fullwidth is-info"><i class="fa fa-ellipsis-h"></i>More</a>
 						</div>
-					</div>
+					</div> -->
 
 					<div class="admin__classvideos">
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id">
+							<h3 class="class__heading title is-size-4">{{ currentClass }}</h3>
+
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-show="v.class === currentClass">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -79,17 +49,17 @@
 										</p>
 									</figure>
 									<div class="media-content" style="align-self:center; margin-left: 10px;">
-										<h3 class="is-marginless"><router-link :to="'/video/' + v.id" tag="a" class="has-text-black-ter">{{ v.title }}</router-link></h3>
-										<p class="is-size-5 is-marginless has-text-grey-dark">{{ v.class }}</p>
-										<p  class="is-size- is-marginless has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
+										<h3 class="is-size-4"><router-link :to="'/video/' + v.id" tag="a" class="classvideo-title has-text-black-ter">{{ v.title }}</router-link></h3>
+										<p class="is-size-6 has-text-grey-dark">{{ v.class }}</p>
+										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="" style="display:flex;justify-content: center;">
+										<div class="star-video" @click="featureVideo($event)">
 											<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
-											<p class="is-marginless">Annotations: 34</p>
 											<p class="is-marginless">Rating: 4.3</p>
+											<p class="is-marginless">Annotations: 34</p>
 											<!-- <p class="is-marginless">Lab presentation </p> -->
 											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
 										</div>
@@ -103,10 +73,10 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="main">
-						<a href="#" class="item active"><span class="name">Metalogon Home</span></a>
-						<a href="#" class="item"><span class="name">Materials Science and Engineering</span></a>
-						<a href="#" class="item"><span class="name">Aerospace Engineering</span></a>
-						<a href="#" class="item"><span class="name">Mathematics</span></a>
+						<a href="#" class="item" @click="currentClass = 'Home'"><span class="name">Metalogon Home</span></a>
+						<a href="#" class="item" @click="currentClass = 'Materials Science and Engineering'"><span class="name">Materials Science and Engineering</span></a>
+						<a href="#" class="item" @click="currentClass = 'Aerospace Engineering'"><span class="name">Aerospace Engineering</span></a>
+						<a href="#" class="item" @click="currentClass = 'Mathematics'"><span class="name">Mathematics</span></a>
 					</div>
 					
 				</aside>
@@ -137,14 +107,7 @@
     export default {
 		data() {
 			return {
-				genres: [
-					{ name: 'Elevator pitch' },
-					{ name: 'Lab presentation' },
-					{ name: 'Thesis talk' },
-					{ name: 'Progress report' },
-					{ name: 'Conference talk' }
-				],
-				currentGenre: 'Lab presentation',
+				currentClass: 'Materials Science and Engineering'
 			}
 		},
 		created() {
@@ -152,6 +115,8 @@
 		},
 		mounted() {
 			// this.genreSelection()
+			
+			// this.jerryriggingFeatured()
 
 		},
 		methods: {
@@ -170,7 +135,20 @@
 						var s = Math.floor(s % 3600 % 60);
 
 						return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+			},
+			jerryriggingFeatured() {
+				for (var i = 0, l = this.videos.length; i < l; i++) {
+					this.videos[i]["featured"] = false
 				}
+			},
+			featureVideo(event) {
+				var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
+				for (var i = 0, l = this.videos.length; i < l; i++) {
+					if (this.videos[i].title === eventTitle ) {
+						this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+					}
+				}
+			}
 		},
 		computed: {
             ...mapGetters([
@@ -185,116 +163,47 @@
 
 <style>
 
-.admin__head {
-	min-width: 770px;
-	width: 100%;
-	height: 60px;
-	border-bottom: 1px solid #E8E9EA;
+.admin__main {
+	padding-left: 30px;
+	margin-top: 25px;
 }
-	.admin__head-semester {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: flex-start;
-		min-width: 770px;
-		width: 100%;
-		height: 60px;
-	}
-		.admin__head-semester-button {
-			background: none;
-			border: none;
-			padding-left: 10px;
-			padding-right: 10px;
-		}
-
-	.admin-genre-selection {
-		display: flex;
-		flex-direction: row;
-		width: 100%;
-		align-items: center;
-		justify-content: flex-end;
-		line-height: 60px;
-	}
-
-
-
-.admin__featured {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	justify-content: flex-start;
-	min-width: 770px;
-	width: 100%;
-	height: 50%;
-}
-
-	.ftdcard {
-		height:auto;
-		width: 350px; /* calc(100% /3 - 20px) */
-		margin: 10px;
-		border-radius: 3px;
-		border: 1px solid rgba(170, 178, 200, 0.25);
-	}	
-		.ftdcard-video-thumbnail{
-			width: 100%;
-		}
-
-		.ftdcard-content {
-			padding: 15px 15px 5px 15px;
-		}
-
-			.ftdcard-details {
-			}
-				.ftdcard-description {
-					font-size: 1em;
-					padding: 0;
-					margin: 0;
-				}
-			
-				.ftdcard-semester,
-				.ftdcard-date {
-					font-size: 0.8em;
-					padding: 0;
-					margin: 0;
-				}
-
-			.ftdcard-foot {
-				border-top: 1px solid rgba(170, 178, 200, 0.25);
-				margin-top: 30px;
-				padding-top: 10px;
-				font-size: 0.8em;
-				display: flex;
-			}
-				.ftdcard-genre {
-					width: 50%;
-				}
-				.ftdcard-effectiveness {
-					width: 50%;
-					display: flex;
-					justify-content: space-between;
-					align-items: center;
-				}
-
-					.ftdcard-effectiveness-bar {
-					  background-color: red !important;
-					}
-
-					.ftdcard-effectiveness-label {
-					}
-
-
-
-
 
 /* ==============================================
                 #ADMIN-FEATURED
-	================================================= */	
+	================================================= */
 
-	.admin__class {
-		height: 50%;
+	.featured__heading, .class__heading {
+		margin: 10px 20px;
 	}
 
+	.admin__featured {
+		display: flex;
+		/* flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center; */
+	}
 
+	.admin__featured > .container {
+		display:flex;
+		flex-wrap: wrap;
+		/* background-color: green; */
+	}
+
+		.ftdcard {
+			width: 30%;
+			margin: 10px 20px;
+			/* background-color: yellow; */
+		}
+
+
+.star-video {
+	display:flex;
+	justify-content: center;
+}
+
+	/* .star-video i:hover {
+		background-color: yellow;
+	} */
 
 
 
@@ -302,7 +211,8 @@
                 #ADMIN-SIDEBAR
 	================================================= */
 
-	.admin__sidebar {
+	.admin__sidebar > .main {
+		position: fixed;
 	}
 			
 			.sidebar-menu__link {

@@ -313,7 +313,19 @@ mutations: {
     GET_ALL_VIDEOS: (state, newVideos) => {
         loadingInstance.close()
         state.videos = newVideos
-        state.videos.sort(function(a,b) {return (a.presentedAt < b.presentedAt) ? 1 : ((b.presentedAt < a.presentedAt) ? -1 : 0);} );            
+        state.videos.sort(function(a,b) {return (a.presentedAt < b.presentedAt) ? 1 : ((b.presentedAt < a.presentedAt) ? -1 : 0);} );
+        for (var i = 0, l = state.videos.length; i < l; i++) {
+            Vue.set(state.videos[i], 'featured', false)
+        }
+    },
+    FEATURE_VIDEO: (state, payload) => {
+        for (var i = 0, l = state.videos.length; i < l; i++) {
+            if (state.videos[i].title === payload) {
+                Vue.set(state.videos[i], 'featured', true)
+                console.log(state.videos[i].title)
+                console.log(state.videos[i])
+            }
+        }
     },
     GET_VIDEO: (state, video) => {
         loadingInstance.close()
