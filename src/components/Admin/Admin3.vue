@@ -70,65 +70,30 @@
 
 					<div class="admin__classvideos">
 
-							<article class="media">
-								<figure class="media-left" style="margin:10px">
-									<p class="image" style="width:250px">
-										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
-									</p>
-								</figure>
-								<div class="media-content" style="align-self: center;">
-									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
-									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
-								</div>
-								<div class="media-right" style="align-self: center;">
-									<div class="" style="display:flex;justify-content: center;">
-										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id">
+									<figure class="media-left" style="margin:0 0 0 20px">
+										<p class="image" style="width:200px">
+											<router-link :to="'/video/' + v.id"  tag="a">
+												<img :src="v.thumb">
+											</router-link>
+										</p>
+									</figure>
+									<div class="media-content" style="align-self:center; margin-left: 10px;">
+										<h3 class="is-marginless"><router-link :to="'/video/' + v.id" tag="a" class="has-text-black-ter">{{ v.title }}</router-link></h3>
+										<p class="is-size-5 is-marginless has-text-grey-dark">{{ v.class }}</p>
+										<p  class="is-size- is-marginless has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
-									<div class="">
-										<p>Annotations: 34</p>
-										<p>Overall rating: 4.3</p>
+									<div class="media-right" style="align-self:center; padding-right:15px;">
+										<div class="" style="display:flex;justify-content: center;">
+											<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
+										</div>
+										<div class="has-text-right has-text-grey-dark">
+											<p class="is-marginless">Annotations: 34</p>
+											<p class="is-marginless">Rating: 4.3</p>
+											<!-- <p class="is-marginless">Lab presentation </p> -->
+											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
+										</div>
 									</div>
-								</div>
-							</article>
-							<article class="media">
-								<figure class="media-left" style="margin:10px">
-									<p class="image" style="width:250px">
-										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
-									</p>
-								</figure>
-								<div class="media-content" style="align-self: center;">
-									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
-									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
-								</div>
-								<div class="media-right" style="align-self: center;">
-									<div class="" style="display:flex;justify-content: center;">
-										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
-									</div>
-									<div class="">
-										<p>Annotations: 34</p>
-										<p>Overall rating: 4.3</p>
-									</div>
-								</div>
-							</article>
-							<article class="media">
-								<figure class="media-left" style="margin:10px">
-									<p class="image" style="width:250px">
-										<img src="https://assets-jpcust.jwpsrv.com/thumbs/kyDpSEfN-720.jpg">
-									</p>
-								</figure>
-								<div class="media-content" style="align-self: center;">
-									<h4>Mechanical Properties Of Crystals And Glasses - Group 5</h4>
-									<p><span>Duration: 33:27 | Class: Materials Science and Engineering</span></p>
-								</div>
-								<div class="media-right" style="align-self: center;">
-									<div class="" style="display:flex;justify-content: center;">
-										<i class="fa fa-star-o fa-5x" aria-hidden="true"></i>
-									</div>
-									<div class="">
-										<p>Annotations: 34</p>
-										<p>Overall rating: 4.3</p>
-									</div>
-								</div>
 							</article>
 							
 					</div>
@@ -197,7 +162,15 @@
 						that.currentGenre = text
 					}
 				})
-			}
+			},
+			secondsToMMSS(s) {
+						s = Number(s);
+
+						var m = Math.floor(s % 3600 / 60);
+						var s = Math.floor(s % 3600 % 60);
+
+						return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+				}
 		},
 		computed: {
             ...mapGetters([
@@ -336,6 +309,16 @@
 				color: #000;
 			}
 
+
+
+
+/* ==============================================
+                #ADMIN-SIDEBAR
+	================================================= */
+
+	.classvideo:hover	{
+		background-color: #F5F5F5;
+	}
 
 
 
