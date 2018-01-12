@@ -11,7 +11,7 @@
 					<div class="admin__featured">
 							<div class="container">
 
-								<div class="ftdcard card" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -25,7 +25,7 @@
 											<p>{{ v.presentedAt | sliceDate }}</p>
 										</div>
 									</div>
-								</div>
+								</router-link>
 
 							</div>
 					</div>
@@ -193,13 +193,17 @@
 	.admin__featured > .container {
 		display:flex;
 		flex-wrap: wrap;
-		/* background-color: green; */
 	}
 
 		.ftdcard {
 			width: 30%;
 			margin: 10px 20px;
-			/* background-color: yellow; */
+			transition: 0.3s;
+		}
+
+		.ftdcard:hover {
+			transform: scale(1.05);
+			transition: 0.3s;
 		}
 
 
