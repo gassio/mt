@@ -5,9 +5,9 @@ import Classes from './components/Pages/Classes.vue'
 import Class from './components/Pages/Class.vue'
 import Video from './components/Pages/Video.vue'
 import VideoEdit from './components/Pages/VideoEdit.vue'
-import Admin from './components/Admin/AdminPage.vue'
-import Admin2 from './components/Admin/Admin2.vue'
-import Admin3 from './components/Admin/Admin3.vue'
+import Admin from './components/Admin/Admin.vue'
+import Professor from './components/Admin/Professor.vue'
+import Student from './components/Admin/Student.vue'
 
 export const routes = [
     { path: '/', component: Home },
@@ -17,8 +17,8 @@ export const routes = [
     { path: '/classes/:id', component: Class },
     { path: '/video/:id', component: Video, children: [
         { path: 'edit', component: VideoEdit }
-    ] },
+    ]},
     { path: '/admin', component: Admin },
-    { path: '/admin2', component: Admin2 },
-    { path: '/admin3', component: Admin3 },
+    { path: '/professor', component: Professor },
+    { path: '/student', component: Student },
 ]

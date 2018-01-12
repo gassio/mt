@@ -30,17 +30,11 @@
 							</div>
 					</div>
 
-					<!-- <div class="columns">
-						<div class="column is-2 container">
-							<a class="button is-fullwidth is-info"><i class="fa fa-ellipsis-h"></i>More</a>
-						</div>
-					</div> -->
-
 					<div class="admin__classvideos">
 
 							<h3 class="class__heading title is-size-4">{{ currentClass }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-show="v.class === currentClass">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClass">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -72,11 +66,13 @@
 
 				<aside class="admin__sidebar column is-2 aside">
 
-					<div class="main">
-						<a href="#" class="item" @click="currentClass = 'Home'"><span class="name">Metalogon Home</span></a>
-						<a href="#" class="item" @click="currentClass = 'Materials Science and Engineering'"><span class="name">Materials Science and Engineering</span></a>
-						<a href="#" class="item" @click="currentClass = 'Aerospace Engineering'"><span class="name">Aerospace Engineering</span></a>
-						<a href="#" class="item" @click="currentClass = 'Mathematics'"><span class="name">Mathematics</span></a>
+					<div class="menu-list">
+						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+						
+						<!-- <a v-bind:class="{ 'is-bg-light' : (currentClass === 'Materials Science and Engineering') }" @click="currentClass = 'Materials Science and Engineering'"><span class="name">Materials Science and Engineering</span></a>
+						<a v-bind:class="{ 'is-bg-light' : (currentClass === 'Aerospace Engineering') }" @click="currentClass = 'Aerospace Engineering'"><span class="name">Aerospace Engineering</span></a>
+						<a v-bind:class="{ 'is-bg-light' : (currentClass === 'Mathematics') }" @click="currentClass = 'Mathematics'"><span class="name">Mathematics</span></a> -->
 					</div>
 					
 				</aside>
@@ -105,70 +101,70 @@
 	import UploadVideo from '../Extra/UploadVideo.vue'
 
     export default {
-		data() {
-			return {
-				currentClass: 'Materials Science and Engineering'
-			}
-		},
-		created() {
-			this.$store.dispatch('getAllVideos')
-		},
-		mounted() {
-			// this.genreSelection()
-			
-			// this.jerryriggingFeatured()
-
-		},
-		methods: {
-			genreSelection() {
-				let that = this
-				$('.admin__genre').dropdown({
-					onChange: function (value, text, $selectedItem) {
-						that.currentGenre = text
-					}
-				})
-			},
-			secondsToMMSS(s) {
-						s = Number(s);
-
-						var m = Math.floor(s % 3600 / 60);
-						var s = Math.floor(s % 3600 % 60);
-
-						return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-			},
-			jerryriggingFeatured() {
-				for (var i = 0, l = this.videos.length; i < l; i++) {
-					this.videos[i]["featured"] = false
+			data() {
+				return {
+					currentClass: 'Materials Science and Engineering'
 				}
 			},
-			featureVideo(event) {
-				var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
-				for (var i = 0, l = this.videos.length; i < l; i++) {
-					if (this.videos[i].title === eventTitle) {
-							if (this.videos[i].featured === false) {
-								this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
-								$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
-							} 
-							else {
-								this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
-								$(event.currentTarget).css('color', '#4a4a4a')
-							}
+			created() {
+				this.$store.dispatch('getAllVideos')
+				this.$store.dispatch('getAllClasses')
+			},
+			mounted() {
+			},
+			methods: {
+				genreSelection() {
+					let that = this
+					$('.admin__genre').dropdown({
+						onChange: function (value, text, $selectedItem) {
+							that.currentGenre = text
+						}
+					})
+				},
+				secondsToMMSS(s) {
+							s = Number(s);
+
+							var m = Math.floor(s % 3600 / 60);
+							var s = Math.floor(s % 3600 % 60);
+
+							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+				},
+				jerryriggingFeatured() {
+					for (var i = 0, l = this.videos.length; i < l; i++) {
+						this.videos[i]["featured"] = false
+					}
+				},
+				featureVideo(event) {
+					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
+					for (var i = 0, l = this.videos.length; i < l; i++) {
+						if (this.videos[i].title === eventTitle) {
+								if (this.videos[i].featured === false) {
+									this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
+								} 
+								else {
+									this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
+									$(event.currentTarget).css('color', '#4a4a4a')
+								}
+						}
 					}
 				}
+			},
+			computed: {
+					...mapGetters(
+						['videos', 'uploadUrl', 'classes']
+					),
+				},
+			components: {
+				'upload-video': UploadVideo
 			}
-		},
-		computed: {
-            ...mapGetters([
-				'videos', 'uploadUrl'
-            ]),
-        },
-		components: {
-			'upload-video': UploadVideo
 		}
-    }
 </script>
 
 <style>
+.admin__body { 
+	margin-bottom: 0 !important;
+}
 
 .admin__main {
 	padding-left: 30px;
@@ -223,9 +219,31 @@
                 #ADMIN-SIDEBAR
 	================================================= */
 
-	.admin__sidebar > .main {
+.admin__sidebar {
+	padding: 0;
+}
+
+.admin__sidebar .menu-list {
+	padding: 0;
+	margin-top: 20px;	
 		position: fixed;
+}
+
+	.admin__sidebar .menu-list a {
+		padding: 15px 15px;
 	}
+
+/*
+	.admin__sidebar > .main {
+		padding: 0 !important;
+	}
+		.admin__sidebar > .main > .item {
+			padding: 10px !important;
+		}
+		.admin__sidebar > .main > .item:hover {
+			 margin: 0 !important;
+			padding: 0 !important; 
+		}*/
 			
 			.sidebar-menu__link {
 				color: #000;
@@ -529,6 +547,17 @@
 	.up-label {
 		padding: 100px 135px 100px 135px;
     	font-size: 1.7em;
+	}
+
+
+
+
+	/* ==============================================
+                #HELPERS
+	================================================= */
+
+	.is-bg-light {
+		background-color: #f1f1f1;
 	}
 
 </style>

@@ -14,16 +14,17 @@
 								<span class="classes-card-details"></span>
 							</router-link><!-- end -->
 
-							<!--
-							<a class="classes-card add-new-class-container" @click="dialogVisible = true">
+							
+							<a class="classes-card add-new-class-container" @click="modalCreateClassIsOpen = true">
 								<i class="fa fa-plus fa-3x" aria-hidden="true"></i>
 								<p>Create new class</p>
-							</a>-->						
+							</a>						
 						</div>
 					</div>
 				</div>	
-			</div><!-- end -->
-		<el-dialog title="Add new class" :visible.sync="dialogVisible">
+			</div>
+			
+		<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 			<el-form :model="newClass">
 				<el-form-item label="Class name" :label-width="formLabelWidth">
 					<el-input v-model="newClass.title" auto-complete="off"></el-input>
@@ -31,11 +32,10 @@
 				<el-form-item label="Spring" :label-width="formLabelWidth">
 					<el-input v-model="newClass.spring" auto-complete="off"></el-input>
 				</el-form-item>
-				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
-				<el-button @click="dialogVisible = false">Cancel</el-button>
-				<el-button class="add-class-btn" @click="createClass(); dialogVisible = false;">Add Class</el-button>
+				<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
+				<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Add Class</el-button>
 			</span>
 		</el-dialog>
 
@@ -50,7 +50,7 @@
     export default {
         data() {
             return { 
-                dialogVisible: false,
+                modalCreateClassIsOpen: false,
 				formLabelWidth: '120px',
 				newClass: {
 					title: '',
