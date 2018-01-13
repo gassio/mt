@@ -53,9 +53,9 @@
 										</div>
 										<div class="has-text-right has-text-grey-dark">
 											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
-											<p class="is-marginless">Annotations: 34</p>
+											<p class="is-marginless">Annotations: {{ v.annotations.length }}</p>
 											<!-- <p class="is-marginless">Lab presentation </p> -->
-											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
+											<!-- <i class="fa fa-commenting-o fa-2x"></i>	-->
 										</div>
 									</div>
 							</article>
