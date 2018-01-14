@@ -19,15 +19,37 @@
                     <router-link to="/student" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active"><strong>Student</strong></router-link>
                 </div>
                 <div class="navbar-end">
-                    <div class="navbar-item"></div>
+                    <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="modalStudentRequestsIsOpen = true"><p>Student requests</p></a>
+                    <a class="head__nav-item navbar-item"><p>Ben Domino</p><i class="fa fa-angle-down"></i></a>
                 </div>
             </div>
 
-            <!-- <button class="button navbar-burger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button> -->
+            <el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+                  <el-tabs v-model="activeTab">
+                    <el-tab-pane label="Enrolled students" name="enrolledStudents">
+                         <el-table :data="enrolledStudents" style="width: 100%" :show-header="false">
+                            <el-table-column prop="name" label="Student name" width="180">
+                            </el-table-column>
+                            <el-table-column prop="status" label="Student status">
+                            </el-table-column>
+                            <el-table-column prop="action" label="Action">
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="New students" name="newStudents">
+                        <el-button @click="toggleSelection()">Clear selection</el-button>
+                        <el-table ref="multipleTable" :data="newStudents" border style="width: 100%" @selection-change="handleSelectionChange" :show-header="false">
+                            <el-table-column type="selection" width="55">
+                            </el-table-column>
+                            <el-table-column property="name" label="Name" width="120">
+                            </el-table-column>
+                            <el-table-column property="status" label="Address" show-overflow-tooltip>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                </el-tabs>
+            </el-dialog>	
+
         </div>
     </nav>
 </template>
@@ -39,6 +61,40 @@
     export default {
         data() {
             return {
+                studentRequests: 6,
+                modalStudentRequestsIsOpen: false,
+                activeTab: 'enrolledStudents',
+                enrolledStudents: [
+                    {
+                        name: 'Ben Domino',
+                        status: 'Enrolled'
+                    }, {
+                        name: 'Bill Gates',
+                        status: 'Enrolled'
+                    }, {
+                        name: 'Steve Jobs',
+                        status: 'Enrolled'
+                    }, {
+                        name: 'Linus Torvalds',
+                        status: 'Enrolled'
+                    }
+                ],
+                newStudents: [
+                    {
+                        name: 'Ben Domino',
+                        status: 'New'
+                    }, {
+                        name: 'Bill Gates',
+                        status: 'New'
+                    }, {
+                        name: 'Steve Jobs',
+                        status: 'New'
+                    }, {
+                        name: 'Linus Torvalds',
+                        status: 'New'
+                    }
+                ],
+                multipleSelection: []
             }
         },
         mounted() {
@@ -71,9 +127,17 @@
             });
         },
         methods: {
-            // Setting uploading video dialog state as true.
-            setUploadingVideoAsTrue() {
-                this.$store.commit('SET_UPLOADING_VIDEO_AS_TRUE')
+            toggleSelection(rows) {
+                if (rows) {
+                    rows.forEach(row => {
+                        this.$refs.multipleTable.toggleRowSelection(row);
+                    });
+                } else {
+                    this.$refs.multipleTable.clearSelection();
+                }
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
             }
         },
         computed: {
@@ -87,22 +151,9 @@
 <style>
 
 .head {
-    /* width: 100%; */
-    /* height: 60px; */
-    /* color: #FFF; */
     background-color: #A90931;
     display: flex;
 }
-
-    .head__logo {
-        padding-top: 20px;
-        font-size: 24px;
-        font-weight: bold;
-    }
-        .head__logo i {
-            color: #FFF;
-            padding-right: 5px;
-        }
 
     .head__nav {
         display: flex;
@@ -114,50 +165,55 @@
         margin-left: 60px;
         padding:0;
     }
-        .head__nav-left{
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-        }
-        
-        .head__nav-right {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin-right: 60px;
-        }
-            .head__nav-item {
-                margin-left: 20px;
-                padding: 10px 16px;
-            }
-            .head__nav-item{
-                color: #FFFFFF !important;
-            }
-            .head__nav-item:hover {
-                background-color: #8F082A !important;
-                color: #FFF;
-            }
 
-            .head__add-video {
-                margin-left: 50px;
-            }
-                .head__add-video a {
-                    color: #FFFFFF !important;
-                    background: #B6AC1C;
-                    border-radius: 3px;
-                    padding: 10px 16px;
-                    font-size: 0.9em;
-                }
-                .head__add-video a:hover {
-                    color: #FFFFFF !important;
-                    background: #9C9418;
-                    border-radius: 3px;
-                    padding: 10px 16px;
-                    transition: 0.2s;
-                }
-.head__nav-item-active {
-    background-color: #8F082A;
-    border-radius: 3px;
-    padding: 10px 16px;
+        .head__nav-item {
+            margin-left: 20px;
+            padding: 10px 16px;
+        }
+        .head__nav-item {
+            color: #FFFFFF !important;
+        }
+        .head__nav-item:hover {
+            background-color: #8F082A !important;
+            color: #FFF;
+        }
+
+        .head__nav-item-active {
+            background-color: #8F082A;
+            border-radius: 3px;
+            padding: 10px 16px;
+        }
+
+        .navbar-end .head__nav-item i {
+            margin-left: 5px;
+        }
+
+/* ==============================================
+            #STUDENT-REQUESTS
+================================================= */
+
+    .badge {
+		position:relative;
+	}
+	.badge[data-badge]:after {
+		content:attr(data-badge);
+		position:absolute;
+		top:3px;
+		right:-5px;
+		font-size:.7em;
+		background:green;
+		color:white;
+		width:18px;height:18px;
+		text-align:center;
+		line-height:18px;
+		border-radius:50%;
+		box-shadow:0 0 1px #333;
+	}
+
+
+
+.modal-student-requests .el-dialog__body{
+    padding: 10px 20px 20px 20px;
 }
+
 </style>

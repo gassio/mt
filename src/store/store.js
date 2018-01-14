@@ -429,13 +429,6 @@ mutations: {
         var classes = state.classes
         classes.push(payload.newClass)
     },
-    // Setting uploading video dialog state (true, false)
-    SET_UPLOADING_VIDEO_AS_TRUE: (state) => {
-        state.uploadingVideo = true
-    },
-    SET_UPLOADING_VIDEO_AS_FALSE: (state) => {
-        state.uploadingVideo = false
-    },
     SET_UPLOAD_URL: (state, payload) => {
         state.uploadUrl = payload
     },

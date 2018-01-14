@@ -65,21 +65,24 @@
 				</div>
 
 				<aside class="professor__sidebar column is-2 aside">
-
-					<div class="menu-list">
-						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
-						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
-                        <a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
-                        <hr>
-                        <a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
-                        <hr>
-                        <a href="#" class="" @click="modalStudentRequestsIsOpen = true"><span class="name"> +2 new student requests</span></a>
-                        <a href="#" class=""><span class="name">All students</span></a>
-                        <a href="#" class=""><span class="name">-Student 1</span></a>
-                        <a href="#" class=""><span class="name">-Student 2</span></a>
-                        <a href="#" class=""><span class="name">-Student 3</span></a>
-					</div>
-
+					<el-tabs v-model="activeTab">
+						<el-tab-pane label="Active classes" name="activeClasses">
+							<div class="menu-list">
+								<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+								<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
+									<hr>
+									<a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
+									<hr>
+							</div>
+						</el-tab-pane>
+						<el-tab-pane label="Archived" name="archivedClasses">
+							<div class="menu-list">
+								<a class="is-bg-light"><span class="name">Archived class 1</span></a>
+								<a class="is-bg-light"><span class="name">Archived class 2</span></a>
+							</div>
+						</el-tab-pane>
+					</el-tabs>
 				</aside>
 
 			</div>
@@ -93,31 +96,31 @@
 				</div>
 			</footer>		
 
-            <el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
-                <el-form :model="newClass">
-                    <el-form-item label="Class name" :label-width="formLabelWidth">
-                        <el-input v-model="newClass.title" auto-complete="off"></el-input>
-                    </el-form-item>
-                    <el-form-item label="Spring" :label-width="formLabelWidth">
-                        <el-input v-model="newClass.spring" auto-complete="off"></el-input>
-                    </el-form-item>
-                </el-form>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
-                    <el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Add Class</el-button>
-                </span>
-            </el-dialog>	
+			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
+					<el-form :model="newClass">
+							<el-form-item label="Class name" :label-width="formLabelWidth">
+									<el-input v-model="newClass.title" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="Spring" :label-width="formLabelWidth">
+									<el-input v-model="newClass.spring" auto-complete="off"></el-input>
+							</el-form-item>
+					</el-form>
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
+							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Add Class</el-button>
+					</span>
+			</el-dialog>	
 
-            <el-dialog title="Do you want to archive this class?" :visible.sync="modalArchiveClassIsOpen">
-                <el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
-                <el-button class="add-class-btn"><strong>Archive Class</strong></el-button>
-            </el-dialog>
+			<el-dialog title="Do you want to archive this class?" :visible.sync="modalArchiveClassIsOpen">
+					<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
+					<el-button class="add-class-btn"><strong>Archive Class</strong></el-button>
+			</el-dialog>
 
-            <el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen">
-                <div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Alan Turing</span><button class="button" style="margin-left:15px;">Accept</button></div>
-                <div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Steve Jobs</span><button class="button" style="margin-left:15px;">Accept</button></div>
-                <div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Bill Gates</span><button class="button" style="margin-left:15px;">Accept</button></div>
-            </el-dialog>			
+			<el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen">
+					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Alan Turing</span><button class="button" style="margin-left:15px;">Accept</button></div>
+					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Steve Jobs</span><button class="button" style="margin-left:15px;">Accept</button></div>
+					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Bill Gates</span><button class="button" style="margin-left:15px;">Accept</button></div>
+			</el-dialog>			
 			
 		</div>	
 
@@ -132,15 +135,16 @@
     export default {
 			data() {
 				return {
-                    currentClass: 'Materials Science and Engineering',
-                    modalCreateClassIsOpen: false,
-                    modalArchiveClassIsOpen: false,
-                    modalStudentRequestsIsOpen: false,
-                    formLabelWidth: '120px',
-                    newClass: {
-                        title: '',
-                        spring: '',
-                    }
+					currentClass: 'Materials Science and Engineering',
+					modalCreateClassIsOpen: false,
+					modalArchiveClassIsOpen: false,
+					modalStudentRequestsIsOpen: false,
+					formLabelWidth: '120px',
+					newClass: {
+							title: '',
+							spring: '',
+					},
+					activeTab: 'activeClasses'
 				}
 			},
 			created() {
@@ -264,12 +268,13 @@
 
 .professor__sidebar {
 	padding: 0;
+	margin-top: 13px;
 }
 
 .professor__sidebar .menu-list {
 	padding: 0;
 	margin-top: 20px;	
-		position: fixed;
+	/* position: fixed; */
 }
 
 	.professor__sidebar .menu-list a {
