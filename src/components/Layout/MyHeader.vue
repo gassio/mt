@@ -37,15 +37,15 @@
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="New students" name="newStudents">
-                        <el-button @click="toggleSelection()">Clear selection</el-button>
-                        <el-table ref="multipleTable" :data="newStudents" border style="width: 100%" @selection-change="handleSelectionChange" :show-header="false">
-                            <el-table-column type="selection" width="55">
+                        <el-table ref="multipleTable" :data="newStudents" :border="false" style="width: 100%" @selection-change="handleSelectionChange" :show-header="false">
+                            <el-table-column property="name" label="Name">
                             </el-table-column>
-                            <el-table-column property="name" label="Name" width="120">
+                            <el-table-column property="status" label="Address">
                             </el-table-column>
-                            <el-table-column property="status" label="Address" show-overflow-tooltip>
+                            <el-table-column type="selection">
                             </el-table-column>
                         </el-table>
+                        <el-button @click="toggleSelection()">Clear selection</el-button>
                     </el-tab-pane>
                 </el-tabs>
             </el-dialog>	
