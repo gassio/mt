@@ -105,20 +105,23 @@
     export default {
 			data() {
 				return {
-                    currentClass: 'Materials Science and Engineering',
-                    modalEnrollClassIsOpen: false,
-                    formLabelWidth: '120px',
-                    newClass: {
-                        title: '',
-                        spring: '',
-                    }
+						currentClass: 'Materials Science and Engineering',
+						modalEnrollClassIsOpen: false,
+						formLabelWidth: '120px',
+						newClass: {
+								title: '',
+								spring: '',
+						},
+						userType: ''
 				}
 			},
 			created() {
-                this.$store.dispatch('getAllVideos')
-                this.$store.dispatch('getAllClasses')
+						this.$store.dispatch('getAllVideos')
+						this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
+				if (this.$router.currentRoute.fullPath === '/student')
+					$('.navbar-end .badge').hide()
 			},
 			methods: {
 				genreSelection() {

@@ -45,7 +45,7 @@
                                     <i class="fa fa-user"></i> {{ s2.row.name }}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="class" width="250">
+                            <el-table-column prop="class" width="280">
                                 <template scope="s2b">
                                     <i class="fa fa-book"></i> {{ s2b.row.class }}
                                 </template>
