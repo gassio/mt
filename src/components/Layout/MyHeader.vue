@@ -14,9 +14,7 @@
                     <router-link to="/classes" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Classes</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Wiki</router-link>
                     <router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
-                    <router-link to="/admin" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active"><strong>Admin</strong></router-link>
-                    <router-link to="/professor" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active"><strong>Professor</strong></router-link>
-                    <router-link to="/student" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active"><strong>Student</strong></router-link>
+                    
                 </div>
                 <div class="navbar-end">
                     <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="modalStudentRequestsIsOpen = true"><p>Student requests</p></a>
@@ -24,28 +22,42 @@
                 </div>
             </div>
 
-            <el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
                   <el-tabs v-model="activeTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                          <el-table :data="enrolledStudents" style="width: 100%" :show-header="false">
-                            <el-table-column prop="name" label="Student name" width="180">
+                            <el-table-column prop="name" width="180">
+                                <template scope="s1">
+                                    <i class="fa fa-user"></i> {{ s1.row.name }}
+                                </template>
                             </el-table-column>
-                            <el-table-column prop="status" label="Student status">
-                            </el-table-column>
-                            <el-table-column prop="action" label="Action">
+                            <el-table-column prop="class">
+                                <template scope="s1b">
+                                    <i class="fa fa-book"></i> {{ s1b.row.class }}
+                                </template>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="New students" name="newStudents">
-                        <el-table ref="multipleTable" :data="newStudents" :border="false" style="width: 100%" @selection-change="handleSelectionChange" :show-header="false">
-                            <el-table-column property="name" label="Name">
+                        <el-table ref="multipleTable" :data="newStudents" :border="false" style="width: 100%" @selection-change="handleSelectionChange" :show-header="false" empty-text="No student requests">
+                            <el-table-column prop="name" width="140">
+                                <template scope="s2">
+                                    <i class="fa fa-user"></i> {{ s2.row.name }}
+                                </template>
                             </el-table-column>
-                            <el-table-column property="status" label="Address">
+                            <el-table-column prop="class" width="250">
+                                <template scope="s2b">
+                                    <i class="fa fa-book"></i> {{ s2b.row.class }}
+                                </template>
                             </el-table-column>
-                            <el-table-column type="selection">
+                            <el-table-column>
+                                <template scope="scope">
+                                    <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
+                                </template>
                             </el-table-column>
                         </el-table>
-                        <el-button @click="toggleSelection()">Clear selection</el-button>
+                        <br>
+                        <el-button @click="acceptAllStudents()">Accept all</el-button>
                     </el-tab-pane>
                 </el-tabs>
             </el-dialog>	
@@ -61,37 +73,31 @@
     export default {
         data() {
             return {
-                studentRequests: 6,
+                studentRequests: 2,
                 modalStudentRequestsIsOpen: false,
                 activeTab: 'enrolledStudents',
                 enrolledStudents: [
                     {
                         name: 'Ben Domino',
-                        status: 'Enrolled'
+                        class: 'Materials Science and Engineering'
                     }, {
                         name: 'Bill Gates',
-                        status: 'Enrolled'
+                        class: 'Materials Science and Engineering'
                     }, {
                         name: 'Steve Jobs',
-                        status: 'Enrolled'
+                        class: 'Aeronautics and Astronautics'
                     }, {
                         name: 'Linus Torvalds',
-                        status: 'Enrolled'
+                        class: 'Rhetoric and Writing'
                     }
                 ],
                 newStudents: [
                     {
-                        name: 'Ben Domino',
-                        status: 'New'
+                        name: 'Julius Caesar',
+                        class: 'Materials Science and Engineering'
                     }, {
-                        name: 'Bill Gates',
-                        status: 'New'
-                    }, {
-                        name: 'Steve Jobs',
-                        status: 'New'
-                    }, {
-                        name: 'Linus Torvalds',
-                        status: 'New'
+                        name: 'Alan Turing',
+                        class: 'Aeronautics and Astronautics'
                     }
                 ],
                 multipleSelection: []
@@ -138,6 +144,17 @@
             },
             handleSelectionChange(val) {
                 this.multipleSelection = val;
+            },
+            acceptStudent(index, row) {
+                this.newStudents.splice(index, 1)
+                this.enrolledStudents.push(row)
+            },
+            acceptAllStudents() {
+                for (var i = 0, l = this.newStudents.length; i < l; i++) {
+                    this.enrolledStudents.push(this.newStudents[i])
+                }
+
+                this.newStudents = []
             }
         },
         computed: {

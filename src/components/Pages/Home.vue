@@ -4,15 +4,13 @@
 		<div class= "home__head">
 			<div class= "columns is-mobile is-gapless is-marginless">
 				<div class= "column is-8">
-					<!--<div class= "home__head-semester">
-						<button id="all" class="home__head-semester-button" style="width: 60px" type="button">All</button>
-						<button id="spring17" class="home__head-semester-button" type="button">Spring '17</button>
-						<button id="winter16" class="home__head-semester-button" type="button">Winter '16</button>
-					</div>-->
+					<router-link to="/admin" class="" tag="a"><strong>Admin</strong></router-link>
+                    <router-link to="/professor" class="" tag="a"><strong>Professor</strong></router-link>
+                    <router-link to="/student" class="" tag="a"><strong>Student</strong></router-link>
 				</div>
 				<div class= "column is-4">
 					<div class= "home-genre-selection">
-						<p>Genre: &nbsp </p>
+						<p>Genre: &nbsp; </p>
 						<el-select v-model="currentGenre" filterable placeholder="Select" style="width: 210px;">
 							<el-option v-for="genre in genres" :key="genre.name" :label="genre.name" :value="genre.name">
 							</el-option>
