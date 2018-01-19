@@ -65,10 +65,13 @@
 				</div>
 
 				<aside class="professor__sidebar column is-2 aside">
+					<div class="metalogon-home menu-list">
+						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+					</div>
 					<el-tabs v-model="activeTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
+							<el-autocomplete class="inline-input" icon="search" v-model="searchingClass" :fetch-suggestions="querySearch" placeholder="Search a class..." @select="handleSelect" :on-icon-click="searchClass"></el-autocomplete>
 							<div class="menu-list">
-								<a href="#" class="" ><span class="name">Metalogon Home</span></a>
 								<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
@@ -144,7 +147,8 @@
 							title: '',
 							spring: '',
 					},
-					activeTab: 'activeClasses'
+					activeTab: 'activeClasses',
+					searchingClass: ''
 				}
 			},
 			created() {
@@ -154,27 +158,6 @@
 			mounted() {
 			},
 			methods: {
-				genreSelection() {
-					let that = this
-					$('.professor__genre').dropdown({
-						onChange: function (value, text, $selectedItem) {
-							that.currentGenre = text
-						}
-					})
-				},
-				secondsToMMSS(s) {
-							s = Number(s);
-
-							var m = Math.floor(s % 3600 / 60);
-							var s = Math.floor(s % 3600 % 60);
-
-							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-				},
-				jerryriggingFeatured() {
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						this.videos[i]["featured"] = false
-					}
-				},
 				featureVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 					for (var i = 0, l = this.videos.length; i < l; i++) {
@@ -189,19 +172,56 @@
 								}
 						}
 					}
-                },
-                createClass() {	
-                    this.$store.dispatch('createClass', { 
-                        newClass: this.newClass
-                    })
-                    this.newClass = {}
-                }
+				},
+				createClass() {	
+						this.$store.dispatch('createClass', { 
+								newClass: this.newClass
+						})
+						this.newClass = {}
+				},
+				searchClass() {
+					this.currentClass = this.searchingClass
+					this.searchingClass = ''
+				},
+				querySearch(queryString, cb) {
+					var links = this.links;
+					var results = queryString ? links.filter(this.createFilter(queryString)) : links;
+					// call callback function to return suggestions
+					cb(results);
+     		},
+				createFilter(queryString) {
+					return (link) => {
+						return (link.value.indexOf(queryString.toLowerCase()) === 0);
+					};
+				},
+				loadAll() {
+					return [
+						{ "value": "vue", "link": "https://github.com/vuejs/vue" },
+						{ "value": "element", "link": "https://github.com/ElemeFE/element" },
+						{ "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
+						{ "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
+						{ "value": "vuex", "link": "https://github.com/vuejs/vuex" },
+						{ "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
+						{ "value": "babel", "link": "https://github.com/babel/babel" }
+					];
+				},
+				handleSelect(item) {
+        	console.log(item);
+      	},
+				secondsToMMSS(s) {
+					s = Number(s);
+
+					var m = Math.floor(s % 3600 / 60);
+					var s = Math.floor(s % 3600 % 60);
+
+					return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+				}
 			},
 			computed: {
-                ...mapGetters(
-                    ['videos', 'uploadUrl', 'classes']
-                ),
-            },
+					...mapGetters(
+							['videos', 'uploadUrl', 'classes']
+					),
+			},
 			components: {
 				'upload-video': UploadVideo
 			}

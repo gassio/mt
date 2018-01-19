@@ -3,11 +3,6 @@
 
 		<div class= "home__head">
 			<div class= "columns is-mobile is-gapless is-marginless">
-				<div class= "column is-8">
-					<router-link to="/admin" class="" tag="a"><strong>Admin</strong></router-link>
-                    <router-link to="/professor" class="" tag="a"><strong>Professor</strong></router-link>
-                    <router-link to="/student" class="" tag="a"><strong>Student</strong></router-link>
-				</div>
 				<div class= "column is-4">
 					<div class= "home-genre-selection">
 						<p>Genre: &nbsp; </p>
