@@ -80,10 +80,9 @@
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
-								<el-autocomplete class="inline-input" icon="search" v-model="searchArchivedValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search archived classes..." :trigger-on-focus="false"></el-autocomplete>
+							<el-autocomplete class="inline-input" icon="search" v-model="searchArchivedValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search archived classes..." :trigger-on-focus="false"></el-autocomplete>
 							<div class="menu-list">
-								<a class="is-bg-light"><span class="name">Archived class 1</span></a>
-								<a class="is-bg-light"><span class="name">Archived class 2</span></a>
+								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.title) }" @click="currentShowingClass = c.title"><span class="name">{{ c.title }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -103,10 +102,13 @@
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
 							<el-form-item label="Class name" :label-width="formLabelWidth">
-									<el-input v-model="newClass.title" auto-complete="off"></el-input>
+									<el-input v-model="newClass.name" auto-complete="off"></el-input>
 							</el-form-item>
-							<el-form-item label="Spring" :label-width="formLabelWidth">
-									<el-input v-model="newClass.spring" auto-complete="off"></el-input>
+							<el-form-item label="Class number" :label-width="formLabelWidth">
+									<el-input v-model="newClass.number" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="Semester" :label-width="formLabelWidth">
+									<el-input v-model="newClass.semester" auto-complete="off"></el-input>
 							</el-form-item>
 					</el-form>
 					<span slot="footer" class="dialog-footer">
@@ -117,7 +119,7 @@
 
 			<el-dialog title="Do you want to archive this class?" :visible.sync="modalArchiveClassIsOpen">
 					<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
-					<el-button class="add-class-btn"><strong>Archive Class</strong></el-button>
+					<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
 			</el-dialog>
 
 			<el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen">
@@ -146,9 +148,13 @@
 					modalCreateClassIsOpen: false,
 					formLabelWidth: '120px',
 					newClass: {
-							title: '',
-							spring: '',
+							name: '',
+							number: '',
+							semester: '',
 					},
+					archivedClasses: [
+						{ id: '9bc87287-1271-4f0c-94a2', spring: '3.014', title: 'Computer Science', _id: '59c2a36a0aaad75c38c2014d' }
+					],
 					modalArchiveClassIsOpen: false,
 					modalStudentRequestsIsOpen: false,					
 				}
@@ -156,8 +162,6 @@
 			created() {
 				this.$store.dispatch('getAllVideos')
 				this.$store.dispatch('getAllClasses')
-			},
-			mounted() {
 			},
 			methods: {
 				featureVideo(event) {
@@ -177,27 +181,51 @@
 				},
 				queryClassesFetch(queryString, cb) {
 					var results = []
-					// Checkes if the first letter of a class title 
-					// is the same with the query string
-					for (var i = 0, l = this.classes.length; i < l; i++) {
-						if (this.classes[i].title.toLowerCase().indexOf(queryString) === 0) {
-							// We must have the above object format 
-							// in order to work with elemefe component (input autocomplete)
-							results.push({ 'value': this.classes[i].title })
+					if (this.classesDefaultTab === 'activeClasses') {
+						// Checkes if the first letter of a class title 
+						// is the same with the query string.
+						for (var i = 0, l = this.classes.length; i < l; i++) {
+							if (this.classes[i].title.toLowerCase().indexOf(queryString) === 0) {
+								// We must have the above object format 
+								// in order to work with elemefe component (input autocomplete)
+								results.push({ 'value': this.classes[i].title })
+							}
+						}
+					} else {
+						// The same comment as above.
+						for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
+							if (this.archivedClasses[i].title.toLowerCase().indexOf(queryString) === 0) {
+								// The same comment as above.
+								results.push({ 'value': this.archivedClasses[i].title })
+							}
 						}
 					}
-					// Calls callback function to return suggestions
+					// Calls callback function to return suggestions.
 					cb(results);
      		},
 				makeSearch(item) {
-					this.currentShowingClass = this.searchActiveValue
-					console.log('You have searched for', item.value)
+					if (this.classesDefaultTab === 'activeClasses')
+						this.currentShowingClass = this.searchActiveValue
+					else 
+						this.currentShowingClass = this.searchArchivedValue
 				},
 				createClass() {	
 						this.$store.dispatch('createClass', { 
 								newClass: this.newClass
 						})
 						this.newClass = {}
+				},
+				archiveClass() {					
+					// Adds the current class to the archiveClass array.
+					for (var i = 0, l = this.classes.length; i < l; i++) {
+						if (this.classes[i].title === this.currentShowingClass)
+							this.archivedClasses.push(this.classes[i])
+					}
+
+					// Closes the modal.
+					this.modalArchiveClassIsOpen = false
+					// Sets the current showing class state to null.
+					this.currentShowingClass = ''
 				},
 				secondsToMMSS(s) {
 					s = Number(s);
