@@ -32,9 +32,9 @@
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClass }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentShowingClass }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClass">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentShowingClass">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -49,7 +49,7 @@
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
 										<div class="star-video" @click="featureVideo($event)">
-											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
+											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
 											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
@@ -68,11 +68,11 @@
 					<div class="metalogon-home menu-list">
 						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
 					</div>
-					<el-tabs v-model="activeTab">
+					<el-tabs v-model="classesDefaultTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
-							<el-autocomplete class="inline-input" icon="search" v-model="searchingClass" :fetch-suggestions="querySearch" placeholder="Search a class..." @select="handleSelect" :on-icon-click="searchClass"></el-autocomplete>
+							<el-autocomplete class="inline-input" icon="search" v-model="searchActiveValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search a class..." :trigger-on-focus="false"></el-autocomplete>
 							<div class="menu-list">
-								<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+								<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentShowingClass === theClass.title) }" @click="currentShowingClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
 									<a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
@@ -80,6 +80,7 @@
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
+								<el-autocomplete class="inline-input" icon="search" v-model="searchArchivedValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search archived classes..." :trigger-on-focus="false"></el-autocomplete>
 							<div class="menu-list">
 								<a class="is-bg-light"><span class="name">Archived class 1</span></a>
 								<a class="is-bg-light"><span class="name">Archived class 2</span></a>
@@ -138,22 +139,23 @@
     export default {
 			data() {
 				return {
-					currentClass: 'Materials Science and Engineering',
+					classesDefaultTab: 'activeClasses',
+					currentShowingClass: 'Materials Science and Engineering',
+					searchActiveValue: '',
+					searchArchivedValue: '',
 					modalCreateClassIsOpen: false,
-					modalArchiveClassIsOpen: false,
-					modalStudentRequestsIsOpen: false,
 					formLabelWidth: '120px',
 					newClass: {
 							title: '',
 							spring: '',
 					},
-					activeTab: 'activeClasses',
-					searchingClass: ''
+					modalArchiveClassIsOpen: false,
+					modalStudentRequestsIsOpen: false,					
 				}
 			},
 			created() {
-                this.$store.dispatch('getAllVideos')
-                this.$store.dispatch('getAllClasses')
+				this.$store.dispatch('getAllVideos')
+				this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
 			},
@@ -173,41 +175,30 @@
 						}
 					}
 				},
+				queryClassesFetch(queryString, cb) {
+					var results = []
+					// Checkes if the first letter of a class title 
+					// is the same with the query string
+					for (var i = 0, l = this.classes.length; i < l; i++) {
+						if (this.classes[i].title.toLowerCase().indexOf(queryString) === 0) {
+							// We must have the above object format 
+							// in order to work with elemefe component (input autocomplete)
+							results.push({ 'value': this.classes[i].title })
+						}
+					}
+					// Calls callback function to return suggestions
+					cb(results);
+     		},
+				makeSearch(item) {
+					this.currentShowingClass = this.searchActiveValue
+					console.log('You have searched for', item.value)
+				},
 				createClass() {	
 						this.$store.dispatch('createClass', { 
 								newClass: this.newClass
 						})
 						this.newClass = {}
 				},
-				searchClass() {
-					this.currentClass = this.searchingClass
-					this.searchingClass = ''
-				},
-				querySearch(queryString, cb) {
-					var links = this.links;
-					var results = queryString ? links.filter(this.createFilter(queryString)) : links;
-					// call callback function to return suggestions
-					cb(results);
-     		},
-				createFilter(queryString) {
-					return (link) => {
-						return (link.value.indexOf(queryString.toLowerCase()) === 0);
-					};
-				},
-				loadAll() {
-					return [
-						{ "value": "vue", "link": "https://github.com/vuejs/vue" },
-						{ "value": "element", "link": "https://github.com/ElemeFE/element" },
-						{ "value": "cooking", "link": "https://github.com/ElemeFE/cooking" },
-						{ "value": "mint-ui", "link": "https://github.com/ElemeFE/mint-ui" },
-						{ "value": "vuex", "link": "https://github.com/vuejs/vuex" },
-						{ "value": "vue-router", "link": "https://github.com/vuejs/vue-router" },
-						{ "value": "babel", "link": "https://github.com/babel/babel" }
-					];
-				},
-				handleSelect(item) {
-        	console.log(item);
-      	},
 				secondsToMMSS(s) {
 					s = Number(s);
 
