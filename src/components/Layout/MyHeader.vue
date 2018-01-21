@@ -23,9 +23,10 @@
             </div>
 
             <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
-                  <el-tabs v-model="activeTab">
+                <el-tabs v-model="activeTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
-                         <el-table :data="enrolledStudents" style="width: 100%" :show-header="false">
+                        <el-autocomplete class="inline-input" icon="search" v-model="searchStudentsValue" :fetch-suggestions="queryStudentsFetch" @select="makeStudentSearch" placeholder="Search a student..." :trigger-on-focus="false" style="margin-bottom:5px;"></el-autocomplete>
+                        <el-table :data="enrolledStudents" style="width: 100%" :show-header="false">
                             <el-table-column prop="name" width="180">
                                 <template scope="s1">
                                     <i class="fa fa-user"></i> {{ s1.row.name }}
@@ -74,6 +75,7 @@
         data() {
             return {
                 studentRequests: 2,
+                searchStudentsValue: '',
                 modalStudentRequestsIsOpen: false,
                 activeTab: 'enrolledStudents',
                 enrolledStudents: [
@@ -155,7 +157,23 @@
                 }
 
                 this.newStudents = []
-            }
+            },
+            queryStudentsFetch(queryString, cb) {
+                var results = []
+                // Checkes if the first letter of a class title 
+                // is the same with the query string.
+                for (var i = 0, l = this.enrolledStudents.length; i < l; i++) {
+                    if (this.enrolledStudents[i].name.toLowerCase().indexOf(queryString) === 0) {
+                        // We must have the above object format 
+                        // in order to work with elemefe component (input autocomplete)
+                        results.push({ 'value': this.enrolledStudents[i].name })
+                    }
+                }
+                cb(results); // Calls callback function to return suggestions.
+     		},
+            makeStudentSearch(item) {
+                
+            },
         },
         computed: {
             ...mapGetters([

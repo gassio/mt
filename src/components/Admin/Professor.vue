@@ -200,8 +200,7 @@
 							}
 						}
 					}
-					// Calls callback function to return suggestions.
-					cb(results);
+					cb(results); // Calls callback function to return suggestions.
      		},
 				makeSearch(item) {
 					if (this.classesDefaultTab === 'activeClasses')
