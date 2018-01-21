@@ -67,6 +67,7 @@
 				<aside class="professor__sidebar column is-2 aside">
 					<div class="metalogon-home menu-list">
 						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+						<hr>
 					</div>
 					<el-tabs v-model="classesDefaultTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
@@ -244,6 +245,16 @@
 				'upload-video': UploadVideo
 			}
 		}
+
+// *Alexandre's code for querySearch()
+// var filterFn = (queryString) => {
+// 		return (student) => {
+// 				return student.name.toLowerCase().indexOf(queryString) === 0
+// 		}
+// } 
+
+// var results = this.enrolledStudents.filter(filterFn(queryString))
+// console.log(results)
 </script>
 
 <style>

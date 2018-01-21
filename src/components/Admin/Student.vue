@@ -49,7 +49,7 @@
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
 										<div class="star-video" @click="featureVideo($event)">
-											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
+											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
 											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
@@ -68,9 +68,11 @@
 
 					<div class="menu-list">
 						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+						<hr>
+						<el-autocomplete class="inline-input" icon="search" v-model="searchClassValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search a class..." :trigger-on-focus="false"></el-autocomplete>
 						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
-                        <hr>
-                        <a href="#" class="" @click="modalEnrollClassIsOpen = true"><span class="name "><strong>+ Find a class to enroll</strong></span></a>
+						<hr>
+						<a href="#" class="" @click="modalEnrollClassIsOpen = true"><span class="name "><strong>+ Find a class to enroll</strong></span></a>
 					</div>
 
 				</aside>
@@ -112,7 +114,8 @@
 								title: '',
 								spring: '',
 						},
-						userType: ''
+						userType: '',
+						searchClassValue: ''
 				}
 			},
 			created() {

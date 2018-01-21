@@ -26,7 +26,7 @@
                 <el-tabs v-model="activeTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-autocomplete class="inline-input" icon="search" v-model="searchStudentsValue" :fetch-suggestions="queryStudentsFetch" @select="makeStudentSearch" placeholder="Search a student..." :trigger-on-focus="false" style="margin-bottom:5px;"></el-autocomplete>
-                        <el-table :data="enrolledStudents" style="width: 100%" :show-header="false">
+                        <el-table :data="enrolledStudentsBound" style="width: 100%" :show-header="false">
                             <el-table-column prop="name" width="180">
                                 <template scope="s1">
                                     <i class="fa fa-user"></i> {{ s1.row.name }}
@@ -93,6 +93,7 @@
                         class: 'Rhetoric and Writing'
                     }
                 ],
+                enrolledStudentsBound: [],
                 newStudents: [
                     {
                         name: 'Julius Caesar',
@@ -133,6 +134,8 @@
                 }
 
             });
+
+            this.cloneStudents()
         },
         methods: {
             toggleSelection(rows) {
@@ -159,18 +162,29 @@
                 this.newStudents = []
             },
             queryStudentsFetch(queryString, cb) {
-                var results = []
-                // Checkes if the first letter of a class title 
-                // is the same with the query string.
-                for (var i = 0, l = this.enrolledStudents.length; i < l; i++) {
-                    if (this.enrolledStudents[i].name.toLowerCase().indexOf(queryString) === 0) {
-                        // We must have the above object format 
-                        // in order to work with elemefe component (input autocomplete)
-                        results.push({ 'value': this.enrolledStudents[i].name })
+                if (queryString) {
+                    this.enrolledStudentsBound = []
+                    // Checkes if the first letter of a class title 
+                    // is the same with the query string.
+                    for (var i = 0, l = this.enrolledStudents.length; i < l; i++) {
+                        if (this.enrolledStudents[i].name.toLowerCase().indexOf(queryString) === 0) {
+                            // We must have the above object format 
+                            // in order to work with elemefe component (input autocomplete)
+                            this.enrolledStudentsBound.push({ 'name': this.enrolledStudents[i].name, 'class': this.enrolledStudents[i].class })
+                        }
                     }
+                } else {
+                    this.cloneStudents()
                 }
-                cb(results); // Calls callback function to return suggestions.
+
+                cb(this.enrolledStudentsBound); // Calls callback function to return suggestions.
      		},
+            cloneStudents() {
+                this.enrolledStudentsBound = []
+                for (var i = 0, l = this.enrolledStudents; i < l; i++) {
+                    this.enrolledStudentsBound.push(this.enrolledStudents[i])
+                }
+            },
             makeStudentSearch(item) {
                 
             },
