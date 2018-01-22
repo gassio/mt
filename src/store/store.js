@@ -420,6 +420,7 @@ mutations: {
     GET_ALL_CLASSES: (state, newClasses) => {
         loadingInstance.close()
         state.classes = newClasses
+        // Vue.set(state.classes, newClasses)
     },
     GET_CLASS: (state, theClass) => {
         loadingInstance.close()

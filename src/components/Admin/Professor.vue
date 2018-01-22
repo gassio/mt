@@ -48,7 +48,7 @@
 										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="featureVideo($event)">
+										<div class="star-video" @click="favoriteVideo($event)">
 											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
@@ -69,11 +69,11 @@
 						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
 						<hr>
 					</div>
-					<el-tabs v-model="sidebarTabClasses">
+					<el-tabs v-model="sidebarClassesTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
-							<el-autocomplete class="inline-input" icon="search" v-model="searchActiveValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search a class..." :trigger-on-focus="false"></el-autocomplete>
+							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentShowingClass === theClass.title) }" @click="currentShowingClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+								<a v-for="theClass in activeClassesClone" :key="theClass.id" :class="{ 'is-bg-light' : (currentShowingClass === theClass.name) }" @click="currentShowingClass = theClass.name"><span class="name">{{ theClass.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
 									<a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
@@ -81,9 +81,9 @@
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
-							<el-autocomplete class="inline-input" icon="search" v-model="searchArchivedValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search archived classes..." :trigger-on-focus="false"></el-autocomplete>
+							<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
 							<div class="menu-list">
-								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.title) }" @click="currentShowingClass = c.title"><span class="name">{{ c.title }}</span></a>
+								<a v-for="c in archivedClassesClone" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -102,14 +102,14 @@
 
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
-							<el-form-item label="Class name" :label-width="formLabelWidth">
-									<el-input v-model="newClass.name" auto-complete="off"></el-input>
+							<el-form-item label="Class name">
+									<el-input v-model="newClass.name"></el-input>
 							</el-form-item>
-							<el-form-item label="Class number" :label-width="formLabelWidth">
-									<el-input v-model="newClass.number" auto-complete="off"></el-input>
+							<el-form-item label="Class number">
+									<el-input v-model="newClass.number"></el-input>
 							</el-form-item>
-							<el-form-item label="Semester" :label-width="formLabelWidth">
-									<el-input v-model="newClass.semester" auto-complete="off"></el-input>
+							<el-form-item label="Semester">
+									<el-input v-model="newClass.semester"></el-input>
 							</el-form-item>
 					</el-form>
 					<span slot="footer" class="dialog-footer">
@@ -121,13 +121,7 @@
 			<el-dialog title="Do you want to archive this class?" :visible.sync="modalArchiveClassIsOpen">
 					<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
 					<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
-			</el-dialog>
-
-			<el-dialog title="Student requests" :visible.sync="modalStudentRequestsIsOpen">
-					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Alan Turing</span><button class="button" style="margin-left:15px;">Accept</button></div>
-					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Steve Jobs</span><button class="button" style="margin-left:15px;">Accept</button></div>
-					<div class="is-size-6"><i class="fa fa-user "></i><span class="name"> Bill Gates</span><button class="button" style="margin-left:15px;">Accept</button></div>
-			</el-dialog>			
+			</el-dialog>	
 			
 		</div>	
 
@@ -138,34 +132,79 @@
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
+	import _ from 'lodash'
 
     export default {
 			data() {
 				return {
-					sidebarTabClasses: 'activeClasses',
-					currentShowingClass: 'Materials Science and Engineering',
-					searchActiveValue: '',
-					searchArchivedValue: '',
+					sidebarClassesTab: 'activeClasses',
+					currentShowingClass: '',
+					activeClassesInputValue: '',
+					archivedClassesInputValue: '',
 					modalCreateClassIsOpen: false,
-					formLabelWidth: '120px',
-					newClass: {
-							name: '',
-							number: '',
-							semester: '',
-					},
-					archivedClasses: [
-						{ id: '9bc87287-1271-4f0c-94a2', spring: '3.014', title: 'Computer Science', _id: '59c2a36a0aaad75c38c2014d' }
-					],
 					modalArchiveClassIsOpen: false,
-					modalStudentRequestsIsOpen: false,					
+					newClass: {
+						name: '',
+						number: '',
+						semester: '' 
+					},
+					classes: [
+						{ id: '1bc87287-1271-4f0c-94a1', name: 'Materials Science and Engineering', number: '3.014', semester: 'Spring 2018', archived: false },
+						{ id: '2bc87287-1271-4f0c-94a2', name: 'Aeronautics and Astronautics', number: '3.014', semester: 'Spring 2018', archived: false },
+						{ id: '3bc87287-1271-4f0c-94a3', name: 'Rhetoric and Writing', number: '3.014', semester: 'Spring 2018', archived: false },
+						{ id: '4bc87287-1271-4f0c-94a4', name: 'Mathematics', number: '3.014', semester: 'Spring 2018', archived: true }
+					],
+					activeClasses: [],
+					activeClassesClone: [],
+					archivedClasses: [],
+					archivedClassesClone: [],
 				}
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
 				this.$store.dispatch('getAllClasses')
 			},
+			mounted() {
+				// Creates the active and archives classes arrays.
+				this.boundActiveArchivedClasses()
+			},
 			methods: {
-				featureVideo(event) {
+				boundActiveArchivedClasses() {
+						for (var i = 0, l = this.classes.length; i < l; i++) {
+								if (this.classes[i].archived === false) {
+									this.activeClasses.push(this.classes[i])
+									this.activeClassesClone.push(this.classes[i])
+								}
+								else {
+									this.archivedClasses.push(this.classes[i])
+									this.archivedClassesClone.push(this.classes[i])
+								}
+						}
+				},
+				queryActiveClasses: _.debounce(function () {
+					console.log('QUERY ACTIVE CLASSES')
+
+					// Define the filter method that is used above.
+					var filterClasses = (queryString) => {
+							return (theClass) => {
+									return theClass.name.toLowerCase().indexOf(queryString) === 0
+							}
+					}  
+
+					this.activeClassesClone = this.activeClasses.filter(filterClasses(this.activeClassesInputValue))
+     		}, 300),
+				queryArchivedClasses: _.debounce(function () {
+					console.log('QUERY ARCHIVED CLASSES')
+
+					// Define the filter method that is used above.
+					var filterClasses = (queryString) => {
+							return (theClass) => {
+									return theClass.name.toLowerCase().indexOf(queryString) === 0
+							}
+					}  
+					this.archivedClassesClone = this.archivedClasses.filter(filterClasses(this.archivedClassesInputValue))
+				}, 300),
+				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 					for (var i = 0, l = this.videos.length; i < l; i++) {
 						if (this.videos[i].title === eventTitle) {
@@ -180,35 +219,6 @@
 						}
 					}
 				},
-				queryClassesFetch(queryString, cb) {
-					var results = []
-					if (this.sidebarTabClasses === 'activeClasses') {
-						// Checkes if the first letter of a class title 
-						// is the same with the query string.
-						for (var i = 0, l = this.classes.length; i < l; i++) {
-							if (this.classes[i].title.toLowerCase().indexOf(queryString) === 0) {
-								// We must have the above object format 
-								// in order to work with elemefe component (input autocomplete)
-								results.push({ 'value': this.classes[i].title })
-							}
-						}
-					} else {
-						// The same comment as above.
-						for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
-							if (this.archivedClasses[i].title.toLowerCase().indexOf(queryString) === 0) {
-								// The same comment as above.
-								results.push({ 'value': this.archivedClasses[i].title })
-							}
-						}
-					}
-					cb(results); // Calls callback function to return suggestions.
-     		},
-				makeSearch(item) {
-					if (this.sidebarTabClasses === 'activeClasses')
-						this.currentShowingClass = this.searchActiveValue
-					else 
-						this.currentShowingClass = this.searchArchivedValue
-				},
 				createClass() {	
 						this.$store.dispatch('createClass', { 
 								newClass: this.newClass
@@ -218,7 +228,7 @@
 				archiveClass() {					
 					// Adds the current class to the archiveClass array.
 					for (var i = 0, l = this.classes.length; i < l; i++) {
-						if (this.classes[i].title === this.currentShowingClass)
+						if (this.classes[i].name === this.currentShowingClass)
 							this.archivedClasses.push(this.classes[i])
 					}
 
@@ -238,23 +248,14 @@
 			},
 			computed: {
 					...mapGetters(
-							['videos', 'uploadUrl', 'classes']
+							['videos', 'uploadUrl']
 					),
+					// 'classes'
 			},
 			components: {
 				'upload-video': UploadVideo
 			}
 		}
-
-// *Alexandre's code for querySearch()
-// var filterFn = (queryString) => {
-// 		return (student) => {
-// 				return student.name.toLowerCase().indexOf(queryString) === 0
-// 		}
-// } 
-
-// var results = this.enrolledStudents.filter(filterFn(queryString))
-// console.log(results)
 </script>
 
 <style>
