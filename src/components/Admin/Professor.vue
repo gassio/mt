@@ -69,7 +69,7 @@
 						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
 						<hr>
 					</div>
-					<el-tabs v-model="classesDefaultTab">
+					<el-tabs v-model="sidebarTabClasses">
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-autocomplete class="inline-input" icon="search" v-model="searchActiveValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search a class..." :trigger-on-focus="false"></el-autocomplete>
 							<div class="menu-list">
@@ -142,7 +142,7 @@
     export default {
 			data() {
 				return {
-					classesDefaultTab: 'activeClasses',
+					sidebarTabClasses: 'activeClasses',
 					currentShowingClass: 'Materials Science and Engineering',
 					searchActiveValue: '',
 					searchArchivedValue: '',
@@ -182,7 +182,7 @@
 				},
 				queryClassesFetch(queryString, cb) {
 					var results = []
-					if (this.classesDefaultTab === 'activeClasses') {
+					if (this.sidebarTabClasses === 'activeClasses') {
 						// Checkes if the first letter of a class title 
 						// is the same with the query string.
 						for (var i = 0, l = this.classes.length; i < l; i++) {
@@ -204,7 +204,7 @@
 					cb(results); // Calls callback function to return suggestions.
      		},
 				makeSearch(item) {
-					if (this.classesDefaultTab === 'activeClasses')
+					if (this.sidebarTabClasses === 'activeClasses')
 						this.currentShowingClass = this.searchActiveValue
 					else 
 						this.currentShowingClass = this.searchArchivedValue
