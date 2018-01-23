@@ -73,7 +73,7 @@
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="theClass in activeClassesClone" :key="theClass.id" :class="{ 'is-bg-light' : (currentShowingClass === theClass.name) }" @click="currentShowingClass = theClass.name"><span class="name">{{ theClass.name }}</span></a>
+								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
 									<a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
@@ -83,7 +83,7 @@
 						<el-tab-pane label="Archived" name="archivedClasses">
 							<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
 							<div class="menu-list">
-								<a v-for="c in archivedClassesClone" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
+								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -138,7 +138,7 @@
 			data() {
 				return {
 					sidebarClassesTab: 'activeClasses',
-					currentShowingClass: '',
+					currentShowingClass: 'Select a class from the menu...',
 					activeClassesInputValue: '',
 					archivedClassesInputValue: '',
 					modalCreateClassIsOpen: false,
@@ -155,9 +155,9 @@
 						{ id: '4bc87287-1271-4f0c-94a4', name: 'Mathematics', number: '3.014', semester: 'Spring 2018', archived: true }
 					],
 					activeClasses: [],
-					activeClassesClone: [],
 					archivedClasses: [],
-					archivedClassesClone: [],
+					// activeClassesClone: [],
+					// archivedClassesClone: [],
 				}
 			},
 			created() {
@@ -173,36 +173,50 @@
 						for (var i = 0, l = this.classes.length; i < l; i++) {
 								if (this.classes[i].archived === false) {
 									this.activeClasses.push(this.classes[i])
-									this.activeClassesClone.push(this.classes[i])
+									// this.activeClassesClone.push(this.classes[i])
 								}
 								else {
 									this.archivedClasses.push(this.classes[i])
-									this.archivedClassesClone.push(this.classes[i])
+									// this.archivedClassesClone.push(this.classes[i])
 								}
 						}
 				},
 				queryActiveClasses: _.debounce(function () {
 					console.log('QUERY ACTIVE CLASSES')
 
-					// Define the filter method that is used above.
+					// An array that helps for the filtering.
+					const activeClassesLocal = []
+					for (var i = 0, l = this.classes.length; i < l; i++) {
+						if (this.classes[i].archived === false)
+							activeClassesLocal.push(this.classes[i])
+					}	
+
+					// Define the filter method that will be used above.
 					var filterClasses = (queryString) => {
 							return (theClass) => {
 									return theClass.name.toLowerCase().indexOf(queryString) === 0
 							}
 					}  
 
-					this.activeClassesClone = this.activeClasses.filter(filterClasses(this.activeClassesInputValue))
+					this.activeClasses = activeClassesLocal.filter(filterClasses(this.activeClassesInputValue))
      		}, 300),
 				queryArchivedClasses: _.debounce(function () {
 					console.log('QUERY ARCHIVED CLASSES')
+					
+					// An array that helps for the filtering.
+					const archivedClassesLocal = []
+					for (var i = 0, l = this.classes.length; i < l; i++) {
+						if (this.classes[i].archived === true)
+							archivedClassesLocal.push(this.classes[i])
+					}	
 
-					// Define the filter method that is used above.
+					// Define the filter method that will be used above.
 					var filterClasses = (queryString) => {
 							return (theClass) => {
 									return theClass.name.toLowerCase().indexOf(queryString) === 0
 							}
 					}  
-					this.archivedClassesClone = this.archivedClasses.filter(filterClasses(this.archivedClassesInputValue))
+					this.archivedClasses = archivedClassesLocal.filter(filterClasses(this.archivedClassesInputValue))
 				}, 300),
 				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
@@ -226,16 +240,20 @@
 						this.newClass = {}
 				},
 				archiveClass() {					
-					// Adds the current class to the archiveClass array.
-					for (var i = 0, l = this.classes.length; i < l; i++) {
-						if (this.classes[i].name === this.currentShowingClass)
-							this.archivedClasses.push(this.classes[i])
+					// 1. Adds current class to Archived Classes.
+					// 2. Removes current class from Active Classes.
+					// 3. Modifies classes object.
+					for (var i = 0, l = this.activeClasses.length; i < l; i++) {
+						if (this.activeClasses[i].name === this.currentShowingClass) {
+							this.archivedClasses.push(this.activeClasses[i])
+							this.activeClasses.splice(i, 1)
+							this.classes[i].archived = true
+							break
+						}
 					}
-
-					// Closes the modal.
-					this.modalArchiveClassIsOpen = false
-					// Sets the current showing class state to null.
-					this.currentShowingClass = ''
+					
+					this.modalArchiveClassIsOpen = false // Closes the modal.
+					this.currentShowingClass = '' // Sets the current showing class state to null.
 				},
 				secondsToMMSS(s) {
 					s = Number(s);
