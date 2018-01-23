@@ -32,9 +32,9 @@
 
 					<div class="admin__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClass }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClass">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -48,7 +48,7 @@
 										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="featureVideo($event)">
+										<div class="star-video" @click="favoriteVideo($event)">
 											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
@@ -67,12 +67,8 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
-						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
-						
-						<!-- <a v-bind:class="{ 'is-bg-light' : (currentClass === 'Materials Science and Engineering') }" @click="currentClass = 'Materials Science and Engineering'"><span class="name">Materials Science and Engineering</span></a>
-						<a v-bind:class="{ 'is-bg-light' : (currentClass === 'Aerospace Engineering') }" @click="currentClass = 'Aerospace Engineering'"><span class="name">Aerospace Engineering</span></a>
-						<a v-bind:class="{ 'is-bg-light' : (currentClass === 'Mathematics') }" @click="currentClass = 'Mathematics'"><span class="name">Mathematics</span></a> -->
+						<!-- <a ><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a> -->
+						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.title) }" @click="currentClassString = theClass.title"><span class="name">{{ theClass.title }}</span></a>
 					</div>
 					
 				</aside>
@@ -103,7 +99,7 @@
     export default {
 			data() {
 				return {
-					currentClass: 'Materials Science and Engineering'
+					currentClassString: ''
 				}
 			},
 			created() {
@@ -134,12 +130,12 @@
 						this.videos[i]["featured"] = false
 					}
 				},
-				featureVideo(event) {
+				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 					for (var i = 0, l = this.videos.length; i < l; i++) {
 						if (this.videos[i].title === eventTitle) {
 								if (this.videos[i].featured === false) {
-									this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+									this.$store.dispatch('favoriteVideo', this.videos[i])
 									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
 								} 
 								else {
@@ -226,7 +222,6 @@
 .admin__sidebar .menu-list {
 	padding: 0;
 	margin-top: 20px;	
-		position: fixed;
 }
 
 	.admin__sidebar .menu-list a {

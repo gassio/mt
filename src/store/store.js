@@ -244,6 +244,16 @@ actions: {
             })
             .catch( response => console.log(response.error))
     },
+    favoriteVideo: function ({ commit }, payload) {
+        axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, 
+            {
+                featured: true
+            })
+            .then( response => {
+                commit('FAVORITE_VIDEO', payload)
+            })
+            .catch( response => console.log(response.error))
+    },
     // ANNOTATIONS
     addAnnotation: function ({ commit, state }, payload) {
         var theVideo = payload.video
@@ -318,16 +328,16 @@ mutations: {
             Vue.set(state.videos[i], 'featured', false)
         }
     },
-    FEATURE_VIDEO: (state, payload) => {
+    FAVORITE_VIDEO: (state, payload) => {
         for (var i = 0, l = state.videos.length; i < l; i++) {
-            if (state.videos[i].title === payload) {
-                Vue.set(state.videos[i], 'featured', true)
+            if (state.videos[i].title === payload.title) {
+                // Vue.set(state.videos[i], 'featured', true)
                 console.log(state.videos[i].title)
                 console.log(state.videos[i])
             }
         }
     },
-    UNFEATURE_VIDEO: (state, payload) => {
+    UNFAVORITE_VIDEO: (state, payload) => {
         for (var i = 0, l = state.videos.length; i < l; i++) {
             if (state.videos[i].title === payload) {
                 Vue.set(state.videos[i], 'featured', false)

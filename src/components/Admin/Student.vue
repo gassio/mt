@@ -32,9 +32,9 @@
 
 					<div class="student__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClass }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClass">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -48,7 +48,7 @@
 										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
 									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="featureVideo($event)">
+										<div class="star-video" @click="favoriteVideo($event)">
 											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
 										</div>
 										<div class="has-text-right has-text-grey-dark">
@@ -67,12 +67,12 @@
 				<aside class="student__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+						<a @click="currentClassString = ''"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
 						<hr>
-						<el-autocomplete class="inline-input" icon="search" v-model="searchClassValue" :fetch-suggestions="queryClassesFetch" @select="makeSearch" placeholder="Search a class..." :trigger-on-focus="false"></el-autocomplete>
-						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClass === theClass.title) }" @click="currentClass = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for class..."></el-input>							
+						<a v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
 						<hr>
-						<a href="#" class="" @click="modalEnrollClassIsOpen = true"><span class="name "><strong>+ Find a class to enroll</strong></span></a>
+						<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
 					</div>
 
 				</aside>
@@ -88,11 +88,14 @@
 				</div>
 			</footer>		
 
-            <el-dialog title="Find a class to enroll" :visible.sync="modalEnrollClassIsOpen" >
-                <a class="classes-card" v-for="c in classes" :key="c.id">
-                    <i aria-hidden="true" class="fa fa-book fa-5x"></i><p class="classes-card-title">{{ c.title }}</p> 
-                </a>
-            </el-dialog>	    
+			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
+					<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
+							<i aria-hidden="true" class="fa fa-book fa-5x"></i>
+							<p class="classes-card-title">{{ c.name }}</p> 
+							<p class="classes-card-title">{{ c.number }}</p> 
+							<p class="classes-card-title">{{ c.semester }}</p> 
+					</a>
+			</el-dialog>	    
 		
 		</div>	
 
@@ -103,19 +106,27 @@
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
+	import _ from 'lodash'
 
     export default {
 			data() {
 				return {
-						currentClass: 'Materials Science and Engineering',
+						currentClassString: '',
+						searchInputValue: '',
+						classes: [
+							{ id: '1bc87287-1271-4f0c-94a1', name: 'Materials Science and Engineering', number: '3.014', semester: 'Spring 2018', archived: false },
+							{ id: '2bc87287-1271-4f0c-94a2', name: 'Comparative Media Studies / Writing', number: '21W.016', semester: 'Spring 2018', archived: false },
+							{ id: '3bc87287-1271-4f0c-94a2', name: 'Chemical Engineering ', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
+							{ id: '4bc87287-1271-4f0c-94a2', name: 'Management ', number: '15.418', semester: 'Spring 2018', archived: false }
+						],
+						studentClasses: [],
 						modalEnrollClassIsOpen: false,
-						formLabelWidth: '120px',
-						newClass: {
-								title: '',
-								spring: '',
-						},
-						userType: '',
-						searchClassValue: ''
+						otherClasses: [
+							{ id: '5bc87287-1271-4f0c-94a1', name: 'Linear Algebra', number: '3.014', semester: 'Spring 2018', archived: false },
+							{ id: '6bc87287-1271-4f0c-94a2', name: 'Signal Processing', number: '21W.016', semester: 'Spring 2018', archived: false },
+							{ id: '7bc87287-1271-4f0c-94a3', name: 'Discrete Mathematics', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
+							{ id: '8bc87287-1271-4f0c-94a4', name: 'Biology', number: '15.418', semester: 'Spring 2018', archived: false }
+						]
 				}
 			},
 			created() {
@@ -123,32 +134,50 @@
 						this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
+				this.boundStudentClasses()
+
+				this.currentClassString = this.studentClasses[0].name
+
 				if (this.$router.currentRoute.fullPath === '/student')
 					$('.navbar-end .badge').hide()
 			},
 			methods: {
-				genreSelection() {
-					let that = this
-					$('.student__genre').dropdown({
-						onChange: function (value, text, $selectedItem) {
-							that.currentGenre = text
+				boundStudentClasses() {
+					for (var i = 0, l = this.classes.length; i < l; i++)
+						this.studentClasses.push(this.classes[i])
+				},
+				queryStudentClasses: _.debounce(function () {
+					console.log('QUERY STUDENT CLASSES')
+
+					// An array that helps for the filtering.
+					const studentClassesLocal = []
+					for (var i = 0, l = this.classes.length; i < l; i++) {
+							studentClassesLocal.push(this.classes[i])
+					}	
+
+					// Define the filter method that will be used above.
+					var filterClasses = (queryString) => {
+							return (theClass) => {
+									return theClass.name.toLowerCase().indexOf(queryString) === 0
+							}
+					}  
+
+					this.studentClasses = studentClassesLocal.filter(filterClasses(this.searchInputValue))
+     		}, 300),
+				enrollToClass(event) {
+					const clickedClassName = event.currentTarget.children[1].innerHTML
+					for (var i = 0, l = this.otherClasses.length; i < l; i++) {
+						if (this.otherClasses[i].name === clickedClassName) {
+							this.currentClassString = this.otherClasses[i].name
+							this.studentClasses.push(this.otherClasses[i])
+							this.classes.push(this.otherClasses[i])
+							this.otherClasses.splice(i,1)
+							break
 						}
-					})
-				},
-				secondsToMMSS(s) {
-							s = Number(s);
-
-							var m = Math.floor(s % 3600 / 60);
-							var s = Math.floor(s % 3600 % 60);
-
-							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-				},
-				jerryriggingFeatured() {
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						this.videos[i]["featured"] = false
 					}
+					this.modalEnrollClassIsOpen = false
 				},
-				featureVideo(event) {
+				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 					for (var i = 0, l = this.videos.length; i < l; i++) {
 						if (this.videos[i].title === eventTitle) {
@@ -162,19 +191,22 @@
 								}
 						}
 					}
-                },
-                createClass() {	
-                    this.$store.dispatch('createClass', { 
-                        newClass: this.newClass
-                    })
-                    this.newClass = {}
-                }
+				},
+				secondsToMMSS(s) {
+							s = Number(s);
+
+							var m = Math.floor(s % 3600 / 60);
+							var s = Math.floor(s % 3600 % 60);
+
+							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+				},
 			},
 			computed: {
-                ...mapGetters(
-                    ['videos', 'uploadUrl', 'classes']
-                ),
-            },
+				...mapGetters(
+						['videos', 'uploadUrl']
+						// , 'classes'
+				),
+			},
 			components: {
 				'upload-video': UploadVideo
 			}
@@ -182,6 +214,7 @@
 </script>
 
 <style>
+
 .student__body { 
 	margin-bottom: 0 !important;
 }
@@ -201,9 +234,6 @@
 
 	.student__featured {
 		display: flex;
-		/* flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: center; */
 	}
 
 	.student__featured > .container {
@@ -229,9 +259,7 @@
 	cursor: pointer;
 }
 
-	/* .star-video i:hover {
-		background-color: yellow;
-	} */
+
 
 
 
@@ -246,28 +274,15 @@
 .student__sidebar .menu-list {
 	padding: 0;
 	margin-top: 20px;	
-		position: fixed;
 }
 
 	.student__sidebar .menu-list a {
 		padding: 15px 15px;
 	}
-
-/*
-	.student__sidebar > .main {
-		padding: 0 !important;
-	}
-		.student__sidebar > .main > .item {
-			padding: 10px !important;
-		}
-		.student__sidebar > .main > .item:hover {
-			 margin: 0 !important;
-			padding: 0 !important; 
-		}*/
-			
 			.sidebar-menu__link {
 				color: #000;
 			}
+
 
 
 
@@ -279,6 +294,8 @@
 	.classvideo:hover	{
 		background-color: #F5F5F5;
 	}
+
+
 
 
 
@@ -305,6 +322,44 @@
         text-align: center;
         border: 1px solid #fff;
     }
+
+
+
+
+
+	/* ==============================================
+                #CLASSES-CARD
+	================================================= */
+
+	.student__enrollModal .el-dialog__body {
+		display: flex;
+		flex-wrap: wrap;
+	}
+			.classes-card {
+				background-color: rgba(169,9,49,0.04);
+				color: #A90931;
+				padding: 45px;
+				margin: 20px;
+				height: auto;
+				transition:  box-shadow 0.5s ease;
+				width: 250px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+				.classes-card:hover {
+					cursor: pointer;
+					transition: 0.2s;
+					-webkit-transition: 0.2s;
+					background-color: #A90931;
+					color: #FFF !important;
+				}
+
+				.classes-card-title {
+					text-align: center;
+					font-size: 18px;
+				}
 
 
 
@@ -524,8 +579,6 @@
 
 	
 
-
-
 	/* ==============================================
                 #TRUMPS
 	================================================= */
@@ -585,35 +638,5 @@
         .menu-list .is-bg-mt-yellow:hover {
             background-color: #ada316;
         }
-
-
-	/* ==============================================
-                #CLASSES-CARD
-	================================================= */
-
-        .classes-card {
-				background-color: rgba(169,9,49,0.04);
-				color: #A90931;
-				padding: 45px;
-				margin: 20px;
-				height: auto;
-				transition:  box-shadow 0.5s ease;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-			}
-				.classes-card:hover {
-					cursor: pointer;
-					transition: 0.2s;
-					-webkit-transition: 0.2s;
-					background-color: #A90931;
-					color: #FFF !important;
-				}
-
-				.classes-card-title {
-					text-align: center;
-					font-size: 18px;
-				}
 
 </style>

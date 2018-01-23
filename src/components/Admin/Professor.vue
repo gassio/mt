@@ -32,9 +32,9 @@
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentShowingClass }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentShowingClass">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -66,24 +66,24 @@
 
 				<aside class="professor__sidebar column is-2 aside">
 					<div class="metalogon-home menu-list">
-						<a href="#" class="" ><span class="name">Metalogon Home</span></a>
+						<a @click="currentClassString = ''"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
 						<hr>
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
+								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
-									<a href="#" class=""><span class="name" style="padding-left:5px;" @click="modalArchiveClassIsOpen = true">Archive class</span></a>
+									<a href="#" @click="modalArchiveClassIsOpen = true"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
 									<hr>
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
 							<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
 							<div class="menu-list">
-								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentShowingClass === c.name) }" @click="currentShowingClass = c.name"><span class="name">{{ c.name }}</span></a>
+								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -138,7 +138,7 @@
 			data() {
 				return {
 					sidebarClassesTab: 'activeClasses',
-					currentShowingClass: 'Select a class from the menu...',
+					currentClassString: '',
 					activeClassesInputValue: '',
 					archivedClassesInputValue: '',
 					modalCreateClassIsOpen: false,
@@ -150,14 +150,12 @@
 					},
 					classes: [
 						{ id: '1bc87287-1271-4f0c-94a1', name: 'Materials Science and Engineering', number: '3.014', semester: 'Spring 2018', archived: false },
-						{ id: '2bc87287-1271-4f0c-94a2', name: 'Aeronautics and Astronautics', number: '3.014', semester: 'Spring 2018', archived: false },
-						{ id: '3bc87287-1271-4f0c-94a3', name: 'Rhetoric and Writing', number: '3.014', semester: 'Spring 2018', archived: false },
-						{ id: '4bc87287-1271-4f0c-94a4', name: 'Mathematics', number: '3.014', semester: 'Spring 2018', archived: true }
+						{ id: '2bc87287-1271-4f0c-94a2', name: 'Comparative Media Studies / Writing', number: '21W.016', semester: 'Spring 2018', archived: false },
+						{ id: '3bc87287-1271-4f0c-94a2', name: 'Chemical Engineering ', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
+						{ id: '4bc87287-1271-4f0c-94a2', name: 'Management ', number: '15.418', semester: 'Spring 2018', archived: false },
 					],
 					activeClasses: [],
 					archivedClasses: [],
-					// activeClassesClone: [],
-					// archivedClassesClone: [],
 				}
 			},
 			created() {
@@ -167,13 +165,13 @@
 			mounted() {
 				// Creates the active and archives classes arrays.
 				this.boundActiveArchivedClasses()
+				this.currentClassString = this.activeClasses[0].name
 			},
 			methods: {
 				boundActiveArchivedClasses() {
 						for (var i = 0, l = this.classes.length; i < l; i++) {
 								if (this.classes[i].archived === false) {
 									this.activeClasses.push(this.classes[i])
-									// this.activeClassesClone.push(this.classes[i])
 								}
 								else {
 									this.archivedClasses.push(this.classes[i])
@@ -244,7 +242,7 @@
 					// 2. Removes current class from Active Classes.
 					// 3. Modifies classes object.
 					for (var i = 0, l = this.activeClasses.length; i < l; i++) {
-						if (this.activeClasses[i].name === this.currentShowingClass) {
+						if (this.activeClasses[i].name === this.currentClassString) {
 							this.archivedClasses.push(this.activeClasses[i])
 							this.activeClasses.splice(i, 1)
 							this.classes[i].archived = true
@@ -253,7 +251,7 @@
 					}
 					
 					this.modalArchiveClassIsOpen = false // Closes the modal.
-					this.currentShowingClass = '' // Sets the current showing class state to null.
+					this.currentClassString = '' // Sets the current showing class state to null.
 				},
 				secondsToMMSS(s) {
 					s = Number(s);
