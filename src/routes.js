@@ -8,6 +8,7 @@ import VideoEdit from './components/Pages/VideoEdit.vue'
 import Admin from './components/Admin/Admin.vue'
 import Professor from './components/Admin/Professor.vue'
 import Student from './components/Admin/Student.vue'
+import Login from './components/Login/Login.vue'
 
 export const routes = [
     { path: '/', component: Home },
@@ -21,4 +22,5 @@ export const routes = [
     { path: '/admin', component: Admin },
     { path: '/professor', component: Professor },
     { path: '/student', component: Student },
+    { path: '/login', component: Login },
 ]

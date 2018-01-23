@@ -2,11 +2,13 @@
     <div class="app" v-cloak>
         <my-header></my-header>
         <router-view></router-view>
+        <login></login>
     </div>
 </template>
 
 <script>
     import MyHeader from './components/Layout/MyHeader.vue'
+    import Login from './components/Login/Login.vue'
 
     export default {
         mounted() {
@@ -23,7 +25,8 @@
             }
         },
         components: {
-            'my-header': MyHeader
+            'my-header': MyHeader,
+            'login': Login
         }
     }
 </script>
