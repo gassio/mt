@@ -28,12 +28,12 @@
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
                         <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
-                                <template scope="s1">
+                                <template slot-scope="s1">
                                     <i class="fa fa-user"></i> {{ s1.row.name }}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class">
-                                <template scope="s1b">
+                                <template slot-scope="s1b">
                                     <i class="fa fa-book"></i> {{ s1b.row.class }}
                                 </template>
                             </el-table-column>
@@ -41,19 +41,19 @@
                     </el-tab-pane>
                     <el-tab-pane label="Requested students" name="requestedStudents">
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
-                        <el-table ref="multipleTable" :data="requestedStudentsClone" :border="false" style="width: 100%" @selection-change="handleSelectionChange" :show-header="false" empty-text="No student requests">
+                        <el-table ref="multipleTable" :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
                             <el-table-column prop="name" width="140">
-                                <template scope="s2">
+                                <template slot-scope="s2">
                                     <i class="fa fa-user"></i> {{ s2.row.name }}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class" width="280">
-                                <template scope="s2b">
+                                <template slot-scope="s2b">
                                     <i class="fa fa-book"></i> {{ s2b.row.class }}
                                 </template>
                             </el-table-column>
                             <el-table-column>
-                                <template scope="scope">
+                                <template slot-scope="scope">
                                     <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
                                 </template>
                             </el-table-column>
@@ -202,9 +202,6 @@
                 } else {
                     this.$refs.multipleTable.clearSelection();
                 }
-            },
-            handleSelectionChange(val) {
-                this.multipleSelection = val;
             }
         },
         computed: {

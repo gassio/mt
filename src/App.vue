@@ -2,7 +2,7 @@
     <div class="app" v-cloak>
         <my-header></my-header>
         <router-view></router-view>
-        <login></login>
+        <!-- <login></login> -->
     </div>
 </template>
 
