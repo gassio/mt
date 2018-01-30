@@ -289,10 +289,10 @@ actions: {
     },
     // CLASSES
     getAllClasses: function ({ commit }) {
-        axios.get("https://metalogon-api.herokuapp.com/rest/class")
+        axios.get("http://localhost:3000/classes")
             .then(function (response)
             {
-                commit('GET_ALL_CLASSES', response.data.data )
+                commit('GET_ALL_CLASSES', response.data)
             })
             .catch(function (err) {
                 $('.classes').html(errorHTML)
@@ -427,10 +427,9 @@ mutations: {
         annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
     },
     // CLASSES
-    GET_ALL_CLASSES: (state, newClasses) => {
+    GET_ALL_CLASSES: (state, theClasses) => {
         loadingInstance.close()
-        state.classes = newClasses
-        // Vue.set(state.classes, newClasses)
+        state.classes = theClasses
     },
     GET_CLASS: (state, theClass) => {
         loadingInstance.close()

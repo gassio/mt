@@ -148,27 +148,40 @@
 						number: '',
 						semester: '' 
 					},
-					classes: [
-						{ id: '1bc87287-1271-4f0c-94a1', name: 'Materials Science and Engineering', number: '3.014', semester: 'Spring 2018', archived: false },
-						{ id: '2bc87287-1271-4f0c-94a2', name: 'Comparative Media Studies / Writing', number: '21W.016', semester: 'Spring 2018', archived: false },
-						{ id: '3bc87287-1271-4f0c-94a2', name: 'Chemical Engineering ', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
-						{ id: '4bc87287-1271-4f0c-94a2', name: 'Management ', number: '15.418', semester: 'Spring 2018', archived: false },
-					],
 					activeClasses: [],
 					archivedClasses: [],
 				}
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
-				this.$store.dispatch('getAllClasses')
+				this.fetchClasses()
+				console.log("created: ", this.classes)
 			},
 			mounted() {
-				// Creates the active and archives classes arrays.
-				this.boundActiveArchivedClasses()
-				this.currentClassString = this.activeClasses[0].name
+				console.log("mounted: ", this.classes)
 			},
 			methods: {
+				fetchClasses() {
+						var that = this
+						return this.$store.dispatch('getAllClasses').then(() => {
+							this.testClasses()
+						})
+				},
+				// fetchClasses() {
+				// 		var that = this
+				// 		return this.$store.dispatch('getAllClasses')
+				// 			.then(function() {
+				// 				that.testClasses()
+				// 			})
+				// 			.catch(function(error) {
+				// 					console.log("getAllClasses error: ", error)
+				// 			})
+				// },
+				testClasses() {
+					console.log("after dispatch: ", this.classes)
+				},
 				boundActiveArchivedClasses() {
+					console.log('this cl ', this.classes)
 						for (var i = 0, l = this.classes.length; i < l; i++) {
 								if (this.classes[i].archived === false) {
 									this.activeClasses.push(this.classes[i])
@@ -178,6 +191,8 @@
 									// this.archivedClassesClone.push(this.classes[i])
 								}
 						}
+						console.log("Active classes: ", this.activeClasses)
+						console.log("Archived classes: ", this.archivedClasses)
 				},
 				queryActiveClasses: _.debounce(function () {
 					console.log('QUERY ACTIVE CLASSES')
@@ -237,7 +252,7 @@
 						})
 						this.newClass = {}
 				},
-				archiveClass() {					
+				archiveClass() {
 					// 1. Adds current class to Archived Classes.
 					// 2. Removes current class from Active Classes.
 					// 3. Modifies classes object.
@@ -264,9 +279,8 @@
 			},
 			computed: {
 					...mapGetters(
-							['videos', 'uploadUrl']
-					),
-					// 'classes'
+							['videos', 'uploadUrl', 'classes']
+					)
 			},
 			components: {
 				'upload-video': UploadVideo
