@@ -188,19 +188,24 @@
 						})
 						this.newClass = {}
 				},
-				// SOS It needs to be setter, a Vuex mutation.
 				archiveClass() {
 					// 1. Adds current class to Archived Classes.
 					// 2. Removes current class from Active Classes.
 					// 3. Modifies classes object.
+					var objectToBeArchived = {}
+					var objectId
 					for (var i = 0, l = this.activeClasses.length; i < l; i++) {
 						if (this.activeClasses[i].name === this.currentClassString) {
-							this.archivedClasses.push(this.activeClasses[i])
-							this.activeClasses.splice(i, 1)
-							this.classes[i].archived = true
+							this.activeClasses[i].archived = true
+							objectToBeArchived = this.activeClasses[i]
+							objectId = this.activeClasses[i].id
 							break
 						}
-					}
+					}					
+					this.$store.dispatch('archiveClass', { 
+						classId: objectId,
+						classObject: objectToBeArchived 
+					})
 					
 					this.modalArchiveClassIsOpen = false // Closes the modal.
 					this.currentClassString = '' // Sets the current showing class state to null.

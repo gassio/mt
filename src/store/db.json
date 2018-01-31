@@ -179,40 +179,40 @@
     }
   ],
   "classes": [
-    { 
-      "archived": false,
+    {
+      "archived": true,
       "id": "0bc87287-1271-4f0c-94a0",
-      "department": "Aeronautics and Astronautics",
+      "department": "Aeronautics and Astronautics ",
       "name": "Doctoral Research and Communication Seminar",
       "number": "16.S982",
       "semester": "Spring 2018"
     },
-    { 
-      "archived": false,
+    {
+      "archived": true,
       "id": "1bc87287-1271-4f0c-94a1",
       "department": "Materials Science and Engineering",
       "name": "Materials Science Lab",
       "number": "3.014",
       "semester": "Spring 2018"
     },
-    { 
-      "archived": false,
+    {
+      "archived": true,
       "id": "2bc87287-1271-4f0c-94a2",
       "department": "Comparative Media Studies / Writing",
       "name": "Rhetoric",
       "number": "21W.747",
       "semester": "Spring 2018"
     },
-    { 
-      "archived": false,
+    {
+      "archived": true,
       "id": "3bc87287-1271-4f0c-94a3",
       "department": "Chemical Engineering",
       "name": "Chemical Engineering Projects Lab",
       "number": "10.26/27/28",
       "semester": "Spring 2018"
     },
-    { 
-      "archived": false,
+    {
+      "archived": true,
       "id": "4bc87287-1271-4f0c-94a4",
       "department": "Management",
       "name": "Laboratory in Corporate Finance",

@@ -320,6 +320,15 @@ actions: {
             console.log('Oxi createClass()')
         })
     },
+    archiveClass: function ({ commit }, payload) {
+        axios.put("http://localhost:3000/classes/"+payload.classId, payload.classObject)
+        .then(response => {
+            commit('ARCHIVE_CLASS', payload)
+        })
+        .catch(function (err) {
+            console.log('archiveClass() action error: ', err)
+        })
+    },
 },
 mutations: {
     // VIDEOS
@@ -424,7 +433,6 @@ mutations: {
                 annotations.splice(i, 1)
         }
     },
-    // Sorting annotations by from property
     SORT_ANNOTATIONS: (state) => {
         var annotations = state.videos.annotations
         annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
@@ -443,11 +451,22 @@ mutations: {
         classes.push(payload.newClass)
     },
     CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
+        state.activeClasses = []
+        state.archivedClasses = []
         for (var i = 0, l = state.classes.length; i < l; i++) {
             if (state.classes[i].archived === false)
                 state.activeClasses.push(state.classes[i])
             else
                 state.archivedClasses.push(state.classes[i])
+        }
+    },
+    ARCHIVE_CLASS: (state, payload) => {
+        var classes = state.classes
+        for (var i = 0, l = state.activeClasses.length; i < l; i++) {
+            if (state.activeClasses[i].id === payload.classId) {
+                state.activeClasses.splice(i, 1)
+                state.archivedClasses.push(payload.classObject)
+            }
         }
     },
     // Is used for search functionality.
