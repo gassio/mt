@@ -113,13 +113,6 @@
 				return {
 						currentClassString: '',
 						searchInputValue: '',
-						classes: [
-							{ id: '1bc87287-1271-4f0c-94a1', name: 'Materials Science and Engineering', number: '3.014', semester: 'Spring 2018', archived: false },
-							{ id: '2bc87287-1271-4f0c-94a2', name: 'Comparative Media Studies / Writing', number: '21W.016', semester: 'Spring 2018', archived: false },
-							{ id: '3bc87287-1271-4f0c-94a2', name: 'Chemical Engineering ', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
-							{ id: '4bc87287-1271-4f0c-94a2', name: 'Management ', number: '15.418', semester: 'Spring 2018', archived: false }
-						],
-						studentClasses: [],
 						modalEnrollClassIsOpen: false,
 						otherClasses: [
 							{ id: '5bc87287-1271-4f0c-94a1', name: 'Linear Algebra', number: '3.014', semester: 'Spring 2018', archived: false },
@@ -134,35 +127,16 @@
 						this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
-				this.boundStudentClasses()
-
 				this.currentClassString = this.studentClasses[0].name
 
 				if (this.$router.currentRoute.fullPath === '/student')
 					$('.navbar-end .badge').hide()
 			},
 			methods: {
-				boundStudentClasses() {
-					for (var i = 0, l = this.classes.length; i < l; i++)
-						this.studentClasses.push(this.classes[i])
-				},
 				queryStudentClasses: _.debounce(function () {
 					console.log('QUERY STUDENT CLASSES')
 
-					// An array that helps for the filtering.
-					const studentClassesLocal = []
-					for (var i = 0, l = this.classes.length; i < l; i++) {
-							studentClassesLocal.push(this.classes[i])
-					}	
-
-					// Define the filter method that will be used above.
-					var filterClasses = (queryString) => {
-							return (theClass) => {
-									return theClass.name.toLowerCase().indexOf(queryString) === 0
-							}
-					}  
-
-					this.studentClasses = studentClassesLocal.filter(filterClasses(this.searchInputValue))
+					this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
      		}, 300),
 				enrollToClass(event) {
 					const clickedClassName = event.currentTarget.children[1].innerHTML
@@ -203,8 +177,7 @@
 			},
 			computed: {
 				...mapGetters(
-						['videos', 'uploadUrl']
-						// , 'classes'
+						['videos', 'uploadUrl', 'classes', 'studentClasses']
 				),
 			},
 			components: {

@@ -68,7 +68,7 @@
 
 					<div class="menu-list">
 						<!-- <a ><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a> -->
-						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.title) }" @click="currentClassString = theClass.title"><span class="name">{{ theClass.title }}</span></a>
+						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.name) }" @click="currentClassString = theClass.name"><span class="name">{{ theClass.name }}</span></a>
 					</div>
 					
 				</aside>

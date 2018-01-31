@@ -180,14 +180,15 @@ state: {
             ]
         }
     ],
-    activeClasses: [], // only for sidebar stuff.
-    archivedClasses: [],
+    activeClasses: [], // only for professor.
+    archivedClasses: [], // only for professor.
+    studentClasses: [], // only for student.
     currentVideoID: null,
     uploadingVideo: false,
     uploadUrl: ''
 },
 actions: {
-    // VIDEOS
+    /* VIDEOS  */
     getAllVideos: function ({ commit }) {
         axios.get("https://metalogon-api.herokuapp.com/rest/video")
             .then(function (response)
@@ -256,7 +257,7 @@ actions: {
             })
             .catch( response => console.log(response.error))
     },
-    // ANNOTATIONS
+    /* ANNOTATIONS */ 
     addAnnotation: function ({ commit, state }, payload) {
         var theVideo = payload.video
             
@@ -289,13 +290,15 @@ actions: {
                 console.log('Error annotation delete...', err)
             })
     },
-    // CLASSES
+    /* CLASSES */  
     getAllClasses: function ({ commit }) {
         axios.get("http://localhost:3000/classes")
             .then(function (response)
             {
                 commit('GET_ALL_CLASSES', response.data)
                 commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
+                commit('CREATE_STUDENT_CLASSES' )
+                
             })
             .catch(function (err) {
                 $('.classes').html(errorHTML)
@@ -331,7 +334,7 @@ actions: {
     },
 },
 mutations: {
-    // VIDEOS
+    /* VIDEOS */
     GET_ALL_VIDEOS: (state, newVideos) => {
         loadingInstance.close()
         state.videos = newVideos
@@ -386,18 +389,19 @@ mutations: {
                 videos.splice(i, 1)              
         }
     },
-    // (NOT USED)
+    // Not used.
     GET_CLASS_VIDEOS: (state, classTitle) => {
         for (var i=0, l = state.videos.length; i < l; i++) {
             if (state.videos[i].class !== classTitle) 
                 state.videos.splice(i,1)
         }
     },
-    // (NOT USED)
+    // Not used.
     CREATE_UPLOAD_URL: (state, payload) => {      
         state.uploadUrl = payload.link.protocol + '://' + payload.link.address + payload.link.path + '?api_format=xml&key=' + payload.link.query.key + '&token=' + payload.link.query.token
     },
-    // ANNOTATIONS (NOT USED)
+    /* ANNOTATIONS */
+    // Not used.
     ADD_ANNOTATION: (state, payload) => {
         var annotations = state.videos.annotations
         // Sorting annotations[] by from property
@@ -437,7 +441,7 @@ mutations: {
         var annotations = state.videos.annotations
         annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
     },
-    // CLASSES
+    /* CLASSES */ 
     GET_ALL_CLASSES: (state, theClasses) => {
         loadingInstance.close()
         state.classes = theClasses
@@ -458,6 +462,12 @@ mutations: {
                 state.activeClasses.push(state.classes[i])
             else
                 state.archivedClasses.push(state.classes[i])
+        }
+    },
+    CREATE_STUDENT_CLASSES: (state) => {
+        state.studentClasses = []
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            state.studentClasses.push(state.classes[i])
         }
     },
     ARCHIVE_CLASS: (state, payload) => {
@@ -503,6 +513,22 @@ mutations: {
         }  
         state.archivedClasses = archivedClassesLocal.filter(filterClasses(inputValue))
     },
+    // Is used for search functionality.    
+    FILTER_STUDENT_CLASSES: (state, inputValue) => {
+        // An array that helps for the filtering.
+        const studentClassesLocal = []
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            studentClassesLocal.push(state.classes[i])
+        }
+
+        // Define the filter method that will be used above.
+        var filterClasses = (queryString) => {
+            return (theClass) => {
+                return theClass.name.toLowerCase().indexOf(queryString) === 0
+            }
+        }  
+        state.studentClasses = studentClassesLocal.filter(filterClasses(inputValue))
+    },
     SET_UPLOAD_URL: (state, payload) => {
         state.uploadUrl = payload
     }
@@ -525,6 +551,9 @@ getters: {
     },
     archivedClasses: state => {
         return state.archivedClasses
+    },
+    studentClasses: state => {
+        return state.studentClasses
     },
     uploadVideoProps: state => {
         return state.uploadVideoProps
