@@ -180,9 +180,11 @@ state: {
             ]
         }
     ],
+    activeClasses: [], // only for sidebar stuff.
+    archivedClasses: [],
     currentVideoID: null,
     uploadingVideo: false,
-    uploadUrl: ''  
+    uploadUrl: ''
 },
 actions: {
     // VIDEOS
@@ -293,6 +295,7 @@ actions: {
             .then(function (response)
             {
                 commit('GET_ALL_CLASSES', response.data)
+                commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
             })
             .catch(function (err) {
                 $('.classes').html(errorHTML)
@@ -439,9 +442,51 @@ mutations: {
         var classes = state.classes
         classes.push(payload.newClass)
     },
+    CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            if (state.classes[i].archived === false)
+                state.activeClasses.push(state.classes[i])
+            else
+                state.archivedClasses.push(state.classes[i])
+        }
+    },
+    // Is used for search functionality.
+    FILTER_ACTIVE_CLASSES: (state, inputValue) => {
+        // An array that helps for the filtering.
+        const activeClassesLocal = []
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            if (state.classes[i].archived === false)
+                activeClassesLocal.push(state.classes[i])
+        }
+
+        // Define the filter method that will be used above.
+        var filterClasses = (queryString) => {
+            return (theClass) => {
+                return theClass.name.toLowerCase().indexOf(queryString) === 0
+            }
+        }  
+        state.activeClasses = activeClassesLocal.filter(filterClasses(inputValue))
+    },
+    // Is used for search functionality.    
+    FILTER_ARCHIVED_CLASSES: (state, inputValue) => {
+        // An array that helps for the filtering.
+        const archivedClassesLocal = []
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            if (state.classes[i].archived === true)
+            archivedClassesLocal.push(state.classes[i])
+        }
+
+        // Define the filter method that will be used above.
+        var filterClasses = (queryString) => {
+            return (theClass) => {
+                return theClass.name.toLowerCase().indexOf(queryString) === 0
+            }
+        }  
+        state.archivedClasses = archivedClassesLocal.filter(filterClasses(inputValue))
+    },
     SET_UPLOAD_URL: (state, payload) => {
         state.uploadUrl = payload
-    },
+    }
 },
 getters: {
     videos: state => {
@@ -455,6 +500,12 @@ getters: {
     },
     canons: state => {
         return state.canons
+    },
+    activeClasses: state => {
+        return state.activeClasses
+    },
+    archivedClasses: state => {
+        return state.archivedClasses
     },
     uploadVideoProps: state => {
         return state.uploadVideoProps

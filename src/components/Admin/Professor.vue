@@ -148,88 +148,24 @@
 						number: '',
 						semester: '' 
 					},
-					activeClasses: [],
-					archivedClasses: [],
 				}
 			},
-			created() {
+			created() {	
 				this.$store.dispatch('getAllVideos')
-				this.fetchClasses()
-				console.log("created: ", this.classes)
+				this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
-				console.log("mounted: ", this.classes)
 			},
 			methods: {
-				fetchClasses() {
-						var that = this
-						return this.$store.dispatch('getAllClasses').then(() => {
-							this.testClasses()
-						})
-				},
-				// fetchClasses() {
-				// 		var that = this
-				// 		return this.$store.dispatch('getAllClasses')
-				// 			.then(function() {
-				// 				that.testClasses()
-				// 			})
-				// 			.catch(function(error) {
-				// 					console.log("getAllClasses error: ", error)
-				// 			})
-				// },
-				testClasses() {
-					console.log("after dispatch: ", this.classes)
-				},
-				boundActiveArchivedClasses() {
-					console.log('this cl ', this.classes)
-						for (var i = 0, l = this.classes.length; i < l; i++) {
-								if (this.classes[i].archived === false) {
-									this.activeClasses.push(this.classes[i])
-								}
-								else {
-									this.archivedClasses.push(this.classes[i])
-									// this.archivedClassesClone.push(this.classes[i])
-								}
-						}
-						console.log("Active classes: ", this.activeClasses)
-						console.log("Archived classes: ", this.archivedClasses)
-				},
+				// A Vue setter.
 				queryActiveClasses: _.debounce(function () {
 					console.log('QUERY ACTIVE CLASSES')
-
-					// An array that helps for the filtering.
-					const activeClassesLocal = []
-					for (var i = 0, l = this.classes.length; i < l; i++) {
-						if (this.classes[i].archived === false)
-							activeClassesLocal.push(this.classes[i])
-					}	
-
-					// Define the filter method that will be used above.
-					var filterClasses = (queryString) => {
-							return (theClass) => {
-									return theClass.name.toLowerCase().indexOf(queryString) === 0
-							}
-					}  
-
-					this.activeClasses = activeClassesLocal.filter(filterClasses(this.activeClassesInputValue))
+					this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
      		}, 300),
+				// A Vue setter.
 				queryArchivedClasses: _.debounce(function () {
 					console.log('QUERY ARCHIVED CLASSES')
-					
-					// An array that helps for the filtering.
-					const archivedClassesLocal = []
-					for (var i = 0, l = this.classes.length; i < l; i++) {
-						if (this.classes[i].archived === true)
-							archivedClassesLocal.push(this.classes[i])
-					}	
-
-					// Define the filter method that will be used above.
-					var filterClasses = (queryString) => {
-							return (theClass) => {
-									return theClass.name.toLowerCase().indexOf(queryString) === 0
-							}
-					}  
-					this.archivedClasses = archivedClassesLocal.filter(filterClasses(this.archivedClassesInputValue))
+					this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
 				}, 300),
 				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
@@ -252,6 +188,7 @@
 						})
 						this.newClass = {}
 				},
+				// SOS It needs to be setter, a Vuex mutation.
 				archiveClass() {
 					// 1. Adds current class to Archived Classes.
 					// 2. Removes current class from Active Classes.
@@ -279,7 +216,7 @@
 			},
 			computed: {
 					...mapGetters(
-							['videos', 'uploadUrl', 'classes']
+							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses']
 					)
 			},
 			components: {
