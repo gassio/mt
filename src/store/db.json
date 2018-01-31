@@ -182,7 +182,7 @@
     {
       "archived": false,
       "id": "0bc87287-1271-4f0c-94a0",
-      "department": "Aeronautics and Astronautics ",
+      "department": "Aeronautics and Astronautics",
       "name": "Doctoral Research and Communication Seminar",
       "number": "16.S982",
       "semester": "Spring 2018"
@@ -218,6 +218,14 @@
       "name": "Laboratory in Corporate Finance",
       "number": "15.418",
       "semester": "Spring 2018"
+    },
+    {
+      "archived": false,
+      "department": "Comparative Media Studies / Writing",
+      "name": "Advanced Essay Workshop",
+      "number": "21W.745",
+      "semester": "Spring 2018",
+      "id": "ByAQg4yLz"
     }
   ]
 }

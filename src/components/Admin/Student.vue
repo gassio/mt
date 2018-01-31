@@ -91,9 +91,9 @@
 			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
 					<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
 							<i aria-hidden="true" class="fa fa-book fa-5x"></i>
-							<p class="classes-card-title">{{ c.name }}</p> 
-							<p class="classes-card-title">{{ c.number }}</p> 
-							<p class="classes-card-title">{{ c.semester }}</p> 
+							<strong class="classes-card-title">"{{ c.name }}"</strong> 
+							<p class="classes-card-title">{{ c.department }}</p> 
+							<p class=""> {{ c.number }} - {{ c.semester }}</p> 
 					</a>
 			</el-dialog>	    
 		
@@ -115,10 +115,10 @@
 						searchInputValue: '',
 						modalEnrollClassIsOpen: false,
 						otherClasses: [
-							{ id: '5bc87287-1271-4f0c-94a1', name: 'Linear Algebra', number: '3.014', semester: 'Spring 2018', archived: false },
-							{ id: '6bc87287-1271-4f0c-94a2', name: 'Signal Processing', number: '21W.016', semester: 'Spring 2018', archived: false },
-							{ id: '7bc87287-1271-4f0c-94a3', name: 'Discrete Mathematics', number: '10.26/27/28', semester: 'Spring 2018', archived: false },
-							{ id: '8bc87287-1271-4f0c-94a4', name: 'Biology', number: '15.418', semester: 'Spring 2018', archived: false }
+							{ id: '5bc87287-1271-4f0c-94a1', department: "Chemical Engineering", name: 'Numerical Methods Applied to Chemical Engineering', number: '10.34', semester: 'Spring 2018', archived: false },
+							{ id: '6bc87287-1271-4f0c-94a2', department: "Chemical Engineering", name: 'Fundamentals of Advanced Energy Conversion', number: '10.390J', semester: 'Spring 2018', archived: false },
+							{ id: '7bc87287-1271-4f0c-94a3', department: "Aeronautics and Astronautics", name: 'Dynamics', number: '16.07', semester: 'Spring 2018', archived: false },
+							{ id: '8bc87287-1271-4f0c-94a4', department: "Aeronautics and Astronautics", name: 'System Safety', number: '16.863J', semester: 'Spring 2018', archived: false }
 						]
 				}
 			},
@@ -127,8 +127,6 @@
 						this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
-				this.currentClassString = this.studentClasses[0].name
-
 				if (this.$router.currentRoute.fullPath === '/student')
 					$('.navbar-end .badge').hide()
 			},
@@ -145,7 +143,7 @@
 							this.currentClassString = this.otherClasses[i].name
 							this.studentClasses.push(this.otherClasses[i])
 							this.classes.push(this.otherClasses[i])
-							this.otherClasses.splice(i,1)
+							this.otherClasses.splice(i,1)	
 							break
 						}
 					}
@@ -156,11 +154,11 @@
 					for (var i = 0, l = this.videos.length; i < l; i++) {
 						if (this.videos[i].title === eventTitle) {
 								if (this.videos[i].featured === false) {
-									this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+									this.$store.commit('FAVORITE_VIDEO', this.videos[i].title)
 									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
 								} 
 								else {
-									this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
+									this.$store.commit('UNFAVORITE_VIDEO', this.videos[i].title)
 									$(event.currentTarget).css('color', '#4a4a4a')
 								}
 						}

@@ -315,12 +315,12 @@ actions: {
             })
     },
     createClass: function ({ commit }, payload) {
-        axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
+        axios.post("http://localhost:3000/classes", payload.newClass)
         .then(response => {
-            commit('ADD_CLASS', payload)
+            commit('CREATE_CLASS', payload)
         })
         .catch(function (err) {
-            console.log('Oxi createClass()')
+            console.log('Error createClass()', err)
         })
     },
     archiveClass: function ({ commit }, payload) {
@@ -450,9 +450,15 @@ mutations: {
         loadingInstance.close()
         state.classes = theClass
     },
-    ADD_CLASS: (state, payload) => {
-        var classes = state.classes
-        classes.push(payload.newClass)
+    // Professor only.
+    CREATE_CLASS: (state, payload) => {
+        state.classes.push(payload.newClass)
+        state.activeClasses.push(payload.newClass)
+    },
+    // Student only. Not completed.
+    ENROLL_TO_CLASS: (state, payload) => {
+        // state.classes.push(payload.newClass)
+        state.activeClasses.push(payload)
     },
     CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
         state.activeClasses = []

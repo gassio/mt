@@ -102,10 +102,16 @@
 
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
-							<el-form-item label="Class name">
+							<el-form-item label="Name">
 									<el-input v-model="newClass.name"></el-input>
 							</el-form-item>
-							<el-form-item label="Class number">
+							<el-form-item label="Department">
+								<el-input v-model="newClass.department"></el-input>
+									<!-- <el-select  placeholder="Choose a department" >
+										<el-option v-model="newClass.department" :label="c.department" :value="c.department" v-for="c in classes" v-bind:key="c.title"></el-option>
+									</el-select> -->
+							</el-form-item>
+							<el-form-item label="Number">
 									<el-input v-model="newClass.number"></el-input>
 							</el-form-item>
 							<el-form-item label="Semester">
@@ -114,7 +120,7 @@
 					</el-form>
 					<span slot="footer" class="dialog-footer">
 							<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
-							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Add Class</el-button>
+							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Create Class</el-button>
 					</span>
 			</el-dialog>	
 
@@ -144,9 +150,11 @@
 					modalCreateClassIsOpen: false,
 					modalArchiveClassIsOpen: false,
 					newClass: {
-						name: '',
-						number: '',
-						semester: '' 
+						archived: false,
+						department: 'Comparative Media Studies / Writing',
+						name: 'Advanced Essay Workshop',
+						number: '21W.745',
+						semester: 'Spring 2018'
 					},
 				}
 			},
@@ -172,11 +180,11 @@
 					for (var i = 0, l = this.videos.length; i < l; i++) {
 						if (this.videos[i].title === eventTitle) {
 								if (this.videos[i].featured === false) {
-									this.$store.commit('FEATURE_VIDEO', this.videos[i].title)
+									this.$store.commit('FAVORITE_VIDEO', this.videos[i].title)
 									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
 								} 
 								else {
-									this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
+									this.$store.commit('UNFAVORITE_VIDEO', this.videos[i].title)
 									$(event.currentTarget).css('color', '#4a4a4a')
 								}
 						}
