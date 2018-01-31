@@ -184,6 +184,7 @@ state: {
     archivedClasses: [], // only for professor.
     studentClasses: [], // only for student.
     departments: [], 
+    authenticated: false, // for login page.
     currentVideoID: null,
     uploadingVideo: false,
     uploadUrl: ''
@@ -570,6 +571,9 @@ getters: {
     },
     departments: state => {
         return state.departments
+    },
+    authenticated: state => {
+        return state.authenticated
     },
     uploadVideoProps: state => {
         return state.uploadVideoProps

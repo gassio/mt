@@ -33,7 +33,6 @@
 					<div class="professor__classvideos">
 
 							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
-
 							<article class="classvideo media">
 								<upload-video :currentClassProp="currentClassString"></upload-video>
 							</article>
@@ -57,7 +56,7 @@
 										</div>
 										<div class="has-text-right has-text-grey-dark">
 											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
-											<p class="is-marginless">Annotations: 34</p>
+											<p class="is-marginless">Annotations: {{ v.annotations.length }}</p>
 											<!-- <p class="is-marginless">Lab presentation </p> -->
 											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
 										</div>
@@ -77,7 +76,7 @@
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
+								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
 									<a href="#" @click="modalArchiveClassIsOpen = true"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>

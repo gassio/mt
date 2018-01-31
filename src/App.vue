@@ -1,12 +1,14 @@
 <template>
     <div class="app" v-cloak>
-        <my-header></my-header>
+        <my-header v-if="authenticated"></my-header>
         <router-view></router-view>
-        <!-- <login></login> -->
     </div>
 </template>
 
 <script>
+    import { mapGetters } from 'vuex'
+	import { mapMutations } from 'vuex'
+
     import MyHeader from './components/Layout/MyHeader.vue'
     import Login from './components/Login/Login.vue'
 
@@ -19,10 +21,9 @@
         methods: {
         },
         computed: {
-            // Store: playlistIDs[] array
-            playlistIDs() {
-                return this.$store.state.playlistIDs
-            }
+            ...mapGetters(
+                ['authenticated']
+            )
         },
         components: {
             'my-header': MyHeader,

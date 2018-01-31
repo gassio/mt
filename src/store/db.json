@@ -188,7 +188,7 @@
       "semester": "Spring 2018"
     },
     {
-      "archived": false,
+      "archived": true,
       "id": "1bc87287-1271-4f0c-94a1",
       "department": "Materials Science and Engineering",
       "name": "Materials Science Lab",
@@ -210,22 +210,6 @@
       "name": "Chemical Engineering Projects Lab",
       "number": "10.26/27/28",
       "semester": "Spring 2018"
-    },
-    {
-      "archived": false,
-      "id": "4bc87287-1271-4f0c-94a4",
-      "department": "Management",
-      "name": "Laboratory in Corporate Finance",
-      "number": "15.418",
-      "semester": "Spring 2018"
-    },
-    {
-      "archived": false,
-      "department": "Comparative Media Studies / Writing",
-      "name": "Advanced Essay Workshop",
-      "number": "21W.745",
-      "semester": "Spring 2018",
-      "id": "ByAQg4yLz"
     }
   ]
 }
