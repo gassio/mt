@@ -1,6 +1,7 @@
 <template>
     <div class="home__upload-video">
-        <div class="upload-video__container" @click="createJwVideo()"> <!-- loadUrlPOC() -->
+        
+        <div class="upload-video__container" @click="createJwVideo()"> 
             <i class="fa fa-plus fa-3x" aria-hidden="true"></i>
             <span class="upload-video__text">Click to upload video</span>
         </div>
@@ -20,10 +21,14 @@
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
                 <el-form-item label="Class" prop="class">
-                    <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" v-for="c in classes" v-bind:key="c.title">
-                        <el-option :label="c.title" :value="c.title"></el-option>
+                    <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" >
+                        <el-option :label="c.name" :value="c.name" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
                     </el-select>
-                    <!-- <el-input v-model="uploadVidMetadata.class"></el-input> -->
+                </el-form-item>
+                <el-form-item label="Department" prop="department"> <!--   -->
+                    <el-select  placeholder="Select the department" > <!-- v-model="uploadVidMetadata.department" -->
+                        <el-option :label="d.department" :value="d.department" v-for="d in departments" v-bind:key="d.department"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="Genre" prop="genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
@@ -77,6 +82,7 @@
     import { Loading } from 'element-ui';
     
     export default {
+        props: ['currentClassProp'],
         data() {
             return {
                 dropzoneInstance: null,
@@ -90,7 +96,8 @@
 					title: '',
 					class: '',
                     genre: '',
-                    presentedAt: ''
+                    presentedAt: '',
+                    // department: '' 
                 },
                 uploadVidMetadataRules: {
                     title: [
@@ -157,7 +164,7 @@
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
                     // Resets the value of metadataModal fields
-                    this.uploadVidMetadata.title = '';this.uploadVidMetadata.class = '';this.uploadVidMetadata.genre = '';this.uploadVidMetadata.presentedAt = '';
+                    this.uploadVidMetadata.title = '';this.uploadVidMetadata.class = this.currentClassProp;this.uploadVidMetadata.genre = '';this.uploadVidMetadata.presentedAt = '';
                     // Closes and opens the modals
                     this.modalDragDropIsOpen = false
                     this.modalMetadataIsOpen = true
@@ -319,10 +326,10 @@
         },
         computed: {
             ...mapGetters([
-				'videos', 'uploadUrl', 'classes'
+				'videos', 'uploadUrl', 'classes', 'activeClasses', 'departments'
             ]),
-        }
-    }
+        }    
+}
 
 
 // axios.get("https://metalogon-api.herokuapp.com/rest/video")
@@ -343,11 +350,9 @@
 
 <style>
 
-/* .el-dialog__wrapper, .uploadvid { z-index: 2000 !important; } */
-
-	/* ==============================================
-					#VUE-DROPZONE
-		================================================= */
+/* ==============================================
+                #VUE-DROPZONE
+    ================================================= */
 
 /* Disable files preview  */
 .dz-preview {
@@ -398,16 +403,16 @@
 		================================================= */
 
     .home__upload-video {
+		color: #A90931;
+		background-color: #FFF;
+		width: 100%;
+		border: 1px dashed #DADDE2;
+        padding: 25px;
+        margin-bottom: 10px;
 		display: flex;
 		flex-direction:column;
 		justify-content: center;
 		align-items: center;
-		height:280px;
-		color: #A90931;
-		background-color: #FFF;
-		width: calc(100% /3 - 20px);
-		margin: 10px;
-		border: 1px dashed #DADDE2;
 	}
 	.home__upload-video:hover {
 		color: #FFF;

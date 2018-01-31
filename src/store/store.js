@@ -183,6 +183,7 @@ state: {
     activeClasses: [], // only for professor.
     archivedClasses: [], // only for professor.
     studentClasses: [], // only for student.
+    departments: [], 
     currentVideoID: null,
     uploadingVideo: false,
     uploadUrl: ''
@@ -298,7 +299,7 @@ actions: {
                 commit('GET_ALL_CLASSES', response.data)
                 commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
                 commit('CREATE_STUDENT_CLASSES' )
-                
+                commit('FILL_DEPARTMENTS')
             })
             .catch(function (err) {
                 $('.classes').html(errorHTML)
@@ -535,6 +536,12 @@ mutations: {
         }  
         state.studentClasses = studentClassesLocal.filter(filterClasses(inputValue))
     },
+    FILL_DEPARTMENTS: (state) => {
+        for (var i = 0, l = state.classes.length; i < l; i++) {
+            if (!state.departments.includes(state.classes[i].department))
+                state.departments.push(state.classes[i].department)
+        }
+    },
     SET_UPLOAD_URL: (state, payload) => {
         state.uploadUrl = payload
     }
@@ -560,6 +567,9 @@ getters: {
     },
     studentClasses: state => {
         return state.studentClasses
+    },
+    departments: state => {
+        return state.departments
     },
     uploadVideoProps: state => {
         return state.uploadVideoProps

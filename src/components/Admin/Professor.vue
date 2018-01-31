@@ -34,6 +34,10 @@
 
 							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
 
+							<article class="classvideo media">
+								<upload-video :currentClassProp="currentClassString"></upload-video>
+							</article>
+
 							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
