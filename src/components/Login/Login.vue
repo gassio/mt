@@ -8,14 +8,14 @@
             <input type="password" placeholder="password"/>
             <input type="text" placeholder="email address"/>
             <button>create</button>
-            <p class="message">Already registered? <a @click="u()">Sign In</a></p>
+            <p class="message">Already registered? <a>Sign In</a></p>
         </form>
 
         <form class="login-form" v-else>
-            <input type="text" placeholder="username"/>
-            <input type="password" placeholder="password"/>
-            <button type="button">login</button>
-            <p class="message">Not registered? <a @click="r()">Create an account</a></p>
+            <input type="text" placeholder="username" v-model="username"/>
+            <input type="password" placeholder="password" v-model="password"/>
+            <button type="button" @click="l()">login</button>
+            <p class="message">Not registered? <a style="text-decoration:none" @click="c()">Create an account</a></p>
         </form>
 
 
@@ -28,7 +28,9 @@
 export default {
     data() {
         return {
-          registered: false 
+          registered: false,
+          username: '',
+          password: ''
         }
     },
     created() {
@@ -40,10 +42,22 @@ export default {
         });
     },
     methods: {
+        l() {
+          var that = this
+          if (this.username === 'karatsolis' && this.password === "1234") {
+            setTimeout(function() {
+              that.$store.commit('AUTHENTICATED')
+              that.$router.push({ path: '/professor'})
+            }, 600)
+          }
+          else {
+            alert('Please enter the correct username and password.')
+          }
+        },
         r() {
           this.registered = true
         },
-        u() {
+        c() {
           this.registered = false
         },
         openTab(evt, tabName) {
@@ -124,40 +138,6 @@ export default {
 }
 .login .register-form {
 }
-.container {
-  position: relative;
-  z-index: 1;
-  max-width: 300px;
-  margin: 0 auto;
-}
-.container:before, .container:after {
-  content: "";
-  display: block;
-  clear: both;
-}
-.container .info {
-  margin: 50px auto;
-  text-align: center;
-}
-.container .info h1 {
-  margin: 0 0 15px;
-  padding: 0;
-  font-size: 36px;
-  font-weight: 300;
-  color: #1a1a1a;
-}
-.container .info span {
-  color: #4d4d4d;
-  font-size: 12px;
-}
-.container .info span a {
-  color: #000000;
-  text-decoration: none;
-}
-.container .info span .fa {
-  color: #EF3B3A;
-}
-
 
 
 </style>

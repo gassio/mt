@@ -545,6 +545,12 @@ mutations: {
     },
     SET_UPLOAD_URL: (state, payload) => {
         state.uploadUrl = payload
+    },
+    AUTHENTICATED: (state) => {
+        if (state.authenticated === false)
+            state.authenticated = true
+        else
+            state.authenticated = false
     }
 },
 getters: {

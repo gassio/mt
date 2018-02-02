@@ -1,17 +1,17 @@
 <template>
     <div class="video container">
-        <div class="video__breadcrumb spacer columns is-gapless is-marginless">
-            <router-link :to="{ path: '/'}" class="video__breadcrumb-title column is-8">
+        <!--<div class="video__breadcrumb spacer columns is-gapless is-marginless">
+             <router-link :to="{ path: '/'}" class="video__breadcrumb-title column is-8">
                 <button class="video__breadcrumb-title-btn button is-white">
                     <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
                 </button>
-            </router-link>
+            </router-link> -->
 
-            <div class="video-timer column is-4">
+            <!-- <div class="video-timer column is-4">
                 <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
             </div>
-        </div>
-        <div class="main-content columns is-gapless is-marginless">
+        </div>-->
+        <div class="main-content columns is-gapless is-marginless" style="padding-top: 20px;">
             <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
@@ -174,13 +174,13 @@ You might also want to include a concrete strategy recommendation."
             </div>
 
             <div class="cards column is-4 is-gapless is-marginless" id="cards">
-                <div class="cards-content columns is-gapless is-marginless">
-                    <nav class="card-menu column is-2">
-                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span>Moves</span></a>
-                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span>Structure</span></a>
-                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span>Delivery</span></a>
-                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span>Visuals</span></a>
-                        <a class="card-menu-link" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span>Style</span></a>
+                <div class="cards-content is-gapless is-marginless">
+                    <nav class="card-menu">
+                        <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
+                        <a class="card-menu-link" style="background-color: #853a3e !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
+                        <a class="card-menu-link" style="background-color: #ab8c3c !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
+                        <a class="card-menu-link" style="background-color: #6c3765 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
+                        <a class="card-menu-link" style="background-color: #38425d !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -188,8 +188,7 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                         </div>
                     </nav>
-                    <div class="timeline-content column is-10">
-                        <!--<div class="timeline-content-current-video-time"><span>{{ secondsToMMSS(videoCurrentTime) }}</span></div>-->
+                    <div class="timeline-container">
 
                         <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle"> 
                             <div class="timeline-card__head">
@@ -210,7 +209,7 @@ You might also want to include a concrete strategy recommendation."
                                 </div>
                             </div>
                             <div class="timeline-card__footer">
-                                <p class="timeline-card__author">by {{ card.author }}</p>
+                                <p class="timeline-card__author"></p>
                                 <span class="timeline-card__id">{{ card.id }}</span>
                                 <div class="timeline-card__edit-container">
                                     <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -300,13 +299,6 @@ You might also want to include a concrete strategy recommendation."
             
             this.videoDuration = this.videos[vIndex].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
-            
-            // Change the color and background of All in cards menu so that it looks active
-            // var allButton = document.getElementById("all-is-active")
-            // allButton.style.background = "#8F082A";
-            // allButton.style.color = "#FFFFFF";
-            $('.card-menu a').css('background-color', '#39425C')
-            $('.card-menu a').css('color', '#FFF')
 
             // Loads video sources: 
             // link 
@@ -889,73 +881,73 @@ You might also want to include a concrete strategy recommendation."
                 if (canon === 'Moves') {
                     if (this.isMoves !== '')  {
                         this.isMoves = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isMoves = 'Moves'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'Structure') {
                     if (this.isStructure !== '') {
                         this.isStructure = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isStructure = 'Structure'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     } 
                 }
                 if (canon === 'Delivery') {
                     if (this.isDelivery !== '') {
                         this.isDelivery = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isDelivery = 'Delivery'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     }
                 } 
                 if (canon === 'Visuals') {
                     if (this.isVisuals !== '') {
                         this.isVisuals = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isVisuals = 'Visuals'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'Style') {
                     if (this.isStyle !== '') {
                         this.isStyle = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isStyle = 'Style'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'All') {
                     if (this.isAll !== '') {
                         this.isAll = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        // event.currentTarget.style.backgroundColor = "transparent"
+                        // event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isAll = 'All'
-                        event.currentTarget.style.backgroundColor = "#39425C"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        // event.currentTarget.style.backgroundColor = "#39425C"
+                        // event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
             },
@@ -1096,8 +1088,8 @@ You might also want to include a concrete strategy recommendation."
                         var firstCard = $('.timeline-card').eq(0)
                         $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
                         $('.timeline-card').eq(j).insertBefore(firstCard)
-                        if ($('.timeline-content').scrollTop !== 0) 
-                            $('.timeline-content').animate({scrollTop:0}, 500)
+                        if ($('.timeline-container').scrollTop !== 0) 
+                            $('.timeline-container').animate({scrollTop:0}, 500)
                     } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)") {
                         console.log('out')
                         $('.timeline-card').eq(j).css('background-color', 'white')
@@ -1554,17 +1546,15 @@ You might also want to include a concrete strategy recommendation."
 ================================================= */
 
 .cards {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    margin-left: 25px !important;
     
 }
 
     .card-menu {
         display: flex;
-        flex-direction: column;
-        height: 100%;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 25px;
     }
 
         .card-menu-link {
@@ -1572,20 +1562,29 @@ You might also want to include a concrete strategy recommendation."
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: #6B6B6B;
-            padding: 15px 10px;
+            color: #FFF;
+            padding: 10px 24px;
             border-bottom: solid 1px rgba(0, 0, 0, .5);
         }
-             .card-menu-link span {
+             .card-menu-link-title {
                  font-size: 14px;
              }
+
+             /*.card-menu-link-ribbon {
+                position: absolute;
+                width: 60px;
+                margin-top: 40px;
+                border-top: solid 5px #395d41;
+                border-left: solid 25px transparent;
+                border-right: solid 25px transparent;
+             } */
 
         .add-annotation {
             color: #4A4A4A !important;
             background-color: #FFF !important;
         }
 
-    .timeline-content {
+    .timeline-container {
         padding-top: 0px !important;
         padding-bottom: 10px !important;
         padding-left: 10px !important;
@@ -1602,10 +1601,9 @@ You might also want to include a concrete strategy recommendation."
         }
             .timeline-card {
                 background: none;
-                /*padding: 15px !important;*/
-                margin-bottom: 20px;
+                border-left: 12px solid green;
+                margin-bottom: 10px;
                 box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
-                /*box-shadow: 1px 1px 1px 1px rgba(0,0,0,0.25);*/
                 cursor: pointer;
             }
                 .timeline-card__head {

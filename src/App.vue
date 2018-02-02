@@ -1,6 +1,6 @@
 <template>
     <div class="app" v-cloak>
-        <my-header v-if="authenticated"></my-header>
+        <my-header v-if="authenticated"></my-header> <!-- -->
         <router-view></router-view>
     </div>
 </template>
