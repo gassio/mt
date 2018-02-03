@@ -32,12 +32,12 @@
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassSelected }}</h3>
 							<article class="classvideo media">
-								<upload-video :currentClassProp="currentClassString"></upload-video>
+								<upload-video :currentClassProp="currentClassSelected"></upload-video>
 							</article>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
+							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<figure class="media-left" style="margin:0 0 0 20px">
 										<p class="image" style="width:200px">
 											<router-link :to="'/video/' + v.id"  tag="a">
@@ -69,24 +69,24 @@
 
 				<aside class="professor__sidebar column is-2 aside">
 					<div class="metalogon-home menu-list">
-						<a @click="currentClassString = ''"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+						<a @click="setCurrentClass()"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
 						<hr>
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
-									<a href="#" @click="modalArchiveClassIsOpen = true"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
+									<a href="#" @click="openModalArchiveClass()"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
 									<hr>
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
 							<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
 							<div class="menu-list">
-								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -127,7 +127,7 @@
 					</span>
 			</el-dialog>	
 
-			<el-dialog title="Do you want to archive this class?" :visible.sync="modalArchiveClassIsOpen">
+			<el-dialog :title="'Do you want to archive `' + currentClassSelected + '` class?'" :visible.sync="modalArchiveClassIsOpen">
 					<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
 					<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
 			</el-dialog>	
@@ -147,7 +147,7 @@
 			data() {
 				return {
 					sidebarClassesTab: 'activeClasses',
-					currentClassString: '',
+					// currentClassString: '',
 					activeClassesInputValue: '',
 					archivedClassesInputValue: '',
 					modalCreateClassIsOpen: false,
@@ -166,6 +166,7 @@
 				this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
+				// this.currentClassString = this.currentClassSelected
 			},
 			methods: {
 				// A Vue setter.
@@ -178,6 +179,9 @@
 					console.log('QUERY ARCHIVED CLASSES')
 					this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
 				}, 300),
+				setCurrentClass(className) {
+					this.$store.commit('CURRENT_CLASS_SELECT', className)
+				},
 				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
 					for (var i = 0, l = this.videos.length; i < l; i++) {
@@ -199,6 +203,10 @@
 						})
 						this.newClass = {}
 				},
+				openModalArchiveClass() {
+						if (this.currentClassSelected !== '')
+							this.modalArchiveClassIsOpen = true
+				},
 				archiveClass() {
 					// 1. Adds current class to Archived Classes.
 					// 2. Removes current class from Active Classes.
@@ -206,20 +214,21 @@
 					var objectToBeArchived = {}
 					var objectId
 					for (var i = 0, l = this.activeClasses.length; i < l; i++) {
-						if (this.activeClasses[i].name === this.currentClassString) {
+						if (this.activeClasses[i].name === this.currentClassSelected) {
 							this.activeClasses[i].archived = true
 							objectToBeArchived = this.activeClasses[i]
 							objectId = this.activeClasses[i].id
 							break
 						}
-					}					
+					}
 					this.$store.dispatch('archiveClass', { 
 						classId: objectId,
 						classObject: objectToBeArchived 
 					})
 					
 					this.modalArchiveClassIsOpen = false // Closes the modal.
-					this.currentClassString = '' // Sets the current showing class state to null.
+					var emptyString = ''
+					this.$store.commit('CURRENT_CLASS_SELECT', emptyString) // Sets the current showing class state to null.
 				},
 				secondsToMMSS(s) {
 					s = Number(s);
@@ -232,7 +241,7 @@
 			},
 			computed: {
 					...mapGetters(
-							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses']
+							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected']
 					)
 			},
 			components: {

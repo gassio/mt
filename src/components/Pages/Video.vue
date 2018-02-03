@@ -190,13 +190,14 @@ You might also want to include a concrete strategy recommendation."
                     </nav>
                     <div class="timeline-container">
 
-                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle"> 
+                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" v-bind:style="{ 'border-left': '12px solid ' + card.color  }"> <!-- + card.color-->
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
                                     <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
                                 </div>
                                 <p class="timeline-card__desc">{{ card.label }}</p>
+                                <p class="timeline-card__desc">{{ card.canon }}</p>
                                 
                             </div>
                             <div class="timeline-card__body">
@@ -205,7 +206,10 @@ You might also want to include a concrete strategy recommendation."
                                 <div class="timeline-card__effectiveness">
                                     <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
-                                    <!--<el-rate v-model="card.rating" disabled text-color="#ff9900"></el-rate>-->
+
+
+                                    <!--<el-progress :text-inside="true" :stroke-width="18" :percentage="20 * card.rating"></el-progress>
+                                    <el-rate v-model="card.rating" disabled text-color="#ff9900"></el-rate>-->
                                 </div>
                             </div>
                             <div class="timeline-card__footer">
@@ -242,6 +246,7 @@ You might also want to include a concrete strategy recommendation."
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
+                videoIndexForCardColor: 0,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
                 annotateSubCategory: '',
@@ -282,12 +287,31 @@ You might also want to include a concrete strategy recommendation."
         },
         created() {
             console.log("#CREATED()")
-
-            this.$store.dispatch('getVideo', this.id)
+            var that = this
         },
         mounted() {
             console.log("#MOUNTED()")     
             var that = this
+
+            this.$store.dispatch('getVideo', this.id).then(() => {
+                console.log('inside dispatch')
+                console.log('________________')
+                // This needs to be a function.
+                that.videoAnnotations = that.videos[that.videoIndexForCardColor].annotations
+                console.log(that.videoAnnotations)
+                for (var i=0, l = that.videoAnnotations.length; i < l; i++) {
+                    if (that.videoAnnotations[i].canon === 'Moves')
+                        that.videoAnnotations[i]['color'] = '#395d41'
+                    else if (that.videoAnnotations[i].canon === 'Structure')
+                        that.videoAnnotations[i]['color'] = '#853a3e'
+                    else if (that.videoAnnotations[i].canon === 'Delivery')
+                        that.videoAnnotations[i]['color'] = '#ab8c3c'
+                    else if (that.videoAnnotations[i].canon === 'Visuals')
+                        that.videoAnnotations[i]['color'] = '#6c3765'
+                    else if (that.videoAnnotations[i].canon === 'Style')
+                        that.videoAnnotations[i]['color'] = '#38425d'
+                }
+            })
 
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
@@ -296,6 +320,8 @@ You might also want to include a concrete strategy recommendation."
                 if (this.videos[i].id === this.id) 
                     vIndex = i
             }
+
+            this.videoIndexForCardColor = vIndex
             
             this.videoDuration = this.videos[vIndex].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
@@ -375,6 +401,8 @@ You might also want to include a concrete strategy recommendation."
                 stop(event) {
                 }
             })
+
+            
             
         },
         updated() {
@@ -383,7 +411,7 @@ You might also want to include a concrete strategy recommendation."
 
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
-            this.videoAnnotations = this.videos.annotations
+            // this.videoAnnotations = this.videos.annotations
             
             // Show "Sroll down for more" when there are more than 5 cards
             // this.moreAnnotations()
@@ -881,61 +909,61 @@ You might also want to include a concrete strategy recommendation."
                 if (canon === 'Moves') {
                     if (this.isMoves !== '')  {
                         this.isMoves = ''
-                        // event.currentTarget.style.backgroundColor = "transparent"
-                        // event.currentTarget.style.color = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isMoves = 'Moves'
-                        // event.currentTarget.style.backgroundColor = "#39425C"
-                        // event.currentTarget.style.color = "#FFFFFF"
+                        event.currentTarget.style.backgroundColor = "#395d41"
+                        event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'Structure') {
                     if (this.isStructure !== '') {
                         this.isStructure = ''
-                        // event.currentTarget.style.backgroundColor = "transparent"
-                        // event.currentTarget.style.color = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isStructure = 'Structure'
-                        // event.currentTarget.style.backgroundColor = "#39425C"
-                        // event.currentTarget.style.color = "#FFFFFF"
+                        event.currentTarget.style.backgroundColor = "#853a3e"
+                        event.currentTarget.style.color = "#FFFFFF"
                     } 
                 }
                 if (canon === 'Delivery') {
                     if (this.isDelivery !== '') {
                         this.isDelivery = ''
-                        // event.currentTarget.style.backgroundColor = "transparent"
-                        // event.currentTarget.style.color = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else {
                         this.isDelivery = 'Delivery'
-                        // event.currentTarget.style.backgroundColor = "#39425C"
-                        // event.currentTarget.style.color = "#FFFFFF"
+                        event.currentTarget.style.backgroundColor = "#ab8c3c"
+                        event.currentTarget.style.color = "#FFFFFF"
                     }
                 } 
                 if (canon === 'Visuals') {
                     if (this.isVisuals !== '') {
                         this.isVisuals = ''
-                        // event.currentTarget.style.backgroundColor = "transparent"
-                        // event.currentTarget.style.color = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isVisuals = 'Visuals'
-                        // event.currentTarget.style.backgroundColor = "#39425C"
-                        // event.currentTarget.style.color = "#FFFFFF"
+                        event.currentTarget.style.backgroundColor = "#6c3765"
+                        event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'Style') {
                     if (this.isStyle !== '') {
                         this.isStyle = ''
-                        // event.currentTarget.style.backgroundColor = "transparent"
-                        // event.currentTarget.style.color = "#4a4a4a"
+                        event.currentTarget.style.backgroundColor = "transparent"
+                        event.currentTarget.style.color = "#4a4a4a"
                     }
                     else { 
                         this.isStyle = 'Style'
-                        // event.currentTarget.style.backgroundColor = "#39425C"
-                        // event.currentTarget.style.color = "#FFFFFF"
+                        event.currentTarget.style.backgroundColor = "#38425d"
+                        event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
                 if (canon === 'All') {
@@ -1601,7 +1629,6 @@ You might also want to include a concrete strategy recommendation."
         }
             .timeline-card {
                 background: none;
-                border-left: 12px solid green;
                 margin-bottom: 10px;
                 box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
                 cursor: pointer;
@@ -1656,8 +1683,7 @@ You might also want to include a concrete strategy recommendation."
                             margin-top: 5px;
                         }
                         .timeline-card__effectiveness progress::-webkit-progress-value { 
-                            border-radius: 1px !important; 
-                            background-color: #39425C !important;
+                            background-color: #b1b1b1 !important; /*#38425d*/
                         }
 
                         .timeline-card__effectiveness-label {
