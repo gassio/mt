@@ -227,9 +227,13 @@ actions: {
             .then( response => {
                 console.log('-----')
                 console.log('POST video')
-                commit('CREATE_VIDEO', payload)
+                commit('CREATE_VIDEO', response.data.data)
             })
-            .catch( response => console.log(response.error))
+            .catch( response => {
+                console.log('createVideo action error.')
+                console.log('payload: ', payload)
+                console.log('error:', response.error)
+            })
     },
     editVideo: function ({ commit }, payload) {
         axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.videoId, 

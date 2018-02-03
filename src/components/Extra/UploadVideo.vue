@@ -29,7 +29,7 @@
                     <el-input v-model="uploadVidMetadata.classNumber"></el-input>
                 </el-form-item>
                 <el-form-item label="Department" prop="classDepartment"> <!--   -->
-                    <el-select placeholder="Select the department" v-model="uploadVidMetadata.department">
+                    <el-select placeholder="Select the department" v-model="uploadVidMetadata.classDepartment">
                         <el-option v-for="d in departments" :label="d" :value="d" v-bind:key="d"></el-option>
                     </el-select>
                 </el-form-item>
@@ -61,7 +61,8 @@
         </el-dialog>
 
 		<el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false">
-            <div class="uploadvid__sync-load" v-loading="modalSyncOpen" 
+            <div class="uploadvid__sync-load" 
+                v-loading="modalSyncOpen" 
                 element-loading-text="Processing your file..." 
                 element-loading-spinner="el-icon-loading"
                 element-loading-background="rgba(0, 0, 0, 0.8)"></div>
