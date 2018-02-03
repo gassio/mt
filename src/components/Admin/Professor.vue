@@ -86,7 +86,7 @@
 						<el-tab-pane label="Archived" name="archivedClasses">
 							<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
 							<div class="menu-list">
-								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
+								<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 							</div>
 						</el-tab-pane>
 					</el-tabs>
@@ -106,19 +106,19 @@
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
 							<el-form-item label="Name">
-									<el-input v-model="newClass.name"></el-input>
+									<el-input v-model="newClass.name" placeholder="Advanced Essay Workshop"></el-input>
 							</el-form-item>
 							<el-form-item label="Department">
-								<el-input v-model="newClass.department"></el-input>
+								<el-input v-model="newClass.department" placeholder="Comparative Media Studies / Writing"></el-input>
 									<!-- <el-select  placeholder="Choose a department" >
 										<el-option v-model="newClass.department" :label="c.department" :value="c.department" v-for="c in classes" v-bind:key="c.title"></el-option>
 									</el-select> -->
 							</el-form-item>
 							<el-form-item label="Number">
-									<el-input v-model="newClass.number"></el-input>
+									<el-input v-model="newClass.number" placeholder="21W.745"></el-input>
 							</el-form-item>
 							<el-form-item label="Semester">
-									<el-input v-model="newClass.semester"></el-input>
+									<el-input v-model="newClass.semester" placeholder="Spring 2018"></el-input>
 							</el-form-item>
 					</el-form>
 					<span slot="footer" class="dialog-footer">
@@ -154,10 +154,10 @@
 					modalArchiveClassIsOpen: false,
 					newClass: {
 						archived: false,
-						department: 'Comparative Media Studies / Writing',
-						name: 'Advanced Essay Workshop',
-						number: '21W.745',
-						semester: 'Spring 2018'
+						department: '',
+						name: '',
+						number: '',
+						semester: ''
 					},
 				}
 			},

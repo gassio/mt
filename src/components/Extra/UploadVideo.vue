@@ -25,9 +25,12 @@
                         <el-option :label="c.name" :value="c.name" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Department" prop="department"> <!--   -->
-                    <el-select  placeholder="Select the department" > <!-- v-model="uploadVidMetadata.department" -->
-                        <el-option :label="d.department" :value="d.department" v-for="d in departments" v-bind:key="d.department"></el-option>
+                <el-form-item label="Class number" prop="classNumber">
+                    <el-input v-model="uploadVidMetadata.classNumber"></el-input>
+                </el-form-item>
+                <el-form-item label="Department" prop="classDepartment"> <!--   -->
+                    <el-select placeholder="Select the department" v-model="uploadVidMetadata.department">
+                        <el-option v-for="d in departments" :label="d" :value="d" v-bind:key="d"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Genre" prop="genre">
@@ -94,10 +97,11 @@
                 uploadProgress: 0,
                 uploadVidMetadata: {
 					title: '',
-					class: '',
+					class: this.currentClassProp,
+                    classNumber: '',
+                    classDepartment: '',
                     genre: '',
                     presentedAt: '',
-                    // department: '' 
                 },
                 uploadVidMetadataRules: {
                     title: [
@@ -204,15 +208,20 @@
                                         
                                         // POST video 
                                         that.$store.dispatch('createVideo', {
-                                            "jwVideoId": jwVideoId,
                                             "title": that.uploadVidMetadata.title,
                                             "class": that.uploadVidMetadata.class,
+                                            "classNumber": that.uploadVidMetadata.classNumber,
+                                            "classDepartment": that.uploadVidMetadata.classDepartment,
+                                            "jwVideoId": jwVideoId,
                                             "genre": that.uploadVidMetadata.genre,
                                             "presentedAt": that.uploadVidMetadata.presentedAt,
+                                            "featuredGlobal": false,
+                                            "featuredClass": false,
                                             "link": link,
                                             "duration": parseInt(duration),
                                             "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                            "annotations": []
+                                            "annotations": [],
+                                            // sources missing ?
                                         })
 
                                         // Close loading bar

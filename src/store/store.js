@@ -5,7 +5,8 @@ import axios from 'axios'
 Vue.use(Vuex)
 
 import { Loading } from 'element-ui';
-let loadingInstance = Loading.service({ fullscreen: true });    
+let loadingInstance = Loading.service({ fullscreen: true });
+const restapi = ''   
 
 let errorHTML = `
 <div style="padding-top:50px;">
@@ -294,10 +295,10 @@ actions: {
     },
     /* CLASSES */  
     getAllClasses: function ({ commit }) {
-        axios.get("http://localhost:3000/classes")
+        axios.get("https://metalogon-api.herokuapp.com/rest/class")
             .then(function (response)
             {
-                commit('GET_ALL_CLASSES', response.data)
+                commit('GET_ALL_CLASSES', response.data.data)
                 commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
                 commit('CREATE_STUDENT_CLASSES' )
                 commit('FILL_DEPARTMENTS')
@@ -317,7 +318,7 @@ actions: {
             })
     },
     createClass: function ({ commit }, payload) {
-        axios.post("http://localhost:3000/classes", payload.newClass)
+        axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
         .then(response => {
             commit('CREATE_CLASS', payload)
         })
@@ -326,7 +327,7 @@ actions: {
         })
     },
     archiveClass: function ({ commit }, payload) {
-        axios.put("http://localhost:3000/classes/"+payload.classId, payload.classObject)
+        axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
         .then(response => {
             commit('ARCHIVE_CLASS', payload)
         })
@@ -421,7 +422,7 @@ mutations: {
         // Sorting annotations[] by from property
         annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
         
-        var url = "http://localhost:3000/videos/" + payload.id
+        var url = "https://metalogon-api.herokuapp.com/rest/video/" + payload.id
         axios.put(url, payload.videoObj)
         .then(response => {
             console.log(payload.videoObj)
