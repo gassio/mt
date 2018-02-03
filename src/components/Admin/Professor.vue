@@ -33,9 +33,6 @@
 					<div class="professor__classvideos">
 
 							<h3 class="class__heading title is-size-4">{{ currentClassSelected }}</h3>
-							<article class="classvideo media">
-								<upload-video :currentClassProp="currentClassSelected"></upload-video>
-							</article>
 
 							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<figure class="media-left" style="margin:0 0 0 20px">
@@ -50,17 +47,27 @@
 										<p class="is-size-6 has-text-grey-dark">{{ v.class }}</p>
 										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 									</div>
-									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="favoriteVideo($event)">
+									<div class="media-right" style="display:flex;align-self:center; padding-right:15px;">
+										<!-- <div class="star-video" @click="favoriteVideo($event)">
 											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
+										</div> -->
+										<div class="has-text-right has-text-grey-dark" style="margin-right:5px; background-color:#89a9c0; color: #fff!important; padding:5px;">
+											<h3 class="is-size-4 is-marginless">94%</h3>
+											<p class="is-marginless">Holistic score</p>
 										</div>
-										<div class="has-text-right has-text-grey-dark">
-											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
-											<p class="is-marginless">Annotations: {{ v.annotations.length }}</p>
-											<!-- <p class="is-marginless">Lab presentation </p> -->
+										<div class="has-text-right has-text-grey-dark" style="background-color:#89a9c0; color: #fff!important; padding:5px;">
+											<h3 class="is-size-4 is-marginless">{{ v.annotations.length }}</h3>
+											<p class="is-marginless">Annotations</p>
+										</div>
+											<!--<p class="is-marginless">Holistic score</p>
+											<p class="is-marginless">Annotations: </p>
+											 <p class="is-marginless">Lab presentation </p> -->
 											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
-										</div>
 									</div>
+							</article>
+
+							<article class="classvideo media">
+								<upload-video :currentClassProp="currentClassSelected"></upload-video>
 							</article>
 							
 					</div>
@@ -69,7 +76,7 @@
 
 				<aside class="professor__sidebar column is-2 aside">
 					<div class="metalogon-home menu-list">
-						<a @click="setCurrentClass()"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
 						<hr>
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
@@ -166,7 +173,6 @@
 				this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
-				// this.currentClassString = this.currentClassSelected
 			},
 			methods: {
 				// A Vue setter.
@@ -227,8 +233,8 @@
 					})
 					
 					this.modalArchiveClassIsOpen = false // Closes the modal.
-					var emptyString = ''
-					this.$store.commit('CURRENT_CLASS_SELECT', emptyString) // Sets the current showing class state to null.
+					var noClass = 'select a class'
+					this.$store.commit('CURRENT_CLASS_SELECT', noClass) // Sets the current showing class state to null.
 				},
 				secondsToMMSS(s) {
 					s = Number(s);
@@ -265,7 +271,10 @@
 	================================================= */
 
 	.featured__heading, .class__heading {
+		color: #FFF;
 		margin: 10px 20px;
+		padding: 10px;
+		background-color: #A90931;
 	}
 
 	.professor__featured {

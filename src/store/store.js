@@ -186,7 +186,7 @@ state: {
     studentClasses: [], // only for student.
     departments: [], 
     authenticated: false, // for login page.
-    currentClassSelected: '', // the class that is click from the user
+    currentClassSelected: 'Select a class', // the class that is click from the user
     currentVideoID: null,
     uploadingVideo: false,
     uploadUrl: ''
