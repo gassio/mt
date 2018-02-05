@@ -173,8 +173,8 @@ You might also want to include a concrete strategy recommendation."
 
             </div>
 
-            <div class="cards column is-4 is-gapless is-marginless" id="cards">
-                <div class="cards-content is-gapless is-marginless">
+            <div class="cards" id="cards">
+                <div class="cards-content">
                     <nav class="card-menu">
                         <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
                         <a class="card-menu-link" style="background-color: #853a3e !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
@@ -189,16 +189,13 @@ You might also want to include a concrete strategy recommendation."
                         </div>
                     </nav>
                     <div class="timeline-container">
-
-                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" v-bind:style="{ 'border-left': '12px solid ' + card.color  }"> <!-- + card.color-->
+                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" v-bind:style="{ 'border-left': '12px solid ' + card.color  }">
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
                                     <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
                                 </div>
-                                <p class="timeline-card__desc">{{ card.label }}</p>
-                                <p class="timeline-card__desc">{{ card.canon }}</p>
-                                
+                                <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
                             <div class="timeline-card__body">
                                 <p class="timeline-card__body-title">COMMENT:</p>
@@ -402,8 +399,11 @@ You might also want to include a concrete strategy recommendation."
                 }
             })
 
-            
-            
+            // Dynamic card size "Read more"
+            if ($('.timeline-card__comment').height() > 35) {
+                console.log('bigger than 35px')
+            }
+                
         },
         updated() {
             // Fixes unknown man picture bug
@@ -1575,14 +1575,14 @@ You might also want to include a concrete strategy recommendation."
 
 .cards {
     margin-left: 25px !important;
-    
-}
+}   
 
     .card-menu {
-        display: flex;
+        height: 68px;
+        display: flex; /*  none*/
         justify-content: center;
         width: 100%;
-        margin-bottom: 25px;
+        margin-bottom: 15px;
     }
 
         .card-menu-link {
@@ -1598,26 +1598,13 @@ You might also want to include a concrete strategy recommendation."
                  font-size: 14px;
              }
 
-             /*.card-menu-link-ribbon {
-                position: absolute;
-                width: 60px;
-                margin-top: 40px;
-                border-top: solid 5px #395d41;
-                border-left: solid 25px transparent;
-                border-right: solid 25px transparent;
-             } */
-
         .add-annotation {
             color: #4A4A4A !important;
             background-color: #FFF !important;
         }
 
     .timeline-container {
-        padding-top: 0px !important;
-        padding-bottom: 10px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-        height: 600px;
+        height: 556px;
         overflow-y: scroll;
     }
 
@@ -1656,7 +1643,7 @@ You might also want to include a concrete strategy recommendation."
                     }
 
                 .timeline-card__body {
-                    margin-top: 10px;   
+                    margin-top: 5px;   
                 }
                     .timeline-card__body-title {
                         font-size: 12px; 
@@ -1664,18 +1651,20 @@ You might also want to include a concrete strategy recommendation."
                     }
 
                     .timeline-card__comment {
+                        margin-top: -5px;
                         font-size: 0.8em;
                         line-height: 1.4em;
+                        /*height: 35px;*/
                     }
 
                 .timeline-card__footer {
-                    margin-top: -10px;
+                    margin-top: -20px;
                     display: flex;
                     justify-content: space-between;
                 }
 
                     .timeline-card__effectiveness {
-                        margin-top: 10px !important;
+                        margin-top: 7px !important;
                         display: flex;
                     }
                         .timeline-card__effectiveness progress {
@@ -1683,7 +1672,7 @@ You might also want to include a concrete strategy recommendation."
                             margin-top: 5px;
                         }
                         .timeline-card__effectiveness progress::-webkit-progress-value { 
-                            background-color: #b1b1b1 !important; /*#38425d*/
+                            background-color: #89A9C0 !important; /*#38425d*/
                         }
 
                         .timeline-card__effectiveness-label {
