@@ -32,7 +32,7 @@
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassSelected }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassNumber }} - {{ currentClassSelected }}</h3>
 
 							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<figure class="media-left" style="margin:0 0 0 20px">
@@ -83,7 +83,7 @@
 						<el-tab-pane label="Active classes" name="activeClasses">
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
-								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 									<hr>
 									<a href="#" @click="openModalArchiveClass()"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
@@ -104,7 +104,7 @@
 			<footer class="footer" style="padding: 2rem;">
 				<div class="container">
 					<div class="content has-text-centered">
-						<p style="margin: 0.2rem;"><strong>©Metalogon</strong> by Andreas Karatsolis.</p>
+						<p style="margin: 0.2rem;"><strong>©Metalogon</strong></p>
 						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
 					</div>
 				</div>
@@ -185,8 +185,8 @@
 					console.log('QUERY ARCHIVED CLASSES')
 					this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
 				}, 300),
-				setCurrentClass(className) {
-					this.$store.commit('CURRENT_CLASS_SELECT', className)
+				setCurrentClass(className, classNumber) {
+					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 				},
 				favoriteVideo(event) {
 					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
@@ -247,7 +247,7 @@
 			},
 			computed: {
 					...mapGetters(
-							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected']
+							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber']
 					)
 			},
 			components: {

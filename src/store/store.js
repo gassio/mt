@@ -187,6 +187,7 @@ state: {
     departments: [], 
     authenticated: false, // for login page.
     currentClassSelected: 'Select a class', // the class that is click from the user
+    currentClassNumber: '',
     currentVideoID: null,
     uploadingVideo: false,
     uploadUrl: ''
@@ -558,8 +559,9 @@ mutations: {
         else
             state.authenticated = false
     },
-    CURRENT_CLASS_SELECT: (state, classString) => {
-        state.currentClassSelected = classString
+    CURRENT_CLASS_SELECT: (state, payload) => {
+        state.currentClassSelected = payload.className
+        state.currentClassNumber = payload.classNumber
     }
 },
 getters: {
@@ -592,6 +594,9 @@ getters: {
     },
     currentClassSelected: state => {
         return state.currentClassSelected
+    },
+    currentClassNumber: state => {
+        return state.currentClassNumber
     },
     uploadVideoProps: state => {
         return state.uploadVideoProps

@@ -82,7 +82,7 @@
 			<footer class="footer" style="padding: 2rem;">
 				<div class="container">
 					<div class="content has-text-centered">
-						<p style="margin: 0.2rem;"><strong>©Metalogon</strong> by Andreas Karatsolis.</p>
+						<p style="margin: 0.2rem;"><strong>©Metalogon</strong></p>
 						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
 					</div>
 				</div>
