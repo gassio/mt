@@ -283,11 +283,6 @@ You might also want to include a concrete strategy recommendation."
             }
         },
         created() {
-            console.log("#CREATED()")
-            var that = this
-        },
-        mounted() {
-            console.log("#MOUNTED()")     
             var that = this
 
             this.$store.dispatch('getVideo', this.id).then(() => {
@@ -295,7 +290,6 @@ You might also want to include a concrete strategy recommendation."
                 console.log('________________')
                 // This needs to be a function.
                 that.videoAnnotations = that.videos[that.videoIndexForCardColor].annotations
-                console.log(that.videoAnnotations)
                 for (var i=0, l = that.videoAnnotations.length; i < l; i++) {
                     if (that.videoAnnotations[i].canon === 'Moves')
                         that.videoAnnotations[i]['color'] = '#395d41'
@@ -309,7 +303,10 @@ You might also want to include a concrete strategy recommendation."
                         that.videoAnnotations[i]['color'] = '#38425d'
                 }
             })
-
+        },
+        mounted() {
+            var that = this
+            
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
             var vIndex; 
@@ -399,10 +396,12 @@ You might also want to include a concrete strategy recommendation."
                 }
             })
 
-            // Dynamic card size "Read more"
-            if ($('.timeline-card__comment').height() > 35) {
-                console.log('bigger than 35px')
-            }
+            // var cardCommentsArray = document.getElementsByClassName('timeline-container')[0].childNodes
+            // console.log(cardCommentsArray)
+            // for(var i = 0, l = cardCommentsArray.length; i < l; i++){
+            //     var comment = cardCommentsArray[i].getElementsByClassName('timeline-card__comment')
+            //     console.log(comment.text)
+            // }
                 
         },
         updated() {
@@ -1093,6 +1092,16 @@ You might also want to include a concrete strategy recommendation."
             hooping() {
                 var that = this
 
+                // Comment functionality: "Read more"
+                // Pure JS.
+                var cards = document.getElementsByClassName('timeline-card')
+
+                for(var i = 0, l = cards.length; i < l; i++){
+                    var comment = cards[i].getElementsByClassName('timeline-card__comment')[0]
+                    if (comment.clientHeight > 35)
+                        console.log('The index ' + i + ' is greater that 35.')
+                }
+
                 var allCards = $('.timeline-card')
                 var allStartTime = []
                 var allEndTime = []
@@ -1651,7 +1660,6 @@ You might also want to include a concrete strategy recommendation."
                     }
 
                     .timeline-card__comment {
-                        margin-top: -5px;
                         font-size: 0.8em;
                         line-height: 1.4em;
                         /*height: 35px;*/
