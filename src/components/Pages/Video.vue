@@ -199,18 +199,13 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                             <div class="timeline-card__body">
                                 <p class="timeline-card__body-title">COMMENT:</p>
-                                <p class="timeline-card__comment">{{ card.comment }}</p>
+                                <read-more class="timeline-card__comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="100"></read-more> 
                                 <div class="timeline-card__effectiveness">
                                     <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
-
-
-                                    <!--<el-progress :text-inside="true" :stroke-width="18" :percentage="20 * card.rating"></el-progress>
-                                    <el-rate v-model="card.rating" disabled text-color="#ff9900"></el-rate>-->
                                 </div>
                             </div>
                             <div class="timeline-card__footer">
-                                <p class="timeline-card__author"></p>
                                 <span class="timeline-card__id">{{ card.id }}</span>
                                 <div class="timeline-card__edit-container">
                                     <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
@@ -306,6 +301,8 @@ You might also want to include a concrete strategy recommendation."
         },
         mounted() {
             var that = this
+
+            // console.log('videoAnnotations: ', this.videoAnnotations.comment)
             
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
@@ -1094,13 +1091,13 @@ You might also want to include a concrete strategy recommendation."
 
                 // Comment functionality: "Read more"
                 // Pure JS.
-                var cards = document.getElementsByClassName('timeline-card')
+                // var cards = document.getElementsByClassName('timeline-card')
 
-                for(var i = 0, l = cards.length; i < l; i++){
-                    var comment = cards[i].getElementsByClassName('timeline-card__comment')[0]
-                    if (comment.clientHeight > 35)
-                        console.log('The index ' + i + ' is greater that 35.')
-                }
+                // for(var i = 0, l = cards.length; i < l; i++){
+                //     var comment = cards[i].getElementsByClassName('timeline-card__comment')[0]
+                //     if (comment.clientHeight > 35)
+                //         console.log('The index ' + i + ' is greater that 35.')
+                // }
 
                 var allCards = $('.timeline-card')
                 var allStartTime = []
@@ -1132,6 +1129,18 @@ You might also want to include a concrete strategy recommendation."
                         $('.timeline-card').eq(j).css('background-color', 'white')
                     } 
                 }
+            },
+            commentFormattedString(text) {
+                var val_container = text
+                console.log('text.length:', text.length)
+                // !this.isReadMore && 
+				if (text.length > 150){
+					val_container = val_container.substring(0,150) + '...';
+				} else if (text.length === 0) {
+                    val_container = 'No comment.'
+                }
+
+				return(val_container);
             },
             toggleEditDelete(event) {
                 var moreLessBtn = $(event.currentTarget)
@@ -1591,7 +1600,7 @@ You might also want to include a concrete strategy recommendation."
         display: flex; /*  none*/
         justify-content: center;
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
         .card-menu-link {
@@ -1664,6 +1673,11 @@ You might also want to include a concrete strategy recommendation."
                         line-height: 1.4em;
                         /*height: 35px;*/
                     }
+
+                    #readmore {
+                            color: #38425d;
+                            font-weight: bold;
+                        }
 
                 .timeline-card__footer {
                     margin-top: -20px;

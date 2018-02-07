@@ -658,3 +658,12 @@ getters: {
     //     return 0;
     // }
     // annotations.sort(compare);
+
+    // console.log('Video annotations that have no comments')
+    //     for (var i = 0, l = state.videos.length; i < l; i++) {
+    //         for (var j = 0, k = state.videos[i].annotations.length; j < k; j++) {
+    //             if (!state.videos[i].annotations[j]["comment" ]) {
+    //                 console.log("Video id: '"+ state.videos[i].id + "' with annotation id:" + state.videos[i].annotations[j].id)
+    //             }
+    //         }
+    //     }

@@ -16,6 +16,9 @@ import 'element-ui/lib/theme-default/index.css'
 import locale from 'element-ui/lib/locale/lang/en'
 Vue.use(ElementUI, { locale })
 
+import ReadMore from 'vue-read-more';
+Vue.use(ReadMore);
+
 // Load the full build.
 global._ = require('lodash');
 
