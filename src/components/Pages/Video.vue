@@ -176,11 +176,11 @@ You might also want to include a concrete strategy recommendation."
             <div class="cards" id="cards">
                 <div class="cards-content">
                     <nav class="card-menu">
-                        <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1_5x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
-                        <a class="card-menu-link" style="background-color: #853a3e !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
-                        <a class="card-menu-link" style="background-color: #ab8c3c !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
-                        <a class="card-menu-link" style="background-color: #6c3765 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
-                        <a class="card-menu-link" style="background-color: #38425d !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1_5x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
+                        <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
+                        <a class="card-menu-link" style="background-color: #853a3e !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
+                        <a class="card-menu-link" style="background-color: #ab8c3c !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
+                        <a class="card-menu-link" style="background-color: #6c3765 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
+                        <a class="card-menu-link" style="background-color: #38425d !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -197,9 +197,9 @@ You might also want to include a concrete strategy recommendation."
                                 </div>
                                 <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
-                            <div class="timeline-card__body">
+                            <div class="timeline-card__body" @click.stop.prevent>
                                 <p class="timeline-card__body-title">COMMENT:</p>
-                                <read-more class="timeline-card__comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="100"></read-more> 
+                                <read-more class="timeline-card__comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="70"></read-more> 
                                 <div class="timeline-card__effectiveness">
                                     <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
                                     <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
@@ -207,7 +207,7 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                             <div class="timeline-card__footer">
                                 <span class="timeline-card__id">{{ card.id }}</span>
-                                <div class="timeline-card__edit-container">
+                                <div class="timeline-card__edit-container" @click.stop.prevent>
                                     <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                                     <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
                                     <button class="edit-buttons edit-buttons-delete button" @click="deleteAnnotation($event)"><i class="fa fa-trash-o fa-1x" aria-hidden="true"></i></button>
@@ -987,7 +987,6 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = true
             },
             seekCard(event) {
-                // this.isAnnotating = true;
                 var time = $(event.currentTarget).find('.timeline-card__time').text()
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
@@ -999,6 +998,9 @@ You might also want to include a concrete strategy recommendation."
                 var b = endTime.split(':')
                 var startSec = (+a[0]) * 60 + (+a[1]) // in sec
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
+
+                // Seek player according to annotateStart var
+                this.player.seek(startSec)
 
                 // Move the timeline according to the annotateStart & annotateEnd vars
                 var barWidth = $('.player').width()
@@ -1012,8 +1014,6 @@ You might also want to include a concrete strategy recommendation."
                 $('.crop__space').css('left', coordsStart)
                 $('.crop__space').css('width', coordsEnd - coordsStart)
           
-                // Seek player according to annotateStart var
-                this.player.seek(startSec)
             },
             secondsToMMSS(s) {
                 s = Number(s);
@@ -1596,7 +1596,7 @@ You might also want to include a concrete strategy recommendation."
 }   
 
     .card-menu {
-        height: 68px;
+        height: 50px;
         display: flex; /*  none*/
         justify-content: center;
         width: 100%;
@@ -1636,10 +1636,15 @@ You might also want to include a concrete strategy recommendation."
                 background: none;
                 margin-bottom: 10px;
                 box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
-                cursor: pointer;
             }
-                .timeline-card__head {
 
+            .timeline-card:hover {
+                opacity: 0.9;
+                transition: 0.8;
+            }
+
+                .timeline-card__head {
+                    cursor: pointer;
                 }
                     .timeline-card__title-container {
                         display: flex;
@@ -1670,19 +1675,21 @@ You might also want to include a concrete strategy recommendation."
 
                     .timeline-card__comment {
                         font-size: 0.8em;
-                        line-height: 1.4em;
+                        line-height: 1.3em;
                         /*height: 35px;*/
                     }
 
                     #readmore {
-                            color: #38425d;
-                            font-weight: bold;
-                        }
+                        color: #38425d;
+                        font-weight: bold;
+                        float: right;
+                    }
 
                 .timeline-card__footer {
                     margin-top: -20px;
                     display: flex;
                     justify-content: space-between;
+                    cursor: pointer;
                 }
 
                     .timeline-card__effectiveness {
