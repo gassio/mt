@@ -32,41 +32,30 @@
 
 							<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }})</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
-									<figure class="media-left" style="margin:0 0 0 20px">
-										<p class="image" style="width:200px">
-											<router-link :to="'/video/' + v.id"  tag="a">
-												<img :src="v.thumb">
-											</router-link>
-										</p>
-									</figure>
-									<div class="media-content" style="align-self:center; margin-left: 10px;">
-										<h3 class="is-size-4"><router-link :to="'/video/' + v.id" tag="a" class="classvideo-title has-text-black-ter">{{ v.title }}</router-link></h3>
-										<p class="is-size-6 has-text-grey-dark">{{ v.class }}</p>
-										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
-									</div>
-									<div class="media-right" style="display:flex;align-self:center; padding-right:15px;">
-										<!-- <div class="star-video" @click="favoriteVideo($event)">
-											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
-										</div> -->
-										<div class="has-text-right has-text-grey-dark" style="margin-right:5px; background-color:#89a9c0; color: #fff!important; padding:5px;">
-											<h3 class="is-size-4 is-marginless">94%</h3>
-											<p class="is-marginless">Holistic score</p>
-										</div>
-										<div class="has-text-right has-text-grey-dark" style="background-color:#89a9c0; color: #fff!important; padding:5px;">
-											<h3 class="is-size-4 is-marginless">{{ v.annotations.length }}</h3>
-											<p class="is-marginless">Annotations</p>
-										</div>
-											<!--<p class="is-marginless">Holistic score</p>
-											<p class="is-marginless">Annotations: </p>
-											 <p class="is-marginless">Lab presentation </p> -->
-											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
-									</div>
-							</article>
+							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
+									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" @click="favoriteVideo($event)">
 
-							<article class="classvideo media">
-								<upload-video :currentClassProp="currentClassSelected"></upload-video>
-							</article>
+									<div class="classvideo__metadata">
+										<img class="classvideo__image" :src="v.thumb"></router-link>
+										<div class="classvideo__titles">
+											<router-link :to="'/video/' + v.id" tag="a" class="classvideo__title">{{ v.title }}</router-link></h3>
+											<p class="classvideo__class">{{ v.class }}</p>
+											<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
+										</div>
+										<div class="classvideo__metameta">
+											<span class="classvideo__score">
+												<p class="classvideo__scoreNum">94%</p>
+												<p class="classvideo__scoreLabel">Score</p>
+											</span>
+											<span class="classvideo__annotations">
+												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
+												<p class="classvideo__annotationsLabel">Annotations</p>
+											</span>
+										</div>
+									</div>
+							</div>
+
+							<upload-video :currentClassProp="currentClassSelected"></upload-video>
 							
 					</div>
 
@@ -321,16 +310,95 @@
 			margin-bottom: 0.5em !important;
 		}
 
-			.classvideo:hover	{
-				background-color: #F5F5F5;
+		.classvideo {
+			display: flex;
+			padding: 25px 10px;
+			border-bottom: 1px solid #efefef;
+		} 
+		.classvideo:hover	{
+			background-color: #F5F5F5;
+		}
+
+			.classvideo__favorite {
+				width: 30px;
+				height: 60px;
 			}
 
+			.classvideo__metadata {
+				display: flex;
+				justify-content: space-between;
+				margin-left: 20px;
+				width: 100%;
+			}
 
-.star-video {
-	display:flex;
-	justify-content: center;
-	cursor: pointer;
-}
+				.classvideo__image {
+					display: flex;
+					width: 200px;
+					height: 60px;
+				}
+
+				.classvideo__titles {
+					width: 100%;
+					margin-left: 15px;
+				}
+						.classvideo__title {
+							color: #4a4a4a;
+							font-weight: 600;
+							font-size: 1.3em;
+						}
+						.classvideo__class {
+							font-weight: 600;
+							margin-top: 6px;
+						}
+						.classvideo__genre {
+							font-weight: 600;
+							margin-top: -4px;
+						}
+
+				.classvideo__metameta {
+					display: flex;
+					margin-left: 15px;
+				}
+
+					.classvideo__score {
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 15px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+					}
+							.classvideo__scoreNum {
+								font-weight: 600;
+								font-size: 2em;
+								text-align: center;
+							}
+							.classvideo__scoreLabel {
+								font-size: 0.8em;
+								text-align: center;
+ 							}
+
+					.classvideo__annotations {
+						margin-left: 10px;
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 15px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+					}
+							.classvideo__annotationsNum {
+								font-weight: 600;
+								font-size: 2em;
+								text-align: center;
+							}
+							.classvideo__annotationsLabel {
+								font-size: 0.8em;
+								text-align: center;
+							}
+
 
 
 
