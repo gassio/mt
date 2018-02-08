@@ -281,8 +281,6 @@ You might also want to include a concrete strategy recommendation."
             var that = this
 
             this.$store.dispatch('getVideo', this.id).then(() => {
-                console.log('inside dispatch')
-                console.log('________________')
                 // This needs to be a function.
                 that.videoAnnotations = that.videos[that.videoIndexForCardColor].annotations
                 for (var i=0, l = that.videoAnnotations.length; i < l; i++) {
@@ -1089,16 +1087,6 @@ You might also want to include a concrete strategy recommendation."
             hooping() {
                 var that = this
 
-                // Comment functionality: "Read more"
-                // Pure JS.
-                // var cards = document.getElementsByClassName('timeline-card')
-
-                // for(var i = 0, l = cards.length; i < l; i++){
-                //     var comment = cards[i].getElementsByClassName('timeline-card__comment')[0]
-                //     if (comment.clientHeight > 35)
-                //         console.log('The index ' + i + ' is greater that 35.')
-                // }
-
                 var allCards = $('.timeline-card')
                 var allStartTime = []
                 var allEndTime = []
@@ -1112,35 +1100,24 @@ You might also want to include a concrete strategy recommendation."
                     allEndTime[k] = that.mmssToSeconds(allEndTime[k])
                 }
                 
+                console.log("_________")
                 for (var j=0, l = allCards.length; j < l; j++) {
 
                     if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && (
                         $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)" || $('.timeline-card').eq(j).css('background-color') === "rgba(0, 0, 0, 0)")) 
                     {
-                        console.log('in')
+                        console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', '#fff293')
                         var firstCard = $('.timeline-card').eq(0)
                         $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
                         $('.timeline-card').eq(j).insertBefore(firstCard)
                         if ($('.timeline-container').scrollTop !== 0) 
                             $('.timeline-container').animate({scrollTop:0}, 500)
-                    } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j]) && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)") {
-                        console.log('out')
+                    } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j])) { // && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)"
+                        console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', 'white')
-                    } 
+                    }
                 }
-            },
-            commentFormattedString(text) {
-                var val_container = text
-                console.log('text.length:', text.length)
-                // !this.isReadMore && 
-				if (text.length > 150){
-					val_container = val_container.substring(0,150) + '...';
-				} else if (text.length === 0) {
-                    val_container = 'No comment.'
-                }
-
-				return(val_container);
             },
             toggleEditDelete(event) {
                 var moreLessBtn = $(event.currentTarget)
