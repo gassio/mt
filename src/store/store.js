@@ -256,13 +256,19 @@ actions: {
             })
             .catch( response => console.log(response.error))
     },
-    favoriteVideo: function ({ commit }, payload) {
-        axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, 
-            {
-                featured: true
-            })
+    featureVideo: function ({ commit }, payload) {
+        axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
             .then( response => {
-                commit('FAVORITE_VIDEO', payload)
+                console.log("Video object that sent: ", payload)
+                console.log(response)
+            })
+            .catch( response => console.log(response.error))
+        },
+        unfeatureVideo: function ({ commit }, payload) {
+            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            .then( response => {
+                console.log("Video object that sent: ", payload)
+                console.log(response)
             })
             .catch( response => console.log(response.error))
     },
@@ -350,24 +356,6 @@ mutations: {
         state.videos.sort(function(a,b) {return (a.presentedAt < b.presentedAt) ? 1 : ((b.presentedAt < a.presentedAt) ? -1 : 0);} );
         for (var i = 0, l = state.videos.length; i < l; i++) {
             Vue.set(state.videos[i], 'featured', false)
-        }
-    },
-    FAVORITE_VIDEO: (state, payload) => {
-        for (var i = 0, l = state.videos.length; i < l; i++) {
-            if (state.videos[i].title === payload.title) {
-                // Vue.set(state.videos[i], 'featured', true)
-                console.log(state.videos[i].title)
-                console.log(state.videos[i])
-            }
-        }
-    },
-    UNFAVORITE_VIDEO: (state, payload) => {
-        for (var i = 0, l = state.videos.length; i < l; i++) {
-            if (state.videos[i].title === payload) {
-                Vue.set(state.videos[i], 'featured', false)
-                console.log(state.videos[i].title)
-                console.log(state.videos[i])
-            }
         }
     },
     GET_VIDEO: (state, video) => {

@@ -33,7 +33,8 @@
 							<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }})</h3>
 
 							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
-									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" @click="favoriteVideo($event)">
+									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredClass === false" @click="featureVideo($event)">
+									<img class="classvideo__favorite" src="../../assets/favorite-active.svg" v-show="v.featuredClass === true" @click="unfeatureVideo($event)">
 
 									<div class="classvideo__metadata">
 										<img class="classvideo__image" :src="v.thumb"></router-link>
@@ -175,18 +176,31 @@
 				setCurrentClass(className, classNumber) {
 					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 				},
-				favoriteVideo(event) {
-					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
+				featureVideo(event) {
+					var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+					// The string '/video/' has 7 seven characters.
+					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+
 					for (var i = 0, l = this.videos.length; i < l; i++) {
-						if (this.videos[i].title === eventTitle) {
-								if (this.videos[i].featured === false) {
-									this.$store.commit('FAVORITE_VIDEO', this.videos[i].title)
-									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
+						if (this.videos[i].id === eventVideoId) {
+								if (this.videos[i].featuredClass === false) {
+									this.videos[i].featuredClass = true
+									this.$store.dispatch( 'featureVideo', this.videos[i] )
 								} 
-								else {
-									this.$store.commit('UNFAVORITE_VIDEO', this.videos[i].title)
-									$(event.currentTarget).css('color', '#4a4a4a')
-								}
+						}
+					}
+				},
+				unfeatureVideo(event) {
+					var eventVideoId = $(event.currentTarget).next().find('.classvideo__title').attr("href")
+					// The string '/video/' has 7 seven characters.
+					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+
+					for (var i = 0, l = this.videos.length; i < l; i++) {
+						if (this.videos[i].id === eventVideoId) {
+								if (this.videos[i].featuredClass === true) {
+									this.videos[i].featuredClass = false
+									this.$store.dispatch( 'unfeatureVideo', this.videos[i] )
+								} 
 						}
 					}
 				},
@@ -363,27 +377,31 @@
 					.classvideo__score {
 						background-color:#89a9c0; 
 						color: #fff;
-						padding: 0px 15px;
+						padding: 0px 8px;
 						display: flex;
 						flex-direction: column;
 						justify-content: center;
 						border-radius: 4px;
+						margin-top: 10px;
 					}
 							.classvideo__scoreNum {
 								font-weight: 600;
-								font-size: 2em;
-								text-align: center;
+								font-size: 1.8em;
+								height: 50%;
+								margin-top: 10px;
 							}
 							.classvideo__scoreLabel {
 								font-size: 0.8em;
 								text-align: center;
+								height: 50%;
  							}
 
 					.classvideo__annotations {
+						margin-top: 10px;
 						margin-left: 10px;
 						background-color:#89a9c0; 
 						color: #fff;
-						padding: 0px 15px;
+						padding: 0px 8px;
 						display: flex;
 						flex-direction: column;
 						justify-content: center;
@@ -391,12 +409,15 @@
 					}
 							.classvideo__annotationsNum {
 								font-weight: 600;
-								font-size: 2em;
+								font-size: 1.8em;
 								text-align: center;
+								height: 50%;
+								margin-top: 10px;
 							}
 							.classvideo__annotationsLabel {
 								font-size: 0.8em;
 								text-align: center;
+								height: 50%;
 							}
 
 
