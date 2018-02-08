@@ -6,12 +6,11 @@
 
 				<div class="professor__main column is-10">
 
-					<h3 class="featured__heading title is-size-4">Featured videos</h3>
-
 					<div class="professor__featured">
-							<div class="container">
-
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
+							<h3 class="featured__heading title is-size-4">Featured videos of {{ currentClassSelected }}</h3>
+							
+							<div class="professor__featured-container">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -26,13 +25,12 @@
 										</div>
 									</div>
 								</router-link>
-
 							</div>
 					</div>
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassNumber }} - {{ currentClassSelected }}</h3>
+							<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }})</h3>
 
 							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<figure class="media-left" style="margin:0 0 0 20px">
@@ -257,6 +255,9 @@
 </script>
 
 <style>
+/* ==============================================
+                #GENERAL-LAYOUT
+	================================================= */
 .professor__body { 
 	margin-bottom: 0 !important;
 }
@@ -266,39 +267,63 @@
 	margin-top: 25px;
 }
 
+
+
+
+
 /* ==============================================
-                #professor-FEATURED
+                #FEATURED
 	================================================= */
 
-	.featured__heading, .class__heading {
-		color: #FFF;
-		margin: 10px 20px;
-		padding: 10px;
-		background-color: #A90931;
-	}
-
 	.professor__featured {
-		display: flex;
-		/* flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: center; */
+
 	}
 
-	.professor__featured > .container {
-		display:flex;
-		flex-wrap: wrap;
-	}
-
-		.ftdcard {
-			width: 30%;
-			margin: 10px 20px;
-			transition: 0.3s;
+		.professor__featured-container {
+			display:flex;
+			flex-wrap: wrap;
+		}
+			
+		.featured__heading {
+			background-color: #A90931;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
 		}
 
-		.ftdcard:hover {
-			transform: scale(1.05);
-			transition: 0.3s;
+			.ftdcard {
+				width: 32.30%;
+				margin: 0.3em;
+				transition: 0.3s;
+			}
+
+			.ftdcard:hover {
+				transform: scale(1.02);
+				transition: 0.3s;
+			}
+
+
+
+
+
+/* ==============================================
+                #CLASS-VIDEOS
+	================================================= */
+
+		.professor__classvideos {
+			margin-top: 10px;
 		}
+
+		.class__heading {
+			background-color: #A90931;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
+		}
+
+			.classvideo:hover	{
+				background-color: #F5F5F5;
+			}
 
 
 .star-video {
@@ -307,9 +332,7 @@
 	cursor: pointer;
 }
 
-	/* .star-video i:hover {
-		background-color: yellow;
-	} */
+
 
 
 
@@ -349,15 +372,6 @@
 			}
 
 
-
-
-/* ==============================================
-                #professor-SIDEBAR
-	================================================= */
-
-	.classvideo:hover	{
-		background-color: #F5F5F5;
-	}
 
 
 
