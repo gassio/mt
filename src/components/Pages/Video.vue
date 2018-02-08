@@ -1102,10 +1102,9 @@ You might also want to include a concrete strategy recommendation."
                 
                 console.log("_________")
                 for (var j=0, l = allCards.length; j < l; j++) {
-
-                    if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && (
-                        $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)" || $('.timeline-card').eq(j).css('background-color') === "rgba(0, 0, 0, 0)")) 
-                    {
+                    // Checking if currentTime is between start/end time 
+                    // AND if the bgcolor is white.
+                    if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)") {
                         console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', '#fff293')
                         var firstCard = $('.timeline-card').eq(0)
@@ -1113,7 +1112,7 @@ You might also want to include a concrete strategy recommendation."
                         $('.timeline-card').eq(j).insertBefore(firstCard)
                         if ($('.timeline-container').scrollTop !== 0) 
                             $('.timeline-container').animate({scrollTop:0}, 500)
-                    } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j])) { // && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 0)"
+                    } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j])) {
                         console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', 'white')
                     }
