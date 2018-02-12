@@ -30,7 +30,11 @@
 
 					<div class="professor__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }})</h3>
+						<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }}) 
+							<a style="font-size: 0.6em;float:right;" @click="modalGenreCustomization = true">Customize genres</a>
+						</h3>
+
+						<a style="font-size: 0.6em;color:black;margin:0;" @click="modalGenreCustomization2 = true">Customize genres2</a>
 
 							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredClass === false" @click="featureVideo($event)">
@@ -50,7 +54,7 @@
 											</span>
 											<span class="classvideo__annotations">
 												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
-												<p class="classvideo__annotationsLabel">Annotations</p>
+												<p class="classvideo__annotationsLabel">Comments</p>
 											</span>
 										</div>
 									</div>
@@ -126,6 +130,50 @@
 					<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
 					<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
 			</el-dialog>	
+
+			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
+					<h3 style="margin-bottom:10px;">Choose genre:</h3>
+					<!-- <el-select v-model="currentGenre" placeholder="Choose a genre">
+						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
+					</el-select> -->
+
+					 <el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio>
+
+					<br/>
+					<br/>
+					<p>Choose canons:</p>
+					<el-tree :data="canons" :props="genreProps" @node-click="handleNodeClick" show-checkbox>
+					</el-tree>
+					
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalGenreCustomization = false">Close</el-button>
+					</span>
+			</el-dialog>	
+
+			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
+					<h3 style="margin-bottom:10px;">Choose genre:</h3>
+					<el-select v-model="currentGenre" placeholder="Choose a genre">
+						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
+					</el-select>
+					<br/>
+					<br/>
+					<p style="font-weight:700; margin-top:10px;">STRUCTURE</p>
+					<el-transfer v-model="structurePassed" :data="structureData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">DELIVERY</p>
+					<el-transfer v-model="deliveryPassed" :data="deliveryData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">STYLE</p>
+					<el-transfer v-model="stylePassed" :data="styleData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">VISUALS</p>
+					<el-transfer v-model="visualsPassed" :data="visualsData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalGenreCustomization2 = false">Close</el-button>
+					</span>
+			</el-dialog>	
 			
 		</div>	
 
@@ -154,6 +202,132 @@
 						number: '',
 						semester: ''
 					},
+					modalGenreCustomization: false,
+					modalGenreCustomization2: false,
+					// 
+					genres: [
+						{ name: 'Elevator pitch' },
+						{ name: 'Lab presentation' },
+						{ name: 'Thesis talk' },
+						{ name: 'Progress report' },
+						{ name: 'Conference talk' }
+					],
+					currentGenre: 'Lab presentation',
+					// Genre version 1
+					canons: [
+						{
+							label: 'Moves',
+							children: [
+								{ label: 'Introduction', children: [
+									{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+									{ label: 'States the value of the present research and explains why it was conducted' },
+									{ label: 'Discusses the definitions of key terms' },
+									{ label: 'Summarizes and previews the methods used' },
+									{ label: 'Presents basic equations' },
+								]},
+								{ label: 'Methodology', children: [
+									{ label: 'Describes materials and instrumentation in the study' },
+									{ label: 'Describes tasks (actions) in the study' },
+									{ label: 'Describes the procedures of an experiment (activities)' },
+									{ label: 'Presents justification of techniques' },
+									{ label: 'Describes variables in the study' },
+									{ label: 'Describes the procedures used in data analysis' },
+									{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
+								]},
+								{ label: 'Results and Discussion', children: [
+									{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+									{ label: 'States the value of the present research and explains why it was conducted' },
+									{ label: 'Discusses the definitions of key terms' },
+									{ label: 'Summarizes and previews the methods used' },
+									{ label: 'Presents basic equations' },
+								]},
+								{ label: 'Conclusion', children: [
+									{ label: 'xxxxxxxxxx' },
+								]},
+								{ label: 'Question and Answer', children: [
+									{ label: 'xxxxxxxxxx' },
+								]},
+							]
+						}, 
+						{
+							label: 'Structure',
+							children: [
+								{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
+								{ label: 'Conceptual transitions' },
+								{ label: 'Line of argument' },
+								{ label: 'Central moves' },
+							]
+						}, 
+						{
+							label: 'Delivery',
+							children: [
+								{ label: 'Volume' },
+								{ label: 'Gestures' },
+								{ label: 'Metadiscourse' },
+								{ label: 'Posture' },
+								{ label: 'Language' },
+							]
+						}, 
+						{
+							label: 'Style',
+							children: [
+								{ label: 'Coherence' },
+								{ label: 'Concision' },
+								{ label: 'Flow' },
+								{ label: 'Emphasis' },
+								{ label: 'Figures of Speech' },
+								{ label: 'Figures of Sound' },
+							]
+						},
+						{
+							label: 'Visuals',
+							children: [
+								{ label: 'Pictorial cues' },
+								{ label: 'Slide titles' },
+								{ label: 'Image-text highlight' },
+								{ label: 'Graphics' },
+								{ label: 'Memorable images' }
+							]
+						},
+					],
+					genreProps: {
+						children: 'children',
+						label: 'label',
+						desc: 'desc'
+					},
+					// Genre version 2
+					structureData: [
+						{ key: 0, label: 'Terms'},
+						{ key: 1, label: 'Conceptual transitions' },
+						{ key: 2, label: 'Line of argument' },
+						{ key: 3, label: 'Central moves' }
+					],
+        	structurePassed: [],
+					deliveryData: [
+						{ key: 0, label: 'Volume' },
+						{ key: 1, label: 'Gestures' },
+						{ key: 2, label: 'Metadiscourse' },
+						{ key: 3, label: 'Posture' },
+						{ key: 4, label: 'Language' },
+					],
+        	deliveryPassed: [],
+					styleData: [
+						{ key: 0, label: 'Coherence' },
+						{ key: 1, label: 'Concision' },
+						{ key: 2, label: 'Flow' },
+						{ key: 3, label: 'Emphasis' },
+						{ key: 4, label: 'Figures of Speech' },
+						{ key: 5, label: 'Figures of Sound' },
+					],
+        	stylePassed: [],
+					visualsData: [
+						{ label: 'Pictorial cues' },
+						{ label: 'Slide titles' },
+						{ label: 'Image-text highlight' },
+						{ label: 'Graphics' },
+						{ label: 'Memorable images' }
+					],
+        	visualsPassed: []
 				}
 			},
 			created() {	
@@ -163,6 +337,27 @@
 			mounted() {
 			},
 			methods: {
+				// append(store, data) {
+				// 	store.append({ id: id++, label: 'testtest', children: [] }, data);
+				// },
+				// remove(store, data) {
+				// 	store.remove(data);
+				// },
+				// renderContent(h, { node, canons, store }) {
+				// 	return (`
+				// 		<span>
+				// 			<span>
+				// 				<span>{node.label}</span>
+				// 			</span>
+				// 			<span style="float: right; margin-right: 20px">
+				// 				<el-button size="mini" on-click={ () => this.append(store, canons) }>Append</el-button>
+				// 				<el-button size="mini" on-click={ () => this.remove(store, data) }>Delete</el-button>
+				// 			</span>
+				// 		</span>`);
+				// },
+				handleNodeClick(data) {
+					console.log(data);
+				},
 				// A Vue setter.
 				queryActiveClasses: _.debounce(function () {
 					console.log('QUERY ACTIVE CLASSES')

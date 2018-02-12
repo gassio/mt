@@ -63,7 +63,6 @@
                         <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
                             <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
                         </nav>
-                        <!-- MOVES -->
                         
                     </div>
                     <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
