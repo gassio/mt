@@ -274,11 +274,11 @@ actions: {
     },
     /* ANNOTATIONS */ 
     addAnnotation: function ({ commit, state }, payload) {
-        var theVideo = payload.video
             
-        axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
+        axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, payload.video)
             .then(response => {
-                theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+                // commit('ADD_ANNOTATION', payload.annotation)
+                // theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
             })
             .catch(function (err) {
                 console.log('Error annotation add...', err)
@@ -400,9 +400,9 @@ mutations: {
     /* ANNOTATIONS */
     // Not used.
     ADD_ANNOTATION: (state, payload) => {
-        var annotations = state.videos.annotations
+        state.videos.annotations.push(payload)
         // Sorting annotations[] by from property
-        annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+        // annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
     },
     EDIT_ANNOTATION: (state, payload) => {
         var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]

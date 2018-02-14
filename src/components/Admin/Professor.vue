@@ -30,11 +30,11 @@
 
 					<div class="professor__classvideos">
 
-						<h3 class="class__heading title is-size-4">{{ currentClassSelected }} ({{ currentClassNumber }}) 
+						<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}
 							<a style="font-size: 0.6em;float:right;" @click="modalGenreCustomization = true">Customize genres</a>
 						</h3>
 
-						<a style="font-size: 0.6em;color:black;margin:0;" @click="modalGenreCustomization2 = true">Customize genres2</a>
+						<!-- <a style="font-size: 0.6em;color:black;margin:0;" @click="modalGenreCustomization2 = true">Customize genres2</a>-->
 
 							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
 									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredClass === false" @click="featureVideo($event)">

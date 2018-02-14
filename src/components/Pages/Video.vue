@@ -410,7 +410,7 @@ You might also want to include a concrete strategy recommendation."
             // this.moreAnnotations()
 
             // Color a card when videoCurrentTime is between card from and end
-            this.hooping()
+            // this.hooping()
         },
         methods: {
             getVideoSources(vIndex) {
@@ -716,7 +716,6 @@ You might also want to include a concrete strategy recommendation."
                     if (this.annotateCategory === annotateCategories[i].name)
                         annotateDesc = annotateCategories[i].desc
                 }
-                console.log("annotateDesc = ", annotateDesc)
 
                 var card = { 
                     author: 'User',
@@ -731,26 +730,51 @@ You might also want to include a concrete strategy recommendation."
                 }
 
                 // Pushing new annotation in current video
-                this.videos.annotations.push(card)
-                this.$store.dispatch('addAnnotation', {
-                    video: this.videos,
-                    id: this.id
-                })
+                if (card.comment === '' && card.rating === null) {
+                    alert('Please insert a comment and set a rate.')
+                } else if (card.rating === null) {
+                    alert('Please set a rate.')
+                } else if (card.comment === '') {
+                    alert('Please insert a comment.')
+                } else {
 
-                this.player.seek(this.mmssToSeconds(this.annotateStart))
+                    // We are pushing the card the state because the PUT call needs to pass the whole video object in the body.
+                    this.videos.annotations.push(card)
+                    this.$store.dispatch('addAnnotation', {
+                        video: this.videos,
+                        id: this.id,
+                        annotation: card
+                    })
 
-                // Reset default design states (no annotating)
-                this.annotateComment = ''
-                this.annotateStart = null
-                this.annotateEnd = null
-                this.annotateRating = 1
-                this.isAnnotating = false
-                this.isAnnotateMenu = false
-                this.isAnnotateFields = false
-                this.isVideoline = false
-                this.selectedMove = 'Other'
+                    // Sets the color of the card (it belongs to videoAnnotations[])
+                    if (card.canon === 'Moves')
+                        card["color"] = '#395d41'
+                    else if (card.canon === 'Structure')
+                        card["color"] = '#853a3e'
+                    else if (card.canon === 'Delivery')
+                        card["color"] = '#ab8c3c'
+                    else if (card.canon === 'Visuals')
+                        card["color"] = '#6c3765'
+                    else if (card.canon === 'Style')
+                        card["color"] = '#38425d'
+                    
+                    // We are pushing to card to videoAnnotations[]
+                    this.videoAnnotations.push(card)
 
-                // Seek to previous paused time.
+                    // Seek to previous paused time.
+                    this.player.seek(this.mmssToSeconds(this.annotateStart))
+
+                    // Reset default design states (no annotating)
+                    this.annotateComment = ''
+                    this.annotateStart = null
+                    this.annotateEnd = null
+                    this.annotateRating = 1
+                    this.isAnnotating = false
+                    this.isAnnotateMenu = false
+                    this.isAnnotateFields = false
+                    this.isVideoline = false
+                    this.selectedMove = 'Other'
+                }
             },
             editing(event) {
                 // CHECKING for new annotations in current video (for real time annotating)
@@ -816,6 +840,11 @@ You might also want to include a concrete strategy recommendation."
                         this.videos.annotations[i].from = this.editStart
                         this.videos.annotations[i].to = this.editEnd
                         this.videos.annotations[i].rating =  this.editRating
+
+                        this.videoAnnotations[i].comment =  this.editComment
+                        this.videoAnnotations[i].from = this.editStart
+                        this.videoAnnotations[i].to = this.editEnd
+                        this.videoAnnotations[i].rating =  this.editRating
                     }
                 }
 
@@ -836,7 +865,6 @@ You might also want to include a concrete strategy recommendation."
                 //     to: this.editEnd,
                 //     videoObj: this.$store.getters.videos[this.id]
                 // })
-
 
                 this.isEditFields = false
                 this.isEditing = false
@@ -878,6 +906,7 @@ You might also want to include a concrete strategy recommendation."
                             if (that.videos.annotations[i].id === cardID) {
                                 console.log("anno id = ", that.videos.annotations[i].id)
                                 that.videos.annotations.splice(i, 1)
+                                that.videoAnnotations.splice(i, 1)
                             }
                         }
 
