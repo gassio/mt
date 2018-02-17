@@ -190,7 +190,11 @@ state: {
     currentClassNumber: '',
     currentVideoID: null,
     uploadingVideo: false,
-    uploadUrl: ''
+    uploadUrl: '',
+    // The two exclamation marks are used for type casting.
+    // The localStorage type is String. So the !! symbol converts it to boolean.
+    // Caution! We do not use only one exclamation because if the string contains something this is represented as true.
+    isLoggedIn: !!localStorage.getItem('lbUser')
 },
 actions: {
     /* VIDEOS  */
@@ -594,6 +598,9 @@ getters: {
     },
     uploadingVideo: state => {
         return state.uploadingVideo
+    },
+    isLoggedIn: state => {
+        return state.isLoggedIn
     }
 }
 })

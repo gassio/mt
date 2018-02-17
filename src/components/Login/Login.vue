@@ -3,38 +3,48 @@
     <div class="login">
 
         <img class="logo" src="../../assets/logo.png" alt="Logo">
-        <form class="register-form" v-if="registered">
+
+        <form class="login-form" v-on:submit.prevent="loginUser()">
+          <input type="text" placeholder="username" v-model="loginDetails.username">
+          <input type="password" placeholder="password" v-model="loginDetails.password">
+          <button type="submit" value="login">LOGIN</button>
+        </form>
+
+        <!-- <form class="register-form" v-if="registered">
             <input type="text" placeholder="name"/>
             <input type="password" placeholder="password"/>
             <input type="text" placeholder="email address"/>
             <button>create</button>
             <p class="message">Already registered? <a>Sign In</a></p>
-        </form>
+        </form> -->
 
-        <form class="login-form" v-else>
+        <!-- <form class="login-form" v-else>
             <input type="text" placeholder="username" v-model="username"/>
             <input type="password" placeholder="password" v-model="password"/>
             <button type="button" @click="l()">login</button>
             <p class="message">Not registered? <a style="text-decoration:none" @click="c()">Create an account</a></p>
-        </form>
-
+        </form> -->
 
     </div>
 </template>
 
 
 <script>
+import LoginService from './LoginService.js';
 
 export default {
     data() {
         return {
           registered: false,
-          username: '',
-          password: ''
+          loginDetails : {
+              username : '',
+              password : ''
+          },
         }
     },
     created() {
-        this.$store.dispatch('getAllVideos')
+      this.loginAuth()
+      this.$store.dispatch('getAllVideos')
     },
     mounted() {
         $('.message a').click(function(){
@@ -42,6 +52,43 @@ export default {
         });
     },
     methods: {
+        loginUser:function() {  
+            const authUser = {}
+            var app = this
+            LoginService.login(this.loginDetails)
+                .then(function(res) {
+                    if(res.status === "success") {
+                        authUser.data = res.data; authUser.token = res.token;
+                        app.$store.state.isLoggedIn = true
+                        window.localStorage.setItem('lbUser',JSON.stringify(authUser))
+                        
+                        if (authUser.data.role_id === 'ADMIN') 
+                          app.$router.push('/admin')
+                        else 
+                          app.$router.push('/professor')
+                    } else {
+                        app.$store.state.isLoggedIn = false
+                    }
+                })
+                .catch(function (err){
+                    console.log(err.data)
+                })
+        },
+        // Checks if the user
+        // - is not logged in
+        // - is logged in as Admin
+        // - is logged in as professor
+        loginAuth:function () {
+            const status =  JSON.parse(window.localStorage.getItem('lbUser'))
+            console.log('loginAuth() ', status)
+
+            if (status === null || status === undefined)
+              this.$router.push('/login'); 
+            else if (status.data.role_id === 'ADMIN')
+              this.$router.push('/admin');
+            else
+               this.$router.push('/professor');
+        },
         l() {
           var that = this
           if (this.username === 'karatsolis' && this.password === "1234") {

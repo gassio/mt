@@ -21,6 +21,7 @@
                 <div class="navbar-end">
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
                     <a class="head__nav-item navbar-item"><p>Karatsolis (professor)</p><i class="fa fa-angle-down"></i></a>
+                    <a class="head__nav-item navbar-item" @click="logOut()" v-show="isLoggedIn"><p>Logout</p></a>
                 </div>
             </div>
 
@@ -110,36 +111,12 @@
                 multipleSelection: []
             }
         },
-        mounted() {
-            document.addEventListener('DOMContentLoaded', function () {
-
-                // Get all "navbar-burger" elements
-                var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-                // Check if there are any navbar burgers
-                if ($navbarBurgers.length > 0) {
-
-                    // Add a click event on each of them
-                    $navbarBurgers.forEach(function ($el) {
-                        $el.addEventListener('click', function () {
-
-                            // Get the target from the "data-target" attribute
-                            var target = $el.dataset.target;
-                            var $target = document.getElementById(target);
-                            console.log($target)
-                            console.log($el)
-
-                            // Toggle the class on both the "navbar-burger" and the "navbar-menu"
-                            $el.classList.toggle('is-active');
-                            $target.classList.toggle('is-active');
-
-                        });
-                    });
-                }
-
-            });
-        },
         methods: {
+            logOut() {
+                localStorage.removeItem("lbUser")
+                this.$router.push('/login')
+                this.$store.state.isLoggedIn = false
+            },
             openModalStudentRequests() {
                 this.modalStudentRequestsIsOpen = true
 
@@ -206,9 +183,38 @@
                 }
             }
         },
+        mounted() {
+            document.addEventListener('DOMContentLoaded', function () {
+
+                // Get all "navbar-burger" elements
+                var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+                // Check if there are any navbar burgers
+                if ($navbarBurgers.length > 0) {
+
+                    // Add a click event on each of them
+                    $navbarBurgers.forEach(function ($el) {
+                        $el.addEventListener('click', function () {
+
+                            // Get the target from the "data-target" attribute
+                            var target = $el.dataset.target;
+                            var $target = document.getElementById(target);
+                            console.log($target)
+                            console.log($el)
+
+                            // Toggle the class on both the "navbar-burger" and the "navbar-menu"
+                            $el.classList.toggle('is-active');
+                            $target.classList.toggle('is-active');
+
+                        });
+                    });
+                }
+
+            });
+        },
         computed: {
             ...mapGetters([
-				'uploadingVideo'
+				'uploadingVideo', 'isLoggedIn'
             ])
         },
     }
