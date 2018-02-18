@@ -4,9 +4,9 @@
 
         <img class="logo" src="../../assets/logo.png" alt="Logo">
 
-        <form class="login-form" v-on:submit.prevent="loginUser()">
-          <input type="text" placeholder="username" v-model="loginDetails.username">
-          <input type="password" placeholder="password" v-model="loginDetails.password">
+        <form class="login-form" v-on:submit.prevent="login()">
+          <input type="text" placeholder="username" v-model="username">
+          <input type="password" placeholder="password" v-model="password">
           <button type="submit" value="login">LOGIN</button>
         </form>
 
@@ -30,20 +30,19 @@
 
 
 <script>
-import LoginService from './LoginService.js';
+import LoginService from './LoginService.js'
+import myLoginRoutine from './LoginRoutine.js'
 
 export default {
     data() {
         return {
           registered: false,
-          loginDetails : {
-              username : '',
-              password : ''
-          },
+          username : '',
+          password : ''
         }
     },
     created() {
-      this.loginAuth()
+      // this.loginAuth()
       this.$store.dispatch('getAllVideos')
     },
     mounted() {
@@ -52,43 +51,11 @@ export default {
         });
     },
     methods: {
-        loginUser:function() {  
-            const authUser = {}
-            var app = this
-            LoginService.login(this.loginDetails)
-                .then(function(res) {
-                    if(res.status === "success") {
-                        authUser.data = res.data; authUser.token = res.token;
-                        app.$store.state.isLoggedIn = true
-                        window.localStorage.setItem('lbUser',JSON.stringify(authUser))
-                        
-                        if (authUser.data.role_id === 'ADMIN') 
-                          app.$router.push('/admin')
-                        else 
-                          app.$router.push('/professor')
-                    } else {
-                        app.$store.state.isLoggedIn = false
-                    }
-                })
-                .catch(function (err){
-                    console.log(err.data)
-                })
-        },
-        // Checks if the user
-        // - is not logged in
-        // - is logged in as Admin
-        // - is logged in as professor
-        loginAuth:function () {
-            const status =  JSON.parse(window.localStorage.getItem('lbUser'))
-            console.log('loginAuth() ', status)
-
-            if (status === null || status === undefined)
-              this.$router.push('/login'); 
-            else if (status.data.role_id === 'ADMIN')
-              this.$router.push('/admin');
-            else
-               this.$router.push('/professor');
-        },
+        login() {
+          this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
+            this.$router.push('/')
+          })
+        },   
         l() {
           var that = this
           if (this.username === 'karatsolis' && this.password === "1234") {

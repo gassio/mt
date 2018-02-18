@@ -13,6 +13,11 @@
     import Login from './components/Login/Login.vue'
 
     export default {
+        created() {
+            if (this.$store.getters.isAuthenticated) {
+                this.$store.dispatch(USER_REQUEST)
+            }
+        },
         mounted() {
             // "Metalogon" label to Loading feature
             this.$loading({ fullscreen: true })
