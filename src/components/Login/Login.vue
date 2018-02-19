@@ -30,7 +30,6 @@
 
 
 <script>
-// import { AuthService } from '../../services/AuthService'
 
 export default {
     data() {
@@ -40,22 +39,17 @@ export default {
           password : ''
         }
     },
-    created() {
-      // this.loginAuth()
-      this.$store.dispatch('getAllVideos')
-    },
-    mounted() {
-        $('.message a').click(function(){
-            $('login').animate({height: "toggle", opacity: "toggle"}, "slow");
-        });
-    },
     methods: {
         loginUser() {
           const myAuth = this.$root.$options.myAuth
-          myAuth.login({
-            residentID: 'admin',
-            password: 'admin' 
-          })
+
+          myAuth.login({ residentID: this.username, password: this.password })
+            .then(() => {
+              this.$router.push('/professor')
+            })
+            .catch(() => 
+              this.$router.push('/login')
+            )
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
@@ -93,6 +87,14 @@ export default {
             document.getElementById(tabName).style.display = "block";
             evt.currentTarget.className += " active";
         }
+    },
+    created() {
+      this.$store.dispatch('getAllVideos')
+    },
+    mounted() {
+        $('.message a').click(function(){
+            $('login').animate({height: "toggle", opacity: "toggle"}, "slow");
+        });
     },
 }
 </script>

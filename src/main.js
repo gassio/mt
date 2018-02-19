@@ -3,13 +3,8 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
-// import AuthService from './services/AuthService'
-// const myAuth = new AuthService()
-
 import myAuth from './services/AuthService'
 Vue.use(myAuth)
-console.log('main.js: ', myAuth.test)
-myAuth.test = 'pew'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -51,5 +46,3 @@ export const ourApp = new Vue({
 })
 
 Vue.config.productionTip = false
-
-export const test = 'test'
