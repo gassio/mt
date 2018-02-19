@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { store } from './store/store'
+import myAuth from './services/AuthService'
 
 
 import Home from './components/Pages/Home.vue'
@@ -15,16 +16,17 @@ import Professor from './components/Admin/Professor.vue'
 import Student from './components/Admin/Student.vue'
 import Login from './components/Login/Login.vue'
 
-// Dependency injection of the LoginService.js
+// Dependency injection of the AuthService.js
+console.log('routes: ', myAuth)
 
 const requiresAuth = (to, from, next) => {
-    // loginService.isAuthenticated()
-    //     .then(() => {
-    //         next()
-    //     })
-    //     .catch(() => {
-    //         next('/login')
-    //     })
+    myAuth.isAuthenticated()
+        .then(() => {
+            next()
+        })
+        .catch(() => {
+            next('/login')
+        })
 }
 
 export const routes = [
@@ -55,7 +57,7 @@ export const routes = [
         name: 'Professor', 
         path: '/professor', 
         component: Professor, 
-        // beforeEnter: requiresAuth 
+        beforeEnter: requiresAuth 
     },
     { 
         name: 'Student', 
@@ -64,24 +66,3 @@ export const routes = [
         beforeEnter: requiresAuth 
     },
 ]
-
-
-// const router = new VueRouter({routes,mode:'history'})  
-
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requiresAuth) {
-//     const authUser = JSON.parse(window.localStorage.getItem('lbUser'))
-//     if (!authUser || !authUser.token) {
-//       next({name:'login'})
-//     }
-//     else if(to.meta.adminAuth) {
-//       const authUser = JSON.parse(window.localStorage.getItem('lbUser'))
-//       if(authUser.data.role_id === 'ADMIN') {
-//         next()
-//       }
-//     } 
-//   }
-//   else {
-//     next()
-//   }
-// })

@@ -7,11 +7,8 @@ import VueRouter from 'vue-router'
 import { routes } from './routes'
 Vue.use(VueRouter)
 
-import AuthService from './services/index'
-Vue.use(AuthService)
-export const myAuth = new AuthService.AuthService("asd")
-console.log(myAuth.authData)
-myAuth.authData = "pew"
+import AuthService from './services/AuthService'
+export const myAuth = new AuthService('asd')
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'

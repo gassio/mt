@@ -1,14 +1,25 @@
 import Vue from 'vue';
 import axios from 'axios';
 
-// let authData = null
-// let initialized = false
+Vue.mixin( {
+    beforeCreate() {
+      const options = this.$options;
+      if ( options.myAuth )
+        this.$myAuth = options.myAuth;
+      else if ( options.parent && options.parent.$myAuth )
+        this.$myAuth = options.parent.$myAuth;
+    }
+})
 
 export default class AuthService {
 
-    constructor(d) {
-        this.authData = d
+    constructor() {
+        this.authData = null
         this.initialized = false
+    }
+    
+    printAuthData() {
+        console.log("print authData: ", this.authData)
     }
 
     autoLogin() {
@@ -26,14 +37,15 @@ export default class AuthService {
 
     login(value, cb) {
         return new Promise(function (resolve, reject) {
-            axios.post('http://agtheodorides.dyndns.org:8089/rest/login', value)
+            axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
-                    authData = response.data.data
+                    console.log(response)
+                    // this.authData = response.data.data
                     localStorage.setItem('userAuthData', response.data.token)
                     resolve(response.data);
                 })
                 .catch(function (err) {
-                    reject(err.response.data)
+                    reject(err)
                 })
         });
     }

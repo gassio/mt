@@ -30,7 +30,7 @@
 
 
 <script>
-// import AuthService from '../../services/AuthService'
+// import { AuthService } from '../../services/AuthService'
 
 export default {
     data() {
@@ -51,12 +51,11 @@ export default {
     },
     methods: {
         loginUser() {
-          
-          console.log(this.$myAuth.authData)
-          // AuthService.login({ 
-          //   username: this.username, 
-          //   password: this.password 
-          // })
+          this.$myAuth.login({
+            residentID: 'admin',
+            password: 'admin' 
+          })
+          // this.$myAuth.printAuthData()
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
