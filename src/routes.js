@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { store } from './store/store'
 
+
 import Home from './components/Pages/Home.vue'
 import Library from './components/Pages/Library.vue'
 import Wiki from './components/Pages/Wiki.vue'
@@ -14,36 +15,27 @@ import Professor from './components/Admin/Professor.vue'
 import Student from './components/Admin/Student.vue'
 import Login from './components/Login/Login.vue'
 
-// store.state.isAuthenticated = true
-console.log('routes.js: ', store.state.isAuthenticated)
+// Dependency injection of the LoginService.js
 
 const requiresAuth = (to, from, next) => {
-    if (store.state.isAuthenticated) {
-        next()
-        return
-    }
-    next('/login')
+    // loginService.isAuthenticated()
+    //     .then(() => {
+    //         next()
+    //     })
+    //     .catch(() => {
+    //         next('/login')
+    //     })
 }
-
-const noAuthNeeded = (to, from, next) => {
-    if (!store.state.isAuthenticated) {
-      next()
-      return
-    }
-    next('/')
-}  
 
 export const routes = [
     { 
         path: '/', 
         component: Login,
-        beforeEnter: noAuthNeeded
     },
     { 
         name: 'Login', 
         path: '/login', 
         component: Login,
-        beforeEnter: noAuthNeeded
     },
     { name: 'Home', path: '/home', component: Home },
     { name: 'Library', path: '/library', component: Library },
@@ -63,7 +55,7 @@ export const routes = [
         name: 'Professor', 
         path: '/professor', 
         component: Professor, 
-        beforeEnter: requiresAuth 
+        // beforeEnter: requiresAuth 
     },
     { 
         name: 'Student', 

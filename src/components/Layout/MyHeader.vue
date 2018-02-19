@@ -21,7 +21,7 @@
                 <div class="navbar-end">
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
                     <a class="head__nav-item navbar-item"><p>Karatsolis (professor)</p><i class="fa fa-angle-down"></i></a>
-                    <a class="head__nav-item navbar-item" @click="logOut()" v-show="isLoggedIn"><p>Logout</p></a>
+                    <!-- <a class="head__nav-item navbar-item" @click="logOut()" v-show="isLoggedIn"><p>Logout</p></a> -->
                 </div>
             </div>
 
@@ -214,7 +214,7 @@
         },
         computed: {
             ...mapGetters([
-				'uploadingVideo', 'isLoggedIn'
+				'uploadingVideo'
             ])
         },
     }

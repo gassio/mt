@@ -4,7 +4,7 @@
 
         <img class="logo" src="../../assets/logo.png" alt="Logo">
 
-        <form class="login-form" v-on:submit.prevent="login()">
+        <form class="login-form" v-on:submit.prevent="l()">
           <input type="text" placeholder="username" v-model="username">
           <input type="password" placeholder="password" v-model="password">
           <button type="submit" value="login">LOGIN</button>
@@ -30,8 +30,7 @@
 
 
 <script>
-import LoginService from './LoginService.js'
-import myLoginRoutine from './LoginRoutine.js'
+import AuthService from '../../services/AuthService'
 
 export default {
     data() {

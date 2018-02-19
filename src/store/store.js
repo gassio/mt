@@ -194,54 +194,10 @@ export const store = new Vuex.Store({
 
         /* AUTHENTICATION*/
         token: localStorage.getItem('user-token') || '', 
-        hasLoadedOnce: false,
-        authStatus: '', 
-        /* USER PROFILE */
-        userStatus: '',
-        userProfile: {}
+
     },
 
     actions: {
-        /* AUTHENTICATION */
-        authRequest: ({commit, dispatch}, user) => {
-            return new Promise((resolve, reject) => {
-            commit('AUTH_REQUEST')
-            axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', user)
-            .then(resp => {
-                localStorage.setItem('user-token', resp.data.token)
-                // Here set the header of your ajax library to the token value.
-                // axios.defaults.headers.common['Authorization'] = resp.token
-                commit('AUTH_SUCCESS', resp.data)
-                // GET call for the user profile
-                dispatch('userRequest')
-                resolve(resp)
-            })
-            .catch(err => {
-                commit('AUTH_ERROR', err)
-                localStorage.removeItem('user-token')
-                reject(err)
-            })
-            })
-        },
-        authLogout: ({commit, dispatch}) => {
-            return new Promise((resolve, reject) => {
-            commit('AUTH_LOGOUT')
-            localStorage.removeItem('user-token')
-            resolve()
-            })
-        },
-        userRequest: ({commit, dispatch}) => {
-            commit('USER_REQUEST')
-            axios.get('theUrl')
-            .then(resp => {
-                commit('USER_SUCCESS', resp.data)
-            })
-            .catch(resp => {
-                commit('USER_ERROR')
-                // if resp is unauthorized, logout, to
-                dispatch('authLogout')
-            })
-        },
         /* VIDEOS  */
         getAllVideos: function ({ commit }) {
             axios.get("https://metalogon-api.herokuapp.com/rest/video")
@@ -399,36 +355,6 @@ export const store = new Vuex.Store({
     },
 
     mutations: {
-        /* AUTHENTICATION */
-        AUTH_REQUEST: (state) => {
-            state.authStatus = 'loading'
-        },
-        AUTH_SUCCESS: (state, data) => {
-            state.authStatus = 'success'
-            state.token = data.token
-            state.hasLoadedOnce = true
-        },
-        AUTH_ERROR: (state) => {
-            state.authStatus = 'error'
-            state.hasLoadedOnce = true
-        },
-        AUTH_LOGOUT: (state) => {
-            state.token = ''
-        },
-        /* USER PROFILE */
-        USER_REQUEST: (state) => {
-            state.userStatus = 'loading'
-        },
-        USER_SUCCESS: (state, data) => {
-            state.userStatus = 'success'
-            Vue.set(state, 'profile', data)
-        },
-        USER_ERROR: (state) => {
-            state.userStatus = 'error'
-        },
-        USER_LOGOUT: (state) => {
-            state.profile = {}
-        },
         /* VIDEOS */
         GET_ALL_VIDEOS: (state, newVideos) => {
             loadingInstance.close()
@@ -634,21 +560,6 @@ export const store = new Vuex.Store({
     },
 
     getters: {
-        /* AUTHENTICATION */
-        isAuthenticated: state => { 
-            !!state.token
-        },        
-        authStatus: state => { 
-            state.authStatus
-        },
-        /* USER PROFILE */   
-        getProfile: state => {
-            state.userProfile
-        },
-        isProfileLoaded: state => {
-            !!state.userProfile.name 
-        },
-        // OTHER RESOURCES
         videos: state => {
             return state.videos
         },

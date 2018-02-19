@@ -1,6 +1,6 @@
 <template>
-    <div class="app" v-cloak>
-        <my-header v-if="authenticated"></my-header> <!-- -->
+    <div class="app">
+        <my-header v-if="authenticated"></my-header>
         <router-view></router-view>
     </div>
 </template>
@@ -14,9 +14,6 @@
 
     export default {
         created() {
-            if (this.$store.getters.isAuthenticated) {
-                this.$store.dispatch(USER_REQUEST)
-            }
         },
         mounted() {
             // "Metalogon" label to Loading feature
