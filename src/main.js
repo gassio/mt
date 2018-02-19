@@ -3,12 +3,13 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
-import VueRouter from 'vue-router'
-import { routes } from './routes'
-Vue.use(VueRouter)
+// import AuthService from './services/AuthService'
+// const myAuth = new AuthService()
 
-import AuthService from './services/AuthService'
-export const myAuth = new AuthService('asd')
+import myAuth from './services/AuthService'
+Vue.use(myAuth)
+console.log('main.js: ', myAuth.test)
+myAuth.test = 'pew'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -25,8 +26,13 @@ Vue.use(ReadMore);
 // Load the full build.
 global._ = require('lodash');
 
+import VueRouter from 'vue-router'
+import { routes } from './routes'
+Vue.use(VueRouter)
+
 const router = new VueRouter({
   routes,
+  myAuth,
   mode: 'history'
 })
 
@@ -36,7 +42,7 @@ Vue.filter('sliceDate', function(value) {
     return value.toString().slice(0,10)
 })
 
-new Vue({
+export const ourApp = new Vue({
   el: '#app',
   router,
   store,
@@ -45,3 +51,5 @@ new Vue({
 })
 
 Vue.config.productionTip = false
+
+export const test = 'test'

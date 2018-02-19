@@ -1,26 +1,31 @@
 import Vue from 'vue';
 import axios from 'axios';
 
-Vue.mixin( {
-    beforeCreate() {
-      const options = this.$options;
-      if ( options.myAuth )
-        this.$myAuth = options.myAuth;
-      else if ( options.parent && options.parent.$myAuth )
-        this.$myAuth = options.parent.$myAuth;
-    }
-})
+// Vue.mixin( {
+//     beforeCreate() {
+//       const options = this.$options;
+//       if ( options.myAuth )
+//         this.$myAuth = options.myAuth;
+//       else if ( options.parent && options.parent.$myAuth )
+//         this.$myAuth = options.parent.$myAuth;
+//     }
+// })
 
-export default class AuthService {
+let authData = null
+let initialized = false
 
-    constructor() {
-        this.authData = null
-        this.initialized = false
-    }
+export default {
+
+    test: 'asd',
+
+    // constructor() {
+    //     this.authData = null
+    //     this.initialized = false
+    // }
     
     printAuthData() {
-        console.log("print authData: ", this.authData)
-    }
+        console.log("print authData: ", authData)
+    },
 
     autoLogin() {
         // if (localStorage)
@@ -33,7 +38,7 @@ export default class AuthService {
             else 
                 reject()
         })
-    }
+    },
 
     login(value, cb) {
         return new Promise(function (resolve, reject) {
@@ -48,11 +53,11 @@ export default class AuthService {
                     reject(err)
                 })
         });
-    }
+    },
 
     logOff() {
         localStorage.removeItem('userAuthData')
-    }
+    },
 
     isAuthenticated() {
         if (initialized === false)

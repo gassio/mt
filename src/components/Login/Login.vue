@@ -51,11 +51,11 @@ export default {
     },
     methods: {
         loginUser() {
-          this.$myAuth.login({
+          const myAuth = this.$root.$options.myAuth
+          myAuth.login({
             residentID: 'admin',
             password: 'admin' 
           })
-          // this.$myAuth.printAuthData()
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {

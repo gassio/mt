@@ -1,8 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { store } from './store/store'
-import myAuth from './services/AuthService'
-
 
 import Home from './components/Pages/Home.vue'
 import Library from './components/Pages/Library.vue'
@@ -17,7 +15,10 @@ import Student from './components/Admin/Student.vue'
 import Login from './components/Login/Login.vue'
 
 // Dependency injection of the AuthService.js
-console.log('routes: ', myAuth)
+// import { ourApp } from './main'
+// import myAuth from './services/AuthService'
+// import { test } from './main'
+// console.log('routes.js: ', this.$myAuth)
 
 const requiresAuth = (to, from, next) => {
     myAuth.isAuthenticated()
@@ -57,7 +58,7 @@ export const routes = [
         name: 'Professor', 
         path: '/professor', 
         component: Professor, 
-        beforeEnter: requiresAuth 
+        // beforeEnter: requiresAuth 
     },
     { 
         name: 'Student', 
