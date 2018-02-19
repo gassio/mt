@@ -1,23 +1,28 @@
 import Vue from 'vue';
 import axios from 'axios';
 
-let authData = null
-let initialized = false
+// let authData = null
+// let initialized = false
 
-export default {
+export default class AuthService {
+
+    constructor(d) {
+        this.authData = d
+        this.initialized = false
+    }
 
     autoLogin() {
         // if (localStorage)
             // authData ~= localStorage
         return new Promise(function (resolve, reject) {
-            authData = window.localStorage.getItem('userAuthData')
+            authData = window.localStorage.getItem('userAuthData') // Set authData == token
             initialized = true
             if (authData)
                 resolve(authData)
             else 
                 reject()
         })
-    },
+    }
 
     login(value, cb) {
         return new Promise(function (resolve, reject) {
@@ -31,11 +36,11 @@ export default {
                     reject(err.response.data)
                 })
         });
-    },
+    }
 
     logOff() {
         localStorage.removeItem('userAuthData')
-    },
+    }
 
     isAuthenticated() {
         if (initialized === false)

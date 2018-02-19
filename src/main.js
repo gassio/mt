@@ -7,6 +7,12 @@ import VueRouter from 'vue-router'
 import { routes } from './routes'
 Vue.use(VueRouter)
 
+import AuthService from './services/index'
+Vue.use(AuthService)
+export const myAuth = new AuthService.AuthService("asd")
+console.log(myAuth.authData)
+myAuth.authData = "pew"
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
@@ -37,6 +43,7 @@ new Vue({
   el: '#app',
   router,
   store,
+  myAuth,
   render: h => h(App)
 })
 
