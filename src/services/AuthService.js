@@ -8,7 +8,7 @@ export default {
 
     autoLogin() {
         // if (localStorage)
-        // authData ~= localStorage
+            // authData ~= localStorage
         return new Promise(function (resolve, reject) {
             authData = window.localStorage.getItem('userAuthData')
             initialized = true
@@ -22,21 +22,19 @@ export default {
     login(value, cb) {
         return new Promise(function (resolve, reject) {
             axios.post('http://agtheodorides.dyndns.org:8089/rest/login', value)
-                .then(function (res) {
-                    console.log('POST pass', res.data)
-                    // Saves the authData
-                    // Saves to localStorage
-                    resolve(res.data);
+                .then(function (response) {
+                    authData = response.data.data
+                    localStorage.setItem('userAuthData', response.data.token)
+                    resolve(response.data);
                 })
                 .catch(function (err) {
-                    console.log('POST error', err.response)
                     reject(err.response.data)
                 })
         });
     },
 
     logOff() {
-        // Delete localStorage 
+        localStorage.removeItem('userAuthData')
     },
 
     isAuthenticated() {

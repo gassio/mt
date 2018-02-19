@@ -4,7 +4,7 @@
 
         <img class="logo" src="../../assets/logo.png" alt="Logo">
 
-        <form class="login-form" v-on:submit.prevent="l()">
+        <form class="login-form" v-on:submit.prevent="loginUser()">
           <input type="text" placeholder="username" v-model="username">
           <input type="password" placeholder="password" v-model="password">
           <button type="submit" value="login">LOGIN</button>
@@ -50,6 +50,12 @@ export default {
         });
     },
     methods: {
+        loginUser() {
+          AuthService.login({ 
+            username: this.username, 
+            password: this.password 
+          })
+        },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
             this.$router.push('/')
