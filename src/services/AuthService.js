@@ -13,7 +13,7 @@ export default {
         //     authData = localStorage
 
         return new Promise(function (resolve, reject) {
-            authData = window.localStorage.getItem('userAuthData')
+            // authData = window.localStorage.getItem('userAuthData') // Is this needed?
             initialized = true
             if (authData)
                 resolve(authData)

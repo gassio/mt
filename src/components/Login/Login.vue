@@ -46,11 +46,11 @@ export default {
           myAuth.login({ residentID: this.username, password: this.password })
             .then(() => {
               var role = myAuth.getAuthData().role_id
+              // this.$router.push('/' + role)
               this.$router.push('/professor')
               this.$store.commit('AUTHENTICATED')
               this.$store.commit('SET_USER_PROFILE', myAuth.getAuthData())
-              console.log('after login test: ', myAuth.test)
-              // this.$router.push('/' + role)
+              // console.log('after login test: ', myAuth.getAuthData())
             })
             .catch(() => 
               this.$router.push('/login')
