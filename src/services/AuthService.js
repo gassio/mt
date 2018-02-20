@@ -27,7 +27,7 @@ export default {
             axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
                     authData = response.data.data
-                    console.log(authData)
+                    // console.log(authData)
                     localStorage.setItem('userAuthData', response.data.token)
                     resolve(response.data);
                 })
@@ -38,7 +38,9 @@ export default {
     },
 
     logOff() {
-        localStorage.removeItem('userAuthData')
+        authData = null     // Reset authData
+        initialized = false // Reset initialized flag
+        localStorage.removeItem('userAuthData') // Remove token from local storage
     },
 
     isAuthenticated() {

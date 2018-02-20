@@ -546,10 +546,10 @@ export const store = new Vuex.Store({
         SET_UPLOAD_URL: (state, payload) => {
             state.uploadUrl = payload
         },
-        AUTHENTICATED: (state) => {
-            if (!state.authenticated)
+        AUTHENTICATED: (state, payload) => {
+            if (payload === "login")//(!state.authenticated) // This gets called only from login.vue, through AuthService
                 state.authenticated = true
-            else
+            else if (payload === "logout")
                 state.authenticated = false
         },
         SET_USER_PROFILE: (state, payload) => {

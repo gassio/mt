@@ -21,7 +21,7 @@
                 <div class="navbar-end">
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
                     <a class="head__nav-item navbar-item"><p>{{ userData.user_id }} - {{ userData.role_id }}</p><i class="fa fa-angle-down"></i></a>
-                    <!-- <a class="head__nav-item navbar-item" @click="logOut()" v-show="isLoggedIn"><p>Logout</p></a> -->
+                    <a class="head__nav-item navbar-item" @click="logOut()"><p>Logout</p></a>
                 </div>
             </div>
 
@@ -113,9 +113,10 @@
         },
         methods: {
             logOut() {
-                localStorage.removeItem("lbUser")
                 this.$router.push('/login')
-                this.$store.state.isLoggedIn = false
+                this.$root.$options.myAuth.logOff()
+                this.$store.commit('AUTHENTICATED', "logout") // Change store.authenticated to false (becomes true in login)
+                this.$store.commit('SET_USER_PROFILE', {})
             },
             openModalStudentRequests() {
                 this.modalStudentRequestsIsOpen = true

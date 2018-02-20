@@ -48,13 +48,13 @@ export default {
               var role = myAuth.getAuthData().role_id
               // this.$router.push('/' + role)
               this.$router.push('/professor')
-              this.$store.commit('AUTHENTICATED')
+              this.$store.commit('AUTHENTICATED', "login")
               this.$store.commit('SET_USER_PROFILE', myAuth.getAuthData())
               // console.log('after login test: ', myAuth.getAuthData())
             })
-            .catch(() => 
+            .catch(() => {
               this.$router.push('/login')
-            )
+            })
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
