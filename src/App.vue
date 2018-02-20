@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-        <my-header v-if="authenticated"></my-header>
+        <my-header v-show="authenticated"></my-header>
         <router-view></router-view>
     </div>
 </template>
@@ -19,8 +19,7 @@
             // "Metalogon" label to Loading feature
             this.$loading({ fullscreen: true })
             $('.el-loading-mask .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
-        },
-        methods: {
+            
         },
         computed: {
             ...mapGetters(

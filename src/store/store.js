@@ -185,7 +185,6 @@ export const store = new Vuex.Store({
         archivedClasses: [], // only for professor.
         studentClasses: [], // only for student.
         departments: [], 
-        authenticated: false, // for login page.
         currentClassSelected: 'Select a class', // the class that is click from the user
         currentClassNumber: '',
         currentVideoID: null,
@@ -193,8 +192,8 @@ export const store = new Vuex.Store({
         uploadUrl: '',
 
         /* AUTHENTICATION*/
-        token: localStorage.getItem('user-token') || '', 
-
+        authenticated: false, // for login page.
+        userData: {} 
     },
 
     actions: {
@@ -548,10 +547,13 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload
         },
         AUTHENTICATED: (state) => {
-            if (state.authenticated === false)
+            if (!state.authenticated)
                 state.authenticated = true
             else
                 state.authenticated = false
+        },
+        SET_USER_PROFILE: (state, payload) => {
+            state.userData = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
@@ -584,9 +586,6 @@ export const store = new Vuex.Store({
         departments: state => {
             return state.departments
         },
-        authenticated: state => {
-            return state.authenticated
-        },
         currentClassSelected: state => {
             return state.currentClassSelected
         },
@@ -601,6 +600,12 @@ export const store = new Vuex.Store({
         },
         uploadingVideo: state => {
             return state.uploadingVideo
+        },
+        authenticated: state => {
+            return state.authenticated
+        },
+        userData: state => {
+            return state.userData
         },
     }
 })

@@ -9,8 +9,8 @@ export default {
     test: 'asd',
 
     autoLogin() {
-        if (localStorage)
-            authData = localStorage
+        // if (localStorage)
+        //     authData = localStorage
 
         return new Promise(function (resolve, reject) {
             authData = window.localStorage.getItem('userAuthData')
@@ -27,6 +27,7 @@ export default {
             axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
                     authData = response.data.data
+                    console.log(authData)
                     localStorage.setItem('userAuthData', response.data.token)
                     resolve(response.data);
                 })
@@ -50,5 +51,9 @@ export default {
                 else 
                     reject()
             })
+    },
+
+    getAuthData() {
+        return authData
     }
 }

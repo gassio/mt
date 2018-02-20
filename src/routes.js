@@ -35,14 +35,6 @@ export const routes = [
         path: '/login', 
         component: Login,
     },
-    { name: 'Home', path: '/home', component: Home },
-    { name: 'Library', path: '/library', component: Library },
-    { name: 'Wiki', path: '/wiki', component: Wiki },
-    { name: 'Classes', path: '/classes', component: Classes },
-    { name: 'Class', path: '/classes/:id', component: Class },
-    { name: 'Video', path: '/video/:id', component: Video, children: [
-        { name: 'VideoEdit', path: 'edit', component: VideoEdit }
-    ]},
     { 
         name: 'Admin', 
         path: '/admin', 
@@ -61,4 +53,19 @@ export const routes = [
         component: Student, 
         beforeEnter: requiresAuth 
     },
+    { 
+        name: 'Video', 
+        path: '/video/:id', 
+        component: Video 
+    },
+    { 
+        name: 'Library', 
+        path: '/library', 
+        component: Library 
+    },
+    { 
+        name: 'Wiki', 
+        path: '/wiki', 
+        component: Wiki 
+    }
 ]
