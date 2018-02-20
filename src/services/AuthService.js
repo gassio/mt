@@ -6,14 +6,10 @@ let initialized = false
 
 export default {
 
-    test: 'asd',
-
     autoLogin() {
-        // if (localStorage)
-        //     authData = localStorage
-
         return new Promise(function (resolve, reject) {
-            // authData = window.localStorage.getItem('userAuthData') // Is this needed?
+            // Is this needed?
+            // authData = window.localStorage.getItem('userAuthData')
             initialized = true
             if (authData)
                 resolve(authData)
@@ -27,7 +23,6 @@ export default {
             axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
                     authData = response.data.data
-                    // console.log(authData)
                     localStorage.setItem('userAuthData', response.data.token)
                     resolve(response.data);
                 })

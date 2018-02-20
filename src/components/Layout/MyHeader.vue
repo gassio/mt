@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+            <!-- <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
@@ -65,7 +65,7 @@
                         <el-button @click="acceptAllStudents()">Accept all</el-button>
                     </el-tab-pane>
                 </el-tabs>
-            </el-dialog>	
+            </el-dialog>	 -->
 
         </div>
     </nav>

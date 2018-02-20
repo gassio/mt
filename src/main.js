@@ -27,7 +27,6 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes,
-  myAuth,
   mode: 'history'
 })
 
