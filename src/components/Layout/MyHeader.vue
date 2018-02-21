@@ -12,7 +12,7 @@
 
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <router-link to="/professor" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
+                    <router-link to="/DecideHome" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Wiki</router-link>
                     <!--<router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
 					<router-link to="/admin" style="color:#A90931" tag="a"><strong>Admin</strong></router-link>
@@ -20,7 +20,7 @@
                 </div>
                 <div class="navbar-end">
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
-                    <a class="head__nav-item navbar-item"><p>{{ userData.data.user_id }} - {{ userData.data.role_id }}</p><i class="fa fa-angle-down"></i></a>
+                    <a class="head__nav-item navbar-item"><p>{{ getAuthData('user_id') }} - {{ getAuthData('role_id') }}</p><i class="fa fa-angle-down"></i></a>
                     <a class="head__nav-item navbar-item" @click="logOut()"><p>Logout</p></a>
                 </div>
             </div>
@@ -112,6 +112,19 @@
             }
         },
         methods: {
+            getAuthData(key) {
+                const myAuth = this.$root.$options.myAuth
+                // console.log(myAuth.getAuthData().data["user_id"])
+                // console.log(myAuth.getAuthData().data["role_id"])
+                try{
+                    return myAuth.getAuthData().data[key]
+                } catch(err) {
+                    return null
+                }
+            },
+            // getMyAuth() {
+            //     return this.$root.$options.myAuth
+            // },
             logOut() {
                 this.$router.push('/login')
                 this.$root.$options.myAuth.logOff()

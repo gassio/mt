@@ -34,7 +34,7 @@ export const routes = [
     { 
         name: 'Login', 
         path: '/login', 
-        component: Login,
+        component: Login
     },
     { 
         name: 'Admin', 

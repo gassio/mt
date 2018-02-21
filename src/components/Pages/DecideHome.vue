@@ -6,14 +6,17 @@
 <script>
     export default {
         name: 'DecideHome',
+        created() {
+            // this.$store.dispatch('getAllVideos')
+        },
         mounted() {
-            const m = this.$root.$options.myAuth
-            const role = m.getAuthData().data.role_id
-
-            console.log('decidehome: ', m)
-            console.log('decidehome: ', role)
-
+            // const m = this.$root.$options.myAuth
+            const role = this.$root.$options.myAuth.getAuthData().data.role_id
             // this.$router.push('/' + role)
+
+            // console.log('decidehome: ', m)
+            // console.log('decidehome: ', role)
+
         }
     }
 </script>
