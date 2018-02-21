@@ -8,10 +8,10 @@
         name: 'DecideHome',
         mounted() {
             const m = this.$root.$options.myAuth
-            const role = m.getAuthData()
+            const role = m.getAuthData().data.role_id
 
-            console.log(m)
-            console.log(role)
+            console.log('decidehome: ', m)
+            console.log('decidehome: ', role)
 
             // this.$router.push('/' + role)
         }

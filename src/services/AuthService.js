@@ -8,13 +8,14 @@ export default {
 
     autoLogin() {
         return new Promise(function (resolve, reject) {
-            // Is this needed?
-            authData = window.localStorage.getItem('userAuthData')
+            authData.token = window.localStorage.getItem('userToken')
             initialized = true
-            if (authData)
+            if (authData) {
                 resolve(authData)
-            else 
+            }
+            else {
                 reject()
+            }
         })
     },
 
@@ -22,8 +23,10 @@ export default {
         return new Promise(function (resolve, reject) {
             axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
-                    authData = response.data.data
-                    localStorage.setItem('userAuthData', response.data.token)
+                    authData = response.data
+                    localStorage.setItem('userToken', response.data.token)
+                    localStorage.setItem('userId', response.data.data.user_id)
+                    localStorage.setItem('userRole', response.data.data.role_id)
                     resolve(response.data);
                 })
                 .catch(function (err) {
@@ -33,8 +36,10 @@ export default {
     },
 
     logOff() {
-        authData = null // Reset authData
-        localStorage.removeItem('userAuthData') // Remove token from local storage
+        authData = null
+        localStorage.removeItem('userToken')
+        localStorage.removeItem('userId')
+        localStorage.removeItem('userRole')
     },
 
     isAuthenticated() {
@@ -42,10 +47,12 @@ export default {
             return this.autoLogin()
         else 
             return new Promise(function (resolve, reject) {
-                if (authData)
+                if (authData) {
                     resolve(authData)
-                else 
+                }
+                else {
                     reject()
+                }
             })
     },
 
