@@ -2,13 +2,13 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import { store } from './store/store'
 
+import DecideHome from './components/Pages/DecideHome.vue'
 import Home from './components/Pages/Home.vue'
 import Library from './components/Pages/Library.vue'
 import Wiki from './components/Pages/Wiki.vue'
 import Classes from './components/Pages/Classes.vue'
 import Class from './components/Pages/Class.vue'
 import Video from './components/Pages/Video.vue'
-import VideoEdit from './components/Pages/VideoEdit.vue'
 import Admin from './components/Admin/Admin.vue'
 import Professor from './components/Admin/Professor.vue'
 import Student from './components/Admin/Student.vue'
@@ -28,7 +28,8 @@ const requiresAuth = (to, from, next) => {
 export const routes = [
     { 
         path: '/', 
-        component: Login,
+        component: DecideHome,
+        beforeEnter: requiresAuth
     },
     { 
         name: 'Login', 
@@ -56,16 +57,19 @@ export const routes = [
     { 
         name: 'Video', 
         path: '/video/:id', 
-        component: Video 
+        component: Video, 
+        beforeEnter: requiresAuth
     },
     { 
         name: 'Library', 
         path: '/library', 
-        component: Library 
+        component: Library,
+        beforeEnter: requiresAuth
     },
     { 
         name: 'Wiki', 
         path: '/wiki', 
-        component: Wiki 
+        component: Wiki, 
+        beforeEnter: requiresAuth
     }
 ]

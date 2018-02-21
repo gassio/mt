@@ -9,7 +9,7 @@ export default {
     autoLogin() {
         return new Promise(function (resolve, reject) {
             // Is this needed?
-            // authData = window.localStorage.getItem('userAuthData')
+            authData = window.localStorage.getItem('userAuthData')
             initialized = true
             if (authData)
                 resolve(authData)
@@ -33,8 +33,7 @@ export default {
     },
 
     logOff() {
-        authData = null     // Reset authData
-        initialized = false // Reset initialized flag
+        authData = null // Reset authData
         localStorage.removeItem('userAuthData') // Remove token from local storage
     },
 
