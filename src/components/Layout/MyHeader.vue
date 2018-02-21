@@ -19,8 +19,9 @@
 					<router-link to="/student" style="color:#A90931" tag="a"><strong>Student</strong></router-link>-->
                 </div>
                 <div class="navbar-end">
+                    <!-- {{ authData.user_id }} - {{ authData.role_id }} -->
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
-                    <a class="head__nav-item navbar-item"><p>{{ getAuthData('user_id') }} - {{ getAuthData('role_id') }}</p><i class="fa fa-angle-down"></i></a>
+                    <a class="head__nav-item navbar-item"><p>{{ userProfile }}</p><i class="fa fa-angle-down"></i></a>
                     <a class="head__nav-item navbar-item" @click="logOut()"><p>Logout</p></a>
                 </div>
             </div>
@@ -77,6 +78,7 @@
     import _ from 'lodash'
 
     export default {
+        props: ['userProfile'],
         data() {
             return {
                 studentRequests: 2,
@@ -108,20 +110,17 @@
                         class: 'Aeronautics and Astronautics'
                     }],
                 requestedStudentsClone: [],
-                multipleSelection: []
+                multipleSelection: [],
+                authData: {}
             }
         },
         methods: {
             getAuthData(key) {
-                const myAuth = this.$root.$options.myAuth
-                // console.log(myAuth.getAuthData().data["user_id"])
-                // console.log(myAuth.getAuthData().data["role_id"])
-                try{
-                    return myAuth.getAuthData().data[key]
-                } 
-                catch(err) {
-                    return null
-                }
+                
+                
+            },
+            watch: {
+                
             },
             // getMyAuth() {
             //     return this.$root.$options.myAuth
@@ -199,6 +198,19 @@
             }
         },
         mounted() {
+            setInterval(() => {
+                const myAuth = this.$root.$options.myAuth
+                console.log(myAuth.getAuthData())
+
+                try {
+                    this.authData = myAuth.getAuthData().data
+                } 
+                catch(err) {
+                    return null
+                }
+            }, 1000)
+
+
             document.addEventListener('DOMContentLoaded', function () {
 
                 // Get all "navbar-burger" elements

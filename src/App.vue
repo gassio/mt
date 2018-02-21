@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-        <my-header v-show= "isLoggedIn()" ></my-header>
+        <my-header v-if="isLoggedIn()" :userProfile="test"></my-header>
         <router-view></router-view>
     </div>
 </template>
@@ -13,6 +13,11 @@
     import Login from './components/Login/Login.vue'
 
     export default {
+        data() {
+            return {
+                test: ''
+            }
+        },
         methods: {
             isLoggedIn () {
                 try {
@@ -31,6 +36,12 @@
         created() {
         },
         mounted() {
+            try {
+                this.test = this.$root.$options.myAuth.getAuthData().data.role_id
+                console.log('app.vue: ', this.test)
+            } catch(err) {
+                this.test = 'catch'
+            }
             // "Metalogon" label to Loading feature
             this.$loading({ fullscreen: true })
             $('.el-loading-mask .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
