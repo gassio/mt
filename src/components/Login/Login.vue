@@ -8,6 +8,7 @@
           <input type="text" placeholder="username" v-model="username">
           <input type="password" placeholder="password" v-model="password">
           <button type="submit" value="login">LOGIN</button>
+          <p>REMEMBER ME</p><input type="checkbox" id="rememberMeCheckbox" v-bind:checked="rememberMe" @click="rememberMeToggle()">
         </form>
 
         <!-- <form class="register-form" v-if="registered">
@@ -30,6 +31,8 @@
 
 
 <script>
+  import { mapGetters } from 'vuex'
+	import { mapMutations } from 'vuex'
 
 export default {
     data() {
@@ -42,7 +45,6 @@ export default {
     methods: {
         loginUser() {
           const myAuth = this.$root.$options.myAuth
-
           myAuth.login({ residentID: this.username, password: this.password })
             .then(() => {
               this.$store.commit('AUTHENTICATED', "login")
@@ -52,6 +54,14 @@ export default {
             .catch(() => {
               this.$router.push('/login')
             })
+        },
+        rememberMeToggle() {
+          if (this.rememberMe){
+            this.$store.commit('SET_REMEMBER_ME', false) 
+          } 
+          else {
+            this.$store.commit('SET_REMEMBER_ME', true) 
+          }
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
@@ -97,6 +107,11 @@ export default {
         $('.message a').click(function(){
             $('login').animate({height: "toggle", opacity: "toggle"}, "slow");
         });
+    },
+    computed: {
+        ...mapGetters([
+          'rememberMe'
+        ])
     },
 }
 </script>

@@ -193,7 +193,8 @@ export const store = new Vuex.Store({
 
         /* AUTHENTICATION*/
         authenticated: false, // for login page.
-        userData: {} 
+        userData: {},
+        rememberMe: false 
     },
 
     actions: {
@@ -555,6 +556,9 @@ export const store = new Vuex.Store({
         SET_USER_PROFILE: (state, payload) => {
             state.userData = payload
         },
+        SET_REMEMBER_ME: (state, payload) => {
+            state.rememberMe = payload
+        },
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
@@ -603,6 +607,9 @@ export const store = new Vuex.Store({
         },
         authenticated: state => {
             return state.authenticated
+        },
+        rememberMe: state => {
+            return state.rememberMe
         },
         userData: state => {
             return state.userData

@@ -35,6 +35,7 @@ export const routes = [
         name: 'Login', 
         path: '/login', 
         component: Login
+        // TODO: Needs to be redirected to home if user already logged in and puts /login in URL
     },
     { 
         name: 'Admin', 

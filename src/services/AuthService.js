@@ -1,18 +1,19 @@
 import Vue from 'vue';
 import axios from 'axios';
+import { store } from '../store/store'
 
 let authData = null
 let initialized = false
+let rememberMe = false
 
 export default {
 
     autoLogin() {
         return new Promise(function (resolve, reject) {
+            // Set an authData object with user info from localStorage
+            authData = JSON.parse(window.localStorage.getItem('authData'))
             if (authData) {
-                // Set an authData object with user info from localStorage
-                authData = JSON.parse(window.localStorage.getItem('authData'))
-                initialized = true
-                resolve(authData)
+                resolve()
             }
             else {
                 reject()
@@ -24,16 +25,24 @@ export default {
         return new Promise(function (resolve, reject) {
             axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
                 .then(function (response) {
-                    authData = response.data
-                    // if rememberMe
-                    var localStorageObject = {
-                        'token' : authData.token,
-                        'user_id' : authData.data.user_id,
-                        'role_id' : authData.data.role_id
+
+                    console.log("authService, rememberMe: ", store.state.rememberMe)
+
+                    var serverResponseObject = {
+                        'token' : response.data.token,
+                        'user_id' : response.data.data.user_id,
+                        'role_id' : response.data.data.role_id
                     }
-                    localStorage.setItem('authData', JSON.stringify(localStorageObject))
-                    // end if rememberMe
-                    resolve(response.data);
+
+                    rememberMe = store.state.rememberMe
+                    if (rememberMe){
+                        localStorage.setItem('authData', JSON.stringify(serverResponseObject))
+                        authData = serverResponseObject
+                    }
+                    else {
+                        authData = serverResponseObject
+                    }
+                    resolve();
                 })
                 .catch(function (err) {
                     reject(err)
@@ -47,14 +56,14 @@ export default {
     },
 
     isAuthenticated() {
-        if (initialized === false) {
+        // This getItem returns a string (does not use JSON.parse)
+        if (!!window.localStorage.getItem('authData')) {
             return this.autoLogin()
         } 
         else {
             return new Promise(function (resolve, reject) {
                 if (authData) {
-                    authData = JSON.parse(window.localStorage.getItem('authData'))
-                    resolve(authData)
+                    resolve()
                 }
                 else {
                     reject()
