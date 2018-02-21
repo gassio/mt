@@ -1,6 +1,8 @@
 <template>
 
 		<div class="student">
+
+			<my-header></my-header>
 			
 			<div class="student__body columns">
 
@@ -106,6 +108,7 @@
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
+	import MyHeader from '../Layout/MyHeader.vue'
 	import _ from 'lodash'
 
     export default {
@@ -179,7 +182,8 @@
 				),
 			},
 			components: {
-				'upload-video': UploadVideo
+				'upload-video': UploadVideo,
+				'my-header': MyHeader
 			}
 		}
 </script>

@@ -21,7 +21,7 @@
                 <div class="navbar-end">
                     <!-- {{ authData.user_id }} - {{ authData.role_id }} -->
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
-                    <a class="head__nav-item navbar-item"><p>{{ userProfile }}</p><i class="fa fa-angle-down"></i></a>
+                    <a class="head__nav-item navbar-item"><p>{{ this.$root.$options.myAuth.getAuthData().user_id }} - {{ this.$root.$options.myAuth.getAuthData().role_id }}</p><i class="fa fa-angle-down"></i></a>
                     <a class="head__nav-item navbar-item" @click="logOut()"><p>Logout</p></a>
                 </div>
             </div>
@@ -115,10 +115,6 @@
             }
         },
         methods: {
-            getAuthData(key) {
-                
-                
-            },
             watch: {
                 
             },
@@ -198,17 +194,17 @@
             }
         },
         mounted() {
-            setInterval(() => {
-                const myAuth = this.$root.$options.myAuth
-                console.log(myAuth.getAuthData())
+            // setInterval(() => {
+            //     const myAuth = this.$root.$options.myAuth
+            //     console.log(myAuth.getAuthData())
 
-                try {
-                    this.authData = myAuth.getAuthData().data
-                } 
-                catch(err) {
-                    return null
-                }
-            }, 1000)
+            //     try {
+            //         this.authData = myAuth.getAuthData().data
+            //     } 
+            //     catch(err) {
+            //         return null
+            //     }
+            // }, 1000)
 
 
             document.addEventListener('DOMContentLoaded', function () {

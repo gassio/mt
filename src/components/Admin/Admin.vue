@@ -1,6 +1,8 @@
 <template>
-
+		
 		<div class="admin">
+			
+			<my-header></my-header>
 			
 			<div class="admin__body columns">
 
@@ -95,6 +97,7 @@
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
+	import MyHeader from '../Layout/MyHeader.vue'
 
     export default {
 			data() {
@@ -152,7 +155,8 @@
 					),
 				},
 			components: {
-				'upload-video': UploadVideo
+				'upload-video': UploadVideo,
+				'my-header': MyHeader
 			}
 		}
 </script>

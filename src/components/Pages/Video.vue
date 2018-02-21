@@ -1,5 +1,8 @@
 <template>
     <div class="video container">
+        
+        <my-header></my-header>
+        
         <!--<div class="video__breadcrumb spacer columns is-gapless is-marginless">
              <router-link :to="{ path: '/'}" class="video__breadcrumb-title column is-8">
                 <button class="video__breadcrumb-title-btn button is-white">
@@ -224,6 +227,7 @@ You might also want to include a concrete strategy recommendation."
 <script>
     import { mapGetters } from 'vuex'
     import { mapMutations } from 'vuex'
+	import MyHeader from '../Layout/MyHeader.vue'
 
     import { Loading } from 'element-ui';
 
@@ -1164,6 +1168,9 @@ You might also want to include a concrete strategy recommendation."
                 'currentVideoID',
                 'canons'
             ])
+        },
+        components: {
+            'my-header': MyHeader
         }
     }
 </script>

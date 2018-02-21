@@ -10,14 +10,7 @@ export default {
         return new Promise(function (resolve, reject) {
             if (authData) {
                 // Set an authData object with user info from localStorage
-                authData = {
-                    status: "success",
-                    token: window.localStorage.getItem('userToken'),
-                    data : {
-                        user_id : window.localStorage.getItem('userId'),
-                        role_id : window.localStorage.getItem('userRole')
-                    }
-                }
+                authData = JSON.parse(window.localStorage.getItem('authData'))
                 initialized = true
                 resolve(authData)
             }
@@ -34,9 +27,9 @@ export default {
                     authData = response.data
                     // if rememberMe
                     var localStorageObject = {
-                        'userToken' : authData.token,
-                        'userId' : authData.data.user_id,
-                        'userRole' : authData.data.role_id
+                        'token' : authData.token,
+                        'user_id' : authData.data.user_id,
+                        'role_id' : authData.data.role_id
                     }
                     localStorage.setItem('authData', JSON.stringify(localStorageObject))
                     // end if rememberMe
@@ -50,9 +43,7 @@ export default {
 
     logOff() {
         authData = null
-        localStorage.removeItem('userToken')
-        localStorage.removeItem('userId')
-        localStorage.removeItem('userRole')
+        window.localStorage.removeItem('authData')
     },
 
     isAuthenticated() {
@@ -62,6 +53,7 @@ export default {
         else {
             return new Promise(function (resolve, reject) {
                 if (authData) {
+                    authData = JSON.parse(window.localStorage.getItem('authData'))
                     resolve(authData)
                 }
                 else {
