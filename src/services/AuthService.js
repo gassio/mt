@@ -7,7 +7,23 @@ let initialized = false
 export default {
 
     autoLogin() {
-        
+        return new Promise(function (resolve, reject) {
+            if (authData) {
+                authData = {
+                    status: "success",
+                    token: window.localStorage.getItem('userToken'),
+                    data : {
+                        user_id : localStorage.getItem('userId'),
+                        role_id : localStorage.getItem('userRole')
+                    }
+                }
+                initialized = true
+                resolve(authData)
+            }
+            else {
+                reject()
+            }
+        })
     },
 
     login(value, cb) {
@@ -30,34 +46,16 @@ export default {
 
     logOff() {
         authData = null
-        initialized = false
         localStorage.removeItem('userToken')
         localStorage.removeItem('userId')
         localStorage.removeItem('userRole')
     },
 
     isAuthenticated() {
-        if (initialized === false){
-            // Autologin
-            authData = {
-                status: "success",
-                token: window.localStorage.getItem('userToken'),
-                data : {
-                    user_id : localStorage.getItem('userId'),
-                    role_id : localStorage.getItem('userRole')
-                }
-            }
-            initialized = true
-
-            return new Promise(function (resolve, reject) {
-                if (authData) {
-                    resolve(authData)
-                }
-                else {
-                    reject()
-                }
-            })
-        } else {
+        if (initialized === false) {
+            return this.autoLogin()
+        } 
+        else {
             return new Promise(function (resolve, reject) {
                 if (authData) {
                     resolve(authData)

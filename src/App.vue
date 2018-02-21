@@ -1,6 +1,6 @@
 <template>
     <div class="app">
-        <my-header v-show= isLoggedIn()></my-header>
+        <my-header v-show= "isLoggedIn()" ></my-header>
         <router-view></router-view>
     </div>
 </template>
@@ -15,11 +15,15 @@
     export default {
         methods: {
             isLoggedIn () {
-                console.log("app.vue initialized: ", this.$root.$options.myAuth.getInitialized())
-                if (this.$root.$options.myAuth.getInitialized()) {
-                    return true
-                }
-                else { 
+                try {
+                    if (!!this.$root.$options.myAuth.getAuthData().token) {
+                        return true
+                    }
+                    else { 
+                        return false
+                    }
+                } 
+                catch(err) {
                     return false
                 }
             }

@@ -12,7 +12,7 @@
 
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <router-link to="/DecideHome" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
+                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Wiki</router-link>
                     <!--<router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
 					<router-link to="/admin" style="color:#A90931" tag="a"><strong>Admin</strong></router-link>
@@ -118,7 +118,8 @@
                 // console.log(myAuth.getAuthData().data["role_id"])
                 try{
                     return myAuth.getAuthData().data[key]
-                } catch(err) {
+                } 
+                catch(err) {
                     return null
                 }
             },

@@ -50,7 +50,7 @@ export default {
               // this.$router.push('/professor')
               this.$store.commit('AUTHENTICATED', "login")
               this.$store.commit('SET_USER_PROFILE', myAuth.getAuthData())
-              this.$router.push('/DecideHome')
+              this.$router.push('/')
               // console.log('after login test: ', myAuth.getAuthData())
             })
             .catch(() => {
