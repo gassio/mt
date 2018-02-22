@@ -45,7 +45,8 @@ export default {
     methods: {
         loginUser() {
           const myAuth = this.$root.$options.myAuth
-          myAuth.login({ residentID: this.username, password: this.password })
+          myAuth.login({ username: this.username, password: this.password })
+          // myAuth.login({ residentID: this.username, password: this.password })
             .then(() => {
               this.$store.commit('AUTHENTICATED', "login")
               this.$store.commit('SET_USER_PROFILE', myAuth.getAuthData())
