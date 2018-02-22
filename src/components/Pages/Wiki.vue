@@ -1,5 +1,5 @@
 <template>
-    <div class="wiki container">
+    <div class="wiki">
 			
         <my-header></my-header>
 

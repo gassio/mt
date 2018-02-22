@@ -1,5 +1,5 @@
 <template>
-    <div class="video container">
+    <div class="video">
         
         <my-header></my-header>
         
@@ -14,7 +14,7 @@
                 <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
             </div>
         </div>-->
-        <div class="main-content columns is-gapless is-marginless" style="padding-top: 20px;">
+        <div class="main-content columns" style="padding-top:20px;padding-left:30px;">
             <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
@@ -1184,11 +1184,6 @@ You might also want to include a concrete strategy recommendation."
     background-color: #39425C
 }
 
-.video {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
 /* ==============================================
                 #VIDEO-BREADCRUMB
