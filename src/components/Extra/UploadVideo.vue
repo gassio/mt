@@ -199,55 +199,70 @@
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
-                                console.log("conv1: ", conversions)
-                                // Pick conversion logic
                                 var conversionNames = ['720p', '406p', 'Original'] // Conversion names in order of preference
-                                var pickedVidIndex = 0
-                                var foundIt = false
-                                for (var n = 0; n < conversionNames.length; n++) {
-                                    console.log("conv2: ", conversions, conversionNames[n])
-                                    for (var i = 0, l = conversions.length; i < l; i++) {
-                                        if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
-                                            pickedVidIndex = i
-                                            foundIt = true
-                                            break
-                                        }
+                                console.log("conv1: ", conversions)
+                                var everythingReady = true // this is a trick
+                                for (var i = 0, l = conversions.length; i < l; i++) {
+                                    if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
+                                        everythingReady = false
                                     }
-                                    if (foundIt) {
-                                        break
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
+                                        everythingReady = false
+                                    }
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                        everythingReady = false
                                     }
                                 }
-                                // Do necessary stuff after picking a conversion
-                                link = conversions[pickedVidIndex].link.protocol + '://' + conversions[pickedVidIndex].link.address + conversions[pickedVidIndex].link.path
-                                duration = conversions[pickedVidIndex].duration
-                                console.log('|> Link: ', link)
-                                console.log('|> Duration: ', duration)
-                                        
-                                // POST video 
-                                that.$store.dispatch('createVideo', {
-                                    "title": that.uploadVidMetadata.title,
-                                    "class": that.uploadVidMetadata.class,
-                                    "classNumber": that.uploadVidMetadata.classNumber,
-                                    "classDepartment": that.uploadVidMetadata.classDepartment,
-                                    "jwVideoId": jwVideoId,
-                                    "genre": that.uploadVidMetadata.genre,
-                                    "presentedAt": that.uploadVidMetadata.presentedAt,
-                                    "featuredGlobal": false,
-                                    "featuredClass": false,
-                                    "link": link,
-                                    "duration": parseInt(duration),
-                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                    "annotations": [],
-                                    // sources missing ?
-                                })
+                                if (conversions.length === 1) everythingReady = false
+                                if (everythingReady) {
+                                    // Pick conversion logic
+                                    var pickedVidIndex = 0
+                                    var foundIt = false
+                                    for (var n = 0; n < conversionNames.length; n++) {
+                                        console.log("conv2: ", conversions, conversionNames[n])
+                                        for (var i = 0, l = conversions.length; i < l; i++) {
+                                            if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
+                                                pickedVidIndex = i
+                                                foundIt = true
+                                                // Do necessary stuff after picking a conversion
+                                                link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                                                duration = conversions[i].duration
+                                                console.log('|> Link: ', link)
+                                                console.log('|> Duration: ', duration)
+                                                        
+                                                // POST video 
+                                                that.$store.dispatch('createVideo', {
+                                                    "title": that.uploadVidMetadata.title,
+                                                    "class": that.uploadVidMetadata.class,
+                                                    "classNumber": that.uploadVidMetadata.classNumber,
+                                                    "classDepartment": that.uploadVidMetadata.classDepartment,
+                                                    "jwVideoId": jwVideoId,
+                                                    "genre": that.uploadVidMetadata.genre,
+                                                    "presentedAt": that.uploadVidMetadata.presentedAt,
+                                                    "featuredGlobal": false,
+                                                    "featuredClass": false,
+                                                    "link": link,
+                                                    "duration": parseInt(duration),
+                                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                                                    "annotations": [],
+                                                    // sources missing ?
+                                                })
+                                                
+                                                that.modalSyncOpen = false  // Close loading bar
+                                                that.currentClassSelected = that.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                                                console.log("currentClassSelected: ", that.currentClassSelected)
+                                                clearInterval(intervalID)
 
-                                // Close loading bar
-                                that.modalSyncOpen = false            
-
-                                clearInterval(intervalID)
-
-                                // Clearing modal form
-                                that.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+                                                // Clearing modal form
+                                                that.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+                                                break
+                                            }
+                                        }
+                                        if (foundIt) {
+                                            break
+                                        }
+                                    }     
+                                }                           
                             })
                             .catch( (error) => console.log("Couldn't get conversions \n ", error))
                     }, 5000)
