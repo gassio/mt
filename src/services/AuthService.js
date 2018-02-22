@@ -24,7 +24,7 @@ export default {
     login(value, cb) {
         return new Promise(function (resolve, reject) {
             // axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
-            axios.post('http://360adc64.ngrok.io', value)
+            axios.post('http://360adc64.ngrok.io/auth', value)
                 .then(function (response) {
 
                     console.log("authService, rememberMe: ", store.state.rememberMe)
