@@ -8,12 +8,11 @@
 
 				<div class="student__main column is-10">
 
-					<h3 class="featured__heading title is-size-4">Featured videos</h3>
-
 					<div class="student__featured">
-							<div class="container">
-
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
+							<h3 class="featured__heading title is-size-4">Featured videos of {{ currentClassSelected }}</h3>
+							
+							<div class="student__featured-container">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -28,39 +27,36 @@
 										</div>
 									</div>
 								</router-link>
-
 							</div>
 					</div>
 
 					<div class="student__classvideos">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
+							<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
-									<figure class="media-left" style="margin:0 0 0 20px">
-										<p class="image" style="width:200px">
-											<router-link :to="'/video/' + v.id"  tag="a">
-												<img :src="v.thumb">
-											</router-link>
-										</p>
-									</figure>
-									<div class="media-content" style="align-self:center; margin-left: 10px;">
-										<h3 class="is-size-4"><router-link :to="'/video/' + v.id" tag="a" class="classvideo-title has-text-black-ter">{{ v.title }}</router-link></h3>
-										<p class="is-size-6 has-text-grey-dark">{{ v.class }}</p>
-										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
-									</div>
-									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="favoriteVideo($event)">
-											<i class="fa fa-star fa-2x" aria-hidden="true"></i>
+							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
+									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredClass === false" @click="featureVideo($event)">
+									<img class="classvideo__favorite" src="../../assets/favorite-active.svg" v-show="v.featuredClass === true" @click="unfeatureVideo($event)">
+
+									<div class="classvideo__metadata">
+										<img class="classvideo__image" :src="v.thumb"></router-link>
+										<div class="classvideo__titles">
+											<router-link :to="'/video/' + v.id" tag="a" class="classvideo__title">{{ v.title }}</router-link></h3>
+											<p class="classvideo__class">{{ v.class }}</p>
+											<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 										</div>
-										<div class="has-text-right has-text-grey-dark">
-											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
-											<p class="is-marginless">Annotations: 34</p>
-											<!-- <p class="is-marginless">Lab presentation </p> -->
-											<!-- <i class="fa fa-commenting-o fa-2x"></i>										 -->
+										<div class="classvideo__metameta">
+											<span class="classvideo__score">
+												<p class="classvideo__scoreNum">94%</p>
+												<p class="classvideo__scoreLabel">Score</p>
+											</span>
+											<span class="classvideo__annotations">
+												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
+												<p class="classvideo__annotationsLabel">Comments</p>
+											</span>
 										</div>
 									</div>
-							</article>
+							</div>
 							
 					</div>
 
@@ -68,14 +64,18 @@
 
 				<aside class="student__sidebar column is-2 aside">
 
-					<div class="menu-list">
-						<a @click="currentClassString = ''"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
-						<hr>
-						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for class..."></el-input>							
-						<a v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="currentClassString = c.name"><span class="name">{{ c.name }}</span></a>
-						<hr>
-						<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
+					<div class="metalogon-home menu-list">
+						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
 					</div>
+					<el-tabs v-model="sidebarClassesTab">
+						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for class..."></el-input>	
+						<div class="menu-list">
+							<a v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.name }}</span></a>
+							<hr>
+							<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
+							<hr>
+						</div>
+					</el-tabs>
 
 				</aside>
 
@@ -114,6 +114,7 @@
     export default {
 			data() {
 				return {
+						sidebarClassesTab: 'activeClasses',
 						currentClassString: '',
 						searchInputValue: '',
 						modalEnrollClassIsOpen: false,
@@ -138,7 +139,10 @@
 					console.log('QUERY STUDENT CLASSES')
 
 					this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
-     		}, 300),
+				}, 300),
+				setCurrentClass(className, classNumber) {
+					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+				},
 				enrollToClass(event) {
 					const clickedClassName = event.currentTarget.children[1].innerHTML
 					for (var i = 0, l = this.otherClasses.length; i < l; i++) {
@@ -178,7 +182,7 @@
 			},
 			computed: {
 				...mapGetters(
-						['videos', 'uploadUrl', 'classes', 'studentClasses']
+						['videos', 'uploadUrl', 'classes', 'studentClasses', 'currentClassSelected', 'currentClassNumber']
 				),
 			},
 			components: {
@@ -200,39 +204,150 @@
 }
 
 /* ==============================================
-                #student-FEATURED
+                #FEATURED
 	================================================= */
 
-	.featured__heading, .class__heading {
-		margin: 10px 20px;
-	}
-
 	.student__featured {
-		display: flex;
+
 	}
 
-	.student__featured > .container {
-		display:flex;
-		flex-wrap: wrap;
-	}
-
-		.ftdcard {
-			width: 30%;
-			margin: 10px 20px;
-			transition: 0.3s;
+		.student__featured-container {
+			display:flex;
+			flex-wrap: wrap;
+		}
+			
+		.featured__heading {
+			background-color: #16324f;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
 		}
 
-		.ftdcard:hover {
-			transform: scale(1.05);
-			transition: 0.3s;
+			.ftdcard {
+				width: 32.30%;
+				margin: 0.3em;
+				transition: 0.3s;
+			}
+
+			.ftdcard:hover {
+				transform: scale(1.02);
+				transition: 0.3s;
+			}
+
+
+
+
+
+/* ==============================================
+                #CLASS-VIDEOS
+	================================================= */
+
+		.professor__classvideos {
+			margin-top: 10px;
 		}
 
+		.class__heading {
+			background-color: #16324f;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
+		}
 
-.star-video {
-	display:flex;
-	justify-content: center;
-	cursor: pointer;
-}
+		.classvideo {
+			display: flex;
+			padding: 25px 10px;
+			border-bottom: 1px solid #efefef;
+		} 
+		.classvideo:hover	{
+			background-color: #F5F5F5;
+		}
+
+			.classvideo__favorite {
+				width: 30px;
+				height: 60px;
+			}
+
+			.classvideo__metadata {
+				display: flex;
+				justify-content: space-between;
+				margin-left: 20px;
+				width: 100%;
+			}
+
+				.classvideo__image {
+					display: flex;
+					width: 200px;
+					height: 60px;
+				}
+
+				.classvideo__titles {
+					width: 100%;
+					margin-left: 15px;
+				}
+						.classvideo__title {
+							color: #4a4a4a;
+							font-weight: 600;
+							font-size: 1.3em;
+						}
+						.classvideo__class {
+							font-weight: 600;
+							margin-top: 6px;
+						}
+						.classvideo__genre {
+							font-weight: 600;
+							margin-top: -4px;
+						}
+
+				.classvideo__metameta {
+					display: flex;
+					margin-left: 15px;
+				}
+
+					.classvideo__score {
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 8px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+						margin-top: 10px;
+					}
+							.classvideo__scoreNum {
+								font-weight: 600;
+								font-size: 1.8em;
+								height: 50%;
+								margin-top: 10px;
+							}
+							.classvideo__scoreLabel {
+								font-size: 0.8em;
+								text-align: center;
+								height: 50%;
+ 							}
+
+					.classvideo__annotations {
+						margin-top: 10px;
+						margin-left: 10px;
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 8px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+					}
+							.classvideo__annotationsNum {
+								font-weight: 600;
+								font-size: 1.8em;
+								text-align: center;
+								height: 50%;
+								margin-top: 10px;
+							}
+							.classvideo__annotationsLabel {
+								font-size: 0.8em;
+								text-align: center;
+								height: 50%;
+							}
 
 
 
@@ -257,18 +372,6 @@
 			.sidebar-menu__link {
 				color: #000;
 			}
-
-
-
-
-
-/* ==============================================
-                #student-SIDEBAR
-	================================================= */
-
-	.classvideo:hover	{
-		background-color: #F5F5F5;
-	}
 
 
 
@@ -303,7 +406,7 @@
 
 
 	/* ==============================================
-                #CLASSES-CARD
+                #ENROLL-TO-CLASS CLASSES-CARD
 	================================================= */
 
 	.student__enrollModal .el-dialog__body {

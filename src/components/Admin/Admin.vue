@@ -8,12 +8,12 @@
 
 				<div class="admin__main column is-10">
 
-					<h3 class="featured__heading title is-size-4">Featured videos</h3>
-
 					<div class="admin__featured">
-							<div class="container">
+							<h3 class="featured__heading title is-size-4">Featured videos of Metalogon</h3>
+							
+							<div class="admin__featured-container">
 
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-bind:key="v.id" v-if="v.featured === true">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -32,35 +32,34 @@
 							</div>
 					</div>
 
-					<div class="admin__classvideos">
+					<div class="admin__classvideos" v-show="!(currentClassSelected === 'Home')">
 
-							<h3 class="class__heading title is-size-4">{{ currentClassString }}</h3>
+							<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
 
-							<article class="classvideo media" style="margin-top:0" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassString">
-									<figure class="media-left" style="margin:0 0 0 20px">
-										<p class="image" style="width:200px">
-											<router-link :to="'/video/' + v.id"  tag="a">
-												<img :src="v.thumb">
-											</router-link>
-										</p>
-									</figure>
-									<div class="media-content" style="align-self:center; margin-left: 10px;">
-										<h3 class="is-size-4"><router-link :to="'/video/' + v.id" tag="a" class="classvideo-title has-text-black-ter">{{ v.title }}</router-link></h3>
-										<p class="is-size-6 has-text-grey-dark">{{ v.class }}</p>
-										<p class="is-size-6 has-text-grey-dark">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
-									</div>
-									<div class="media-right" style="align-self:center; padding-right:15px;">
-										<div class="star-video" @click="favoriteVideo($event)">
-											<i class="fa fa-star fa-5x" aria-hidden="true"></i>
+
+							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
+									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredGlobal=== false" @click="featureGlobal($event)">
+									<img class="classvideo__favorite" src="../../assets/favorite-active.svg" v-show="v.featuredGlobal === true" @click="unfeatureGlobal($event)">
+
+									<div class="classvideo__metadata">
+										<img class="classvideo__image" :src="v.thumb"></router-link>
+										<div class="classvideo__titles">
+											<router-link :to="'/video/' + v.id" tag="a" class="classvideo__title">{{ v.title }}</router-link></h3>
+											<p class="classvideo__class">{{ v.class }}</p>
+											<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
 										</div>
-										<div class="has-text-right has-text-grey-dark">
-											<p class="is-marginless">Holistic score: <strong>94%</strong></p>
-											<p class="is-marginless">Annotations: {{ v.annotations.length }}</p>
-											<!-- <p class="is-marginless">Lab presentation </p> -->
-											<!-- <i class="fa fa-commenting-o fa-2x"></i>	-->
+										<div class="classvideo__metameta">
+											<span class="classvideo__score">
+												<p class="classvideo__scoreNum">94%</p>
+												<p class="classvideo__scoreLabel">Score</p>
+											</span>
+											<span class="classvideo__annotations">
+												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
+												<p class="classvideo__annotationsLabel">Comments</p>
+											</span>
 										</div>
 									</div>
-							</article>
+							</div>
 							
 					</div>
 
@@ -69,8 +68,11 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<!-- <a ><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a> -->
-						<a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.name) }" @click="currentClassString = theClass.name"><span class="name">{{ theClass.name }}</span></a>
+						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+						<hr>
+						<a v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+
+						<!-- <a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.name) }" @click="currentClassString = theClass.name"><span class="name">{{ theClass.name }}</span></a> -->
 					</div>
 					
 				</aside>
@@ -112,6 +114,9 @@
 			mounted() {
 			},
 			methods: {
+				setCurrentClass(className, classNumber) {
+					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+				},
 				genreSelection() {
 					let that = this
 					$('.admin__genre').dropdown({
@@ -133,25 +138,38 @@
 						this.videos[i]["featured"] = false
 					}
 				},
-				favoriteVideo(event) {
-					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
+				featureGlobal(event) {
+					var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+					// The string '/video/' has 7 seven characters.
+					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+
 					for (var i = 0, l = this.videos.length; i < l; i++) {
-						if (this.videos[i].title === eventTitle) {
-								if (this.videos[i].featured === false) {
-									this.$store.dispatch('favoriteVideo', this.videos[i])
-									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
+						if (this.videos[i].id === eventVideoId) {
+								if (this.videos[i].featuredGlobal === false) {
+									this.videos[i].featuredGlobal = true
+									this.$store.dispatch( 'featureGlobal', this.videos[i] )
 								} 
-								else {
-									this.$store.commit('UNFEATURE_VIDEO', this.videos[i].title)
-									$(event.currentTarget).css('color', '#4a4a4a')
-								}
 						}
 					}
-				}
+				},
+				unfeatureGlobal(event) {
+					var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+					// The string '/video/' has 7 seven characters.
+					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+
+					for (var i = 0, l = this.videos.length; i < l; i++) {
+						if (this.videos[i].id === eventVideoId) {
+								if (this.videos[i].featuredGlobal === true) {
+									this.videos[i].featuredGlobal = false
+									this.$store.dispatch( 'unfeatureGlobal', this.videos[i] )
+								} 
+						}
+					}
+				},
 			},
 			computed: {
 					...mapGetters(
-						['videos', 'uploadUrl', 'classes']
+						['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber']
 					),
 				},
 			components: {
@@ -175,43 +193,149 @@
                 #ADMIN-FEATURED
 	================================================= */
 
-	.featured__heading, .class__heading {
-		margin: 10px 20px;
-	}
 
 	.admin__featured {
-		display: flex;
-		/* flex-direction: row;
-		flex-wrap: wrap;
-		justify-content: center; */
+
 	}
 
-	.admin__featured > .container {
-		display:flex;
-		flex-wrap: wrap;
-	}
-
-		.ftdcard {
-			width: 30%;
-			margin: 10px 20px;
-			transition: 0.3s;
+		.admin__featured-container {
+			display:flex;
+			flex-wrap: wrap;
+		}
+			
+		.featured__heading {
+			background-color: #16324f;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
 		}
 
-		.ftdcard:hover {
-			transform: scale(1.05);
-			transition: 0.3s;
+			.ftdcard {
+				width: 32.30%;
+				margin: 0.3em;
+				transition: 0.3s;
+			}
+
+			.ftdcard:hover {
+				transform: scale(1.02);
+				transition: 0.3s;
+			}
+
+
+
+
+
+/* ==============================================
+                #CLASS-VIDEOS
+	================================================= */
+
+		.professor__classvideos {
+			margin-top: 10px;
 		}
 
+		.class__heading {
+			background-color: #16324f;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
+		}
 
-.star-video {
-	display:flex;
-	justify-content: center;
-	cursor: pointer;
-}
+		.classvideo {
+			display: flex;
+			padding: 25px 10px;
+			border-bottom: 1px solid #efefef;
+		} 
+		.classvideo:hover	{
+			background-color: #F5F5F5;
+		}
 
-	/* .star-video i:hover {
-		background-color: yellow;
-	} */
+			.classvideo__favorite {
+				width: 30px;
+				height: 60px;
+			}
+
+			.classvideo__metadata {
+				display: flex;
+				justify-content: space-between;
+				margin-left: 20px;
+				width: 100%;
+			}
+
+				.classvideo__image {
+					display: flex;
+					width: 200px;
+					height: 60px;
+				}
+
+				.classvideo__titles {
+					width: 100%;
+					margin-left: 15px;
+				}
+						.classvideo__title {
+							color: #4a4a4a;
+							font-weight: 600;
+							font-size: 1.3em;
+						}
+						.classvideo__class {
+							font-weight: 600;
+							margin-top: 6px;
+						}
+						.classvideo__genre {
+							font-weight: 600;
+							margin-top: -4px;
+						}
+
+				.classvideo__metameta {
+					display: flex;
+					margin-left: 15px;
+				}
+
+					.classvideo__score {
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 8px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+						margin-top: 10px;
+					}
+							.classvideo__scoreNum {
+								font-weight: 600;
+								font-size: 1.8em;
+								height: 50%;
+								margin-top: 10px;
+							}
+							.classvideo__scoreLabel {
+								font-size: 0.8em;
+								text-align: center;
+								height: 50%;
+ 							}
+
+					.classvideo__annotations {
+						margin-top: 10px;
+						margin-left: 10px;
+						background-color:#89a9c0; 
+						color: #fff;
+						padding: 0px 8px;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						border-radius: 4px;
+					}
+							.classvideo__annotationsNum {
+								font-weight: 600;
+								font-size: 1.8em;
+								text-align: center;
+								height: 50%;
+								margin-top: 10px;
+							}
+							.classvideo__annotationsLabel {
+								font-size: 0.8em;
+								text-align: center;
+								height: 50%;
+							}
+
 
 
 

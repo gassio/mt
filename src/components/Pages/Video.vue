@@ -208,7 +208,7 @@ You might also want to include a concrete strategy recommendation."
                                 </div>
                             </div>
                             <div class="timeline-card__footer">
-                                <span class="timeline-card__id">{{ card.id }}</span>
+                                <span class="timeline-card__id">{{ card.id }} {{ this.$root.$options.myAuth.getAuthData().user_id }}</span>
                                 <div class="timeline-card__edit-container" @click.stop.prevent>
                                     <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                                     <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>

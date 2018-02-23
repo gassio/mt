@@ -12,6 +12,23 @@
 							<h3 class="featured__heading title is-size-4">Featured videos of {{ currentClassSelected }}</h3>
 							
 							<div class="professor__featured-container">
+
+								<!-- <router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
+									<div class="card-image">
+										<figure class="image">
+											<img :src="v.thumb" alt="Placeholder image">
+										</figure>
+									</div>
+									<div class="card-content">
+										<div class="media-content">
+											<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
+											<p class="subtitle is-6">{{ v.class }}</p>
+											<p>{{ v.genre }}</p>
+											<p>{{ v.presentedAt | sliceDate }}</p>
+										</div>
+									</div>
+								</router-link> -->
+
 								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
@@ -27,10 +44,11 @@
 										</div>
 									</div>
 								</router-link>
+
 							</div>
 					</div>
 
-					<div class="professor__classvideos">
+					<div class="professor__classvideos" v-show="!(currentClassSelected === 'Home')">
 
 						<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}
 							<a style="font-size: 0.6em;float:right;" @click="modalGenreCustomization = true">Customize genres</a>
@@ -78,10 +96,10 @@
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
 							<div class="menu-list">
 								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
-									<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
-									<hr>
-									<a href="#" @click="openModalArchiveClass()"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
-									<hr>
+								<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
+								<hr>
+								<a href="#" @click="openModalArchiveClass()"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
+								<hr>
 							</div>
 						</el-tab-pane>
 						<el-tab-pane label="Archived" name="archivedClasses">
@@ -333,31 +351,7 @@
         	visualsPassed: []
 				}
 			},
-			created() {	
-				this.$store.dispatch('getAllVideos')
-				this.$store.dispatch('getAllClasses')
-			},
-			mounted() {
-			},
 			methods: {
-				// append(store, data) {
-				// 	store.append({ id: id++, label: 'testtest', children: [] }, data);
-				// },
-				// remove(store, data) {
-				// 	store.remove(data);
-				// },
-				// renderContent(h, { node, canons, store }) {
-				// 	return (`
-				// 		<span>
-				// 			<span>
-				// 				<span>{node.label}</span>
-				// 			</span>
-				// 			<span style="float: right; margin-right: 20px">
-				// 				<el-button size="mini" on-click={ () => this.append(store, canons) }>Append</el-button>
-				// 				<el-button size="mini" on-click={ () => this.remove(store, data) }>Delete</el-button>
-				// 			</span>
-				// 		</span>`);
-				// },
 				handleNodeClick(data) {
 					console.log(data);
 				},
@@ -444,6 +438,12 @@
 					return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
 				}
 			},
+			created() {	
+				this.$store.dispatch('getAllVideos')
+				this.$store.dispatch('getAllClasses')
+			},
+			mounted() {
+			},
 			computed: {
 					...mapGetters(
 							['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber']
@@ -460,6 +460,7 @@
 /* ==============================================
                 #GENERAL-LAYOUT
 	================================================= */
+
 .professor__body { 
 	margin-bottom: 0 !important;
 }
@@ -487,7 +488,7 @@
 		}
 			
 		.featured__heading {
-			background-color: #A90931;
+			background-color: #16324f;
 			color: #FFF;
 			padding: 9px;
 			margin-bottom: 0.5em !important;
@@ -517,7 +518,7 @@
 		}
 
 		.class__heading {
-			background-color: #A90931;
+			background-color: #16324f;
 			color: #FFF;
 			padding: 9px;
 			margin-bottom: 0.5em !important;
