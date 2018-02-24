@@ -268,14 +268,30 @@ export const store = new Vuex.Store({
                     console.log(response)
                 })
                 .catch( response => console.log(response.error))
-            },
-            unfeatureVideo: function ({ commit }, payload) {
-                axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+        },
+        featureGlobal: function ({ commit }, payload) {
+            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
                     console.log("Video object that sent: ", payload)
                     console.log(response)
                 })
                 .catch( response => console.log(response.error))
+        },
+        unfeatureGlobal: function ({ commit }, payload) {
+            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+                .then( response => {
+                    console.log("Video object that sent: ", payload)
+                    console.log(response)
+                })
+                .catch( response => console.log(response.error))
+        },
+        unfeatureVideo: function ({ commit }, payload) {
+            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            .then( response => {
+                console.log("Video object that sent: ", payload)
+                console.log(response)
+            })
+            .catch( response => console.log(response.error))
         },
         /* ANNOTATIONS */ 
         addAnnotation: function ({ commit, state }, payload) {
