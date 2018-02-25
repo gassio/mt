@@ -93,7 +93,7 @@
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
 						<el-tab-pane label="Active classes" name="activeClasses">
-							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search a class..."></el-input>
+							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
 							<div class="menu-list">
 								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 								<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>

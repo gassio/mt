@@ -9,10 +9,10 @@
           <input class="login-form__password" type="password" placeholder="password" v-model="password">
             <span class="login-form__error">We don't recognize these credentials.</span>
           <button type="submit" value="login">LOGIN</button>
-          <span class="login-form__rememberme">
+          <!-- <span class="login-form__rememberme">
             <input type="checkbox" class="login-form__rememberme-input" v-bind:checked="rememberMe" @click="rememberMeToggle()">
             <p>REMEMBER ME</p>
-          </span>
+          </span> -->
         </form>
 
         <!-- <el-form :model="loginForm" ref="loginForm" label-width="190px" :rules="loginFormRules">
@@ -62,7 +62,8 @@ export default {
               password: [
                   { required: true, message: 'Please select class', trigger: 'blur' },
               ],
-          }
+          },
+          rememberMe : true
         }
     },
     methods: {
@@ -79,14 +80,6 @@ export default {
               this.$router.push('/login')
             })
           // myAuth.login({ residentID: this.username, password: this.password })
-        },
-        rememberMeToggle() {
-          if (this.rememberMe){
-            this.$store.commit('SET_REMEMBER_ME', false) 
-          } 
-          else {
-            this.$store.commit('SET_REMEMBER_ME', true) 
-          }
         },
         login() {
           this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
@@ -132,12 +125,7 @@ export default {
         $('.message a').click(function(){
             $('login').animate({height: "toggle", opacity: "toggle"}, "slow");
         });
-    },
-    computed: {
-        ...mapGetters([
-          'rememberMe'
-        ])
-    },
+    }
 }
 </script>
 

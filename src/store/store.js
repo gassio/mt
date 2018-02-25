@@ -193,8 +193,7 @@ export const store = new Vuex.Store({
 
         /* AUTHENTICATION*/
         authenticated: false, // for login page.
-        userData: {},
-        rememberMe: false 
+        userData: {}
     },
 
     actions: {
@@ -264,7 +263,7 @@ export const store = new Vuex.Store({
         featureVideo: function ({ commit }, payload) {
             axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
-                    console.log("Video object that sent: ", payload)
+                    console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
                 })
                 .catch( response => console.log(response.error))
@@ -272,7 +271,7 @@ export const store = new Vuex.Store({
         featureGlobal: function ({ commit }, payload) {
             axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
-                    console.log("Video object that sent: ", payload)
+                    console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
                 })
                 .catch( response => console.log(response.error))
@@ -280,7 +279,7 @@ export const store = new Vuex.Store({
         unfeatureGlobal: function ({ commit }, payload) {
             axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
-                    console.log("Video object that sent: ", payload)
+                    console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
                 })
                 .catch( response => console.log(response.error))
@@ -288,7 +287,7 @@ export const store = new Vuex.Store({
         unfeatureVideo: function ({ commit }, payload) {
             axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
             .then( response => {
-                console.log("Video object that sent: ", payload)
+                console.log("store.js: Video object that sent: ", payload)
                 console.log(response)
             })
             .catch( response => console.log(response.error))
@@ -572,9 +571,6 @@ export const store = new Vuex.Store({
         SET_USER_PROFILE: (state, payload) => {
             state.userData = payload
         },
-        SET_REMEMBER_ME: (state, payload) => {
-            state.rememberMe = payload
-        },
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
@@ -623,9 +619,6 @@ export const store = new Vuex.Store({
         },
         authenticated: state => {
             return state.authenticated
-        },
-        rememberMe: state => {
-            return state.rememberMe
         },
         userData: state => {
             return state.userData
