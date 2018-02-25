@@ -131,6 +131,15 @@
 						this.$store.dispatch('getAllClasses')
 			},
 			mounted() {
+				// Check if role is student. If not redirect to current role's homePage
+				const role = this.$root.$options.myAuth.getAuthData().role_id
+				console.log("student.vue, role: " + role)
+				if (role.toLowerCase() != "student") {
+					console.log("student.vue, pushing router /decideHome")
+					this.$router.push('/DecideHome')
+				}
+				
+
 				if (this.$router.currentRoute.fullPath === '/student')
 					$('.navbar-end .badge').hide()
 			},

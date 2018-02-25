@@ -18,9 +18,11 @@ import AuthService from './services/AuthService'
 const requiresAuth = (to, from, next) => {
     AuthService.isAuthenticated()
         .then(() => {
+            // console.log("Router: authenticated, redirecting to \"next\"")
             next()
         })
         .catch(() => {
+            // console.log("Router: not authenticated, redirecting to Login")
             next('/login')
         })
 }
@@ -28,6 +30,11 @@ const requiresAuth = (to, from, next) => {
 export const routes = [
     { 
         path: '/', 
+        component: DecideHome,
+        beforeEnter: requiresAuth
+    },
+    { 
+        path: '/DecideHome', 
         component: DecideHome,
         beforeEnter: requiresAuth
     },
