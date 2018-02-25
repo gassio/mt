@@ -12,7 +12,7 @@
 
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link>
+                    <a @click="setCurrentClass('Home')"><router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link></a>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                     <!-- <a class="head__nav-item navbar-item" >Wiki</a> -->
                     <!--<router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
@@ -119,9 +119,9 @@
             watch: {
                 
             },
-            // getMyAuth() {
-            //     return this.$root.$options.myAuth
-            // },
+            setCurrentClass(className, classNumber) {
+                this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+            },
             logOut() {
                 this.$router.push('/login')
                 this.$root.$options.myAuth.logOff()
