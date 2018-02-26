@@ -185,7 +185,7 @@ export const store = new Vuex.Store({
         archivedClasses: [], // only for professor.
         studentClasses: [], // only for student.
         departments: [], 
-        currentClassSelected: 'Select a class', // the class that is click from the user
+        currentClassSelected: 'Home', // the class that is click from the user
         currentClassNumber: '',
         currentVideoID: null,
         uploadingVideo: false,
