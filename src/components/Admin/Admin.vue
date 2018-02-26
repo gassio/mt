@@ -71,10 +71,7 @@
 						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 						<hr>
 						<el-input icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
-						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
-						<!-- <a v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a> -->
-
-						<!-- <a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.name) }" @click="currentClassString = theClass.name"><span class="name">{{ theClass.name }}</span></a> -->
+						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span v-popover:popoverClassOptions class="name">{{ c.number }} - {{ c.name }}</span></a>
 					</div>
 					
 				</aside>

@@ -369,6 +369,15 @@ export const store = new Vuex.Store({
                 console.log('archiveClass() action error: ', err)
             })
         },
+        unArchiveClass: function ({ commit }, payload) {
+            axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
+            .then(response => {
+                commit('UNARCHIVE_CLASS', payload)
+            })
+            .catch(function (err) {
+                console.log('unarchiveClass() action error: ', err)
+            })
+        },
     },
 
     mutations: {
@@ -508,6 +517,15 @@ export const store = new Vuex.Store({
                 if (state.activeClasses[i].id === payload.classId) {
                     state.activeClasses.splice(i, 1)
                     state.archivedClasses.push(payload.classObject)
+                }
+            }
+        },
+        UNARCHIVE_CLASS: (state, payload) => {
+            var classes = state.classes
+            for (var i = 0, l = state.archivedClasses.length; i < l; i++) {
+                if (state.archivedClasses[i].id === payload.classId) {
+                    state.archivedClasses.splice(i, 1)
+                    state.activeClasses.push(payload.classObject)
                 }
             }
         },
