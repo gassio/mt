@@ -40,18 +40,19 @@ export default {
     },
     methods: {
         loginUser() {
-          const myAuth = this.$root.$options.myAuth
-          myAuth.login({ username: this.username, password: this.password })
+          const authService = this.$root.$options.authService
+
+          authService.login({ username: this.username, password: this.password })
             .then(() => {
               this.$store.commit('AUTHENTICATED', "login")
-              this.$store.commit('SET_USER_PROFILE', myAuth.getAuthData())
+              this.$store.commit('SET_USER_PROFILE', authService.getAuthData())
               this.$router.push('/')
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')
               this.$router.push('/login')
             })
-          // myAuth.login({ residentID: this.username, password: this.password })
+          // authService.login({ residentID: this.username, password: this.password })
         },
         registerUser() {
           // TODO

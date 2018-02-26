@@ -13,10 +13,10 @@ import Admin from './components/Admin/Admin.vue'
 import Professor from './components/Admin/Professor.vue'
 import Student from './components/Admin/Student.vue'
 import Login from './components/Login/Login.vue'
-import AuthService from './services/AuthService'
+import authService from './services/AuthService'
 
 const requiresAuth = (to, from, next) => {
-    AuthService.isAuthenticated()
+    authService.isAuthenticated()
         .then(() => {
             // console.log("Router: authenticated, redirecting to \"next\"")
             next()

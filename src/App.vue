@@ -19,7 +19,7 @@
         methods: {
             isLoggedIn () {
                 try {
-                    if (!!this.$root.$options.myAuth.getAuthData().token) {
+                    if (!!this.$root.$options.authService.getAuthData().token) {
                         return true
                     }
                     else { 

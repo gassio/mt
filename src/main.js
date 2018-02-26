@@ -3,8 +3,8 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
-import myAuth from './services/AuthService'
-Vue.use(myAuth)
+import authService from './services/AuthService'
+Vue.use(authService)
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -40,7 +40,7 @@ export const ourApp = new Vue({
   el: '#app',
   router,
   store,
-  myAuth,
+  authService,
   render: h => h(App)
 })
 
