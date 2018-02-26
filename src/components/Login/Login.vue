@@ -4,38 +4,21 @@
 
         <img class="logo" src="../../assets/logo.png" alt="Logo">
 
-        <form class="login-form" v-on:submit.prevent="loginUser()">
-          <input class="login-form__username" type="text" placeholder="username" v-model="username">
+        <form class="login-form" v-show="formLoginIsShown" v-on:submit.prevent="loginUser()">
+          <input class="login-form__username" type="text" placeholder="email" v-model="username">
           <input class="login-form__password" type="password" placeholder="password" v-model="password">
-            <span class="login-form__error">We don't recognize these credentials.</span>
-          <button type="submit" value="login">LOGIN</button>
-          <!-- <span class="login-form__rememberme">
-            <input type="checkbox" class="login-form__rememberme-input" v-bind:checked="rememberMe" @click="rememberMeToggle()">
-            <p>REMEMBER ME</p>
-          </span> -->
+          <span class="login-form__error">We don't recognize these credentials.</span>
+          <button type="submit">LOGIN</button>
+          <p class="login-form__switchform">Not registered? <a class="login-form__switchform-link" @click="showRegisterForm">Create an account</a></p>
         </form>
 
-        <!-- <el-form :model="loginForm" ref="loginForm" label-width="190px" :rules="loginFormRules">
-            <el-input v-model="loginForm.username" placeholder="username"></el-input>
-            <div style="margin-top:5px;">We didn't recognize this email.</div>
-            <el-input v-model="loginForm.password" placeholder="password" type="password"></el-input>
-            <el-button type="primary" @click="loginUser()">LOGIN</el-button>
-        </el-form> -->
-
-        <!-- <form class="register-form" v-if="registered">
-            <input type="text" placeholder="name"/>
-            <input type="password" placeholder="password"/>
-            <input type="text" placeholder="username address"/>
-            <button>create</button>
-            <p class="message">Already registered? <a>Sign In</a></p>
-        </form> -->
-
-        <!-- <form class="login-form" v-else>
-            <input type="text" placeholder="username" v-model="username"/>
-            <input type="password" placeholder="password" v-model="password"/>
-            <button type="button" @click="l()">login</button>
-            <p class="message">Not registered? <a style="text-decoration:none" @click="c()">Create an account</a></p>
-        </form> -->
+        <form class="register-form login-form" v-show="formRegisterIsShown" v-on:submit.prevent="registerUser()">
+          <input class="login-form__username" type="text" placeholder="First and last name"/>
+          <input class="login-form__password" type="password" placeholder="Password"/>
+          <input class="login-form__username" type="text" placeholder="E-mail address"/>
+          <button type="submit">CREATE ACCOUNT</button>
+          <p class="login-form__switchform">Already registered? <a class="login-form__switchform-link" @click="showLoginForm()">Sign In</a></p>
+        </form>
 
     </div>
 </template>
@@ -48,22 +31,11 @@
 export default {
     data() {
         return {
-          registered: false,
-          username : '',
-          password : '',
-          loginForm: {
-            username : '',
-            password : '',  
-          },
-          loginFormRules: {
-              username: [
-                  { required: true, message: 'We didn\'t recognize this email.', trigger: 'blur' },
-              ],
-              password: [
-                  { required: true, message: 'Please select class', trigger: 'blur' },
-              ],
-          },
-          rememberMe : true
+          username: '',
+          password: '',
+          rememberMe: true,
+          formLoginIsShown: true,
+          formRegisterIsShown: false
         }
     },
     methods: {
@@ -81,28 +53,16 @@ export default {
             })
           // myAuth.login({ residentID: this.username, password: this.password })
         },
-        login() {
-          this.$store.dispatch('authRequest', { residentID: this.username, password: this.password }).then(() => {
-            this.$router.push('/')
-          })
-        },   
-        l() {
-          var that = this
-          if (this.username === 'karatsolis' && this.password === "1234") {
-            setTimeout(function() {
-              that.$store.commit('AUTHENTICATED')
-              that.$router.push({ path: '/professor'})
-            }, 600)
-          }
-          else {
-            alert('Please enter the correct username and password.')
-          }
+        registerUser() {
+          // TODO
         },
-        r() {
-          this.registered = true
+        showRegisterForm() {
+          this.formRegisterIsShown = true
+          this.formLoginIsShown = false
         },
-        c() {
-          this.registered = false
+        showLoginForm() {
+          this.formLoginIsShown = true
+          this.formRegisterIsShown = false
         },
         openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -201,6 +161,17 @@ export default {
     margin-bottom: 10px;
   }
 
+  .login-form__switchform {
+    font-size: 0.7em;
+  }
+
+    .login-form__switchform-link {
+      color: #363636;
+    }
+    .login-form__switchform-link:hover {
+      text-decoration: underline;
+    }
+
   .login-form__rememberme {
     display: flex;
     justify-content: center;
@@ -208,6 +179,5 @@ export default {
     .login-form__rememberme-input {
       margin-top: 5px;
     }
-
 
 </style>
