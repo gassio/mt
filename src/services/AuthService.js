@@ -70,3 +70,6 @@ class AuthService {
         this.authData = value
     }
 }
+
+var authService = new AuthService()
+export default authService
