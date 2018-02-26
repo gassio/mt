@@ -13,7 +13,7 @@
 							
 							<div class="professor__featured-container">
 
-								<!-- <router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -27,9 +27,9 @@
 											<p>{{ v.presentedAt | sliceDate }}</p>
 										</div>
 									</div>
-								</router-link> -->
+								</router-link>
 
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected === 'Home' && v.featuredGlobal === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -88,7 +88,8 @@
 
 				<aside class="professor__sidebar column is-2 aside">
 					<div class="metalogon-home menu-list">
-						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+						<!-- <a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a> -->
+						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 						<hr>
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
@@ -96,7 +97,6 @@
 							<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
 							<div class="menu-list">
 								<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
-								<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 								<hr>
 								<a href="#" @click="openModalArchiveClass()"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive class</span></a>
 								<hr>
@@ -441,6 +441,7 @@
 			created() {	
 				this.$store.dispatch('getAllVideos')
 				this.$store.dispatch('getAllClasses')
+				this.$store.state.currentClassSelected = 'Home'
 			},
 			mounted() {
 				// Check if role is professor. If not redirect to current role's homePage

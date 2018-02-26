@@ -12,7 +12,8 @@
 							<h3 class="featured__heading title is-size-4">Featured videos of {{ currentClassSelected }}</h3>
 							
 							<div class="student__featured-container">
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
+
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
 									<div class="card-image">
 										<figure class="image">
 											<img :src="v.thumb" alt="Placeholder image">
@@ -27,10 +28,27 @@
 										</div>
 									</div>
 								</router-link>
+
+								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected === 'Home' && v.featuredGlobal === true" v-bind:key="v.id">
+									<div class="card-image">
+										<figure class="image">
+											<img :src="v.thumb" alt="Placeholder image">
+										</figure>
+									</div>
+									<div class="card-content">
+										<div class="media-content">
+											<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
+											<p class="subtitle is-6">{{ v.class }}</p>
+											<p>{{ v.genre }}</p>
+											<p>{{ v.presentedAt | sliceDate }}</p>
+										</div>
+									</div>
+								</router-link>
+
 							</div>
 					</div>
 
-					<div class="student__classvideos">
+					<div class="student__classvideos" v-show="!(currentClassSelected === 'Home')">
 
 							<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
 
@@ -64,16 +82,13 @@
 
 				<aside class="student__sidebar column is-2 aside">
 
-					<div class="metalogon-home menu-list">
-						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+					<div class="menu-list">
+						<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
 					</div>
 					<el-tabs v-model="sidebarClassesTab">
-						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for class..."></el-input>	
+						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>	
 						<div class="menu-list">
 							<a v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.name }}</span></a>
-							<hr>
-							<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
-							<hr>
 						</div>
 					</el-tabs>
 
@@ -126,23 +141,6 @@
 						]
 				}
 			},
-			created() {
-						this.$store.dispatch('getAllVideos')
-						this.$store.dispatch('getAllClasses')
-			},
-			mounted() {
-				// Check if role is student. If not redirect to current role's homePage
-				const role = this.$root.$options.myAuth.getAuthData().role_id
-				console.log("student.vue, role: " + role)
-				if (role.toLowerCase() != "student") {
-					console.log("student.vue, pushing router /decideHome")
-					this.$router.push('/DecideHome')
-				}
-				
-
-				if (this.$router.currentRoute.fullPath === '/student')
-					$('.navbar-end .badge').hide()
-			},
 			methods: {
 				queryStudentClasses: _.debounce(function () {
 					console.log('QUERY STUDENT CLASSES')
@@ -188,6 +186,24 @@
 
 							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
 				},
+			},
+			created() {
+				this.$store.dispatch('getAllVideos')
+				this.$store.dispatch('getAllClasses')
+				this.$store.state.currentClassSelected = 'Home'
+			},
+			mounted() {
+				// Check if role is student. If not redirect to current role's homePage
+				const role = this.$root.$options.myAuth.getAuthData().role_id
+				console.log("student.vue, role: " + role)
+				if (role.toLowerCase() != "student") {
+					console.log("student.vue, pushing router /decideHome")
+					this.$router.push('/DecideHome')
+				}
+				
+
+				if (this.$router.currentRoute.fullPath === '/student')
+					$('.navbar-end .badge').hide()
 			},
 			computed: {
 				...mapGetters(

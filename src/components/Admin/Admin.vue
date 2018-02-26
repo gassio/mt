@@ -9,7 +9,7 @@
 				<div class="admin__main column is-10">
 
 					<div class="admin__featured">
-							<h3 class="featured__heading title is-size-4">Featured videos of Metalogon</h3>
+							<h3 class="featured__heading title is-size-4">Featured videos of Home</h3>
 							
 							<div class="admin__featured-container">
 
@@ -68,7 +68,7 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<a @click="setCurrentClass('Home')"><i class="fa fa-home"></i> <span class="name">Metalogon Home</span></a>
+						<a @click="setCurrentClass('Home')"><span class="name">+ Create new class</span></a>
 						<hr>
 						<a v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
 
@@ -105,19 +105,6 @@
 			data() {
 				return {
 					currentClassString: ''
-				}
-			},
-			created() {
-				this.$store.dispatch('getAllVideos')
-				this.$store.dispatch('getAllClasses')
-			},
-			mounted() {
-				// Check if role is admin. If not redirect to current role's homePage
-				const role = this.$root.$options.myAuth.getAuthData().role_id
-				console.log("admin.vue, role: " + role)
-				if (role.toLowerCase() != "admin") {
-					console.log("admin.vue, pushing router /decideHome")
-					this.$router.push('/DecideHome')
 				}
 			},
 			methods: {
@@ -173,6 +160,20 @@
 						}
 					}
 				},
+			},
+			created() {
+				this.$store.dispatch('getAllVideos')
+				this.$store.dispatch('getAllClasses')
+				this.$store.state.currentClassSelected = 'Home'
+			},
+			mounted() {
+				// Check if role is admin. If not redirect to current role's homePage
+				const role = this.$root.$options.myAuth.getAuthData().role_id
+				console.log("admin.vue, role: " + role)
+				if (role.toLowerCase() != "admin") {
+					console.log("admin.vue, pushing router /decideHome")
+					this.$router.push('/DecideHome')
+				}
 			},
 			computed: {
 					...mapGetters(
