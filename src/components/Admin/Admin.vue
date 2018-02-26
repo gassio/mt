@@ -68,9 +68,11 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<a @click="setCurrentClass('Home')"><span class="name">+ Create new class</span></a>
+						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
 						<hr>
-						<a v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+						<el-input icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
+						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+						<!-- <a v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a> -->
 
 						<!-- <a v-for="theClass in classes" :key="theClass.id" :class="{ 'is-bg-light' : (currentClassString === theClass.name) }" @click="currentClassString = theClass.name"><span class="name">{{ theClass.name }}</span></a> -->
 					</div>
@@ -86,7 +88,31 @@
 						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
 					</div>
 				</div>
-			</footer>					
+			</footer>
+
+			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
+					<el-form :model="newClass">
+							<el-form-item label="Name">
+									<el-input v-model="newClass.name" placeholder="Advanced Essay Workshop"></el-input>
+							</el-form-item>
+							<el-form-item label="Department">
+								<el-input v-model="newClass.department" placeholder="Comparative Media Studies / Writing"></el-input>
+									<!-- <el-select  placeholder="Choose a department" >
+										<el-option v-model="newClass.department" :label="c.department" :value="c.department" v-for="c in classes" v-bind:key="c.title"></el-option>
+									</el-select> -->
+							</el-form-item>
+							<el-form-item label="Number">
+									<el-input v-model="newClass.number" placeholder="21W.745"></el-input>
+							</el-form-item>
+							<el-form-item label="Semester">
+									<el-input v-model="newClass.semester" placeholder="Spring 2018"></el-input>
+							</el-form-item>
+					</el-form>
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
+							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Create Class</el-button>
+					</span>
+			</el-dialog>				
 			
 		</div>	
 
@@ -104,13 +130,33 @@
     export default {
 			data() {
 				return {
-					currentClassString: ''
+					currentClassString: '',
+					searchInputValue: '',
+					modalCreateClassIsOpen: false,
+					newClass: {
+						archived: false,
+						department: '',
+						name: '',
+						number: '',
+						semester: ''
+					},
 				}
 			},
 			methods: {
 				setCurrentClass(className, classNumber) {
 					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 				},
+				createClass() {	
+						this.$store.dispatch('createClass', { 
+								newClass: this.newClass
+						})
+						this.newClass = {}
+				},
+				queryAdminClasses: _.debounce(function () {
+					console.log('QUERY ADMIN CLASSES')
+
+					this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
+				}, 300),
 				genreSelection() {
 					let that = this
 					$('.admin__genre').dropdown({
@@ -177,7 +223,7 @@
 			},
 			computed: {
 					...mapGetters(
-						['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber']
+						['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
 					),
 				},
 			components: {

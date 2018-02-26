@@ -181,6 +181,7 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
+        adminClasses: [], // only for admin.
         activeClasses: [], // only for professor.
         archivedClasses: [], // only for professor.
         studentClasses: [], // only for student.
@@ -331,6 +332,7 @@ export const store = new Vuex.Store({
                 .then(function (response)
                 {
                     commit('GET_ALL_CLASSES', response.data.data)
+                    commit('CREATE_ADMIN_CLASSES' )
                     commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
                     commit('CREATE_STUDENT_CLASSES' )
                     commit('FILL_DEPARTMENTS')
@@ -488,6 +490,12 @@ export const store = new Vuex.Store({
                     state.archivedClasses.push(state.classes[i])
             }
         },
+        CREATE_ADMIN_CLASSES: (state) => {
+            state.adminClasses = []
+            for (var i = 0, l = state.classes.length; i < l; i++) {
+                state.adminClasses.push(state.classes[i])
+            }
+        },
         CREATE_STUDENT_CLASSES: (state) => {
             state.studentClasses = []
             for (var i = 0, l = state.classes.length; i < l; i++) {
@@ -502,6 +510,22 @@ export const store = new Vuex.Store({
                     state.archivedClasses.push(payload.classObject)
                 }
             }
+        },
+        // Is used for search functionality.    
+        FILTER_ADMIN_CLASSES: (state, inputValue) => {
+            // An array that helps for the filtering.
+            const adminClassesLocal = []
+            for (var i = 0, l = state.classes.length; i < l; i++) {
+                adminClassesLocal.push(state.classes[i])
+            }
+
+            // Define the filter method that will be used above.
+            var filterClasses = (queryString) => {
+                return (theClass) => {
+                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                }
+            }  
+            state.adminClasses = adminClassesLocal.filter(filterClasses(inputValue))
         },
         // Is used for search functionality.
         FILTER_ACTIVE_CLASSES: (state, inputValue) => {
@@ -589,6 +613,9 @@ export const store = new Vuex.Store({
         },
         canons: state => {
             return state.canons
+        },
+        adminClasses: state => {
+            return state.adminClasses
         },
         activeClasses: state => {
             return state.activeClasses
