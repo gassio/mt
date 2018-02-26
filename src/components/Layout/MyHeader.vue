@@ -12,12 +12,9 @@
 
             <div class="navbar-menu">
                 <div class="navbar-start">
-                    <a @click="setCurrentClass('Home')"><router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Home</router-link></a>
+                                                                                                                    <!-- https://github.com/vuejs/vue-router/issues/800 -->
+                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" @click.native="setCurrentClass('Home')" exact>Home</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
-                    <!-- <a class="head__nav-item navbar-item" >Wiki</a> -->
-                    <!--<router-link to="/library" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active">Library</router-link>
-					<router-link to="/admin" style="color:#A90931" tag="a"><strong>Admin</strong></router-link>
-					<router-link to="/student" style="color:#A90931" tag="a"><strong>Student</strong></router-link>-->
                 </div>
                 <div class="navbar-end">
                     <!-- {{ authData.user_id }} - {{ authData.role_id }} -->
@@ -116,10 +113,8 @@
             }
         },
         methods: {
-            watch: {
-                
-            },
             setCurrentClass(className, classNumber) {
+                console.log('CURRENT_CLASS_SELECT')
                 this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
             },
             logOut() {
