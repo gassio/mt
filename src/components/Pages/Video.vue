@@ -14,7 +14,7 @@
                 <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
             </div>
         </div>-->
-        <div class="main-content columns" style="padding-top:20px;padding-left:30px;">
+        <div class="main-content columns" style="padding-top:20px;padding-left:30px;margin:0;">
             <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
