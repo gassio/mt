@@ -354,10 +354,19 @@ export const store = new Vuex.Store({
         createClass: function ({ commit }, payload) {
             axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
             .then(response => {
-                commit('CREATE_CLASS', payload)
+                commit('CREATE_CLASS', response.data.data)
             })
             .catch(function (err) {
                 console.log('Error createClass()', err)
+            })
+        },
+        deleteClass: function ({ commit }, payload) {
+            axios.delete("https://metalogon-api.herokuapp.com/rest/class/"+payload)
+            .then(response => {
+                commit('DELETE_CLASS', payload)
+            })
+            .catch(function (err) {
+                console.log('Error deleteClass()', err)
             })
         },
         archiveClass: function ({ commit }, payload) {
@@ -479,10 +488,18 @@ export const store = new Vuex.Store({
             loadingInstance.close()
             state.classes = theClass
         },
-        // Professor only.
         CREATE_CLASS: (state, payload) => {
-            state.classes.push(payload.newClass)
-            state.activeClasses.push(payload.newClass)
+            state.classes.push(payload)
+            state.adminClasses.push(payload)
+            state.activeClasses.push(payload)
+        },
+        // Only for admin.
+        DELETE_CLASS: (state, payload) => {
+            for (var i = 0, l = state.adminClasses.length; i < l; i++) {
+                if (state.adminClasses[i].id === payload) {
+                    state.adminClasses.splice(i, 1)              
+                }
+            }
         },
         // Student only. Not completed.
         ENROLL_TO_CLASS: (state, payload) => {

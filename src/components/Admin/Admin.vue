@@ -68,7 +68,8 @@
 				<aside class="admin__sidebar column is-2 aside">
 
 					<div class="menu-list">
-						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
+						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name"><strong>+ Create new class</strong></span></a>
+						<a href="#" class="" @click="modalDeleteClassIsOpen = true"><span class="name"><i class="fa fa-trash" aria-hidden="true"></i> Delete this class</span></a>
 						<hr>
 						<el-input icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
 						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
@@ -109,7 +110,12 @@
 							<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
 							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Create Class</el-button>
 					</span>
-			</el-dialog>				
+			</el-dialog>
+
+			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
+				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
+				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
+			</el-dialog>			
 			
 		</div>	
 
@@ -130,6 +136,7 @@
 					currentClassString: '',
 					searchInputValue: '',
 					modalCreateClassIsOpen: false,
+					modalDeleteClassIsOpen: false,
 					newClass: {
 						archived: false,
 						department: '',
@@ -148,6 +155,18 @@
 								newClass: this.newClass
 						})
 						this.newClass = {}
+				},
+				deleteClass() {
+					var objectId
+					for (var i = 0, l = this.adminClasses.length; i < l; i++) {
+						if (this.adminClasses[i].name === this.currentClassSelected) {
+							objectId = this.adminClasses[i].id
+						}
+					}
+					this.$store.dispatch( 'deleteClass', objectId )
+					
+					this.modalDeleteClassIsOpen = false
+					this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
 				},
 				queryAdminClasses: _.debounce(function () {
 					console.log('QUERY ADMIN CLASSES')
