@@ -238,8 +238,68 @@
 			color: #FFF;
 			padding: 9px;
 			margin-bottom: 0.5em !important;
+			border-radius: 7px;
 		}
 
+
+
+
+
+/* ==============================================
+                #FTDCARD (Featured card)
+	================================================= */
+
+	.ftdcard {
+		width: 32.30%;
+		margin: 0.3em;
+		transition: 0.3s;
+		color: #000;
+		border: 1px solid #ddd;
+	}
+
+	.ftdcard:hover {
+		transform: scale(1.02);
+		transition: 0.3s;
+	}
+
+	.ftdcard__image {
+
+	}
+
+	.ftdcard__meta1 {
+		display: flex;
+		flex-direction: column;
+		padding: 0px 10px;
+	}
+
+		.ftdcard__title {
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.ftdcard__class {
+			color: #4a4a4a;
+			font-size: 12px;
+			margin-top: -5px;
+		}
+
+	.ftdcard__meta2 {
+		display: flex;
+		flex-direction: column;
+		padding: 0px 10px;
+		margin-top: 12px;
+	}
+
+		.ftdcard__genre {
+			color: #4a4a4a;
+			font-size: 12px;
+		}
+
+		.ftdcard__date {
+			color: #4a4a4a;
+			font-size: 12px;
+			margin-top: -5px;
+		}
 
 
 
@@ -258,11 +318,12 @@
 			color: #FFF;
 			padding: 9px;
 			margin-bottom: 0.5em !important;
+			border-radius: 7px;
 		}
 
 		.classvideo {
 			display: flex;
-			padding: 25px 10px;
+			padding: 17px 10px;
 			border-bottom: 1px solid #efefef;
 		} 
 		.classvideo:hover	{
@@ -294,15 +355,15 @@
 						.classvideo__title {
 							color: #4a4a4a;
 							font-weight: 600;
-							font-size: 1.3em;
+							font-size: 18px;
 						}
 						.classvideo__class {
-							font-weight: 600;
 							margin-top: 6px;
+							font-size: 14px;
 						}
 						.classvideo__genre {
-							font-weight: 600;
 							margin-top: -4px;
+							font-size: 14px;
 						}
 
 				.classvideo__metameta {
@@ -376,8 +437,8 @@
 	.student__sidebar .menu-list a {
 		padding: 15px 15px;
 	}
-			.sidebar-menu__link {
-				color: #000;
+			.menu-list span {
+				font-size: 14px;
 			}
 
 
