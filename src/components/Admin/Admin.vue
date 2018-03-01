@@ -9,24 +9,20 @@
 				<div class="admin__main column is-10">
 
 					<div class="admin__featured">
-							<h3 class="featured__heading title is-size-4">Featured videos of Home</h3>
+							<h3 class="featured__heading">Featured videos of Home</h3>
 							
 							<div class="admin__featured-container">
 
-								<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
-									<div class="card-image">
-										<figure class="image">
-											<img :src="v.thumb" alt="Placeholder image">
-										</figure>
-									</div>
-									<div class="card-content">
-										<div class="media-content">
-											<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
-											<p class="subtitle is-6">{{ v.class }}</p>
-											<p>{{ v.genre }}</p>
-											<p>{{ v.presentedAt | sliceDate }}</p>
-										</div>
-									</div>
+								<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
+									<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
+									<span class="ftdcard__meta1">
+										<h3 class="ftdcard__title">{{ v.title }}</h3>
+										<p class="ftdcard__class">{{ v.class }}</p>
+									</span>
+									<span class="ftdcard__meta2">
+										<p class="ftdcard__genre">{{ v.genre }}</p>
+										<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
+									</span>
 								</router-link>
 
 							</div>
@@ -34,7 +30,7 @@
 
 					<div class="admin__classvideos" v-show="!(currentClassSelected === 'Home')">
 
-							<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
+							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
 
 
 							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
@@ -69,7 +65,7 @@
 
 					<div class="menu-list">
 						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name"><strong>+ Create new class</strong></span></a>
-						<a href="#" class="" @click="modalDeleteClassIsOpen = true"><span class="name"><i class="fa fa-trash" aria-hidden="true"></i> Delete this class</span></a>
+						<a v-show="!(currentClassSelected === 'Home')" class="" @click="modalDeleteClassIsOpen = true"><span class="name"><i class="fa fa-trash" aria-hidden="true"></i> Delete this class</span></a>
 						<hr>
 						<el-input icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
 						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
@@ -280,16 +276,65 @@
 			margin-bottom: 0.5em !important;
 		}
 
-			.ftdcard {
-				width: 32.30%;
-				margin: 0.3em;
-				transition: 0.3s;
-			}
 
-			.ftdcard:hover {
-				transform: scale(1.02);
-				transition: 0.3s;
-			}
+
+
+
+/* ==============================================
+                #FTDCARD (Featured card)
+	================================================= */
+
+	.ftdcard {
+		width: 32.30%;
+		margin: 0.3em;
+		transition: 0.3s;
+		color: #000;
+		border: 1px solid #ddd;
+	}
+
+	.ftdcard:hover {
+		transform: scale(1.02);
+		transition: 0.3s;
+	}
+
+	.ftdcard__image {
+
+	}
+
+	.ftdcard__meta1 {
+		display: flex;
+		flex-direction: column;
+		padding: 0px 10px;
+	}
+
+		.ftdcard__title {
+			font-size: 14px;
+			line-height: 1.5;
+		}
+
+		.ftdcard__class {
+			color: #4a4a4a;
+			font-size: 12px;
+			margin-top: -5px;
+		}
+
+	.ftdcard__meta2 {
+		display: flex;
+		flex-direction: column;
+		padding: 0px 10px;
+		margin-top: 12px;
+	}
+
+		.ftdcard__genre {
+			color: #4a4a4a;
+			font-size: 12px;
+		}
+
+		.ftdcard__date {
+			color: #4a4a4a;
+			font-size: 12px;
+			margin-top: -5px;
+		}
 
 
 

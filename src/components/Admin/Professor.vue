@@ -9,40 +9,32 @@
 					<div class="professor__main column is-10">
 
 						<div class="professor__featured">
-								<h3 class="featured__heading title is-size-4">Featured videos of {{ currentClassSelected }}</h3>
+								<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
 								
 								<div class="professor__featured-container">
 
-									<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
-										<div class="card-image">
-											<figure class="image">
-												<img :src="v.thumb" alt="Placeholder image">
-											</figure>
-										</div>
-										<div class="card-content">
-											<div class="media-content">
-												<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
-												<p class="subtitle is-6">{{ v.class }}</p>
-												<p>{{ v.genre }}</p>
-												<p>{{ v.presentedAt | sliceDate }}</p>
-											</div>
-										</div>
+									<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
+										<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
+										<span class="ftdcard__meta1">
+											<h3 class="ftdcard__title">{{ v.title }}</h3>
+											<p class="ftdcard__class">{{ v.class }}</p>
+										</span>
+										<span class="ftdcard__meta2">
+											<p class="ftdcard__genre">{{ v.genre }}</p>
+											<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
+										</span>
 									</router-link>
 
-									<router-link class="ftdcard card" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected === 'Home' && v.featuredGlobal === true" v-bind:key="v.id">
-										<div class="card-image">
-											<figure class="image">
-												<img :src="v.thumb" alt="Placeholder image">
-											</figure>
-										</div>
-										<div class="card-content">
-											<div class="media-content">
-												<h3 class="is-size-5 has-text-black-bis">{{ v.title }}</h3>
-												<p class="subtitle is-6">{{ v.class }}</p>
-												<p>{{ v.genre }}</p>
-												<p>{{ v.presentedAt | sliceDate }}</p>
-											</div>
-										</div>
+									<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected === 'Home' && v.featuredGlobal === true" v-bind:key="v.id">
+										<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
+										<span class="ftdcard__meta1">
+											<h3 class="ftdcard__title">{{ v.title }}</h3>
+											<p class="ftdcard__class">{{ v.class }}</p>
+										</span>
+										<span class="ftdcard__meta2">
+											<p class="ftdcard__genre">{{ v.genre }}</p>
+											<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
+										</span>
 									</router-link>
 
 								</div>
@@ -50,7 +42,7 @@
 
 						<div class="professor__classvideos" v-show="!(currentClassSelected === 'Home')">
 
-							<h3 class="class__heading title is-size-4"> {{ currentClassNumber }} - {{ currentClassSelected }}
+							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}
 								<a style="font-size: 0.6em;float:right;" @click="modalGenreCustomization = true">Customize genres</a>
 							</h3>
 
@@ -527,17 +519,6 @@
 				padding: 9px;
 				margin-bottom: 0.5em !important;
 			}
-
-				.ftdcard {
-					width: 32.30%;
-					margin: 0.3em;
-					transition: 0.3s;
-				}
-
-				.ftdcard:hover {
-					transform: scale(1.02);
-					transition: 0.3s;
-				}
 
 
 
