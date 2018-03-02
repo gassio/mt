@@ -1,15 +1,12 @@
 <template>
-    <div class="home__upload-video">
+    <div class="upload-video">
         
         <div class="upload-video__container" @click="createJwVideo()"> 
             <i class="fa fa-plus fa-3x" aria-hidden="true"></i>
             <span class="upload-video__text">Click to upload video</span>
         </div>
 
-		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop">
-                <!-- <form id="mydropo" class="uploadvid__area" method="POST" action="" enctype="multipart/form-data">
-                    <input type="file" name="file" class="uploadvid__text" />
-                </form> -->
+		<el-dialog class="uploadvid" title="Upload video" :visible.sync="modalDragDropIsOpen" :before-close="closeModalDragDrop" size="medium">
             <div class="uploadvid__area">
                 <span class="uploadvid__text">Drop videos here or click to upload</span>
             </div>
@@ -441,19 +438,20 @@
 					#ADD-VIDEO-BUTTON
 		================================================= */
 
-    .home__upload-video {
+    .upload-video {
+		width: 400px;
+        height: 150px;
 		color: #A90931;
 		background-color: #FFF;
-		width: 100%;
 		border: 1px dashed #DADDE2;
-        padding: 25px;
-        margin-bottom: 10px;
+        /* padding: 25px;
+        margin-bottom: 10px; */
 		display: flex;
 		flex-direction:column;
 		justify-content: center;
 		align-items: center;
 	}
-	.home__upload-video:hover {
+	.upload-video:hover {
 		color: #FFF;
 		cursor: pointer;
 		transition: 0.2s;
@@ -471,7 +469,7 @@
         }
 
             .upload-video__text {
-                font-size: 1.4em;
+                font-size: 14px;
             }
 
 

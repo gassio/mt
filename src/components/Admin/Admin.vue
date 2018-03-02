@@ -58,6 +58,8 @@
 							</div>
 							
 					</div>
+					
+					<upload-video :currentClassProp="currentClassSelected"></upload-video>
 
 				</div>
 

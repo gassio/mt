@@ -14,7 +14,7 @@
                 <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
             </div>
         </div>-->
-        <div class="main-content columns" style="padding-top:20px;padding-left:30px;margin:0;">
+        <div class="video__body columns">
             <div class="player column is-8">
                 <div id="player">Loading the player...</div>
 
@@ -175,7 +175,7 @@ You might also want to include a concrete strategy recommendation."
 
             </div>
 
-            <div class="cards" id="cards">
+            <div class="cards column is-4">
                 <div class="cards-content">
                     <nav class="card-menu">
                         <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
@@ -1185,6 +1185,10 @@ You might also want to include a concrete strategy recommendation."
     background-color: #39425C
 }
 
+.video__body {
+    margin: 5px 15px 15px 15px;
+}
+
 
 /* ==============================================
                 #VIDEO-BREADCRUMB
@@ -1599,7 +1603,6 @@ You might also want to include a concrete strategy recommendation."
 ================================================= */
 
 .cards {
-    margin-left: 25px !important;
 }   
 
     .card-menu {
@@ -1683,8 +1686,10 @@ You might also want to include a concrete strategy recommendation."
                     .timeline-card__comment {
                         font-size: 0.8em;
                         line-height: 1.3em;
-                        /*height: 35px;*/
                     }
+                        .timeline-card__comment span {
+                            margin: 15px;
+                        }
 
                     #readmore {
                         color: #38425d;
@@ -1695,12 +1700,11 @@ You might also want to include a concrete strategy recommendation."
                 .timeline-card__footer {
                     margin-top: -20px;
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: flex-end;
                     cursor: pointer;
                 }
 
                     .timeline-card__effectiveness {
-                        margin-top: 7px !important;
                         display: flex;
                     }
                         .timeline-card__effectiveness progress {
@@ -1732,7 +1736,6 @@ You might also want to include a concrete strategy recommendation."
                     .timeline-card__edit-container {
                         display: flex;
                         flex-direction: column;
-                        margin-left: 10px;
                     }
 
 
@@ -1743,30 +1746,30 @@ You might also want to include a concrete strategy recommendation."
                         color: #FFFFFF;
                     }
                         .edit-buttons-moreLess {
-                            height: 36px;
-                            width: 42px;
+                            height: 25px;
+                            width: 32px;
                         }
                         .edit-buttons-moreLess:hover {
                             background-color: #FFFFFF !important;
-                        color: #6B6B6B !important;
-                        box-shadow: inset 0 0 0 2px #6B6B6B;
+                            color: #6B6B6B !important;
+                            box-shadow: inset 0 0 0 2px #6B6B6B;
                         }
                         .edit-buttons-edit {
                             background-color: #159D1A;
                             opacity:0.8;
                         }
                         .edit-buttons-edit:hover {
-                        background-color: #FFFFFF !important;
-                        color: #003300 !important;
-                        box-shadow: inset 0 0 0 3px #003300;
+                            background-color: #FFFFFF !important;
+                            color: #003300 !important;
+                            box-shadow: inset 0 0 0 3px #003300;
                         }
                         .edit-buttons-delete {
                             background-color: #BC1715;
                         }
                         +.edit-buttons-delete:hover {
-                        background-color: #FFFFFF !important;
-                        color: #A90931 !important;
-                        box-shadow: inset 0 0 0 3px #A90931;
+                            background-color: #FFFFFF !important;
+                            color: #A90931 !important;
+                            box-shadow: inset 0 0 0 3px #A90931;
                         }
 
 

@@ -70,6 +70,8 @@
 							
 					</div>
 
+					<upload-video :currentClassProp="currentClassSelected"></upload-video>
+
 				</div>
 
 				<aside class="student__sidebar column is-2 aside">
