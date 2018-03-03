@@ -106,7 +106,7 @@
 							<p class="classes-card-title">{{ c.department }}</p> 
 							<p class=""> {{ c.number }} - {{ c.semester }}</p> 
 					</a>
-			</el-dialog>	    
+			</el-dialog>  
 		
 		</div>	
 
@@ -215,6 +215,7 @@
 
 .student__body { 
 	margin-bottom: 0 !important;
+	min-height: calc(100vh - 160px);
 }
 
 .student__main {

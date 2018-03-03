@@ -489,6 +489,7 @@
 
 	.professor__body { 
 		margin-bottom: 0 !important;
+		min-height: calc(100vh - 160px);
 	}
 
 	.professor__main {

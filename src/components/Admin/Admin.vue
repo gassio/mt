@@ -250,6 +250,7 @@
 <style>
 .admin__body { 
 	margin-bottom: 0 !important;
+	min-height: calc(100vh - 160px);
 }
 
 .admin__main {
