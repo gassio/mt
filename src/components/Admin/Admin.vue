@@ -8,55 +8,16 @@
 
 				<div class="admin__main column is-10">
 
-					<div class="admin__featured">
-							<h3 class="featured__heading">Featured videos of Home</h3>
-							
-							<div class="admin__featured-container">
-
-								<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="v.featuredGlobal === true" v-bind:key="v.id">
-									<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
-									<span class="ftdcard__meta1">
-										<h3 class="ftdcard__title">{{ v.title }}</h3>
-										<p class="ftdcard__class">{{ v.class }}</p>
-									</span>
-									<span class="ftdcard__meta2">
-										<p class="ftdcard__genre">{{ v.genre }}</p>
-										<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
-									</span>
-								</router-link>
-
-							</div>
-					</div>
+						<div class="featured">
+								<h3 class="featured__heading">Featured videos of Home</h3>
+								<div class="featured__container">
+									<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true"></mt-video-card>
+								</div>
+						</div>
 
 					<div class="admin__classvideos" v-show="!(currentClassSelected === 'Home')">
-
 							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
-
-
-							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
-									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredGlobal=== false" @click="featureGlobal($event)">
-									<img class="classvideo__favorite" src="../../assets/favorite-active.svg" v-show="v.featuredGlobal === true" @click="unfeatureGlobal($event)">
-
-									<div class="classvideo__metadata">
-										<img class="classvideo__image" :src="v.thumb"></router-link>
-										<div class="classvideo__titles">
-											<router-link :to="'/video/' + v.id" tag="a" class="classvideo__title">{{ v.title }}</router-link></h3>
-											<p class="classvideo__class">{{ v.class }}</p>
-											<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
-										</div>
-										<div class="classvideo__metameta">
-											<span class="classvideo__score">
-												<p class="classvideo__scoreNum">94%</p>
-												<p class="classvideo__scoreLabel">Score</p>
-											</span>
-											<span class="classvideo__annotations">
-												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
-												<p class="classvideo__annotationsLabel">Comments</p>
-											</span>
-										</div>
-									</div>
-							</div>
-							
+							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
 					</div>
 					
 					<upload-video :currentClassProp="currentClassSelected"></upload-video>
@@ -77,14 +38,7 @@
 
 			</div>
 			
-			<footer class="footer" style="padding: 2rem;">
-				<div class="container">
-					<div class="content has-text-centered">
-						<p style="margin: 0.2rem;"><strong>©Metalogon</strong></p>
-						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
-					</div>
-				</div>
-			</footer>
+			<my-footer></my-footer>
 
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
@@ -127,6 +81,9 @@
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
+	import MyFooter from '../Layout/MyFooter.vue'
+	import MtVideoCard from './Shared/MtVideoCard.vue'
+	import MtVideoItemList from './Shared/MtVideoItemList.vue'
 
     export default {
 			data() {
@@ -192,34 +149,6 @@
 						this.videos[i]["featured"] = false
 					}
 				},
-				featureGlobal(event) {
-					var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
-					// The string '/video/' has 7 seven characters.
-					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
-
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						if (this.videos[i].id === eventVideoId) {
-								if (this.videos[i].featuredGlobal === false) {
-									this.videos[i].featuredGlobal = true
-									this.$store.dispatch( 'featureGlobal', this.videos[i] )
-								} 
-						}
-					}
-				},
-				unfeatureGlobal(event) {
-					var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
-					// The string '/video/' has 7 seven characters.
-					eventVideoId = eventVideoId.substring(7, eventVideoId.length)
-
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						if (this.videos[i].id === eventVideoId) {
-								if (this.videos[i].featuredGlobal === true) {
-									this.videos[i].featuredGlobal = false
-									this.$store.dispatch( 'unfeatureGlobal', this.videos[i] )
-								} 
-						}
-					}
-				},
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
@@ -236,13 +165,16 @@
 				}
 			},
 			computed: {
-					...mapGetters(
-						['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
-					),
-				},
+				...mapGetters(
+					['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
+				),
+			},
 			components: {
 				'upload-video': UploadVideo,
-				'my-header': MyHeader
+				'my-header': MyHeader,
+				'my-footer': MyFooter,
+				'mt-video-card': MtVideoCard,
+				'mt-video-itemlist': MtVideoItemList,
 			}
 		}
 </script>
@@ -257,88 +189,6 @@
 	padding-left: 30px;
 	margin-top: 25px;
 }
-
-/* ==============================================
-                #ADMIN-FEATURED
-	================================================= */
-
-
-	.admin__featured {
-
-	}
-
-		.admin__featured-container {
-			display:flex;
-			flex-wrap: wrap;
-		}
-			
-		.featured__heading {
-			background-color: #16324f;
-			color: #FFF;
-			padding: 9px;
-			margin-bottom: 0.5em !important;
-			border-radius: 7px;
-		}
-
-
-
-
-
-/* ==============================================
-                #FTDCARD (Featured card)
-	================================================= */
-
-	.ftdcard {
-		width: 32.30%;
-		margin: 0.3em;
-		transition: 0.3s;
-		color: #000;
-		border: 1px solid #ddd;
-	}
-
-	.ftdcard:hover {
-		transform: scale(1.02);
-		transition: 0.3s;
-	}
-
-	.ftdcard__image {
-
-	}
-
-	.ftdcard__meta1 {
-		display: flex;
-		flex-direction: column;
-		padding: 0px 10px;
-	}
-
-		.ftdcard__title {
-			font-size: 14px;
-			line-height: 1.5;
-		}
-
-		.ftdcard__class {
-			color: #4a4a4a;
-			font-size: 12px;
-			margin-top: -5px;
-		}
-
-	.ftdcard__meta2 {
-		display: flex;
-		flex-direction: column;
-		padding: 0px 10px;
-		margin-top: 12px;
-	}
-
-		.ftdcard__genre {
-			color: #4a4a4a;
-			font-size: 12px;
-		}
-
-		.ftdcard__date {
-			color: #4a4a4a;
-			font-size: 12px;
-			margin-top: -5px;
-		}
 
 
 

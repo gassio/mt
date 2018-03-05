@@ -134,5 +134,26 @@
         display: relative;
       }
 
+    /* ==============================================
+                #FEATURED
+	================================================= */
+
+	.featured {
+
+	}
+
+		.featured__container {
+			display:flex;
+			flex-wrap: wrap;
+		}
+			
+		.featured__heading {
+			background-color: #16324f;
+			color: #FFF;
+			padding: 9px;
+			margin-bottom: 0.5em !important;
+			border-radius: 7px;
+		}
+
 
 </style>

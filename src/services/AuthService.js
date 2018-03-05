@@ -22,7 +22,7 @@ class AuthService {
         var that = this
         return new Promise(function (resolve, reject) {
             // axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
-            axios.post('http://97227cb6.ngrok.io/auth', value)
+            axios.post('http://localhost:3000/auth', value)
                 .then(function (response) {
 
                     console.log("authService: first time login")

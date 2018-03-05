@@ -8,66 +8,17 @@
 
 				<div class="student__main column is-10">
 
-					<div class="student__featured">
-							<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
-							
-							<div class="student__featured-container">
-
-								<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true" v-bind:key="v.id">
-										<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
-										<span class="ftdcard__meta1">
-											<h3 class="ftdcard__title">{{ v.title }}</h3>
-											<p class="ftdcard__class">{{ v.class }}</p>
-										</span>
-										<span class="ftdcard__meta2">
-											<p class="ftdcard__genre">{{ v.genre }}</p>
-											<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
-										</span>
-								</router-link>
-
-								<router-link class="ftdcard" tag="a" :to="'/video/' + v.id" v-for="v in videos" v-if="currentClassSelected === 'Home' && v.featuredGlobal === true" v-bind:key="v.id">
-										<img class="ftdcard__image" :src="v.thumb" alt="Placeholder image">
-										<span class="ftdcard__meta1">
-											<h3 class="ftdcard__title">{{ v.title }}</h3>
-											<p class="ftdcard__class">{{ v.class }}</p>
-										</span>
-										<span class="ftdcard__meta2">
-											<p class="ftdcard__genre">{{ v.genre }}</p>
-											<p class="ftdcard__date">{{ v.presentedAt | sliceDate }}</p>
-										</span>
-								</router-link>
-
-							</div>
+					<div class="featured">
+						<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
+						<div class="featured__container">
+							<mt-video-card v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true) || (currentClassSelected === 'Home' && v.featuredGlobal === true)">
+							</mt-video-card>
+						</div>
 					</div>
 
 					<div class="student__classvideos" v-show="!(currentClassSelected === 'Home')">
-
 							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
-
-							<div class="classvideo" v-for="v in videos" v-bind:key="v.id" v-if="v.class === currentClassSelected">
-									<img class="classvideo__favorite" src="../../assets/favorite-inactive.svg" v-show="v.featuredClass === false" @click="featureVideo($event)">
-									<img class="classvideo__favorite" src="../../assets/favorite-active.svg" v-show="v.featuredClass === true" @click="unfeatureVideo($event)">
-
-									<div class="classvideo__metadata">
-										<img class="classvideo__image" :src="v.thumb"></router-link>
-										<div class="classvideo__titles">
-											<router-link :to="'/video/' + v.id" tag="a" class="classvideo__title">{{ v.title }}</router-link></h3>
-											<p class="classvideo__class">{{ v.class }}</p>
-											<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
-										</div>
-										<div class="classvideo__metameta">
-											<span class="classvideo__score">
-												<p class="classvideo__scoreNum">94%</p>
-												<p class="classvideo__scoreLabel">Score</p>
-											</span>
-											<span class="classvideo__annotations">
-												<p class="classvideo__annotationsNum">{{ v.annotations.length }}</p>
-												<p class="classvideo__annotationsLabel">Comments</p>
-											</span>
-										</div>
-									</div>
-							</div>
-							
+							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
 					</div>
 
 					<upload-video :currentClassProp="currentClassSelected"></upload-video>
@@ -90,14 +41,7 @@
 
 			</div>
 			
-			<footer class="footer" style="padding: 2rem;">
-				<div class="container">
-					<div class="content has-text-centered">
-						<p style="margin: 0.2rem;"><strong>©Metalogon</strong></p>
-						<p>Writing, Rhetoric and Professional Communication  at Massachusetts Institute of Technology</p>
-					</div>
-				</div>
-			</footer>		
+			<my-footer></my-footer>	
 
 			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
 					<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
@@ -113,12 +57,15 @@
 </template>
 
 <script>
+	import _ from 'lodash'
 	import axios from 'axios'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
-	import _ from 'lodash'
+	import MyFooter from '../Layout/MyFooter.vue'
+	import MtVideoCard from './Shared/MtVideoCard.vue'
+	import MtVideoItemList from './Shared/MtVideoItemList.vue'
 
     export default {
 			data() {
@@ -157,21 +104,6 @@
 					}
 					this.modalEnrollClassIsOpen = false
 				},
-				favoriteVideo(event) {
-					var eventTitle = $(event.currentTarget.parentElement.parentElement).find('.classvideo-title').text()
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						if (this.videos[i].title === eventTitle) {
-								if (this.videos[i].featured === false) {
-									this.$store.commit('FAVORITE_VIDEO', this.videos[i].title)
-									$(event.currentTarget).css('color', 'rgb(244, 226, 95)')
-								} 
-								else {
-									this.$store.commit('UNFAVORITE_VIDEO', this.videos[i].title)
-									$(event.currentTarget).css('color', '#4a4a4a')
-								}
-						}
-					}
-				},
 				secondsToMMSS(s) {
 							s = Number(s);
 
@@ -201,12 +133,15 @@
 			},
 			computed: {
 				...mapGetters(
-						['videos', 'uploadUrl', 'classes', 'studentClasses', 'currentClassSelected', 'currentClassNumber']
+					['videos', 'uploadUrl', 'classes', 'studentClasses', 'currentClassSelected', 'currentClassNumber']
 				),
 			},
 			components: {
 				'upload-video': UploadVideo,
-				'my-header': MyHeader
+				'my-header': MyHeader,
+				'my-footer': MyFooter,
+				'mt-video-card': MtVideoCard,
+				'mt-video-itemlist': MtVideoItemList
 			}
 		}
 </script>
