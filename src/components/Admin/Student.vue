@@ -25,30 +25,12 @@
 
 				</div>
 
-				<aside class="admin__sidebar column is-2 aside">
-
-					<div class="sidebar__actions">
-						<a class="sidebar__actionsLink" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
-					</div>
-					<div class="sidebar__classes">
-						<el-input class="sidebar__classesInput" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>	
-						<a class="sidebar__classesLink" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.name }}</a>
-					</div>
-
-				</aside>
+				<mt-sidebar></mt-sidebar>
 
 			</div>
 			
 			<my-footer></my-footer>	
-
-			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
-					<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
-							<i aria-hidden="true" class="fa fa-book fa-5x"></i>
-							<strong class="classes-card-title">"{{ c.name }}"</strong> 
-							<p class="classes-card-title">{{ c.department }}</p> 
-							<p class=""> {{ c.number }} - {{ c.semester }}</p> 
-					</a>
-			</el-dialog>  
+ 
 		
 		</div>	
 
@@ -64,42 +46,14 @@
 	import MyFooter from '../Layout/MyFooter.vue'
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
+	import MtSidebar from './Shared/MtSidebar.vue'
 
     export default {
 			data() {
 				return {
-						searchInputValue: '',
-						modalEnrollClassIsOpen: false,
-						otherClasses: [
-							{ id: '5bc87287-1271-4f0c-94a1', department: "Chemical Engineering", name: 'Numerical Methods Applied to Chemical Engineering', number: '10.34', semester: 'Spring 2018', archived: false },
-							{ id: '6bc87287-1271-4f0c-94a2', department: "Chemical Engineering", name: 'Fundamentals of Advanced Energy Conversion', number: '10.390J', semester: 'Spring 2018', archived: false },
-							{ id: '7bc87287-1271-4f0c-94a3', department: "Aeronautics and Astronautics", name: 'Dynamics', number: '16.07', semester: 'Spring 2018', archived: false },
-							{ id: '8bc87287-1271-4f0c-94a4', department: "Aeronautics and Astronautics", name: 'System Safety', number: '16.863J', semester: 'Spring 2018', archived: false }
-						]
 				}
 			},
 			methods: {
-				setCurrentClass(className, classNumber) {
-					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
-				},
-				enrollToClass(event) {
-					const clickedClassName = event.currentTarget.children[1].innerHTML
-					for (var i = 0, l = this.otherClasses.length; i < l; i++) {
-						if (this.otherClasses[i].name === clickedClassName) {
-							this.currentClassSelected = this.otherClasses[i].name
-							this.studentClasses.push(this.otherClasses[i])
-							this.classes.push(this.otherClasses[i])
-							this.otherClasses.splice(i,1)	
-							break
-						}
-					}
-					this.modalEnrollClassIsOpen = false
-				},
-				queryStudentClasses: _.debounce(function () {
-					console.log('QUERY STUDENT CLASSES')
-
-					this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
-				}, 300)
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
@@ -129,7 +83,8 @@
 				'my-header': MyHeader,
 				'my-footer': MyFooter,
 				'mt-video-card': MtVideoCard,
-				'mt-video-itemlist': MtVideoItemList
+				'mt-video-itemlist': MtVideoItemList,
+				'mt-sidebar': MtSidebar
 			}
 		}
 </script>
@@ -426,40 +381,6 @@
 
 
 
-
-	/* ==============================================
-                #ENROLL-TO-CLASS CLASSES-CARD
-	================================================= */
-
-	.student__enrollModal .el-dialog__body {
-		display: flex;
-		flex-wrap: wrap;
-	}
-			.classes-card {
-				background-color: rgba(169,9,49,0.04);
-				color: #A90931;
-				padding: 45px;
-				margin: 20px;
-				height: auto;
-				transition:  box-shadow 0.5s ease;
-				width: 250px;
-				display: flex;
-				flex-direction: column;
-				justify-content: center;
-				align-items: center;
-			}
-				.classes-card:hover {
-					cursor: pointer;
-					transition: 0.2s;
-					-webkit-transition: 0.2s;
-					background-color: #A90931;
-					color: #FFF !important;
-				}
-
-				.classes-card-title {
-					text-align: center;
-					font-size: 18px;
-				}
 
 
 

@@ -24,52 +24,11 @@
 
 				</div>
 
-				<aside class="admin__sidebar column is-2 aside">
-
-					<div class="sidebar__actions">
-						<a class="sidebar__actionsLink" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-						<a class="sidebar__actionsLink" v-show="!(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
-					</div>
-
-					<div class="sidebar__classes">
-						<el-input class="sidebar__classesInput" icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
-						<a class="sidebar__classesLink" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" v-for="c in adminClasses" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
-					</div>
-					
-				</aside>
+				<mt-sidebar></mt-sidebar>
 
 			</div>
 			
-			<my-footer></my-footer>
-
-			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
-					<el-form :model="newClass">
-							<el-form-item label="Name">
-									<el-input v-model="newClass.name" placeholder="Advanced Essay Workshop"></el-input>
-							</el-form-item>
-							<el-form-item label="Department">
-								<el-input v-model="newClass.department" placeholder="Comparative Media Studies / Writing"></el-input>
-									<!-- <el-select  placeholder="Choose a department" >
-										<el-option v-model="newClass.department" :label="c.department" :value="c.department" v-for="c in classes" v-bind:key="c.title"></el-option>
-									</el-select> -->
-							</el-form-item>
-							<el-form-item label="Number">
-									<el-input v-model="newClass.number" placeholder="21W.745"></el-input>
-							</el-form-item>
-							<el-form-item label="Semester">
-									<el-input v-model="newClass.semester" placeholder="Spring 2018"></el-input>
-							</el-form-item>
-					</el-form>
-					<span slot="footer" class="dialog-footer">
-							<el-button @click="modalCreateClassIsOpen = false">Cancel</el-button>
-							<el-button class="add-class-btn" @click="createClass(); modalCreateClassIsOpen = false;">Create Class</el-button>
-					</span>
-			</el-dialog>
-
-			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
-				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
-				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
-			</el-dialog>			
+			<my-footer></my-footer>			
 			
 		</div>	
 
@@ -86,49 +45,15 @@
 	import MyFooter from '../Layout/MyFooter.vue'
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
+	import MtSidebar from './Shared/MtSidebar.vue'
 
     export default {
 			data() {
 				return {
-					searchInputValue: '',
-					modalCreateClassIsOpen: false,
-					modalDeleteClassIsOpen: false,
-					newClass: {
-						archived: false,
-						department: '',
-						name: '',
-						number: '',
-						semester: ''
-					},
 				}
 			},
 			methods: {
-				setCurrentClass(className, classNumber) {
-					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
-				},
-				createClass() {	
-						this.$store.dispatch('createClass', { 
-								newClass: this.newClass
-						})
-						this.newClass = {}
-				},
-				deleteClass() {
-					var objectId
-					for (var i = 0, l = this.adminClasses.length; i < l; i++) {
-						if (this.adminClasses[i].name === this.currentClassSelected) {
-							objectId = this.adminClasses[i].id
-						}
-					}
-					this.$store.dispatch( 'deleteClass', objectId )
-					
-					this.modalDeleteClassIsOpen = false
-					this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
-				},
-				queryAdminClasses: _.debounce(function () {
-					console.log('QUERY ADMIN CLASSES')
-
-					this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
-				}, 300),
+				
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
@@ -155,6 +80,7 @@
 				'my-footer': MyFooter,
 				'mt-video-card': MtVideoCard,
 				'mt-video-itemlist': MtVideoItemList,
+				'mt-sidebar': MtSidebar
 			}
 		}
 </script>
