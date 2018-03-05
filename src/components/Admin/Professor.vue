@@ -26,26 +26,27 @@
 
 					</div>
 
-					<aside class="professor__sidebar column is-2 aside">
-						<div class="metalogon-home menu-list">
-							<a @click="modalCreateClassIsOpen = true"><span class="name "><strong>+ Create new class</strong></span></a>
-							<a @click="openModalArchiveClass()" v-show="!(currentClassSelected === 'Home')"><i class="fa fa-archive" aria-hidden="true"></i><span class="name" style="padding-left:5px;">Archive this class</span></a>
-							<hr>
+					<aside class="admin__sidebar column is-2 aside">
+						<div class="sidebar__actions">
+							<a class="sidebar__actionsLink" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i> Create new class</a>
+							<a class="sidebar__actionsLink" @click="openModalArchiveClass()" v-show="!(currentClassSelected === 'Home')"><i class="fa fa-archive"></i>Archive this class</a>
 						</div>
-						<el-tabs v-model="sidebarClassesTab">
-							<el-tab-pane label="Active classes" name="activeClasses">
-								<el-input icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-								<div class="menu-list">
-									<a v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
-								</div>
-							</el-tab-pane>
-							<el-tab-pane label="Archived" name="archivedClasses">
-								<el-input icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
-								<div class="menu-list">
-									<a v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
-								</div>
-							</el-tab-pane>
-						</el-tabs>
+						<div class="sidebar__classes">
+							<el-tabs v-model="sidebarClassesTab">
+								<el-tab-pane label="Active classes" name="activeClasses">
+									<div class="sidebar__classes">
+										<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
+										<a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+									</div>
+								</el-tab-pane>
+								<el-tab-pane label="Archived" name="archivedClasses">
+									<div class="sidebar__classes">
+										<el-input class="sidebar__classesInput" icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
+										<a class="sidebar__classesLink" v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+									</div>
+								</el-tab-pane>
+							</el-tabs>
+						</div>
 					</aside>
 
 				</div>
@@ -134,7 +135,7 @@
 
 	</template>
 
-	<script>
+<script>
 	import _ from 'lodash'
 	import axios from 'axios'
 	import { mapGetters } from 'vuex'
@@ -145,261 +146,253 @@
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
 
-			export default {
-				data() {
-					return {
-						sidebarClassesTab: 'activeClasses',
-						// currentClassString: '',
-						activeClassesInputValue: '',
-						archivedClassesInputValue: '',
-						modalCreateClassIsOpen: false,
-						modalArchiveClassIsOpen: false,
-						modalUnarchiveClassIsOpen: false,
-						classIdClicked: '',
-						newClass: {
-							archived: false,
-							department: '',
-							name: '',
-							number: '',
-							semester: ''
-						},
-						modalGenreCustomization: false,
-						modalGenreCustomization2: false,
-						// 
-						genres: [
-							{ name: 'Elevator pitch' },
-							{ name: 'Lab presentation' },
-							{ name: 'Thesis talk' },
-							{ name: 'Progress report' },
-							{ name: 'Conference talk' }
-						],
-						currentGenre: 'Lab presentation',
-						// Genre version 1
-						canons: [
-							{
-								label: 'Moves',
-								children: [
-									{ label: 'Introduction', children: [
-										{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-										{ label: 'States the value of the present research and explains why it was conducted' },
-										{ label: 'Discusses the definitions of key terms' },
-										{ label: 'Summarizes and previews the methods used' },
-										{ label: 'Presents basic equations' },
-									]},
-									{ label: 'Methodology', children: [
-										{ label: 'Describes materials and instrumentation in the study' },
-										{ label: 'Describes tasks (actions) in the study' },
-										{ label: 'Describes the procedures of an experiment (activities)' },
-										{ label: 'Presents justification of techniques' },
-										{ label: 'Describes variables in the study' },
-										{ label: 'Describes the procedures used in data analysis' },
-										{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
-									]},
-									{ label: 'Results and Discussion', children: [
-										{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-										{ label: 'States the value of the present research and explains why it was conducted' },
-										{ label: 'Discusses the definitions of key terms' },
-										{ label: 'Summarizes and previews the methods used' },
-										{ label: 'Presents basic equations' },
-									]},
-									{ label: 'Conclusion', children: [
-										{ label: 'xxxxxxxxxx' },
-									]},
-									{ label: 'Question and Answer', children: [
-										{ label: 'xxxxxxxxxx' },
-									]},
-								]
-							}, 
-							{
-								label: 'Structure',
-								children: [
-									{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
-									{ label: 'Conceptual transitions' },
-									{ label: 'Line of argument' },
-									{ label: 'Central moves' },
-								]
-							}, 
-							{
-								label: 'Delivery',
-								children: [
-									{ label: 'Volume' },
-									{ label: 'Gestures' },
-									{ label: 'Metadiscourse' },
-									{ label: 'Posture' },
-									{ label: 'Language' },
-								]
-							}, 
-							{
-								label: 'Style',
-								children: [
-									{ label: 'Coherence' },
-									{ label: 'Concision' },
-									{ label: 'Flow' },
-									{ label: 'Emphasis' },
-									{ label: 'Figures of Speech' },
-									{ label: 'Figures of Sound' },
-								]
-							},
-							{
-								label: 'Visuals',
-								children: [
-									{ label: 'Pictorial cues' },
-									{ label: 'Slide titles' },
-									{ label: 'Image-text highlight' },
-									{ label: 'Graphics' },
-									{ label: 'Memorable images' }
-								]
-							},
-						],
-						genreProps: {
-							children: 'children',
-							label: 'label',
-							desc: 'desc'
-						},
-						// Genre version 2
-						structureData: [
-							{ key: 0, label: 'Terms'},
-							{ key: 1, label: 'Conceptual transitions' },
-							{ key: 2, label: 'Line of argument' },
-							{ key: 3, label: 'Central moves' }
-						],
-						structurePassed: [],
-						deliveryData: [
-							{ key: 0, label: 'Volume' },
-							{ key: 1, label: 'Gestures' },
-							{ key: 2, label: 'Metadiscourse' },
-							{ key: 3, label: 'Posture' },
-							{ key: 4, label: 'Language' },
-						],
-						deliveryPassed: [],
-						styleData: [
-							{ key: 0, label: 'Coherence' },
-							{ key: 1, label: 'Concision' },
-							{ key: 2, label: 'Flow' },
-							{ key: 3, label: 'Emphasis' },
-							{ key: 4, label: 'Figures of Speech' },
-							{ key: 5, label: 'Figures of Sound' },
-						],
-						stylePassed: [],
-						visualsData: [
+	export default {
+		data() {
+			return {
+				sidebarClassesTab: 'activeClasses',
+				// currentClassString: '',
+				activeClassesInputValue: '',
+				archivedClassesInputValue: '',
+				modalCreateClassIsOpen: false,
+				modalArchiveClassIsOpen: false,
+				modalUnarchiveClassIsOpen: false,
+				classIdClicked: '',
+				newClass: {
+					archived: false,
+					department: '',
+					name: '',
+					number: '',
+					semester: ''
+				},
+				modalGenreCustomization: false,
+				modalGenreCustomization2: false,
+				// 
+				genres: [
+					{ name: 'Elevator pitch' },
+					{ name: 'Lab presentation' },
+					{ name: 'Thesis talk' },
+					{ name: 'Progress report' },
+					{ name: 'Conference talk' }
+				],
+				currentGenre: 'Lab presentation',
+				// Genre version 1
+				canons: [
+					{
+						label: 'Moves',
+						children: [
+							{ label: 'Introduction', children: [
+								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+								{ label: 'States the value of the present research and explains why it was conducted' },
+								{ label: 'Discusses the definitions of key terms' },
+								{ label: 'Summarizes and previews the methods used' },
+								{ label: 'Presents basic equations' },
+							]},
+							{ label: 'Methodology', children: [
+								{ label: 'Describes materials and instrumentation in the study' },
+								{ label: 'Describes tasks (actions) in the study' },
+								{ label: 'Describes the procedures of an experiment (activities)' },
+								{ label: 'Presents justification of techniques' },
+								{ label: 'Describes variables in the study' },
+								{ label: 'Describes the procedures used in data analysis' },
+								{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
+							]},
+							{ label: 'Results and Discussion', children: [
+								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+								{ label: 'States the value of the present research and explains why it was conducted' },
+								{ label: 'Discusses the definitions of key terms' },
+								{ label: 'Summarizes and previews the methods used' },
+								{ label: 'Presents basic equations' },
+							]},
+							{ label: 'Conclusion', children: [
+								{ label: 'xxxxxxxxxx' },
+							]},
+							{ label: 'Question and Answer', children: [
+								{ label: 'xxxxxxxxxx' },
+							]},
+						]
+					}, 
+					{
+						label: 'Structure',
+						children: [
+							{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
+							{ label: 'Conceptual transitions' },
+							{ label: 'Line of argument' },
+							{ label: 'Central moves' },
+						]
+					}, 
+					{
+						label: 'Delivery',
+						children: [
+							{ label: 'Volume' },
+							{ label: 'Gestures' },
+							{ label: 'Metadiscourse' },
+							{ label: 'Posture' },
+							{ label: 'Language' },
+						]
+					}, 
+					{
+						label: 'Style',
+						children: [
+							{ label: 'Coherence' },
+							{ label: 'Concision' },
+							{ label: 'Flow' },
+							{ label: 'Emphasis' },
+							{ label: 'Figures of Speech' },
+							{ label: 'Figures of Sound' },
+						]
+					},
+					{
+						label: 'Visuals',
+						children: [
 							{ label: 'Pictorial cues' },
 							{ label: 'Slide titles' },
 							{ label: 'Image-text highlight' },
 							{ label: 'Graphics' },
 							{ label: 'Memorable images' }
-						],
-						visualsPassed: []
-					}
+						]
+					},
+				],
+				genreProps: {
+					children: 'children',
+					label: 'label',
+					desc: 'desc'
 				},
-				methods: {
-					handleNodeClick(data) {
-						console.log(data);
-					},
-					// A Vue setter.
-					queryActiveClasses: _.debounce(function () {
-						console.log('QUERY ACTIVE CLASSES')
-						this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
-					}, 300),
-					// A Vue setter.
-					queryArchivedClasses: _.debounce(function () {
-						console.log('QUERY ARCHIVED CLASSES')
-						this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
-					}, 300),
-					setCurrentClass(className, classNumber) {
-						this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
-					},
-					createClass() {	
-							this.$store.dispatch('createClass', { 
-									newClass: this.newClass
-							})
-							this.newClass = {}
-					},
-					openModalArchiveClass() {
-							if (this.currentClassSelected !== '')
-								this.modalArchiveClassIsOpen = true
-					},
-					archiveClass() {
-						// 1. Adds current class to Archived Classes.
-						// 2. Removes current class from Active Classes.
-						// 3. Modifies classes object.
-						var objectToBeArchived = {}
-						var objectId
-						for (var i = 0, l = this.activeClasses.length; i < l; i++) {
-							if (this.activeClasses[i].name === this.currentClassSelected) {
-								this.activeClasses[i].archived = true
-								objectToBeArchived = this.activeClasses[i]
-								objectId = this.activeClasses[i].id
-								break
-							}
-						}
-						this.$store.dispatch('archiveClass', { 
-							classId: objectId,
-							classObject: objectToBeArchived 
-						})
-						
-						this.modalArchiveClassIsOpen = false // Closes the modal.
-						var noClass = 'select a class'
-						this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
-					},
-					openModalUnarchiveClass(classId) {
-						this.classIdClicked = classId
-						this.modalUnarchiveClassIsOpen = true
-					},
-					unArchiveClass() {
-						var self = this
-						var objectToBeUnarchived = {}
-						var objectId
-						for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
-							if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
-								this.archivedClasses[i].archived = false
-								objectToBeUnarchived = this.archivedClasses[i]
-								break
-							}
-						}
-						this.$store.dispatch('unArchiveClass', { 
-							classId: self.classIdClicked,
-							classObject: objectToBeUnarchived 
-						})
-						this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
-						this.modalUnarchiveClassIsOpen = false
-					},
-					secondsToMMSS(s) {
-						s = Number(s);
-
-						var m = Math.floor(s % 3600 / 60);
-						var s = Math.floor(s % 3600 % 60);
-
-						return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-					}
-				},
-				created() {	
-					this.$store.dispatch('getAllVideos')
-					this.$store.dispatch('getAllClasses')
-					this.$store.state.currentClassSelected = 'Home'
-				},
-				mounted() {
-					// Check if role is professor. If not redirect to current role's homePage
-					const role = this.$root.$options.authService.getAuthData().role_id
-					console.log("professor.vue, role: " + role)
-					if (role.toLowerCase() != "professor") {
-						console.log("professor.vue, pushing router /decideHome")
-						this.$router.push('/DecideHome')
-					}
-				},
-				computed: {
-					...mapGetters(
-						['videos', 'uploadUrl', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber']
-					)
-				},
-				components: {
-					'upload-video': UploadVideo,
-					'my-header': MyHeader,
-					'my-footer': MyFooter,
-					'mt-video-card': MtVideoCard,
-					'mt-video-itemlist': MtVideoItemList
-				}
+				// Genre version 2
+				structureData: [
+					{ key: 0, label: 'Terms'},
+					{ key: 1, label: 'Conceptual transitions' },
+					{ key: 2, label: 'Line of argument' },
+					{ key: 3, label: 'Central moves' }
+				],
+				structurePassed: [],
+				deliveryData: [
+					{ key: 0, label: 'Volume' },
+					{ key: 1, label: 'Gestures' },
+					{ key: 2, label: 'Metadiscourse' },
+					{ key: 3, label: 'Posture' },
+					{ key: 4, label: 'Language' },
+				],
+				deliveryPassed: [],
+				styleData: [
+					{ key: 0, label: 'Coherence' },
+					{ key: 1, label: 'Concision' },
+					{ key: 2, label: 'Flow' },
+					{ key: 3, label: 'Emphasis' },
+					{ key: 4, label: 'Figures of Speech' },
+					{ key: 5, label: 'Figures of Sound' },
+				],
+				stylePassed: [],
+				visualsData: [
+					{ label: 'Pictorial cues' },
+					{ label: 'Slide titles' },
+					{ label: 'Image-text highlight' },
+					{ label: 'Graphics' },
+					{ label: 'Memorable images' }
+				],
+				visualsPassed: []
 			}
-	</script>
+		},
+		methods: {
+			setCurrentClass(className, classNumber) {
+				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+			},
+			createClass() {	
+				this.$store.dispatch('createClass', { 
+						newClass: this.newClass
+				})
+				this.newClass = {}
+			},
+			archiveClass() {
+				// 1. Adds current class to Archived Classes.
+				// 2. Removes current class from Active Classes.
+				// 3. Modifies classes object.
+				var objectToBeArchived = {}
+				var objectId
+				for (var i = 0, l = this.activeClasses.length; i < l; i++) {
+					if (this.activeClasses[i].name === this.currentClassSelected) {
+						this.activeClasses[i].archived = true
+						objectToBeArchived = this.activeClasses[i]
+						objectId = this.activeClasses[i].id
+						break
+					}
+				}
+				this.$store.dispatch('archiveClass', { 
+					classId: objectId,
+					classObject: objectToBeArchived 
+				})
+				
+				this.modalArchiveClassIsOpen = false // Closes the modal.
+				var noClass = 'select a class'
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+			},
+			unArchiveClass() {
+				var self = this
+				var objectToBeUnarchived = {}
+				var objectId
+				for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
+					if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
+						this.archivedClasses[i].archived = false
+						objectToBeUnarchived = this.archivedClasses[i]
+						break
+					}
+				}
+				this.$store.dispatch('unArchiveClass', { 
+					classId: self.classIdClicked,
+					classObject: objectToBeUnarchived 
+				})
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
+				this.modalUnarchiveClassIsOpen = false
+			},
+			// A Vue setter.
+			queryActiveClasses: _.debounce(function () {
+				console.log('QUERY ACTIVE CLASSES')
+				this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
+			}, 300),
+			// A Vue setter.
+			queryArchivedClasses: _.debounce(function () {
+				console.log('QUERY ARCHIVED CLASSES')
+				this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
+			}, 300),
+			openModalArchiveClass() {
+				if (this.currentClassSelected !== '')
+					this.modalArchiveClassIsOpen = true
+			},
+			openModalUnarchiveClass(classId) {
+				this.classIdClicked = classId
+				this.modalUnarchiveClassIsOpen = true
+			},
+			handleNodeClick(data) {
+				console.log(data);
+			},
+		},
+		created() {	
+			this.$store.dispatch('getAllVideos')
+			this.$store.dispatch('getAllClasses')
+			this.$store.state.currentClassSelected = 'Home'
+		},
+		mounted() {
+			// Check if role is professor. If not redirect to current role's homePage
+			const role = this.$root.$options.authService.getAuthData().role_id
+			console.log("professor.vue, role: " + role)
+			if (role.toLowerCase() != "professor") {
+				console.log("professor.vue, pushing router /decideHome")
+				this.$router.push('/DecideHome')
+			}
+		},
+		computed: {
+			...mapGetters(
+				['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber']
+			)
+		},
+		components: {
+			'upload-video': UploadVideo,
+			'my-header': MyHeader,
+			'my-footer': MyFooter,
+			'mt-video-card': MtVideoCard,
+			'mt-video-itemlist': MtVideoItemList
+		}
+	}
+</script>
 
 	<style>
 	/* ==============================================
@@ -621,29 +614,53 @@
 
 
 
-
 	/* ==============================================
-									#professor-SIDEBAR
-		================================================= */
+                #ADMIN-SIDEBAR
+	================================================= */
 
-	.professor__sidebar {
+	.admin__sidebar {
+		margin: 0;
 		padding: 0;
-		margin-top: 13px;
+		background-color: #F9F9F9;
 	}
 
-	.professor__sidebar .menu-list {
-		padding: 0;
-		margin-top: 20px;	
-		/* position: fixed; */
+	.sidebar__actions {
+		margin-top: 15px;	
+		display: flex;
+		flex-direction: column;
 	}
 
-		.professor__sidebar .menu-list a {
-			padding: 15px 15px;
+		.sidebar__actionsLink {
+			padding: 10x 15px 10px 15px !important;
 		}
 
-	.menu-list span {
-		font-size: 14px;
+
+	.sidebar__classes {
+		margin-top: 10px;
+		display: flex;
+		flex-direction: column;
 	}
+
+		.sidebar__classesInput {
+			margin-bottom: 10px;
+		}
+
+		.sidebar__classesLink {
+
+		}
+
+		.admin__sidebar a {
+			color: #4a4a4a;
+			font-size: 13px;
+			margin: 0;
+			padding: 12px 12px 12px 12px;
+		}
+		.admin__sidebar a:hover {
+			background-color: #f5f5f5;
+		}
+			.admin__sidebar a i {
+				padding-right: 5px;
+			}
 
 
 

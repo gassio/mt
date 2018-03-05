@@ -26,12 +26,14 @@
 
 				<aside class="admin__sidebar column is-2 aside">
 
-					<div class="menu-list">
-						<a href="#" class="" @click="modalCreateClassIsOpen = true"><span class="name"><strong>+ Create new class</strong></span></a>
-						<a v-show="!(currentClassSelected === 'Home')" class="" @click="modalDeleteClassIsOpen = true"><span class="name"><i class="fa fa-trash" aria-hidden="true"></i> Delete this class</span></a>
-						<hr>
-						<el-input icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
-						<a v-for="c in adminClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.number }} - {{ c.name }}</span></a>
+					<div class="sidebar__actions">
+						<a class="sidebar__actionsLink" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
+						<a class="sidebar__actionsLink" v-show="!(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
+					</div>
+
+					<div class="sidebar__classes">
+						<el-input class="sidebar__classesInput" icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
+						<a class="sidebar__classesLink" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" v-for="c in adminClasses" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
 					</div>
 					
 				</aside>
@@ -88,7 +90,6 @@
     export default {
 			data() {
 				return {
-					currentClassString: '',
 					searchInputValue: '',
 					modalCreateClassIsOpen: false,
 					modalDeleteClassIsOpen: false,
@@ -128,27 +129,6 @@
 
 					this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
 				}, 300),
-				genreSelection() {
-					let that = this
-					$('.admin__genre').dropdown({
-						onChange: function (value, text, $selectedItem) {
-							that.currentGenre = text
-						}
-					})
-				},
-				secondsToMMSS(s) {
-							s = Number(s);
-
-							var m = Math.floor(s % 3600 / 60);
-							var s = Math.floor(s % 3600 % 60);
-
-							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-				},
-				jerryriggingFeatured() {
-					for (var i = 0, l = this.videos.length; i < l; i++) {
-						this.videos[i]["featured"] = false
-					}
-				},
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
@@ -166,7 +146,7 @@
 			},
 			computed: {
 				...mapGetters(
-					['videos', 'uploadUrl', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
+					['videos', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
 				),
 			},
 			components: {
@@ -313,33 +293,51 @@
                 #ADMIN-SIDEBAR
 	================================================= */
 
-.admin__sidebar {
-	padding: 0;
-}
-
-.admin__sidebar .menu-list {
-	padding: 0;
-	margin-top: 20px;	
-}
-
-	.admin__sidebar .menu-list a {
-		padding: 15px 15px;
+	.admin__sidebar {
+		margin: 0;
+		padding: 0;
+		background-color: #F9F9F9;
 	}
 
-	.menu-list span {
-		font-size: 14px;
+	.sidebar__actions {
+		margin-top: 15px;	
+		display: flex;
+		flex-direction: column;
 	}
 
+		.sidebar__actionsLink {
+			padding: 10x 15px 10px 15px !important;
+		}
 
 
-
-/* ==============================================
-                #ADMIN-SIDEBAR
-	================================================= */
-
-	.classvideo:hover	{
-		background-color: #F5F5F5;
+	.sidebar__classes {
+		margin-top: 10px;
+		display: flex;
+		flex-direction: column;
 	}
+
+		.sidebar__classesInput {
+			margin-bottom: 10px;
+		}
+
+		.sidebar__classesLink {
+
+		}
+
+		.admin__sidebar a {
+			color: #4a4a4a;
+			font-size: 13px;
+			margin: 0;
+			padding: 12px 12px 12px 12px;
+		}
+		.admin__sidebar a:hover {
+			background-color: #f5f5f5;
+		}
+			.admin__sidebar a i {
+				padding-right: 5px;
+			}
+
+
 
 
 
@@ -368,222 +366,6 @@
     }
 
 
-
-
-
-/* ==============================================
-                #TRUMPS-BULMA-THEME
-	================================================= */
-.nav.is-dark {
-  background-color: #232B2D;
-  color: #F6F7F7;
-}
-.nav.is-dark .nav-item a, .nav.is-dark a.nav-item {
-    color: #F6F7F7;
-}
-.nav.is-dark .nav-item a.button.is-default {
-    color: #F6F7F7;
-    background-color: transparent;
-    border-width: 2px;
-}
-.nav.menu {
-  border-bottom: 1px solid #e1e1e1;
-}
-.nav.menu .nav-item .icon-btn {
-  border: 3px solid #B7C6C9;
-  border-radius: 90px;
-  padding: 5px 7px;
-  color: #B7C6C9;
-}
-.nav.menu .nav-item.is-active .icon-btn {
-  color: #2EB398;
-  border: 3px solid #2EB398;
-}
-.nav.menu .nav-item .icon-btn .fa {
-  font-size: 20px;
-  color: #B7C6C9;
-}
-.nav.menu .nav-item.is-active .icon-btn .fa {
-  color: #2EB398;
-}
-.aside {
-  display:block;
-  background-color: #F9F9F9;
-  border-right: 1px solid #DEDEDE;
-}
-.messages {
-  display:block;
-  background-color: #fff;
-  border-right: 1px solid #DEDEDE;
-}
-.message {
-  display:block;
-  background-color: #fff;
-}
-.aside .compose {
-  height: 95px;
-  margin:0 -10px;
-  padding: 25px 30px;
-}
-.aside .compose .button {
-  color: #F6F7F7;
-}
-.aside .compose .button .compose {
-  font-size: 14px;
-  font-weight: 700;
-}
-.aside .main {
-  padding: 40px;
-  color: #6F7B7E;
-}
-.aside .title {
-  color: #6F7B7E;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-.aside .main .item {
-  display: block;
-  padding: 10px 0;
-  color: #6F7B7E;
-}
-.aside .main .item.active {
-  background-color: #F1F1F1;
-  margin: 0 -50px;
-  padding-left: 50px;
-}
-.aside .main .item:active,.aside .main .item:hover {
-  background-color: #F2F2F2;
-  margin: 0 -50px;
-  padding-left: 50px;
-}
-.aside .main .icon {
-  font-size: 19px;
-  padding-right: 30px;
-  color: #A0A0A0;
-}
-.aside .main .name {
-  font-size: 15px;
-  color: #5D5D5D;
-  font-weight: 500;
-}
-.messages {
-  padding: 40px 20px;
-}
-.message {
-  padding: 40px 20px;
-}
-.messages .action-buttons {
-  padding: 0;
-  margin-top: -20px;
-}
-.message .action-buttons {
-  padding: 0;
-  margin-top: -5px;
-}
-.action-buttons .control.is-grouped {
-  display: inline-block;
-  margin-right: 30px;
-}
-.action-buttons .control.is-grouped:last-child {
-  margin-right: 0;
-}
-.action-buttons .control.is-grouped .button:first-child {
-  border-radius: 5px 0 0 5px;
-}
-.action-buttons .control.is-grouped .button:last-child {
-  border-radius: 0 5px 5px 0;
-}
-.action-buttons .control.is-grouped .button {
-  margin-right: -5px;
-  border-radius: 0;
-}
-.pg {
-  display: inline-block;
-  top:10px;
-}
-.action-buttons .pg .title {
-  display: block;
-  margin-top: 0;
-  padding-top: 0;
-  margin-bottom: 3px;
-  font-size:12px;
-  color: #AAAAAA;
-}
-.action-buttons .pg a{
-  font-size:12px;
-  color: #AAAAAA;
-  text-decoration: none;
-}
-.is-grouped .button {
-  background-image: linear-gradient(#F8F8F8, #F1F1F1);
-}
-.is-grouped .button .fa {
-  font-size: 15px;
-  color: #AAAAAA;
-}
-.inbox-messages {
-  margin-top:60px;
-}
-.message-preview {
-  margin-top: 60px;
-}
-.inbox-messages .card {
-  width: 100%;
-}
-.inbox-messages strong {
-  color: #5D5D5D;
-}
-.inbox-messages .msg-check {
-  padding: 0 20px;
-}
-.inbox-messages .msg-subject {
-  padding: 10px 0;
-  color: #5D5D5D;
-}
-.inbox-messages .msg-attachment {
-  float:right;
-}
-.inbox-messages .msg-snippet {
-  padding: 5px 20px 0px 5px;
-}
-.inbox-messages .msg-subject .fa {
-  font-size: 14px;
-  padding:3px 0;
-}
-.inbox-messages .msg-timestamp {
-  float: right;
-  padding: 0 20px;
-  color: #5D5D5D;
-}
-.message-preview .avatar {
-  display: inline-block;
-}
-.message-preview .top .address {
-  display: inline-block;
-  padding: 0 20px;
-}
-.avatar img {
-  width: 40px;
-  border-radius: 50px;
-  border: 2px solid #999;
-  padding: 2px;
-}
-.address .name {
-  font-size: 16px;
-  font-weight: bold;
-}
-.address .email {
-  font-weight: bold;
-  color: #B6C7D1;
-}
-.card.active {
-  background-color:#F5F5F5;
-}
-      
-      
-
-	
 
 
 

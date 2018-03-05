@@ -25,17 +25,15 @@
 
 				</div>
 
-				<aside class="student__sidebar column is-2 aside">
+				<aside class="admin__sidebar column is-2 aside">
 
-					<div class="menu-list">
-						<a href="#" @click="modalEnrollClassIsOpen = true"><span class="name"><strong>+ Find a class to enroll</strong></span></a>
+					<div class="sidebar__actions">
+						<a class="sidebar__actionsLink" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 					</div>
-					<el-tabs v-model="sidebarClassesTab">
-						<el-input icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>	
-						<div class="menu-list">
-							<a v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassString === c.name) }" @click="setCurrentClass(c.name, c.number)"><span class="name">{{ c.name }}</span></a>
-						</div>
-					</el-tabs>
+					<div class="sidebar__classes">
+						<el-input class="sidebar__classesInput" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>	
+						<a class="sidebar__classesLink" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.name }}</a>
+					</div>
 
 				</aside>
 
@@ -70,8 +68,6 @@
     export default {
 			data() {
 				return {
-						sidebarClassesTab: 'activeClasses',
-						currentClassString: '',
 						searchInputValue: '',
 						modalEnrollClassIsOpen: false,
 						otherClasses: [
@@ -83,11 +79,6 @@
 				}
 			},
 			methods: {
-				queryStudentClasses: _.debounce(function () {
-					console.log('QUERY STUDENT CLASSES')
-
-					this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
-				}, 300),
 				setCurrentClass(className, classNumber) {
 					this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 				},
@@ -95,7 +86,7 @@
 					const clickedClassName = event.currentTarget.children[1].innerHTML
 					for (var i = 0, l = this.otherClasses.length; i < l; i++) {
 						if (this.otherClasses[i].name === clickedClassName) {
-							this.currentClassString = this.otherClasses[i].name
+							this.currentClassSelected = this.otherClasses[i].name
 							this.studentClasses.push(this.otherClasses[i])
 							this.classes.push(this.otherClasses[i])
 							this.otherClasses.splice(i,1)	
@@ -104,14 +95,11 @@
 					}
 					this.modalEnrollClassIsOpen = false
 				},
-				secondsToMMSS(s) {
-							s = Number(s);
+				queryStudentClasses: _.debounce(function () {
+					console.log('QUERY STUDENT CLASSES')
 
-							var m = Math.floor(s % 3600 / 60);
-							var s = Math.floor(s % 3600 % 60);
-
-							return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-				},
+					this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
+				}, 300)
 			},
 			created() {
 				this.$store.dispatch('getAllVideos')
@@ -133,7 +121,7 @@
 			},
 			computed: {
 				...mapGetters(
-					['videos', 'uploadUrl', 'classes', 'studentClasses', 'currentClassSelected', 'currentClassNumber']
+					['videos', 'classes', 'studentClasses', 'currentClassSelected', 'currentClassNumber']
 				),
 			},
 			components: {
@@ -360,23 +348,51 @@
 
 
 /* ==============================================
-                #student-SIDEBAR
+                #ADMIN-SIDEBAR
 	================================================= */
 
-.student__sidebar {
-	padding: 0;
-}
-
-.student__sidebar .menu-list {
-	padding: 0;
-	margin-top: 20px;	
-}
-
-	.student__sidebar .menu-list a {
-		padding: 15px 15px;
+	.admin__sidebar {
+		margin: 0;
+		padding: 0;
+		background-color: #F9F9F9;
 	}
-			.menu-list span {
-				font-size: 14px;
+
+	.sidebar__actions {
+		margin-top: 15px;	
+		display: flex;
+		flex-direction: column;
+	}
+
+		.sidebar__actionsLink {
+			padding: 10x 15px 10px 15px !important;
+		}
+
+
+	.sidebar__classes {
+		margin-top: 10px;
+		display: flex;
+		flex-direction: column;
+	}
+
+		.sidebar__classesInput {
+			margin-bottom: 10px;
+		}
+
+		.sidebar__classesLink {
+
+		}
+
+		.admin__sidebar a {
+			color: #4a4a4a;
+			font-size: 13px;
+			margin: 0;
+			padding: 12px 12px 12px 12px;
+		}
+		.admin__sidebar a:hover {
+			background-color: #f5f5f5;
+		}
+			.admin__sidebar a i {
+				padding-right: 5px;
 			}
 
 
