@@ -68,7 +68,7 @@
                         </nav>
                         
                     </div>
-                    <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields">
+                    <div class="annotate-fields annotate-annotating" :class="annotateCanon" v-show="isAnnotateFields">
                         <div class="annotate-fields-left">
                             <button class="button annotate-fields-left-back" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true; selectedMove = 'Other'">
                                 <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
@@ -178,12 +178,10 @@ You might also want to include a concrete strategy recommendation."
             <div class="cards column is-4">
                 <div class="cards-content">
                     <nav class="card-menu">
-                        <!-- TODO: Render links dynamically -->
-                        <a class="card-menu-link" style="background-color: #18435a !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
-                        <a class="card-menu-link" style="background-color: #2a628f !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
-                        <a class="card-menu-link" style="background-color: #3e92cc !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
-                        <a class="card-menu-link" style="background-color: #65afff !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
-                        <a class="card-menu-link" style="background-color: #88a9c0 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
+                        <a class="card-menu-link" :class="canon.name" v-for="canon in canons" :key="canon.name" title="Hide/show" @click="chooseCanonFilter($event, canon.name)">
+                            <i class="fa fa_1x" :class="{ 'fa-pencil-square-o': (canon.name === 'Moves'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
+                            <span class="card-menu-link-title">{{ canon.name }}</span>
+                        </a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -191,6 +189,13 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                         </div>
                     </nav>
+                    <!-- <div class="card-menu__ribbons" style="margin-top:-10px;display:flex;">
+                        <div class="arrow-down"></div>
+                        <div class="arrow-down"></div>
+                        <div class="arrow-down"></div>
+                        <div class="arrow-down"></div>
+                        <div class="arrow-down"></div>
+                    </div>  -->
                     <div class="timeline-container">
                         <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
@@ -618,18 +623,6 @@ You might also want to include a concrete strategy recommendation."
                         id: this.id,
                         annotation: card
                     })
-
-                    // Sets the color of the card (it belongs to videoAnnotations[])
-                    if (card.canon === 'Moves')
-                        card["color"] = '#395d41'
-                    else if (card.canon === 'Structure')
-                        card["color"] = '#853a3e'
-                    else if (card.canon === 'Delivery')
-                        card["color"] = '#ab8c3c'
-                    else if (card.canon === 'Visuals')
-                        card["color"] = '#6c3765'
-                    else if (card.canon === 'Style')
-                        card["color"] = '#38425d'
                     
                     // We are pushing to card to videoAnnotations[]
                     this.videoAnnotations.push(card)
@@ -1509,7 +1502,7 @@ You might also want to include a concrete strategy recommendation."
     .annotate-fields {
         padding: 5px;
         display: flex;
-        background-color: #39425C;
+        /* background-color: #39425C; */
     }
     
     .annotate-fields p,
@@ -1626,10 +1619,19 @@ You might also want to include a concrete strategy recommendation."
             color: #FFF;
             padding: 10px 24px;
             border-bottom: solid 1px rgba(0, 0, 0, .5);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 20px  45px 0px 45px;
+            border-color: red transparent transparent transparent;
         }
              .card-menu-link-title {
                  font-size: 14px;
              }
+
+            .arrow-down {
+                
+            }
 
         .add-annotation {
             color: #4A4A4A !important;
