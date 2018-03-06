@@ -21,7 +21,7 @@
                 <div class="times" v-show="isVideoline">
                     <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
                     <!-- v-for="t in 10"  style="color: #fff; font-size: 8px;"-->
-                    <span class="times-min" v-for="time in times">{{ time.min }}</span> <!-- <span class="times-sec"></span><span class="times-sec"></span> -->
+                    <span class="times-min" v-for="time in times" :key="time.min">{{ time.min }}</span> <!-- <span class="times-sec"></span><span class="times-sec"></span> -->
                 </div>
 
                 <div class="videoline" id="videoline" v-show="isVideoline">
@@ -60,11 +60,11 @@
                 <div class="annotate" v-show="isAnnotating">
                     <div class="annotate-menu" v-show="isAnnotateMenu">
                         <nav class="annotate-menu__canons">
-                            <a @click="chooseCanonAnnotate(c.name, $event)" v-for="c in canons">{{ c.name }}</a>
+                            <a :class="canon.name" @click="chooseCanonAnnotate(canon.name, $event)" v-for="canon in canons" :key="canon.name" >{{ canon.name }}</a>
                             <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateMenu = false">X</span></div>
                         </nav>
-                        <nav class="annotate-menu__categories" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                            <a v-for="cat in canon.categories" @click="chooseCategoryAnnotate(cat.name)" v-bind:title="cat.desc">{{ cat.name }}</a>  
+                        <nav class="annotate-menu__categories" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
+                            <a :class="canon.name" v-for="cat in canon.categories" :key="cat.name" @click="chooseCategoryAnnotate(cat.name)" :title="cat.desc">{{ cat.name }}</a>  
                         </nav>
                         
                     </div>
@@ -76,8 +76,8 @@
                         </div>
                         
                         <div class="annotate-fields-right">
-                            <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                                <div class="annotate-desc-text" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">
+                            <div class="annotate-desc field" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
+                                <div class="annotate-desc-text" v-for="cat in canon.categories" :key="cat.name" v-if="cat.name === annotateCategory">
                                     <h1>{{ cat.name }}</h1>
                                     <p>{{ cat.desc }}</p>
                                 </div>
@@ -137,8 +137,8 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                         -->
                         <div class="annotate-fields-right">
-                            <div class="annotate-desc field" v-for="canon in canons" v-if="canon.name === annotateCanon">
-                                <p class="control" v-for="cat in canon.categories" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
+                            <div class="annotate-desc field" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
+                                <p class="control" v-for="cat in canon.categories" :key="cat.name" v-if="cat.name === annotateCategory">"{{ cat.desc }}"</p>
                                 <div class="annotate-menu__canons-close"><span @click="isEditing = false; isVideoline = false; isEditFields = false">X</span></div>
                             </div>
                             <div class="annotate-effectiveness field">
@@ -178,11 +178,12 @@ You might also want to include a concrete strategy recommendation."
             <div class="cards column is-4">
                 <div class="cards-content">
                     <nav class="card-menu">
-                        <a class="card-menu-link" style="background-color: #395d41 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
-                        <a class="card-menu-link" style="background-color: #853a3e !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
-                        <a class="card-menu-link" style="background-color: #ab8c3c !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
-                        <a class="card-menu-link" style="background-color: #6c3765 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
-                        <a class="card-menu-link" style="background-color: #38425d !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
+                        <!-- TODO: Render links dynamically -->
+                        <a class="card-menu-link" style="background-color: #18435a !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Moves')"><i class="fa fa-pencil-square-o fa_1x" aria-hidden="true"></i><span class="card-menu-link-title">Moves</span><div class="card-menu-link-ribbon"></div></a>
+                        <a class="card-menu-link" style="background-color: #2a628f !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Structure')"><i class="fa fa-book fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Structure</span></a>
+                        <a class="card-menu-link" style="background-color: #3e92cc !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Delivery')"><i class="fa fa-commenting fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Delivery</span></a>
+                        <a class="card-menu-link" style="background-color: #65afff !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Visuals')"><i class="fa fa-eye fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Visuals</span></a>
+                        <a class="card-menu-link" style="background-color: #88a9c0 !important;" title="Hide/show" @click="chooseCanonFilter($event, 'Style')"><i class="fa fa-diamond fa_1x " aria-hidden="true"></i><span class="card-menu-link-title">Style</span></a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
                             <div class="scroll-mouse">
@@ -191,7 +192,7 @@ You might also want to include a concrete strategy recommendation."
                         </div>
                     </nav>
                     <div class="timeline-container">
-                        <div class="timeline-card column" @click="seekCard($event)" v-for="card in videoAnnotations" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle" v-bind:style="{ 'border-left': '12px solid ' + card.color  }">
+                        <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
@@ -221,6 +222,8 @@ You might also want to include a concrete strategy recommendation."
             </div>
         </div>
         </div>
+
+        <my-footer></my-footer>	
         
     </div>
 </template>
@@ -228,7 +231,8 @@ You might also want to include a concrete strategy recommendation."
 <script>
     import { mapGetters } from 'vuex'
     import { mapMutations } from 'vuex'
-	import MyHeader from '../Layout/MyHeader.vue'
+    import MyHeader from '../Layout/MyHeader.vue'
+    import MyFooter from '../Layout/MyFooter.vue'
 
     import { Loading } from 'element-ui';
 
@@ -242,7 +246,7 @@ You might also want to include a concrete strategy recommendation."
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
-                videoIndexForCardColor: 0,
+                videoIndex: 0,
                 annotateCanon: 'Delivery',
                 annotateCategory: 'Volume',
                 annotateSubCategory: '',
@@ -280,142 +284,6 @@ You might also want to include a concrete strategy recommendation."
                 selectedMove: 'Other',
                 otherMoveSelected: false       
             }
-        },
-        created() {
-            var that = this
-
-            this.$store.dispatch('getVideo', this.id).then(() => {
-                // This needs to be a function.
-                that.videoAnnotations = that.videos[that.videoIndexForCardColor].annotations
-                for (var i=0, l = that.videoAnnotations.length; i < l; i++) {
-                    if (that.videoAnnotations[i].canon === 'Moves')
-                        that.videoAnnotations[i]['color'] = '#395d41'
-                    else if (that.videoAnnotations[i].canon === 'Structure')
-                        that.videoAnnotations[i]['color'] = '#853a3e'
-                    else if (that.videoAnnotations[i].canon === 'Delivery')
-                        that.videoAnnotations[i]['color'] = '#ab8c3c'
-                    else if (that.videoAnnotations[i].canon === 'Visuals')
-                        that.videoAnnotations[i]['color'] = '#6c3765'
-                    else if (that.videoAnnotations[i].canon === 'Style')
-                        that.videoAnnotations[i]['color'] = '#38425d'
-                }
-            })
-        },
-        mounted() {
-            var that = this
-
-            // console.log('videoAnnotations: ', this.videoAnnotations.comment)
-            
-            // Temporary solution for MOUNTED() cycle because of Vuex stuff.
-            // Trying to get the index (vIndex) of the video that the same id with the params.id
-            var vIndex; 
-            for (var i=0, l = this.videos.length; i < l; i++) {
-                if (this.videos[i].id === this.id) 
-                    vIndex = i
-            }
-
-            this.videoIndexForCardColor = vIndex
-            
-            this.videoDuration = this.videos[vIndex].duration
-            this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
-
-            // Loads video sources: 
-            // link 
-            // duration
-            // thumb (not done yet GA)
-            // this.getVideoSources(vIndex)
-
-            // Get the correct source of the video. 
-            // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
-            // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
-            // So, we get the last object - 1 = sourcesLength - 2
-            var sourcesLength = this.videos[vIndex].sources.length
-            var correctSource = sourcesLength - 2
-
-            this.player = jwplayer('player')            
-            this.player.setup({
-                // If the video has sources (old way) then play the file: sources.[correctSource].file
-                // Else the video has no sources and has instead a link field (new way) then play the file: link
-                file: (this.videos[vIndex].sources.length !== 0) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
-                image: this.videos[vIndex].thumb,
-                "height": $('.player').height(),
-            });
-        
-            // Animate progress bar width
-            this.player.on('time', function(event) {
-                if (that.player.getState() === 'playing') {
-                    var totalTime = that.videoDuration;
-                    var currentTime = event.position;
-
-                    // Get the current time of video in sec
-                    that.videoCurrentTime = that.player.getPosition()
-                    // Convert the time to MM:SS
-                    that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
-
-                    // Scaling = 3 minutes 
-                    var percentTime = (currentTime / 180) * 100;
-
-                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-
-                }
-            })
-
-            // DRAGGABLE RIBBON
-            $( ".videoline-ribbon" ).draggable({
-                axis: "x",
-                containment: "#videoline",
-                scroll: false,
-                start() {
-
-                },
-                drag(event) {
-                    var windowOffset = $('.videoline').offset().left
-                    
-                    var clickCoords = event.originalEvent.clientX - windowOffset; 
-                    var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-
-                    if (clickCoordsPercent < 0) {
-                        clickCoordsPercent = 0
-                    } else if (clickCoordsPercent > 100) {
-                        clickCoordsPercent = 100
-                    }
-                   
-                    // Scaling = 3 minutes 
-                    var clickTime = (clickCoordsPercent * 180) / 100
-                    
-                    if (that.annotationPauseTime < 90) {
-                        clickTime = clickTime // + that.annotationPauseTime
-                    } else { 
-                        clickTime = clickTime + that.annotationPauseTime - 90
-                    }
-
-                    that.player.seek(clickTime)      
-                },
-                stop(event) {
-                }
-            })
-
-            // var cardCommentsArray = document.getElementsByClassName('timeline-container')[0].childNodes
-            // console.log(cardCommentsArray)
-            // for(var i = 0, l = cardCommentsArray.length; i < l; i++){
-            //     var comment = cardCommentsArray[i].getElementsByClassName('timeline-card__comment')
-            //     console.log(comment.text)
-            // }
-                
-        },
-        updated() {
-            // Fixes unknown man picture bug
-            $('.jw-logo').hide()
-
-            // Fetches annotations of the current video (videoid = URLid)
-            // Stores annotations in videoAnnotations[]
-            // this.videoAnnotations = this.videos.annotations
-            
-            // Show "Sroll down for more" when there are more than 5 cards
-            // this.moreAnnotations()
-
-            // Color a card when videoCurrentTime is between card from and end
-            // this.hooping()
         },
         methods: {
             getVideoSources(vIndex) {
@@ -941,7 +809,7 @@ You might also want to include a concrete strategy recommendation."
                     }
                     else {
                         this.isMoves = 'Moves'
-                        event.currentTarget.style.backgroundColor = "#395d41"
+                        event.currentTarget.style.backgroundColor = "#18435a"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
@@ -953,7 +821,7 @@ You might also want to include a concrete strategy recommendation."
                     }
                     else {
                         this.isStructure = 'Structure'
-                        event.currentTarget.style.backgroundColor = "#853a3e"
+                        event.currentTarget.style.backgroundColor = "#2a628f"
                         event.currentTarget.style.color = "#FFFFFF"
                     } 
                 }
@@ -965,7 +833,7 @@ You might also want to include a concrete strategy recommendation."
                     }
                     else {
                         this.isDelivery = 'Delivery'
-                        event.currentTarget.style.backgroundColor = "#ab8c3c"
+                        event.currentTarget.style.backgroundColor = "#3e92cc"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 } 
@@ -977,7 +845,7 @@ You might also want to include a concrete strategy recommendation."
                     }
                     else { 
                         this.isVisuals = 'Visuals'
-                        event.currentTarget.style.backgroundColor = "#6c3765"
+                        event.currentTarget.style.backgroundColor = "#65afff"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
@@ -989,7 +857,7 @@ You might also want to include a concrete strategy recommendation."
                     }
                     else { 
                         this.isStyle = 'Style'
-                        event.currentTarget.style.backgroundColor = "#38425d"
+                        event.currentTarget.style.backgroundColor = "#88a9c0"
                         event.currentTarget.style.color = "#FFFFFF"
                     }
                 }
@@ -1008,11 +876,11 @@ You might also want to include a concrete strategy recommendation."
             },
             chooseCanonAnnotate(canon, event) {
                 this.annotateCanon = canon
-                this.annotateModeActiveItemProblem(event)
+                // this.annotateModeActiveItemProblem(event)
             },
             chooseCategoryAnnotate(category) {
                 this.annotateCategory = category
-                this.annotateModeActiveItemProblem(event)
+                // this.annotateModeActiveItemProblem(event)
                 this.isAnnotateMenu = false
                 this.isAnnotateFields = true
                 this.isVideoline = true
@@ -1163,15 +1031,137 @@ You might also want to include a concrete strategy recommendation."
                 }
             },
         },
+        created() {
+            var that = this
+
+            this.$store.dispatch('getVideo', this.id).then(() => {
+                that.videoAnnotations = that.videos[that.videoIndex].annotations
+            })
+        },
+        mounted() {
+            var that = this
+
+            // console.log('videoAnnotations: ', this.videoAnnotations.comment)
+            
+            // Temporary solution for MOUNTED() cycle because of Vuex stuff.
+            // Trying to get the index (vIndex) of the video that the same id with the params.id
+            var vIndex; 
+            for (var i=0, l = this.videos.length; i < l; i++) {
+                if (this.videos[i].id === this.id) 
+                    vIndex = i
+            }
+
+            this.videoIndex = vIndex
+            
+            this.videoDuration = this.videos[vIndex].duration
+            this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
+
+            // Loads video sources: 
+            // link 
+            // duration
+            // thumb (not done yet GA)
+            // this.getVideoSources(vIndex)
+
+            // Get the correct source of the video. 
+            // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
+            // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
+            // So, we get the last object - 1 = sourcesLength - 2
+            var sourcesLength = this.videos[vIndex].sources.length
+            var correctSource = sourcesLength - 2
+
+            this.player = jwplayer('player')            
+            this.player.setup({
+                // If the video has sources (old way) then play the file: sources.[correctSource].file
+                // Else the video has no sources and has instead a link field (new way) then play the file: link
+                file: (this.videos[vIndex].sources.length !== 0) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
+                image: this.videos[vIndex].thumb,
+                "height": $('.player').height(),
+            });
+        
+            // Animate progress bar width
+            this.player.on('time', function(event) {
+                if (that.player.getState() === 'playing') {
+                    var totalTime = that.videoDuration;
+                    var currentTime = event.position;
+
+                    // Get the current time of video in sec
+                    that.videoCurrentTime = that.player.getPosition()
+                    // Convert the time to MM:SS
+                    that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
+
+                    // Scaling = 3 minutes 
+                    var percentTime = (currentTime / 180) * 100;
+
+                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
+                }
+            })
+
+            // DRAGGABLE RIBBON
+            $( ".videoline-ribbon" ).draggable({
+                axis: "x",
+                containment: "#videoline",
+                scroll: false,
+                start() {
+
+                },
+                drag(event) {
+                    var windowOffset = $('.videoline').offset().left
+                    
+                    var clickCoords = event.originalEvent.clientX - windowOffset; 
+                    var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+
+                    if (clickCoordsPercent < 0) {
+                        clickCoordsPercent = 0
+                    } else if (clickCoordsPercent > 100) {
+                        clickCoordsPercent = 100
+                    }
+                   
+                    // Scaling = 3 minutes 
+                    var clickTime = (clickCoordsPercent * 180) / 100
+                    
+                    if (that.annotationPauseTime < 90) {
+                        clickTime = clickTime // + that.annotationPauseTime
+                    } else { 
+                        clickTime = clickTime + that.annotationPauseTime - 90
+                    }
+
+                    that.player.seek(clickTime)      
+                },
+                stop(event) {
+                }
+            })
+
+            // var cardCommentsArray = document.getElementsByClassName('timeline-container')[0].childNodes
+            // console.log(cardCommentsArray)
+            // for(var i = 0, l = cardCommentsArray.length; i < l; i++){
+            //     var comment = cardCommentsArray[i].getElementsByClassName('timeline-card__comment')
+            //     console.log(comment.text)
+            // }
+                
+        },
+        updated() {
+            // Fixes unknown man picture bug
+            $('.jw-logo').hide()
+
+            // Fetches annotations of the current video (videoid = URLid)
+            // Stores annotations in videoAnnotations[]
+            // this.videoAnnotations = this.videos.annotations
+            
+            // Show "Sroll down for more" when there are more than 5 cards
+            // this.moreAnnotations()
+
+            // Color a card when videoCurrentTime is between card from and end
+            // this.hooping()
+        },
         computed: {
             ...mapGetters([
-                'videos',
-                'currentVideoID',
-                'canons'
+                'videos', 'currentVideoID', 'canons'
             ])
         },
         components: {
-            'my-header': MyHeader
+            'my-header': MyHeader,
+            'my-footer': MyFooter,
         }
     }
 </script>
@@ -1181,9 +1171,17 @@ You might also want to include a concrete strategy recommendation."
                 #GENERIC
 ================================================= */
 
-.structure, .delivery, .visual, .style, .moves {
-    background-color: #39425C
-}
+.Moves { background-color: #18435a;}
+.Structure { background-color: #2a628f; }
+.Delivery { background-color: #3e92cc; }
+.Visuals { background-color: #65afff; }
+.Style { background-color: #88a9c0; }
+
+.Moves-border { border-left: 12px solid #18435a;}
+.Structure-border { border-left: 12px solid #2a628f; }
+.Delivery-border { border-left: 12px solid #3e92cc; }
+.Visuals-border { border-left: 12px solid #65afff; }
+.Style-border { border-left: 12px solid #88a9c0; }
 
 .video__body {
     margin: 5px 15px 15px 15px;
@@ -1448,7 +1446,7 @@ You might also want to include a concrete strategy recommendation."
     }
 
     .annotate-menu__canons {
-        background-color: #39425C;
+        background-color:#18435a;
         display: flex;
         justify-content: center;
     }
@@ -1459,6 +1457,9 @@ You might also want to include a concrete strategy recommendation."
             font-size: 1.4em;
             border-top: 1px solid #27314D;
             border-right: 1px solid #27314D;
+        }
+        .annotate-menu__canons a:hover {
+            opacity: 0.75;
         }
 
         .annotate-menu__canons-close {
@@ -1492,6 +1493,10 @@ You might also want to include a concrete strategy recommendation."
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .annotate-menu__categories a:hover {
+            opacity: 0.75;
         }
             .el-slider { width: 80%}
             .el-slider__bar, .el-slider__button-wrapper, .el-slider__stop { height: 40px !important; }

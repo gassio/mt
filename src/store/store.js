@@ -83,22 +83,72 @@ export const store = new Vuex.Store({
             { 
                 name: 'Structure', 
                 categories: [
-                { 
-                    name: 'Terms',
-                    desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'
-                },
-                { 
-                    name: 'Conceptual transitions',
-                    desc: 'Uses conceptual transitions to connect key sections of the presentation'
-                },
-                { 
-                    name: 'Line of argument',
-                    desc: 'Provides a clear line of argument which is brought to a clear position at the end'
-                },
-                { 
-                    name: 'Central moves',
-                    desc: 'Uses the central rhetorical moves for each section appropriately '
-                }
+                    { 
+                        name: 'Terms',
+                        desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'
+                    },
+                    { 
+                        name: 'Conceptual transitions',
+                        desc: 'Uses conceptual transitions to connect key sections of the presentation'
+                    },
+                    { 
+                        name: 'Line of argument',
+                        desc: 'Provides a clear line of argument which is brought to a clear position at the end'
+                    },
+                    { 
+                        name: 'Central moves',
+                        desc: 'Uses the central rhetorical moves for each section appropriately '
+                    }
+                    ]
+            },
+            { 
+                name: 'Delivery', 
+                categories: [
+                    { 
+                        name: 'Volume',
+                        desc: 'Volume, rate, and pitch are appropriate and modulated'
+                    },
+                    { 
+                        name: 'Gestures',
+                        desc: 'Gestures, eye contact, and body movement used intentionally to engage audience'
+                    },
+                    { 
+                        name: 'Metadiscourse',
+                        desc: 'Metadiscourse orients listener and helps transition between sections'
+                    },
+                    { 
+                        name: 'Posture',
+                        desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen'
+                    },
+                    { 
+                        name: 'Language',
+                        desc: 'Technical and informal language are both employed as appropriate'
+                    }
+                ]
+            },
+            { 
+                name: 'Visuals', 
+                categories: [
+                    { 
+                        name: 'Pictorial cues',
+                        desc: 'Uses primarily pictorial cues (limited text)'
+                    },
+                    { 
+                        name: 'Slide titles',
+                        desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
+                    },
+                    { 
+                        name: 'Image-text highlight',
+                        desc: 'Images and text highlight/focus audience on key points'
+                    },
+                    { 
+                        name: 'Graphics',
+                        desc: 'Graphics show relevant data/concepts to support the claims'
+                    },
+                    { 
+                        name: 'Memorable images',
+                        desc: 'Memorable images provide necessary context to support the oral discussion'
+                    }
                 ]
             },
             { 
@@ -128,56 +178,6 @@ export const store = new Vuex.Store({
                         name: 'Figures of Sound',
                         desc: 'Uses auditory cues at the sentence (e.g. patterned parallelism) or word level (e.g. alliteration) to make the oral delivery more memorable'
                     }
-                ]
-            },
-            { 
-                name: 'Visuals', 
-                categories: [
-                { 
-                    name: 'Pictorial cues',
-                    desc: 'Uses primarily pictorial cues (limited text)'
-                },
-                { 
-                    name: 'Slide titles',
-                    desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
-                },
-                { 
-                    name: 'Image-text highlight',
-                    desc: 'Images and text highlight/focus audience on key points'
-                },
-                { 
-                    name: 'Graphics',
-                    desc: 'Graphics show relevant data/concepts to support the claims'
-                },
-                { 
-                    name: 'Memorable images',
-                    desc: 'Memorable images provide necessary context to support the oral discussion'
-                }
-                ]
-            },
-            { 
-                name: 'Delivery', 
-                categories: [
-                { 
-                    name: 'Volume',
-                    desc: 'Volume, rate, and pitch are appropriate and modulated'
-                },
-                { 
-                    name: 'Gestures',
-                    desc: 'Gestures, eye contact, and body movement used intentionally to engage audience'
-                },
-                { 
-                    name: 'Metadiscourse',
-                    desc: 'Metadiscourse orients listener and helps transition between sections'
-                },
-                { 
-                    name: 'Posture',
-                    desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen'
-                },
-                { 
-                    name: 'Language',
-                    desc: 'Technical and informal language are both employed as appropriate'
-                }
                 ]
             }
         ],
