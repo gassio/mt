@@ -178,10 +178,11 @@ You might also want to include a concrete strategy recommendation."
             <div class="cards column is-4">
                 <div class="cards-content">
                     <nav class="card-menu">
-                        <a class="card-menu-link" :class="canon.name" v-for="canon in canons" :key="canon.name" title="Hide/show" @click="chooseCanonFilter($event, canon.name)">
-                            <i class="fa fa_1x" :class="{ 'fa-pencil-square-o': (canon.name === 'Moves'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
-                            <span class="card-menu-link-title">{{ canon.name }}</span>
-                            <div class="arrow-down" :class="canon.name + '-border-triangle'"></div>
+                        <!-- title="Hide/show" -->
+                        <a class="card-menu__item" :class="canon.name" v-for="canon in canons" :key="canon.name"  @click="chooseCanonFilter($event, canon.name)">
+                            <i class="card-menu__icon fa fa_1x" style="margin-top:20px;" :class="{ 'fa-pencil-square-o': (canon.name === 'Moves'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
+                            <span class="card-menu__title">{{ canon.name }}</span>
+                            <div class="card-menu__triangle" :class="canon.name + '-border-triangle'" ></div> 
                         </a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
@@ -788,64 +789,72 @@ You might also want to include a concrete strategy recommendation."
                 event.currentTarget.style.color = "#FFFFFF"
             },
             chooseCanonFilter(event, canon) {
+                var triangleActiveElement = event.currentTarget.getElementsByClassName('card-menu__triangle')[0] // When the canon is active.
+                var triangleDisabledElement = event.currentTarget.children[2] // When the canon is disabled.
+
                 if (canon === 'Moves') {
                     if (this.isMoves !== '')  {
                         this.isMoves = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        triangleActiveElement.classList.remove("card-menu__triangle")
+                        event.currentTarget.style.padding = '20px'
+                        event.currentTarget.style.paddingTop = '0px'
                     }
                     else {
                         this.isMoves = 'Moves'
-                        event.currentTarget.style.backgroundColor = "#18435a"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        triangleDisabledElement.classList.add("card-menu__triangle")
+                        event.currentTarget.style.padding = '0px'
                     }
                 }
                 if (canon === 'Structure') {
                     if (this.isStructure !== '') {
                         this.isStructure = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        triangleActiveElement.classList.remove("card-menu__triangle")
+                        event.currentTarget.style.padding = '20px'
+                        event.currentTarget.style.paddingTop = '0px'
                     }
                     else {
                         this.isStructure = 'Structure'
-                        event.currentTarget.style.backgroundColor = "#2a628f"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        triangleDisabledElement.classList.add("card-menu__triangle")
+                        event.currentTarget.style.padding = '0px'
                     } 
                 }
                 if (canon === 'Delivery') {
                     if (this.isDelivery !== '') {
                         this.isDelivery = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        triangleActiveElement.classList.remove("card-menu__triangle")
+                        event.currentTarget.style.padding = '20px'
+                        event.currentTarget.style.paddingTop = '0px'
                     }
                     else {
                         this.isDelivery = 'Delivery'
-                        event.currentTarget.style.backgroundColor = "#3e92cc"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        triangleDisabledElement.classList.add("card-menu__triangle")
+                        event.currentTarget.style.padding = '0px'
                     }
                 } 
                 if (canon === 'Visuals') {
                     if (this.isVisuals !== '') {
                         this.isVisuals = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        triangleActiveElement.classList.remove("card-menu__triangle")
+                        event.currentTarget.style.padding = '20px'
+                        event.currentTarget.style.paddingTop = '0px'
                     }
                     else { 
                         this.isVisuals = 'Visuals'
-                        event.currentTarget.style.backgroundColor = "#65afff"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        triangleDisabledElement.classList.add("card-menu__triangle")
+                        event.currentTarget.style.padding = '0px'
                     }
                 }
                 if (canon === 'Style') {
                     if (this.isStyle !== '') {
                         this.isStyle = ''
-                        event.currentTarget.style.backgroundColor = "transparent"
-                        event.currentTarget.style.color = "#4a4a4a"
+                        triangleActiveElement.classList.remove("card-menu__triangle")
+                        event.currentTarget.style.padding = '20px'
+                        event.currentTarget.style.paddingTop = '0px'
                     }
                     else { 
                         this.isStyle = 'Style'
-                        event.currentTarget.style.backgroundColor = "#88a9c0"
-                        event.currentTarget.style.color = "#FFFFFF"
+                        triangleDisabledElement.classList.add("card-menu__triangle")
+                        event.currentTarget.style.padding = '0px'
                     }
                 }
                 if (canon === 'All') {
@@ -1611,30 +1620,30 @@ You might also want to include a concrete strategy recommendation."
         margin-bottom: 10px;
     }
 
-        .card-menu-link {
+        .card-menu__item {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: #FFF;
-            padding: 0;/* 10px 24px; */
+            /* padding: 15px; */
         }
-        .card-menu-link:hover {
+        .card-menu__item:hover {
             color: white;
         }
-             .card-menu-link-title {
+             .card-menu__title {
                  font-size: 14px;
             }
 
-            .arrow-down {
-                content: ' ';
-                border-color: none transparent transparent transparent;
+            .card-menu__triangle {
+                content: '';
+                border-color: none transparent transparent transparent; /* The top border color is setted dynamically. */
                 border-style: solid;
-                border-width: 30px 30px 0 30px;
+                border-width: 20px 40px 0 40px;
                 height: 0px;
                 width: 0px;
                 position: relative;
-                top: 20px;
+                top: 5px;
             }
 
         .add-annotation {
@@ -1656,7 +1665,8 @@ You might also want to include a concrete strategy recommendation."
             .timeline-card {
                 background: none;
                 margin-bottom: 10px;
-                box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);
+                box-shadow: 0 3px 6px rgba(0,0,0,0.20), 0 1px 2px rgba(0,0,0,0.24);  
+                z-index: 100;              
             }
 
             .timeline-card:hover {
