@@ -181,6 +181,7 @@ You might also want to include a concrete strategy recommendation."
                         <a class="card-menu-link" :class="canon.name" v-for="canon in canons" :key="canon.name" title="Hide/show" @click="chooseCanonFilter($event, canon.name)">
                             <i class="fa fa_1x" :class="{ 'fa-pencil-square-o': (canon.name === 'Moves'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
                             <span class="card-menu-link-title">{{ canon.name }}</span>
+                            <div class="arrow-down" :class="canon.name + '-border-triangle'"></div>
                         </a>
                         <div id="more-annotations" class="more-annotations">
                             Scroll
@@ -189,13 +190,6 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                         </div>
                     </nav>
-                    <!-- <div class="card-menu__ribbons" style="margin-top:-10px;display:flex;">
-                        <div class="arrow-down"></div>
-                        <div class="arrow-down"></div>
-                        <div class="arrow-down"></div>
-                        <div class="arrow-down"></div>
-                        <div class="arrow-down"></div>
-                    </div>  -->
                     <div class="timeline-container">
                         <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
@@ -1176,6 +1170,12 @@ You might also want to include a concrete strategy recommendation."
 .Visuals-border { border-left: 12px solid #65afff; }
 .Style-border { border-left: 12px solid #88a9c0; }
 
+.Moves-border-triangle { border-top-color: #18435a;}
+.Structure-border-triangle { border-top-color: #2a628f; }
+.Delivery-border-triangle { border-top-color: #3e92cc; }
+.Visuals-border-triangle { border-top-color: #65afff; }
+.Style-border-triangle { border-top-color: #88a9c0; }
+
 .video__body {
     margin: 5px 15px 15px 15px;
 }
@@ -1617,20 +1617,24 @@ You might also want to include a concrete strategy recommendation."
             justify-content: center;
             align-items: center;
             color: #FFF;
-            padding: 10px 24px;
-            border-bottom: solid 1px rgba(0, 0, 0, .5);
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-width: 20px  45px 0px 45px;
-            border-color: red transparent transparent transparent;
+            padding: 0;/* 10px 24px; */
+        }
+        .card-menu-link:hover {
+            color: white;
         }
              .card-menu-link-title {
                  font-size: 14px;
-             }
+            }
 
             .arrow-down {
-                
+                content: ' ';
+                border-color: none transparent transparent transparent;
+                border-style: solid;
+                border-width: 30px 30px 0 30px;
+                height: 0px;
+                width: 0px;
+                position: relative;
+                top: 20px;
             }
 
         .add-annotation {
