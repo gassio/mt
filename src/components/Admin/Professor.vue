@@ -378,6 +378,8 @@
 				console.log("professor.vue, pushing router /decideHome")
 				this.$router.push('/DecideHome')
 			}
+			document.body.style.backgroundImage = "none"
+			document.body.style.backgroundColor = "#FFF"
 		},
 		computed: {
 			...mapGetters(

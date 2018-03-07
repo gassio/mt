@@ -68,10 +68,12 @@
 					console.log("student.vue, pushing router /decideHome")
 					this.$router.push('/DecideHome')
 				}
-				
 
 				if (this.$router.currentRoute.fullPath === '/student')
 					$('.navbar-end .badge').hide()
+
+				document.body.style.backgroundImage = "none"
+				document.body.style.backgroundColor = "#FFF"
 			},
 			computed: {
 				...mapGetters(

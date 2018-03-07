@@ -6,7 +6,7 @@
 
 <script>
     import { mapGetters } from 'vuex'
-	import { mapMutations } from 'vuex'
+    import { mapMutations } from 'vuex'
 
     import Login from './components/Login/Login.vue'
 
@@ -37,7 +37,6 @@
             // "Metalogon" label to Loading feature
             this.$loading({ fullscreen: true })
             $('.el-loading-mask .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
-            
         },
         computed: {
             ...mapGetters(
@@ -74,8 +73,8 @@
     }
 
     .app {
-      width: 100%; 
-      height: 100%;
+      width: 100vw; 
+      height: 100vh;
       padding: 0;
       margin: 0;
     }

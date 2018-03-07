@@ -196,7 +196,10 @@ You might also want to include a concrete strategy recommendation."
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
-                                    <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
+                                    <span class="timeline-card__time">
+                                        <!-- <img src="../../assets/big-idea.svg"> -->
+                                        {{ card.from }} - {{ card.to }}
+                                        </span>
                                 </div>
                                 <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
@@ -1626,7 +1629,6 @@ You might also want to include a concrete strategy recommendation."
             justify-content: center;
             align-items: center;
             color: #FFF;
-            /* padding: 15px; */
         }
         .card-menu__item:hover {
             color: white;

@@ -26,7 +26,8 @@
 
 <script>
   import { mapGetters } from 'vuex'
-	import { mapMutations } from 'vuex'
+  import { mapMutations } from 'vuex'
+  import bgImage from "../../assets/login-bg.png"
 
 export default {
     data() {
@@ -35,7 +36,7 @@ export default {
           password: '',
           rememberMe: true,
           formLoginIsShown: true,
-          formRegisterIsShown: false
+          formRegisterIsShown: false,
         }
     },
     methods: {
@@ -83,9 +84,8 @@ export default {
       this.$store.dispatch('getAllVideos')
     },
     mounted() {
-        $('.message a').click(function(){
-            $('login').animate({height: "toggle", opacity: "toggle"}, "slow");
-        });
+        document.body.style.backgroundImage = "url("+ bgImage + ")"
+        document.body.style.backgroundSize = "100%" 
     }
 }
 </script>
@@ -98,14 +98,14 @@ export default {
 
 .login {
   position: relative;
-  z-index: 1;
-  background: #FFFFFF;
+  top: 25%;
+  z-index: 100000;
   max-width: 360px;
-  margin-top: 100px;
   margin-left: auto;
   margin-right: auto;
   padding: 45px;
   text-align: center;
+  background: #FFF;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
 
