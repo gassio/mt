@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import axios from 'axios';
 import secureHTTPService from './SecureHttpService'
 
 class AuthService {
@@ -44,29 +43,6 @@ class AuthService {
             })
         })
     }
-        // return new Promise(function (resolve, reject) {
-        //     // axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
-        //     axios.post('http://localhost:3000/auth', value)
-        //         .then(function (response) {
-
-        //             console.log("authService: first time login")
-
-        //             var serverResponseObject = {
-        //                 'token' : response.data.token,
-        //                 'user_id' : response.data.data.user_id,
-        //                 'role_id' : response.data.data.role_id
-        //             }
-
-        //             // Save userData both in localStorage and in authData so the user is "remembered"
-        //             localStorage.setItem('authData', JSON.stringify(serverResponseObject))
-        //             that.authData = serverResponseObject
-                    
-        //             resolve();
-        //         })
-        //         .catch(function (err) {
-        //             reject(err)
-        //         })
-        // });
 
     logOff() {
         this.authData = null

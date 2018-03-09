@@ -73,7 +73,7 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    // import axios from 'axios'
     import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
@@ -114,7 +114,8 @@
                     presentedAt: [
                         { type: 'date', required: true, message: 'Please choose date', trigger: 'blur' },
                     ],
-                }
+                },
+                secureHttpService : this.$root.$options.secureHttpService
             }
         },
         created() {
@@ -126,8 +127,8 @@
             createJwVideo() {
                 let that = this 
                 this.modalDragDropIsOpen = true
-
-                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                
+                this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
 
@@ -192,7 +193,8 @@
 
                     // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
+                        // axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
+                        that.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -333,8 +335,8 @@
                             'X-Requested-With': null,
                         }, 
                 })
-
-                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                // axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
                         let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token

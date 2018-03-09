@@ -285,7 +285,8 @@ You might also want to include a concrete strategy recommendation."
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
                 selectedMove: 'Other',
-                otherMoveSelected: false       
+                otherMoveSelected: false,
+                secureHttpService : this.$root.$options.secureHttpService
             }
         },
         methods: {
@@ -302,7 +303,9 @@ You might also want to include a concrete strategy recommendation."
                 // Close modal
 
                 let intervalID = setInterval(function () {
-                    axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + this.videos[vIndex].jwVideoId)
+                    // TODO that or this? cannot test curently
+                    that.secureHttpService.get("jwconversion?videoId=" + this.videos[vIndex].jwVideoId)
+                    // axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + this.videos[vIndex].jwVideoId)
                         .then( response => {
                             console.log(' getting conversions...')
                             let conversions = response.data.data.conversions

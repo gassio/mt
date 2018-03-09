@@ -3,14 +3,14 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
-import secureHTTPService from './services/SecureHttpService'
+import secureHttpService from './services/SecureHttpService'
 
 import authService from './services/AuthService'
 // Vue.use(authService) // Needed?
 
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-Vue.use(VueAxios, axios)
+// import axios from 'axios'
+// import VueAxios from 'vue-axios'
+// Vue.use(VueAxios, axios)
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-default/index.css'
@@ -43,7 +43,7 @@ export const ourApp = new Vue({
   router,
   store,
   authService,
-  secureHTTPService,
+  secureHttpService,
   render: h => h(App)
 })
 

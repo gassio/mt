@@ -38,7 +38,6 @@
 
 <script>
 	import _ from 'lodash'
-	import axios from 'axios'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
