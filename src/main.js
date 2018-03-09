@@ -3,9 +3,11 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
+import secureHTTPService from './services/SecureHttpService'
+
 import authService from './services/AuthService'
-Vue.use(authService)
-// a change
+// Vue.use(authService) // Needed?
+
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
@@ -41,6 +43,7 @@ export const ourApp = new Vue({
   router,
   store,
   authService,
+  secureHTTPService,
   render: h => h(App)
 })
 

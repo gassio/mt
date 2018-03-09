@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import axios from 'axios';
+import secureHTTPService from './SecureHttpService'
 
 class AuthService {
     constructor() {
@@ -9,41 +10,63 @@ class AuthService {
             // Initialize authData with data from local storage
             // console.log(window.localStorage.getItem('authData'))
             this.authData = JSON.parse(window.localStorage.getItem('authData'))
-            console.log("Autologin.")
+            // console.log("Autologin.")
         }
         else {
             // If local storage does not have authData, initialize to null
             this.authData = null
-            console.log("No autologin.")
+            // console.log("No autologin.")
         }
     }
 
     login(value, cb) {
         var that = this
-        return new Promise(function (resolve, reject) {
-            // axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
-            axios.post('http://localhost:3000/auth', value)
-                .then(function (response) {
+        // console.log(secureHTTPService.post("auth", "",""))
+        
+        return new Promise(function(resolve, reject) {
+            secureHTTPService.post("auth", value,"")
+            .then((response) => {
+                // console.log("authService: first time login")
+                var serverResponseObject = {
+                    'token' : response.data.token,
+                    'user_id' : response.data.data.user_id,
+                    'role_id' : response.data.data.role_id
+                }
 
-                    console.log("authService: first time login")
+                // Save userData both in localStorage and in authData so the user is "remembered"
+                localStorage.setItem('authData', JSON.stringify(serverResponseObject))
+                that.authData = serverResponseObject
 
-                    var serverResponseObject = {
-                        'token' : response.data.token,
-                        'user_id' : response.data.data.user_id,
-                        'role_id' : response.data.data.role_id
-                    }
-
-                    // Save userData both in localStorage and in authData so the user is "remembered"
-                    localStorage.setItem('authData', JSON.stringify(serverResponseObject))
-                    that.authData = serverResponseObject
-                    
-                    resolve();
-                })
-                .catch(function (err) {
-                    reject(err)
-                })
-        });
+                resolve()
+            })
+            .catch((err) => {
+                reject(err)
+            })
+        })
     }
+        // return new Promise(function (resolve, reject) {
+        //     // axios.post('https://calm-basin-73408.herokuapp.com/api/auth/login', value)
+        //     axios.post('http://localhost:3000/auth', value)
+        //         .then(function (response) {
+
+        //             console.log("authService: first time login")
+
+        //             var serverResponseObject = {
+        //                 'token' : response.data.token,
+        //                 'user_id' : response.data.data.user_id,
+        //                 'role_id' : response.data.data.role_id
+        //             }
+
+        //             // Save userData both in localStorage and in authData so the user is "remembered"
+        //             localStorage.setItem('authData', JSON.stringify(serverResponseObject))
+        //             that.authData = serverResponseObject
+                    
+        //             resolve();
+        //         })
+        //         .catch(function (err) {
+        //             reject(err)
+        //         })
+        // });
 
     logOff() {
         this.authData = null

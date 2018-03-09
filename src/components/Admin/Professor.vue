@@ -373,9 +373,9 @@
 		mounted() {
 			// Check if role is professor. If not redirect to current role's homePage
 			const role = this.$root.$options.authService.getAuthData().role_id
-			console.log("professor.vue, role: " + role)
+			// console.log("professor.vue, role: " + role)
 			if (role.toLowerCase() != "professor") {
-				console.log("professor.vue, pushing router /decideHome")
+				// console.log("professor.vue, pushing router /decideHome")
 				this.$router.push('/DecideHome')
 			}
 			document.body.style.backgroundImage = "none"

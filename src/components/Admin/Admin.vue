@@ -63,9 +63,9 @@
 			mounted() {
 				// Check if role is admin. If not redirect to current role's homePage
 				const role = this.$root.$options.authService.getAuthData().role_id
-				console.log("admin.vue, role: " + role)
+				// console.log("admin.vue, role: " + role)
 				if (role.toLowerCase() != "admin") {
-					console.log("admin.vue, pushing router /decideHome")
+					// console.log("admin.vue, pushing router /decideHome")
 					this.$router.push('/DecideHome')
 				}
 				document.body.style.backgroundImage = "none"
