@@ -41,10 +41,10 @@
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
+	import MtSidebar from './Shared/MtSidebar.vue'
 	import MyFooter from '../Layout/MyFooter.vue'
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
-	import MtSidebar from './Shared/MtSidebar.vue'
 
     export default {
 			data() {

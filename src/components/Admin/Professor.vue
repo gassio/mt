@@ -26,7 +26,7 @@
 
 					</div>
 
-					<aside class="admin__sidebar column is-2 aside">
+					<!-- <aside class="admin__sidebar column is-2 aside">
 						<div class="sidebar__actions">
 							<a class="sidebar__actionsLink" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i> Create new class</a>
 							<a class="sidebar__actionsLink" @click="openModalArchiveClass()" v-show="!(currentClassSelected === 'Home')"><i class="fa fa-archive"></i>Archive this class</a>
@@ -47,22 +47,23 @@
 								</el-tab-pane>
 							</el-tabs>
 						</div>
-					</aside>
-
+					</aside> -->
+					
+					<mt-sidebar></mt-sidebar>
 				</div>
 				
 				<my-footer></my-footer>	
 
-				<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
+				<!-- <el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 						<el-form :model="newClass">
 								<el-form-item label="Name">
 										<el-input v-model="newClass.name" placeholder="Advanced Essay Workshop"></el-input>
 								</el-form-item>
 								<el-form-item label="Department">
 									<el-input v-model="newClass.department" placeholder="Comparative Media Studies / Writing"></el-input>
-										<!-- <el-select  placeholder="Choose a department" >
+										<el-select  placeholder="Choose a department" >
 											<el-option v-model="newClass.department" :label="c.department" :value="c.department" v-for="c in classes" v-bind:key="c.title"></el-option>
-										</el-select> -->
+										</el-select>
 								</el-form-item>
 								<el-form-item label="Number">
 										<el-input v-model="newClass.number" placeholder="21W.745"></el-input>
@@ -85,13 +86,13 @@
 				<el-dialog :title="'Do you want to unarchive this class?'" :visible.sync="modalUnarchiveClassIsOpen">
 					<el-button @click="modalUnarchiveClassIsOpen = false">Go back</el-button>
 					<el-button class="add-class-btn" @click="unArchiveClass()"><strong>Unarchive Class</strong></el-button>
-				</el-dialog>	
+				</el-dialog>	 -->
 
-				<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
+				<!-- <el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
 						<h3 style="margin-bottom:10px;">Choose genre:</h3>
-						<!-- <el-select v-model="currentGenre" placeholder="Choose a genre">
+						<el-select v-model="currentGenre" placeholder="Choose a genre">
 							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-						</el-select> -->
+						</el-select>
 
 						<el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio>
 
@@ -128,7 +129,7 @@
 						
 						<span slot="footer" class="dialog-footer">
 								<el-button @click="modalGenreCustomization2 = false">Close</el-button>
-						</span>
+						</span> -->
 				</el-dialog>	
 				
 			</div>	
@@ -141,6 +142,7 @@
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
+	import MtSidebar from './Shared/MtSidebar.vue'
 	import MyFooter from '../Layout/MyFooter.vue'
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
@@ -148,21 +150,21 @@
 	export default {
 		data() {
 			return {
-				sidebarClassesTab: 'activeClasses',
-				// currentClassString: '',
-				activeClassesInputValue: '',
-				archivedClassesInputValue: '',
-				modalCreateClassIsOpen: false,
-				modalArchiveClassIsOpen: false,
-				modalUnarchiveClassIsOpen: false,
-				classIdClicked: '',
-				newClass: {
-					archived: false,
-					department: '',
-					name: '',
-					number: '',
-					semester: ''
-				},
+				// sidebarClassesTab: 'activeClasses',
+				// // currentClassString: '',
+				// activeClassesInputValue: '',
+				// archivedClassesInputValue: '',
+				// modalCreateClassIsOpen: false,
+				// modalArchiveClassIsOpen: false,
+				// modalUnarchiveClassIsOpen: false,
+				// classIdClicked: '',
+				// newClass: {
+				// 	archived: false,
+				// 	department: '',
+				// 	name: '',
+				// 	number: '',
+				// 	semester: ''
+				// },
 				modalGenreCustomization: false,
 				modalGenreCustomization2: false,
 				// 
@@ -292,74 +294,74 @@
 			}
 		},
 		methods: {
-			setCurrentClass(className, classNumber) {
-				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
-			},
-			createClass() {	
-				this.$store.dispatch('createClass', { 
-						newClass: this.newClass
-				})
-				this.newClass = {}
-			},
-			archiveClass() {
-				// 1. Adds current class to Archived Classes.
-				// 2. Removes current class from Active Classes.
-				// 3. Modifies classes object.
-				var objectToBeArchived = {}
-				var objectId
-				for (var i = 0, l = this.activeClasses.length; i < l; i++) {
-					if (this.activeClasses[i].name === this.currentClassSelected) {
-						this.activeClasses[i].archived = true
-						objectToBeArchived = this.activeClasses[i]
-						objectId = this.activeClasses[i].id
-						break
-					}
-				}
-				this.$store.dispatch('archiveClass', { 
-					classId: objectId,
-					classObject: objectToBeArchived 
-				})
+			// setCurrentClass(className, classNumber) {
+			// 	this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+			// },
+			// createClass() {	
+			// 	this.$store.dispatch('createClass', { 
+			// 			newClass: this.newClass
+			// 	})
+			// 	this.newClass = {}
+			// },
+			// archiveClass() {
+			// 	// 1. Adds current class to Archived Classes.
+			// 	// 2. Removes current class from Active Classes.
+			// 	// 3. Modifies classes object.
+			// 	var objectToBeArchived = {}
+			// 	var objectId
+			// 	for (var i = 0, l = this.activeClasses.length; i < l; i++) {
+			// 		if (this.activeClasses[i].name === this.currentClassSelected) {
+			// 			this.activeClasses[i].archived = true
+			// 			objectToBeArchived = this.activeClasses[i]
+			// 			objectId = this.activeClasses[i].id
+			// 			break
+			// 		}
+			// 	}
+			// 	this.$store.dispatch('archiveClass', { 
+			// 		classId: objectId,
+			// 		classObject: objectToBeArchived 
+			// 	})
 				
-				this.modalArchiveClassIsOpen = false // Closes the modal.
-				var noClass = 'select a class'
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
-			},
-			unArchiveClass() {
-				var self = this
-				var objectToBeUnarchived = {}
-				var objectId
-				for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
-					if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
-						this.archivedClasses[i].archived = false
-						objectToBeUnarchived = this.archivedClasses[i]
-						break
-					}
-				}
-				this.$store.dispatch('unArchiveClass', { 
-					classId: self.classIdClicked,
-					classObject: objectToBeUnarchived 
-				})
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
-				this.modalUnarchiveClassIsOpen = false
-			},
-			// A Vue setter.
-			queryActiveClasses: _.debounce(function () {
-				console.log('QUERY ACTIVE CLASSES')
-				this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
-			}, 300),
-			// A Vue setter.
-			queryArchivedClasses: _.debounce(function () {
-				console.log('QUERY ARCHIVED CLASSES')
-				this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
-			}, 300),
-			openModalArchiveClass() {
-				if (this.currentClassSelected !== '')
-					this.modalArchiveClassIsOpen = true
-			},
-			openModalUnarchiveClass(classId) {
-				this.classIdClicked = classId
-				this.modalUnarchiveClassIsOpen = true
-			},
+			// 	this.modalArchiveClassIsOpen = false // Closes the modal.
+			// 	var noClass = 'select a class'
+			// 	this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+			// },
+			// unArchiveClass() {
+			// 	var self = this
+			// 	var objectToBeUnarchived = {}
+			// 	var objectId
+			// 	for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
+			// 		if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
+			// 			this.archivedClasses[i].archived = false
+			// 			objectToBeUnarchived = this.archivedClasses[i]
+			// 			break
+			// 		}
+			// 	}
+			// 	this.$store.dispatch('unArchiveClass', { 
+			// 		classId: self.classIdClicked,
+			// 		classObject: objectToBeUnarchived 
+			// 	})
+			// 	this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
+			// 	this.modalUnarchiveClassIsOpen = false
+			// },
+			// // A Vue setter.
+			// queryActiveClasses: _.debounce(function () {
+			// 	console.log('QUERY ACTIVE CLASSES')
+			// 	this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
+			// }, 300),
+			// // A Vue setter.
+			// queryArchivedClasses: _.debounce(function () {
+			// 	console.log('QUERY ARCHIVED CLASSES')
+			// 	this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
+			// }, 300),
+			// openModalArchiveClass() {
+			// 	if (this.currentClassSelected !== '')
+			// 		this.modalArchiveClassIsOpen = true
+			// },
+			// openModalUnarchiveClass(classId) {
+			// 	this.classIdClicked = classId
+			// 	this.modalUnarchiveClassIsOpen = true
+			// },
 			handleNodeClick(data) {
 				console.log(data);
 			},
@@ -382,7 +384,7 @@
 		},
 		computed: {
 			...mapGetters(
-				['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber']
+				['videos', 'classes', 'currentClassSelected', 'currentClassNumber']
 			)
 		},
 		components: {
@@ -390,7 +392,8 @@
 			'my-header': MyHeader,
 			'my-footer': MyFooter,
 			'mt-video-card': MtVideoCard,
-			'mt-video-itemlist': MtVideoItemList
+			'mt-video-itemlist': MtVideoItemList,
+			'mt-sidebar': MtSidebar
 		}
 	}
 </script>
@@ -610,62 +613,6 @@
 									text-align: center;
 									height: 50%;
 								}
-
-
-
-
-
-	/* ==============================================
-                #ADMIN-SIDEBAR
-	================================================= */
-
-	.admin__sidebar {
-		margin: 0;
-		padding: 0;
-		background-color: #F9F9F9;
-	}
-
-	.sidebar__actions {
-		margin-top: 15px;	
-		display: flex;
-		flex-direction: column;
-	}
-
-		.sidebar__actionsLink {
-			padding: 10x 15px 10px 15px !important;
-		}
-
-
-	.sidebar__classes {
-		margin-top: 10px;
-		display: flex;
-		flex-direction: column;
-	}
-
-		.sidebar__classesInput {
-			margin-bottom: 10px;
-		}
-
-		.sidebar__classesLink {
-
-		}
-
-		.admin__sidebar a {
-			color: #4a4a4a;
-			font-size: 13px;
-			margin: 0;
-			padding: 12px 12px 12px 12px;
-		}
-		.admin__sidebar a:hover {
-			background-color: #f5f5f5;
-		}
-			.admin__sidebar a i {
-				padding-right: 5px;
-			}
-
-
-
-
 
 	/* ==============================================
 									#ANNOTATION-BADGE
