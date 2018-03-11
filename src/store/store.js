@@ -542,8 +542,8 @@ export const store = new Vuex.Store({
         },
         CREATE_STUDENT_CLASSES: (state) => {
             state.studentClasses = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                state.studentClasses.push(state.classes[i])
+            for (var i = 0, l = state.activeClasses.length; i < l; i++) {
+                state.studentClasses.push(state.activeClasses[i])
             }
         },
         ARCHIVE_CLASS: (state, payload) => {
