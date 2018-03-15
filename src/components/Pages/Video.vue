@@ -290,69 +290,6 @@ You might also want to include a concrete strategy recommendation."
             }
         },
         methods: {
-            getVideoSources(vIndex) {
-                let that = this
-                let link, duration, thumb
-                // A message label is needed.
-                // Something like this: "Synchronizing video..."
-                // Shows loading spinner
-                if (this.videos[vIndex].sources.length === 0) {
-                    var loadingInstance = Loading.service({ fullscreen: true }); 
-                    // console.log('video: ', this.videos)
-                }
-                // Close modal
-
-                let intervalID = setInterval(function () {
-                    // TODO that or this? cannot test curently
-                    that.secureHttpService.get("jwconversion?videoId=" + this.videos[vIndex].jwVideoId)
-                    // axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + this.videos[vIndex].jwVideoId)
-                        .then( response => {
-                            console.log(' getting conversions...')
-                            let conversions = response.data.data.conversions
-
-                            for (var i = 0, l = conversions.length; i < l; i++) {
-                                if (conversions[i].status === 'Ready' && conversions[i].template.name === '720p') {
-                                    link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
-                                    duration = conversions[i].duration
-                                    console.log('|> Link: ', link)
-                                    console.log('|> Duration: ', duration)
-
-                                    // axios.put("https://metalogon-api.herokuapp.com/rest/video/" + that.id, 
-                                    //     { "link": link, "duration": duration }
-                                    // )
-                                    // .then( (response) => console.log('PUT video: /', that.id))
-                                    // .catch( (error) => console.log('Not PUT video: ', error))
-                                            // that.$store.dispatch('editVideo', {
-                                            //     videoId: that.id,
-                                            //     linkDurationThumb: {
-                                            //         link: link,
-                                            //         duration: duration
-                                            //     }
-                                            // })
-
-                                    // Close loading bar
-                                    if (that.videos[vIndex].sources.length !== 0)
-                                        loadingInstance.close()
-                                    // Clear interval
-                                    clearInterval(intervalID)
-                                }
-                            }
-                        })
-                        .catch( (error) => console.log(error))
-                }, 5000)
-                
-                // GA
-                // GET thumb
-                // let intervalID2 = setInterval(function () {
-                //     axios.get("https://cdn.jwplayer.com/v2/media/" + theData.link.query.key)
-                //         .then( response => {
-                //             console.log('----- GET thumb ----')
-                //             thumb = response.data.playlist.image
-                //             console.log('|> Thumb: ', thumb)
-                //             clearInterval(intervalID2)
-                //         })
-                // }, 5000)
-            },
             annotating() {
                 var that = this
 

@@ -190,10 +190,7 @@ export const store = new Vuex.Store({
         currentClassNumber: '',
         currentVideoID: null,
         uploadingVideo: false,
-        uploadUrl: '',
-
-        // authenticated: false, // for login page.
-        // userData: {},
+        uploadUrl: ''
     },
 
     actions: {
@@ -314,9 +311,7 @@ export const store = new Vuex.Store({
                     console.log('Error annotation add...', err)
                 })
         },
-        editAnnotation: function ({ commit }, payload) {
-            // var theVideo = payload.video
-            
+        editAnnotation: function ({ commit }, payload) {            
             secureHttpService.put("video/" + payload.id, payload.video)
             // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
@@ -325,11 +320,9 @@ export const store = new Vuex.Store({
                     console.log('Error annotation edit...', err)
                 })
         },
-        deleteAnnotation: function ({ commit }, payload) {
-            var theVideo = payload.video
-            
-            secureHttpService.put("video/" + payload.id, theVideo)
-            // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
+        deleteAnnotation: function ({ commit }, payload) {            
+            secureHttpService.put("video/" + payload.id, payload.video)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, payload.video)
                 .then(response => {
                     theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
                 })
@@ -575,7 +568,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.adminClasses = adminClassesLocal.filter(filterClasses(inputValue))
@@ -592,7 +585,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.activeClasses = activeClassesLocal.filter(filterClasses(inputValue))
@@ -609,7 +602,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.archivedClasses = archivedClassesLocal.filter(filterClasses(inputValue))
@@ -619,13 +612,14 @@ export const store = new Vuex.Store({
             // An array that helps for the filtering.
             const studentClassesLocal = []
             for (var i = 0, l = state.classes.length; i < l; i++) {
-                studentClassesLocal.push(state.classes[i])
+                if (state.classes.archived === false)
+                    studentClassesLocal.push(state.classes[i])
             }
 
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.studentClasses = studentClassesLocal.filter(filterClasses(inputValue))
@@ -639,15 +633,6 @@ export const store = new Vuex.Store({
         SET_UPLOAD_URL: (state, payload) => {
             state.uploadUrl = payload
         },
-        // AUTHENTICATED: (state, payload) => {
-        //     if (payload === "login")//(!state.authenticated) // This gets called only from login.vue, through AuthService
-        //         state.authenticated = true
-        //     else if (payload === "logout")
-        //         state.authenticated = false
-        // },
-        // SET_USER_PROFILE: (state, payload) => {
-        //     state.userData = payload
-        // },
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
@@ -696,12 +681,6 @@ export const store = new Vuex.Store({
         },
         uploadingVideo: state => {
             return state.uploadingVideo
-        },
-        // authenticated: state => {
-        //     return state.authenticated
-        // },
-        // userData: state => {
-        //     return state.userData
-        // },
+        }
     }
 })

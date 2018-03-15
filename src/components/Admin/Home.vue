@@ -8,10 +8,19 @@
 
 					<div class="home__main column is-10">
 
-						<div class="featured">
+						<div class="featured" v-show="role === 'Student' || role === 'Professor'">
 							<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
 							<div class="featured__container">
 								<mt-video-card v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true) || (currentClassSelected === 'Home' && v.featuredGlobal === true)">
+								</mt-video-card>
+							</div>
+						</div>
+
+						
+						<div class="featured" v-show="role === 'Admin'">
+							<h3 class="featured__heading">Featured videos of Home</h3>
+							<div class="featured__container">
+								<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true">
 								</mt-video-card>
 							</div>
 						</div>
@@ -94,7 +103,7 @@
 	export default {
 		data() {
 			return {
-                userRole: "",
+                role: "",
 				modalGenreCustomization: false,
 				modalGenreCustomization2: false,
 				genres: [
@@ -233,7 +242,7 @@
 			this.$store.state.currentClassSelected = 'Home'
 		},
 		mounted() {
-			this.userRole = this.$root.$options.authService.getAuthData().role_id
+			this.role = this.$root.$options.authService.getAuthData().role_id
 			document.body.style.backgroundImage = "none"
 			document.body.style.backgroundColor = "#FFF"
 		},

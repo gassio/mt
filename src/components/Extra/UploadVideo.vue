@@ -73,7 +73,6 @@
 </template>
 
 <script>
-    // import axios from 'axios'
     import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
@@ -186,7 +185,7 @@
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
                     
-                    that.modalSyncOpen = true
+                    this.modalSyncOpen = true
 
                     // Shows loading spinner
                     let link, duration, thumb
@@ -320,7 +319,6 @@
                 this.modalMaintenanceIsOpen = false
             },
             loadUrlPOC() {
-                let that = this
                 this.modalDragDropIsOpen = true
 
                 this.dropzoneInstance = new Dropzone('#mydropo', { 
@@ -336,6 +334,7 @@
                         }, 
                 })
                 // axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                let that = this
                 this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
