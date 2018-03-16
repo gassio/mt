@@ -1,18 +1,39 @@
 <template>
 
-		<aside class="admin__sidebar column is-2 aside">
+		<aside class="sidebar column is-2 aside">
 
+			<!-- Sidebar buttons/actions  -->
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-				<a class="sidebar__actionsLink" v-show="(role === 'Admin' || role === 'Professor') && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'Admin' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'Student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
-			<div class="sidebar__classes">
-				<el-input class="sidebar__classesInput" v-show="role === 'Admin'" icon="search" v-model="searchInputValue" @change="queryAdminClasses()" placeholder="Search for a class..."></el-input>	
+			<!-- Sidebar Classes menu for student -->
+			<div class="sidebar__classes" v-show="role === 'Student'">	
 				<el-input class="sidebar__classesInput" v-show="role === 'Student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'Admin'" v-for="c in adminClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
 				<a class="sidebar__classesLink" v-show="role === 'Student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} -{{ c.name }}</a>
+			</div>
+
+			<!-- Sidebar Classes menu for professor/admin-->
+			<div class="sidebar__classes" v-show="role === 'Admin' || role === 'Professor'">
+				<el-tabs v-model="sidebarClassesTab">
+					<el-tab-pane label="Active classes" name="activeClasses">
+						<div class="sidebar__classes">
+							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-show="role === 'Admin'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'Professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a> -->
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="Archived" name="archivedClasses">
+						<div class="sidebar__classes">
+							<el-input class="sidebar__classesInput" icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+						</div>
+					</el-tab-pane>
+				</el-tabs>
 			</div>
 
 			<!-- Admin, Professor -->
@@ -40,7 +61,61 @@
 					</span>
 			</el-dialog>
 
-			<!-- Admin, Professor -->
+			<el-dialog :title="'Do you want to archive `' + currentClassSelected + '` class?'" :visible.sync="modalArchiveClassIsOpen">
+				<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
+				<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
+			</el-dialog>
+
+			<el-dialog :title="'Do you want to unarchive this class?'" :visible.sync="modalUnarchiveClassIsOpen">
+				<el-button @click="modalUnarchiveClassIsOpen = false">Go back</el-button>
+				<el-button class="add-class-btn" @click="unArchiveClass()"><strong>Unarchive Class</strong></el-button>
+			</el-dialog>	
+
+			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
+					<h3 style="margin-bottom:10px;">Choose genre:</h3>
+					<!-- <el-select v-model="currentGenre" placeholder="Choose a genre">
+						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
+					</el-select> -->
+
+					<el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio>
+
+					<br/>
+					<br/>
+					<p>Choose canons:</p>
+					<el-tree :data="canons" :props="genreProps" @node-click="handleNodeClick" show-checkbox>
+					</el-tree>
+					
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalGenreCustomization = false">Close</el-button>
+					</span>
+			</el-dialog>	
+
+			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
+					<h3 style="margin-bottom:10px;">Choose genre:</h3>
+					<el-select v-model="currentGenre" placeholder="Choose a genre">
+						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
+					</el-select>
+					<br/>
+					<br/>
+					<p style="font-weight:700; margin-top:10px;">STRUCTURE</p>
+					<el-transfer v-model="structurePassed" :data="structureData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">DELIVERY</p>
+					<el-transfer v-model="deliveryPassed" :data="deliveryData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">STYLE</p>
+					<el-transfer v-model="stylePassed" :data="styleData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					<p style="font-weight:700; margin-top:10px;">VISUALS</p>
+					<el-transfer v-model="visualsPassed" :data="visualsData" :titles="['Disabled', 'Enabled']">
+					</el-transfer>
+					
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalGenreCustomization2 = false">Close</el-button>
+					</span>
+			</el-dialog>	
+
+			<!-- Admin -->
 			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
 				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
 				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
@@ -71,9 +146,140 @@
 			return {
 				role: this.$root.$options.authService.getAuthData().role_id,
 				// ADMIN, PROFESSOR
+				sidebarClassesTab: 'activeClasses',
 				searchInputValue: '',
+				activeClassesInputValue: '',
+				archivedClassesInputValue: '',
 				modalCreateClassIsOpen: false,
 				modalDeleteClassIsOpen: false,
+				modalArchiveClassIsOpen: false,
+				modalUnarchiveClassIsOpen: false,
+				modalGenreCustomization: false,
+				modalGenreCustomization2: false,
+				classIdClicked: '',
+				genres: [
+					{ name: 'Elevator pitch' },
+					{ name: 'Lab presentation' },
+					{ name: 'Thesis talk' },
+					{ name: 'Progress report' },
+					{ name: 'Conference talk' }
+				],
+				currentGenre: 'Lab presentation',
+				// Genre version 1
+				canons: [
+					{
+						label: 'Moves',
+						children: [
+							{ label: 'Introduction', children: [
+								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+								{ label: 'States the value of the present research and explains why it was conducted' },
+								{ label: 'Discusses the definitions of key terms' },
+								{ label: 'Summarizes and previews the methods used' },
+								{ label: 'Presents basic equations' },
+							]},
+							{ label: 'Methodology', children: [
+								{ label: 'Describes materials and instrumentation in the study' },
+								{ label: 'Describes tasks (actions) in the study' },
+								{ label: 'Describes the procedures of an experiment (activities)' },
+								{ label: 'Presents justification of techniques' },
+								{ label: 'Describes variables in the study' },
+								{ label: 'Describes the procedures used in data analysis' },
+								{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
+							]},
+							{ label: 'Results and Discussion', children: [
+								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+								{ label: 'States the value of the present research and explains why it was conducted' },
+								{ label: 'Discusses the definitions of key terms' },
+								{ label: 'Summarizes and previews the methods used' },
+								{ label: 'Presents basic equations' },
+							]},
+							{ label: 'Conclusion', children: [
+								{ label: 'xxxxxxxxxx' },
+							]},
+							{ label: 'Question and Answer', children: [
+								{ label: 'xxxxxxxxxx' },
+							]},
+						]
+					}, 
+					{
+						label: 'Structure',
+						children: [
+							{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
+							{ label: 'Conceptual transitions' },
+							{ label: 'Line of argument' },
+							{ label: 'Central moves' },
+						]
+					}, 
+					{
+						label: 'Delivery',
+						children: [
+							{ label: 'Volume' },
+							{ label: 'Gestures' },
+							{ label: 'Metadiscourse' },
+							{ label: 'Posture' },
+							{ label: 'Language' },
+						]
+					}, 
+					{
+						label: 'Style',
+						children: [
+							{ label: 'Coherence' },
+							{ label: 'Concision' },
+							{ label: 'Flow' },
+							{ label: 'Emphasis' },
+							{ label: 'Figures of Speech' },
+							{ label: 'Figures of Sound' },
+						]
+					},
+					{
+						label: 'Visuals',
+						children: [
+							{ label: 'Pictorial cues' },
+							{ label: 'Slide titles' },
+							{ label: 'Image-text highlight' },
+							{ label: 'Graphics' },
+							{ label: 'Memorable images' }
+						]
+					},
+				],
+				genreProps: {
+					children: 'children',
+					label: 'label',
+					desc: 'desc'
+				},
+				// Genre version 2
+				structureData: [
+					{ key: 0, label: 'Terms'},
+					{ key: 1, label: 'Conceptual transitions' },
+					{ key: 2, label: 'Line of argument' },
+					{ key: 3, label: 'Central moves' }
+				],
+				structurePassed: [],
+				deliveryData: [
+					{ key: 0, label: 'Volume' },
+					{ key: 1, label: 'Gestures' },
+					{ key: 2, label: 'Metadiscourse' },
+					{ key: 3, label: 'Posture' },
+					{ key: 4, label: 'Language' },
+				],
+				deliveryPassed: [],
+				styleData: [
+					{ key: 0, label: 'Coherence' },
+					{ key: 1, label: 'Concision' },
+					{ key: 2, label: 'Flow' },
+					{ key: 3, label: 'Emphasis' },
+					{ key: 4, label: 'Figures of Speech' },
+					{ key: 5, label: 'Figures of Sound' },
+				],
+				stylePassed: [],
+				visualsData: [
+					{ label: 'Pictorial cues' },
+					{ label: 'Slide titles' },
+					{ label: 'Image-text highlight' },
+					{ label: 'Graphics' },
+					{ label: 'Memorable images' }
+				],
+				visualsPassed: [],
 				newClass: {
 					archived: false,
 					department: '',
@@ -92,16 +298,7 @@
 			}
 		},
 		methods: {
-			setCurrentClass(className, classNumber) {
-				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
-			},
-			// ADMIN, PROFESSOR
-			createClass() {	
-				this.$store.dispatch('createClass', { 
-					newClass: this.newClass
-				})
-				this.newClass = {}
-			},
+			// Admin
 			deleteClass() {
 				var objectId
 				for (var i = 0, l = this.adminClasses.length; i < l; i++) {
@@ -119,7 +316,79 @@
 
 				this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
 			}, 300),
-			// STUDENT
+			// Admin, Professor
+			setCurrentClass(className, classNumber) {
+				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+			},
+			createClass() {	
+				this.$store.dispatch('createClass', { 
+					newClass: this.newClass
+				})
+				this.newClass = {}
+			},
+			archiveClass() {
+				// 1. Adds current class to Archived Classes.
+				// 2. Removes current class from Active Classes.
+				// 3. Modifies classes object.
+				var objectToBeArchived = {}
+				var objectId
+				for (var i = 0, l = this.activeClasses.length; i < l; i++) {
+					if (this.activeClasses[i].name === this.currentClassSelected) {
+						this.activeClasses[i].archived = true
+						objectToBeArchived = this.activeClasses[i]
+						objectId = this.activeClasses[i].id
+						break
+					}
+				}
+				this.$store.dispatch('archiveClass', { 
+					classId: objectId,
+					classObject: objectToBeArchived 
+				})
+				
+				this.modalArchiveClassIsOpen = false // Closes the modal.
+				var noClass = 'select a class'
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+			},
+			unArchiveClass() {
+				var self = this
+				var objectToBeUnarchived = {}
+				var objectId
+				for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
+					if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
+						this.archivedClasses[i].archived = false
+						objectToBeUnarchived = this.archivedClasses[i]
+						break
+					}
+				}
+				this.$store.dispatch('unArchiveClass', { 
+					classId: self.classIdClicked,
+					classObject: objectToBeUnarchived 
+				})
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
+				this.modalUnarchiveClassIsOpen = false
+			},
+			// A Vue setter.
+			queryActiveClasses: _.debounce(function () {
+				console.log('QUERY ACTIVE CLASSES')
+				this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
+			}, 300),
+			// A Vue setter.
+			queryArchivedClasses: _.debounce(function () {
+				console.log('QUERY ARCHIVED CLASSES')
+				this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
+			}, 300),
+			openModalArchiveClass() {
+				if (this.currentClassSelected !== '')
+					this.modalArchiveClassIsOpen = true
+			},
+			openModalUnarchiveClass(classId) {
+				this.classIdClicked = classId
+				this.modalUnarchiveClassIsOpen = true
+			},
+			handleNodeClick(data) {
+				console.log(data);
+			},
+			// Student
 			enrollToClass(event) {
 				const clickedClassName = event.currentTarget.children[1].innerHTML
 				for (var i = 0, l = this.otherClasses.length; i < l; i++) {
@@ -141,7 +410,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses']
+                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses']
             )
 		}
     }
@@ -152,7 +421,7 @@
                 #ADMIN-SIDEBAR
 	================================================= */
 
-	.admin__sidebar {
+	.sidebar {
 		margin: 0;
 		padding: 0;
 		background-color: #F9F9F9;
@@ -183,16 +452,16 @@
 
 		}
 
-		.admin__sidebar a {
+		.sidebar a {
 			color: #4a4a4a;
 			font-size: 13px;
 			margin: 0;
 			padding: 12px 12px 12px 12px;
 		}
-		.admin__sidebar a:hover {
+		.sidebar a:hover {
 			background-color: #f5f5f5;
 		}
-			.admin__sidebar a i {
+			.sidebar a i {
 				padding-right: 5px;
 			}
 

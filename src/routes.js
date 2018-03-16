@@ -5,9 +5,10 @@ import { store } from './store/store'
 import authService from './services/AuthService'
 import Login from './components/Login/Login.vue'
 import DecideHome from './components/Pages/DecideHome.vue'
-import Admin from './components/Admin/Admin.vue'
-import Professor from './components/Admin/Professor.vue'
-import Student from './components/Admin/Student.vue'
+// import Admin from './components/Admin/Admin.vue'
+// import Professor from './components/Admin/Professor.vue'
+// import Student from './components/Admin/Student.vue'
+import Home from './components/Admin/Home.vue'
 import Video from './components/Pages/Video.vue'
 import Wiki from './components/Pages/Wiki.vue'
 
@@ -43,19 +44,19 @@ export const routes = [
     { 
         name: 'Admin', 
         path: '/admin', 
-        component: Admin, 
+        component: Home, 
         beforeEnter: requiresAuth
     },
     { 
         name: 'Professor', 
         path: '/professor', 
-        component: Professor, 
+        component: Home, 
         beforeEnter: requiresAuth 
     },
     { 
         name: 'Student', 
         path: '/student', 
-        component: Student, 
+        component: Home, 
         beforeEnter: requiresAuth 
     },
     { 

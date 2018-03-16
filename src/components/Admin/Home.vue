@@ -1,14 +1,14 @@
 	<template>
 
-			<div class="professor">
+			<div class="home">
 
 				<my-header></my-header>
 				
-				<div class="professor__body columns">
+				<div class="home__body columns">
 
-					<div class="professor__main column is-10">
+					<div class="home__main column is-10">
 
-						<div class="featured">
+						<div class="featured" v-show="role === 'Student' || role === 'Professor'">
 							<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
 							<div class="featured__container">
 								<mt-video-card v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true) || (currentClassSelected === 'Home' && v.featuredGlobal === true)">
@@ -16,7 +16,16 @@
 							</div>
 						</div>
 
-						<div class="professor__classvideos" v-show="!(currentClassSelected === 'Home')">
+						
+						<div class="featured" v-show="role === 'Admin'">
+							<h3 class="featured__heading">Featured videos of Home</h3>
+							<div class="featured__container">
+								<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true">
+								</mt-video-card>
+							</div>
+						</div>
+
+						<div class="home__classvideos" v-show="!(currentClassSelected === 'Home')">
 							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}
 							</h3>
 							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
@@ -94,6 +103,7 @@
 	export default {
 		data() {
 			return {
+                role: "",
 				modalGenreCustomization: false,
 				modalGenreCustomization2: false,
 				genres: [
@@ -232,13 +242,7 @@
 			this.$store.state.currentClassSelected = 'Home'
 		},
 		mounted() {
-			// Check if role is professor. If not redirect to current role's homePage
-			const role = this.$root.$options.authService.getAuthData().role_id
-			// console.log("professor.vue, role: " + role)
-			if (role.toLowerCase() != "professor") {
-				// console.log("professor.vue, pushing router /decideHome")
-				this.$router.push('/DecideHome')
-			}
+			this.role = this.$root.$options.authService.getAuthData().role_id
 			document.body.style.backgroundImage = "none"
 			document.body.style.backgroundColor = "#FFF"
 		},
@@ -263,12 +267,12 @@
 									#GENERAL-LAYOUT
 		================================================= */
 
-	.professor__body { 
+	.home__body { 
 		margin-bottom: 0 !important;
 		min-height: calc(100vh - 160px);
 	}
 
-	.professor__main {
+	.home__main {
 		padding-left: 30px;
 		margin-top: 25px;
 	}
@@ -281,11 +285,11 @@
 									#FEATURED
 		================================================= */
 
-		.professor__featured {
+		.home__featured {
 
 		}
 
-			.professor__featured-container {
+			.home__featured-container {
 				display:flex;
 				flex-wrap: wrap;
 			}
@@ -366,7 +370,7 @@
 									#CLASS-VIDEOS
 		================================================= */
 
-			.professor__classvideos {
+			.home__classvideos {
 				margin-top: 10px;
 			}
 

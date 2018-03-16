@@ -39,9 +39,9 @@
             $('.el-loading-mask .el-loading-spinner').append("<p style='font-size:24px;font-weight:500;margin-top:20px'>Metalogon</p>")
         },
         computed: {
-            ...mapGetters(
-                ['authenticated']
-            )
+            // ...mapGetters(
+            //     ['authenticated']
+            // )
         },
         components: {
             'login': Login

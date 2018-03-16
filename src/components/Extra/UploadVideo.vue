@@ -73,7 +73,6 @@
 </template>
 
 <script>
-    import axios from 'axios'
     import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 
@@ -114,7 +113,8 @@
                     presentedAt: [
                         { type: 'date', required: true, message: 'Please choose date', trigger: 'blur' },
                     ],
-                }
+                },
+                secureHttpService : this.$root.$options.secureHttpService
             }
         },
         created() {
@@ -126,8 +126,8 @@
             createJwVideo() {
                 let that = this 
                 this.modalDragDropIsOpen = true
-
-                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                
+                this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
 
@@ -185,14 +185,15 @@
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
                     
-                    that.modalSyncOpen = true
+                    this.modalSyncOpen = true
 
                     // Shows loading spinner
                     let link, duration, thumb
 
                     // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
+                        // axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
+                        that.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -318,7 +319,6 @@
                 this.modalMaintenanceIsOpen = false
             },
             loadUrlPOC() {
-                let that = this
                 this.modalDragDropIsOpen = true
 
                 this.dropzoneInstance = new Dropzone('#mydropo', { 
@@ -333,8 +333,9 @@
                             'X-Requested-With': null,
                         }, 
                 })
-
-                axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                // axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
+                let that = this
+                this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
                         let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token

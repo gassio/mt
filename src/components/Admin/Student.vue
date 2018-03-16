@@ -38,7 +38,6 @@
 
 <script>
 	import _ from 'lodash'
-	import axios from 'axios'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
@@ -63,9 +62,9 @@
 			mounted() {
 				// Check if role is student. If not redirect to current role's homePage
 				const role = this.$root.$options.authService.getAuthData().role_id
-				console.log("student.vue, role: " + role)
+				// console.log("student.vue, role: " + role)
 				if (role.toLowerCase() != "student") {
-					console.log("student.vue, pushing router /decideHome")
+					// console.log("student.vue, pushing router /decideHome")
 					this.$router.push('/DecideHome')
 				}
 

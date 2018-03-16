@@ -37,16 +37,15 @@ export default {
           rememberMe: true,
           formLoginIsShown: true,
           formRegisterIsShown: false,
+          authService : this.$root.$options.authService
         }
     },
     methods: {
         loginUser() {
-          const authService = this.$root.$options.authService
-
-          authService.login({ username: this.username, password: this.password })
+          this.authService.login({ username: this.username, password: this.password })
             .then(() => {
-              this.$store.commit('AUTHENTICATED', "login")
-              this.$store.commit('SET_USER_PROFILE', authService.getAuthData())
+              // this.$store.commit('AUTHENTICATED', "login")
+              // this.$store.commit('SET_USER_PROFILE', this.authService.getAuthData())
               this.$router.push('/')
             })
             .catch(() => {

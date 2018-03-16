@@ -120,8 +120,8 @@
             logOut() {
                 this.$router.push('/login')
                 this.$root.$options.authService.logOff()
-                this.$store.commit('AUTHENTICATED', "logout") // Change store.authenticated to false (becomes true in login)
-                this.$store.commit('SET_USER_PROFILE', {})
+                // this.$store.commit('AUTHENTICATED', "logout") // Change store.authenticated to false (becomes true in login)
+                // this.$store.commit('SET_USER_PROFILE', {})
             },
             openModalStudentRequests() {
                 this.modalStudentRequestsIsOpen = true

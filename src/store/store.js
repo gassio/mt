@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import secureHttpService from '../services/SecureHttpService'
 
 Vue.use(Vuex)
 
@@ -190,17 +190,14 @@ export const store = new Vuex.Store({
         currentClassNumber: '',
         currentVideoID: null,
         uploadingVideo: false,
-        uploadUrl: '',
-
-        /* AUTHENTICATION*/
-        authenticated: false, // for login page.
-        userData: {}
+        uploadUrl: ''
     },
 
     actions: {
         /* VIDEOS  */
         getAllVideos: function ({ commit }) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/video")
+            secureHttpService.get("video")
+            // axios.get("https://metalogon-api.herokuapp.com/rest/video")
                 .then(function (response)
                 {
                     commit('GET_ALL_VIDEOS', response.data.data )
@@ -210,7 +207,8 @@ export const store = new Vuex.Store({
                 })
         },
         getVideo: function ({ commit }, payload) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
+            secureHttpService.get("video/" + payload)
+            // axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
                 .then(function (response)
                 {
                     commit('GET_VIDEO', response.data.data)
@@ -220,7 +218,8 @@ export const store = new Vuex.Store({
                 })
         },
         getVideoAnnotations: function ({ commit }, payload) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
+            secureHttpService.get("video/" + payload)
+            // axios.get("https://metalogon-api.herokuapp.com/rest/video/" + payload)
                 .then(function (response)
                 {
                     commit('GET_VIDEO_ANNOTATIONS', response.data.data.annotations)
@@ -230,7 +229,8 @@ export const store = new Vuex.Store({
                 })
         },
         createVideo: function ({ commit }, payload) {
-            axios.post('https://metalogon-api.herokuapp.com/rest/video/', payload)
+            secureHttpService.post("video/" + payload)
+            // axios.post('https://metalogon-api.herokuapp.com/rest/video/', payload)
                 .then( response => {
                     console.log('-----')
                     console.log('POST video')
@@ -243,8 +243,9 @@ export const store = new Vuex.Store({
                 })
         },
         editVideo: function ({ commit }, payload) {
-            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.videoId, 
-                    payload.linkDurationThumb)
+            secureHttpService.put("video/" + payload.videoId, payload.linkDurationThumb)
+            // axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.videoId, 
+            //         payload.linkDurationThumb)
                 .then( response => {
                     console.log('-----')
                     console.log('PUT video')
@@ -253,7 +254,8 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         deleteVideo: function ({ commit }, payload) {
-            axios.delete('https://metalogon-api.herokuapp.com/rest/video/', payload)
+            secureHttpService.delete("video/" + payload)
+            // axios.delete('https://metalogon-api.herokuapp.com/rest/video/', payload)
                 .then( response => {
                     console.log('-----')
                     console.log('DELETE video')
@@ -262,7 +264,8 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         featureVideo: function ({ commit }, payload) {
-            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            secureHttpService.put("video/" + payload.id, payload)
+            // axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -270,7 +273,8 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         featureGlobal: function ({ commit }, payload) {
-            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            secureHttpService.put("video/" + payload.id, payload)
+            // axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -278,7 +282,8 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         unfeatureGlobal: function ({ commit }, payload) {
-            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            secureHttpService.put("video/" + payload.id, payload)
+            // axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -286,7 +291,8 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         unfeatureVideo: function ({ commit }, payload) {
-            axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
+            secureHttpService.put("video/" + payload.id, payload)
+            // axios.put('https://metalogon-api.herokuapp.com/rest/video/' + payload.id, payload )
             .then( response => {
                 console.log("store.js: Video object that sent: ", payload)
                 console.log(response)
@@ -295,8 +301,8 @@ export const store = new Vuex.Store({
         },
         /* ANNOTATIONS */ 
         addAnnotation: function ({ commit, state }, payload) {
-                
-            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, payload.video)
+            secureHttpService.put("video/" + payload.id, payload.video)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, payload.video)
                 .then(response => {
                     // commit('ADD_ANNOTATION', payload.annotation)
                     // theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
@@ -305,20 +311,18 @@ export const store = new Vuex.Store({
                     console.log('Error annotation add...', err)
                 })
         },
-        editAnnotation: function ({ commit }, payload) {
-            var theVideo = payload.video
-            
-            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
+        editAnnotation: function ({ commit }, payload) {            
+            secureHttpService.put("video/" + payload.id, payload.video)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
                 .then(response => {
                 })
                 .catch(function (err) {
                     console.log('Error annotation edit...', err)
                 })
         },
-        deleteAnnotation: function ({ commit }, payload) {
-            var theVideo = payload.video
-            
-            axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, theVideo)
+        deleteAnnotation: function ({ commit }, payload) {            
+            secureHttpService.put("video/" + payload.id, payload.video)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/video/"+payload.id, payload.video)
                 .then(response => {
                     theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
                 })
@@ -328,7 +332,8 @@ export const store = new Vuex.Store({
         },
         /* CLASSES */  
         getAllClasses: function ({ commit }) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/class")
+            secureHttpService.get("class/")
+            // axios.get("https://metalogon-api.herokuapp.com/rest/class")
                 .then(function (response)
                 {
                     commit('GET_ALL_CLASSES', response.data.data)
@@ -342,7 +347,8 @@ export const store = new Vuex.Store({
                 })
         },
         getClass: function ({ commit }, payload) {
-            axios.get("https://metalogon-api.herokuapp.com/rest/class/" +payload)
+            secureHttpService.get("class/" + payload)
+            // axios.get("https://metalogon-api.herokuapp.com/rest/class/" +payload)
                 .then(function (response)
                 {
                     commit('GET_CLASS', response.data.data )
@@ -352,7 +358,8 @@ export const store = new Vuex.Store({
                 })
         },
         createClass: function ({ commit }, payload) {
-            axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
+            secureHttpService.post("class/", payload.newClass)
+            // axios.post("https://metalogon-api.herokuapp.com/rest/class/", payload.newClass)
             .then(response => {
                 commit('CREATE_CLASS', response.data.data)
             })
@@ -361,7 +368,8 @@ export const store = new Vuex.Store({
             })
         },
         deleteClass: function ({ commit }, payload) {
-            axios.delete("https://metalogon-api.herokuapp.com/rest/class/"+payload)
+            secureHttpService.delete("class/" + payload)
+            // axios.delete("https://metalogon-api.herokuapp.com/rest/class/"+payload)
             .then(response => {
                 commit('DELETE_CLASS', payload)
             })
@@ -370,7 +378,8 @@ export const store = new Vuex.Store({
             })
         },
         archiveClass: function ({ commit }, payload) {
-            axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
+            secureHttpService.put("class/" + payload.classId, payload.classObject)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
             .then(response => {
                 commit('ARCHIVE_CLASS', payload)
             })
@@ -379,7 +388,8 @@ export const store = new Vuex.Store({
             })
         },
         unArchiveClass: function ({ commit }, payload) {
-            axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
+            secureHttpService.put("class/" + payload.classId, payload.classObject)
+            // axios.put("https://metalogon-api.herokuapp.com/rest/class/"+payload.classId, payload.classObject)
             .then(response => {
                 commit('UNARCHIVE_CLASS', payload)
             })
@@ -457,8 +467,9 @@ export const store = new Vuex.Store({
             // Sorting annotations[] by from property
             annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
             
-            var url = "https://metalogon-api.herokuapp.com/rest/video/" + payload.id
-            axios.put(url, payload.videoObj)
+            secureHttpService.put("video/" + payload.id)
+            // var url = "https://metalogon-api.herokuapp.com/rest/video/" + payload.id
+            // axios.put(url, payload.videoObj)
             .then(response => {
                 console.log(payload.videoObj)
                 console.log('Success edit!')
@@ -524,8 +535,8 @@ export const store = new Vuex.Store({
         },
         CREATE_STUDENT_CLASSES: (state) => {
             state.studentClasses = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                state.studentClasses.push(state.classes[i])
+            for (var i = 0, l = state.activeClasses.length; i < l; i++) {
+                state.studentClasses.push(state.activeClasses[i])
             }
         },
         ARCHIVE_CLASS: (state, payload) => {
@@ -557,7 +568,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.adminClasses = adminClassesLocal.filter(filterClasses(inputValue))
@@ -574,7 +585,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.activeClasses = activeClassesLocal.filter(filterClasses(inputValue))
@@ -591,7 +602,7 @@ export const store = new Vuex.Store({
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.archivedClasses = archivedClassesLocal.filter(filterClasses(inputValue))
@@ -601,13 +612,14 @@ export const store = new Vuex.Store({
             // An array that helps for the filtering.
             const studentClassesLocal = []
             for (var i = 0, l = state.classes.length; i < l; i++) {
-                studentClassesLocal.push(state.classes[i])
+                if (state.classes.archived === false)
+                    studentClassesLocal.push(state.classes[i])
             }
 
             // Define the filter method that will be used above.
             var filterClasses = (queryString) => {
                 return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString) === 0
+                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                 }
             }  
             state.studentClasses = studentClassesLocal.filter(filterClasses(inputValue))
@@ -620,15 +632,6 @@ export const store = new Vuex.Store({
         },
         SET_UPLOAD_URL: (state, payload) => {
             state.uploadUrl = payload
-        },
-        AUTHENTICATED: (state, payload) => {
-            if (payload === "login")//(!state.authenticated) // This gets called only from login.vue, through AuthService
-                state.authenticated = true
-            else if (payload === "logout")
-                state.authenticated = false
-        },
-        SET_USER_PROFILE: (state, payload) => {
-            state.userData = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
@@ -678,12 +681,6 @@ export const store = new Vuex.Store({
         },
         uploadingVideo: state => {
             return state.uploadingVideo
-        },
-        authenticated: state => {
-            return state.authenticated
-        },
-        userData: state => {
-            return state.userData
-        },
+        }
     }
 })

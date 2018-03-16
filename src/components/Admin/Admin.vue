@@ -37,15 +37,14 @@
 
 
 <script>
-	import axios from 'axios'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
+	import MtSidebar from './Shared/MtSidebar.vue'
 	import MyFooter from '../Layout/MyFooter.vue'
 	import MtVideoCard from './Shared/MtVideoCard.vue'
 	import MtVideoItemList from './Shared/MtVideoItemList.vue'
-	import MtSidebar from './Shared/MtSidebar.vue'
 
     export default {
 			data() {
@@ -63,9 +62,9 @@
 			mounted() {
 				// Check if role is admin. If not redirect to current role's homePage
 				const role = this.$root.$options.authService.getAuthData().role_id
-				console.log("admin.vue, role: " + role)
+				// console.log("admin.vue, role: " + role)
 				if (role.toLowerCase() != "admin") {
-					console.log("admin.vue, pushing router /decideHome")
+					// console.log("admin.vue, pushing router /decideHome")
 					this.$router.push('/DecideHome')
 				}
 				document.body.style.backgroundImage = "none"
