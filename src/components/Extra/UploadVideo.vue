@@ -124,7 +124,7 @@
         },
         methods: {
             createJwVideo() {
-                let that = this 
+                let self = this 
                 this.modalDragDropIsOpen = true
                 
                 this.secureHttpService.post("jwvideo")
@@ -132,15 +132,15 @@
                         let theData = response.data.data
 
                         var theUrl = 'https' + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
-                        that.$store.commit('SET_UPLOAD_URL', theUrl)
+                        self.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
-                        that.createVideo(theData.link.query.key)
+                        self.createVideo(theData.link.query.key)
                     })
                     .catch( error => console.log("Couldn't post jwvideo \n", error))
             },
             createVideo(jwVideoId) {
-                var that = this
+                var self = this
                 
                 // Creating dropzone
                 if (this.dropzoneInstance === null) {
@@ -192,7 +192,7 @@
 
                     // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        that.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
+                        self.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -228,14 +228,14 @@
                                                 console.log('|> Duration: ', duration)
                                                         
                                                 // POST video 
-                                                that.$store.dispatch('createVideo', {
-                                                    "title": that.uploadVidMetadata.title,
-                                                    "class": that.uploadVidMetadata.class,
-                                                    "classNumber": that.uploadVidMetadata.classNumber,
-                                                    "classDepartment": that.uploadVidMetadata.classDepartment,
+                                                self.$store.dispatch('createVideo', {
+                                                    "title": self.uploadVidMetadata.title,
+                                                    "class": self.uploadVidMetadata.class,
+                                                    "classNumber": self.uploadVidMetadata.classNumber,
+                                                    "classDepartment": self.uploadVidMetadata.classDepartment,
                                                     "jwVideoId": jwVideoId,
-                                                    "genre": that.uploadVidMetadata.genre,
-                                                    "presentedAt": that.uploadVidMetadata.presentedAt,
+                                                    "genre": self.uploadVidMetadata.genre,
+                                                    "presentedAt": self.uploadVidMetadata.presentedAt,
                                                     "featuredGlobal": false,
                                                     "featuredClass": false,
                                                     "link": link,
@@ -245,13 +245,13 @@
                                                     // sources missing ?
                                                 })
                                                 
-                                                that.modalSyncOpen = false  // Close loading bar
-                                                that.currentClassSelected = that.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                                                console.log("currentClassSelected: ", that.currentClassSelected)
+                                                self.modalSyncOpen = false  // Close loading bar
+                                                self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                                                console.log("currentClassSelected: ", self.currentClassSelected)
                                                 clearInterval(intervalID)
 
                                                 // Clearing modal form
-                                                that.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+                                                self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
                                                 break
                                             }
                                         }
@@ -266,7 +266,7 @@
 
                 
                     let uploadedId, 
-                        uploadedTitle = that.uploadVidMetadata.title;
+                        uploadedTitle = self.uploadVidMetadata.title;
 
                     // Closing the progress modal
                     this.modalProgressIsOpen = false
@@ -274,7 +274,7 @@
                 })
 
                 this.dropzoneInstance.on("error", (files, response) => {
-                    that.modalProgressIsOpen = false
+                    self.modalProgressIsOpen = false
                 })
 
                 this.dropzoneInstance.on("canceled", (files, response) => {
@@ -332,12 +332,12 @@
                             'X-Requested-With': null,
                         }, 
                 })
-                let that = this
+                let self = this
                 this.secureHttpService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
                         let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
-                        that.$store.commit('SET_UPLOAD_URL', theUrl)
+                        self.$store.commit('SET_UPLOAD_URL', theUrl)
                         console.log("Upload url created. The url is ", theUrl)
 
                         // document.getElementsByClassName('form.uploadvid__form').action = theUrl;
@@ -345,7 +345,7 @@
                         console.log('Form action assigned!')
 
                         $("form.uploadvid__area input:file").change(function() {
-                            that.modalMetadataIsOpen = true
+                            self.modalMetadataIsOpen = true
                         })
                     })
                     .catch( error => { 
