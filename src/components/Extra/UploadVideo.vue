@@ -192,7 +192,6 @@
 
                     // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        // axios.get("https://metalogon-api.herokuapp.com/rest/jwconversion?videoId=" + jwVideoId)
                         that.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
@@ -333,7 +332,6 @@
                             'X-Requested-With': null,
                         }, 
                 })
-                // axios.post("https://metalogon-api.herokuapp.com/rest/jwvideo")
                 let that = this
                 this.secureHttpService.post("jwvideo")
                     .then( response => {
@@ -367,21 +365,6 @@
             ]),
         }    
 }
-
-
-// axios.get("https://metalogon-api.herokuapp.com/rest/video")
-//     .then(function (response)
-//     {
-//         let vids = response.data.data
-//         for (let i=0, l=vids.length; i<l; i++) {
-//             if (uploadedTitle === vids[i].title) {
-//                 uploadedId = vids[i].id
-//                 console.log('uploadedId: ', uploadedId)
-//                 that.$router.push({ path: '/video/' + uploadedId })
-//             }
-//         }
-//     })
-
 
 </script>
 
