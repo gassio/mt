@@ -27,9 +27,9 @@ export default {
         if (uri == "auth") var apiURL = apiURLLocal
         else var apiURL = apiURLRemote
 
-        var that = this
+        var self = this
         return new Promise(function (resolve, reject) {
-            axios[method](apiURL + "/" + uri, qs, params, that.getHeaders())
+            axios[method](apiURL + "/" + uri, qs, params, self.getHeaders())
                 .then(function (response) {
                     // See https://en.wikipedia.org/wiki/List_of_HTTP_status_codes for more status codes
                     // if (response.status == "401") {

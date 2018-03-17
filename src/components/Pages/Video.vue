@@ -291,7 +291,7 @@ You might also want to include a concrete strategy recommendation."
         },
         methods: {
             annotating() {
-                var that = this
+                var self = this
 
                 // CHECKING for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
@@ -317,9 +317,9 @@ You might also want to include a concrete strategy recommendation."
                 if (this.annotationPauseTime < 0) 
                     annotationNowTime = 0
 
-                var coordsPercentStart = (annotationNowTime * 100) / parseInt(that.videoDuration)
+                var coordsPercentStart = (annotationNowTime * 100) / parseInt(self.videoDuration)
                 // 10 seconds after "start"
-                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / parseInt(that.videoDuration)
+                var coordsPercentEnd = ((annotationNowTime + 10)  * 100) / parseInt(self.videoDuration)
                 if (coordsPercentEnd > 100) 
                     coordsPercentEnd = 100
 
@@ -345,7 +345,7 @@ You might also want to include a concrete strategy recommendation."
                 this.endDragTime = this.secondsToMMSS(this.annotationPauseTime + 5)
 
                 // "out of bounds" exception
-                if ((that.videoDuration - annotationNowTime) < 90) {
+                if ((self.videoDuration - annotationNowTime) < 90) {
                     this.startDragTime = this.secondsToMMSS(annotationNowTime)
                     this.endDragTime = this.secondsToMMSS(this.videoDuration)
                 } 
@@ -358,7 +358,7 @@ You might also want to include a concrete strategy recommendation."
                     scroll: false,
                     revert: false,
                     start(){
-                         that.isDragging = true
+                         self.isDragging = true
                     },
                     drag(event) {
                         var revert = $( ".crop__start" ).draggable( "option", "revert" );
@@ -367,7 +367,7 @@ You might also want to include a concrete strategy recommendation."
                             $( ".crop__start" ).draggable( "option", "revert", true );
                         } else {
                             $( ".crop__start" ).draggable( "option", "revert", false );
-                            that.isDragging = true
+                            self.isDragging = true
                             var clickCoords = $('.crop__start').position().left
                             var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
 
@@ -386,20 +386,20 @@ You might also want to include a concrete strategy recommendation."
                             // 3 minutes scaling
                             var clickTime = (clickCoordsPercent * 180) / 100
 
-                            if (that.annotationPauseTime < 90)
+                            if (self.annotationPauseTime < 90)
                                 var targetTime = clickTime
                             else
-                                var targetTime = clickTime + that.annotationPauseTime - 90
-                            // Third scenario remaining (that.videoDuration - that.annotationPauseTime) < 90
+                                var targetTime = clickTime + self.annotationPauseTime - 90
+                            // Third scenario remaining (self.videoDuration - self.annotationPauseTime) < 90
 
-                            that.player.seek(targetTime)
-                            targetTime = that.secondsToMMSS(targetTime)
-                            that.annotateStart = targetTime
-                            that.startDragTime = targetTime
+                            self.player.seek(targetTime)
+                            targetTime = self.secondsToMMSS(targetTime)
+                            self.annotateStart = targetTime
+                            self.startDragTime = targetTime
                         }
                     },
                     stop(event) {
-                        that.isDragging = false
+                        self.isDragging = false
                         //var windowOffset = $('.videoline').offset().left
                         var clickCoords = $('.crop__start').position().left
                         // "out of bounds" exception
@@ -412,22 +412,22 @@ You might also want to include a concrete strategy recommendation."
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
 
-                        if (that.annotationPauseTime < 90)
+                        if (self.annotationPauseTime < 90)
                             var targetTime = clickTime
                         else
-                            var targetTime = clickTime + that.annotationPauseTime - 90
+                            var targetTime = clickTime + self.annotationPauseTime - 90
 
-                        that.player.seek(targetTime)
-                        targetTime = that.secondsToMMSS(targetTime)
-                        that.annotateStart = targetTime
-                        that.startDragTime = targetTime
+                        self.player.seek(targetTime)
+                        targetTime = self.secondsToMMSS(targetTime)
+                        self.annotateStart = targetTime
+                        self.startDragTime = targetTime
                         
-                        //In case that cropWidth < 0, the crop__space should be drawn again
+                        //In case self cropWidth < 0, the crop__space should be drawn again
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
-                        clickTime = that.secondsToMMSS(clickTime)
+                        clickTime = self.secondsToMMSS(clickTime)
                     }
                 })
 
@@ -439,7 +439,7 @@ You might also want to include a concrete strategy recommendation."
                     scroll: false,
                     revert: false,
                     start() {
-                        that.isDragging = false
+                        self.isDragging = false
                     },
                     drag(event) {
                         var revert = $( ".crop__end" ).draggable( "option", "revert" );
@@ -448,17 +448,17 @@ You might also want to include a concrete strategy recommendation."
                             $( ".crop__end" ).draggable( "option", "revert", true );
                         } else {
                             $( ".crop__end" ).draggable( "option", "revert", false );
-                            that.isDragging = false
+                            self.isDragging = false
                             // var windowOffset = $('.videoline').offset().left
                             var clickCoords = $('.crop__end').position().left
                             var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-                            // var clickTime = (clickCoordsPercent * that.videoDuration) / 100
-                            // that.player.seek(clickTime)
+                            // var clickTime = (clickCoordsPercent * self.videoDuration) / 100
+                            // self.player.seek(clickTime)
                             var clipLeft = $('.crop__start').position().left
                             var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                             $('.crop__space').css('left', clipLeft)
                             $('.crop__space').css('width', clipWidth)
-                            // clickTime = that.secondsToMMSS(clickTime)
+                            // clickTime = self.secondsToMMSS(clickTime)
 
                             // "out of bounds" exception
                             if (clickCoords < 0) {
@@ -469,19 +469,19 @@ You might also want to include a concrete strategy recommendation."
                             var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                             // 3 minutes scaling
                             var clickTime = (clickCoordsPercent * 180) / 100
-                            if (that.annotationPauseTime < 90) {
+                            if (self.annotationPauseTime < 90) {
                                 var targetTime = clickTime
                             } else {
-                                var targetTime = clickTime + that.annotationPauseTime - 90
+                                var targetTime = clickTime + self.annotationPauseTime - 90
                             }
-                            that.player.seek(targetTime)
-                            targetTime = that.secondsToMMSS(targetTime)
-                            that.annotateEnd = targetTime
-                            that.endDragTime = targetTime
+                            self.player.seek(targetTime)
+                            targetTime = self.secondsToMMSS(targetTime)
+                            self.annotateEnd = targetTime
+                            self.endDragTime = targetTime
                         }
                     },
                     stop(event) {
-                        that.isDragging = false
+                        self.isDragging = false
                          //var windowOffset = $('.videoline').offset().left
                         var clickCoords = $('.crop__end').position().left
                         // "out of bounds" exception
@@ -493,22 +493,22 @@ You might also want to include a concrete strategy recommendation."
                         var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
                         // 3 minutes scaling
                         var clickTime = (clickCoordsPercent * 180) / 100
-                        if (that.annotationPauseTime < 90)
+                        if (self.annotationPauseTime < 90)
                             var targetTime = clickTime
                         else
-                            var targetTime = clickTime + that.annotationPauseTime - 90
+                            var targetTime = clickTime + self.annotationPauseTime - 90
                     
-                        that.player.seek(targetTime)
-                        targetTime = that.secondsToMMSS(targetTime)
-                        that.annotateEnd = targetTime
-                        that.endDragTime = targetTime
+                        self.player.seek(targetTime)
+                        targetTime = self.secondsToMMSS(targetTime)
+                        self.annotateEnd = targetTime
+                        self.endDragTime = targetTime
                         
                         // In case that cropWidth < 0, the crop__space should be drawn again
                         var clipLeft = $('.crop__start').position().left
                         var clipWidth = $('.crop__end').position().left - $('.crop__start').position().left
                         $('.crop__space').css('left', clipLeft)
                         $('.crop__space').css('width', clipWidth)
-                        clickTime = that.secondsToMMSS(clickTime)
+                        clickTime = self.secondsToMMSS(clickTime)
                     }
                 })
             },
@@ -653,7 +653,7 @@ You might also want to include a concrete strategy recommendation."
                 }
 
                 // Update data
-                var that = this
+                var self = this
                 this.$store.dispatch('editAnnotation', {
                     video: this.videos,
                     // annotation: card, 
@@ -675,7 +675,7 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = false
             },
             deleteAnnotation(event) {
-                var that = this
+                var self = this
                 
                 // CHECKING for new annotations in current video (for real time annotating)
                 // this.$store.dispatch('getVideoAnnotations', this.id)
@@ -703,20 +703,20 @@ You might also want to include a concrete strategy recommendation."
                     confirmButtonText: 'Delete'
                     }).then(function () {
                         // Refresh fix
-                        // that.player.seek(that.mmssToSeconds(that.videoAnnotations[that.id].from))
+                        // self.player.seek(self.mmssToSeconds(self.videoAnnotations[self.id].from))
 
                         // Delete from STATE
-                        for (var i=0, l = that.videos.annotations.length; i < l; i++) {
-                            if (that.videos.annotations[i].id === cardID) {
-                                console.log("anno id = ", that.videos.annotations[i].id)
-                                that.videos.annotations.splice(i, 1)
-                                that.videoAnnotations.splice(i, 1)
+                        for (var i=0, l = self.videos.annotations.length; i < l; i++) {
+                            if (self.videos.annotations[i].id === cardID) {
+                                console.log("anno id = ", self.videos.annotations[i].id)
+                                self.videos.annotations.splice(i, 1)
+                                self.videoAnnotations.splice(i, 1)
                             }
                         }
 
-                        that.$store.dispatch('deleteAnnotation', {
-                            id: that.id,
-                            video: that.videos,
+                        self.$store.dispatch('deleteAnnotation', {
+                            id: self.id,
+                            video: self.videos,
                             cardID: cardID
                         })
                     },
@@ -882,7 +882,7 @@ You might also want to include a concrete strategy recommendation."
                 }
                 console.log(this.timesArray)
                 console.log('sum = ' + sum)
-                //var clickTime = (clickCoordsPercent * that.videoDuration) / 100
+                //var clickTime = (clickCoordsPercent * self.videoDuration) / 100
             },
             setTimes() {
                 if (this.annotationPauseTime < 90) {
@@ -925,7 +925,7 @@ You might also want to include a concrete strategy recommendation."
                 
             },
             hooping() {
-                var that = this
+                var self = this
 
                 var allCards = $('.timeline-card')
                 var allStartTime = []
@@ -936,8 +936,8 @@ You might also want to include a concrete strategy recommendation."
                     allStartTime[k] = allTimeString[k].substring(0,5)  // 00:05 
                     allEndTime[k] = allTimeString[k].substring(8,13) // 00:10 
 
-                    allStartTime[k] = that.mmssToSeconds(allStartTime[k])
-                    allEndTime[k] = that.mmssToSeconds(allEndTime[k])
+                    allStartTime[k] = self.mmssToSeconds(allStartTime[k])
+                    allEndTime[k] = self.mmssToSeconds(allEndTime[k])
                 }
                 
                 console.log("_________")
@@ -971,14 +971,14 @@ You might also want to include a concrete strategy recommendation."
             },
         },
         created() {
-            var that = this
+            var self = this
 
             this.$store.dispatch('getVideo', this.id).then(() => {
-                that.videoAnnotations = that.videos[that.videoIndex].annotations
+                self.videoAnnotations = self.videos[self.videoIndex].annotations
             })
         },
         mounted() {
-            var that = this
+            var self = this
 
             // console.log('videoAnnotations: ', this.videoAnnotations.comment)
             
@@ -1019,14 +1019,14 @@ You might also want to include a concrete strategy recommendation."
         
             // Animate progress bar width
             this.player.on('time', function(event) {
-                if (that.player.getState() === 'playing') {
-                    var totalTime = that.videoDuration;
+                if (self.player.getState() === 'playing') {
+                    var totalTime = self.videoDuration;
                     var currentTime = event.position;
 
                     // Get the current time of video in sec
-                    that.videoCurrentTime = that.player.getPosition()
+                    self.videoCurrentTime = self.player.getPosition()
                     // Convert the time to MM:SS
-                    that.videoCurrentTimeMMSS = that.secondsToMMSS(that.videoCurrentTime)
+                    self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
 
                     // Scaling = 3 minutes 
                     var percentTime = (currentTime / 180) * 100;
@@ -1059,13 +1059,13 @@ You might also want to include a concrete strategy recommendation."
                     // Scaling = 3 minutes 
                     var clickTime = (clickCoordsPercent * 180) / 100
                     
-                    if (that.annotationPauseTime < 90) {
-                        clickTime = clickTime // + that.annotationPauseTime
+                    if (self.annotationPauseTime < 90) {
+                        clickTime = clickTime // + self.annotationPauseTime
                     } else { 
-                        clickTime = clickTime + that.annotationPauseTime - 90
+                        clickTime = clickTime + self.annotationPauseTime - 90
                     }
 
-                    that.player.seek(clickTime)      
+                    self.player.seek(clickTime)      
                 },
                 stop(event) {
                 }

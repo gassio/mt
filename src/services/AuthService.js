@@ -19,7 +19,7 @@ class AuthService {
     }
 
     login(value, cb) {
-        var that = this
+        var self = this
         // console.log(secureHTTPService.post("auth", "",""))
         
         return new Promise(function(resolve, reject) {
@@ -34,7 +34,7 @@ class AuthService {
 
                 // Save userData both in localStorage and in authData so the user is "remembered"
                 localStorage.setItem('authData', JSON.stringify(serverResponseObject))
-                that.authData = serverResponseObject
+                self.authData = serverResponseObject
 
                 resolve()
             })
@@ -50,9 +50,9 @@ class AuthService {
     }
 
     isAuthenticated() {
-        var that = this
+        var self = this
         return new Promise(function (resolve, reject) {
-            if (that.authData) {
+            if (self.authData) {
                 resolve()
             }
             else {
