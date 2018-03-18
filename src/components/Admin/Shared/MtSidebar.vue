@@ -6,6 +6,7 @@
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'Professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
 				<a class="sidebar__actionsLink" v-show="role === 'Admin' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'Student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
@@ -121,6 +122,17 @@
 				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
 			</el-dialog>
 
+			<!-- Professor -->
+			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
+                <el-tabs v-model="classAssignmentsTab">
+                    <el-tab-pane v-for="s in submissions" :key="s.assignmentId" :label="s.name">
+						<p>{{ s.description }}</p>
+						<p>{{ s.studentId }}</p>
+						<p>{{ s.videoId }}</p>
+                    </el-tab-pane>
+                </el-tabs>
+            </el-dialog>
+
 			<!-- Student -->
 			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
 				<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
@@ -157,6 +169,15 @@
 				modalGenreCustomization: false,
 				modalGenreCustomization2: false,
 				classIdClicked: '',
+				// Class Assignments
+				modalClassAssignmentsIsOpen: false,
+				classAssignmentsTab: 'assignment1',
+				submissions: [
+					{ name: "Assignment 1", assignmentId: '1', videoId: 'vidId1', studentId: 'studentId1', description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.' },
+					{ name: "Assignment 2", assignmentId: '2', videoId: 'vidId2', studentId: 'studentId2', description: 'Wwill be distracted by the readable content of a page when looking at its layout.' },
+					{ name: "Assignment 3", assignmentId: '3', videoId: 'vidId3', studentId: 'studentId3', description: 'The readable content of a page when looking at its layout.' }
+				],
+				// Genre customization
 				genres: [
 					{ name: 'Elevator pitch' },
 					{ name: 'Lab presentation' },
