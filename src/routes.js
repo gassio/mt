@@ -43,7 +43,7 @@ export const routes = [
     },
     { 
         name: 'Admin', 
-        path: '/admin', 
+        path: '/administrator', 
         component: Home, 
         beforeEnter: requiresAuth
     },

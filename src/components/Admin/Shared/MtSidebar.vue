@@ -135,7 +135,7 @@
 
 			<!-- Student -->
 			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
-				<a class="classes-card" v-for="c in otherClasses" :key="c.id" @click="enrollToClass($event)">
+				<a class="classes-card" v-for="c in classesToEnroll" :key="c.id" @click="enrollToClass($event)">
 					<i aria-hidden="true" class="fa fa-book fa-5x"></i>
 					<strong class="classes-card-title">"{{ c.name }}"</strong> 
 					<p class="classes-card-title">{{ c.department }}</p> 
@@ -310,12 +310,7 @@
 				},
 				// STUDENT
 				modalEnrollClassIsOpen: false,
-				otherClasses: [
-					{ id: '5bc87287-1271-4f0c-94a1', department: "Chemical Engineering", name: 'Numerical Methods Applied to Chemical Engineering', number: '10.34', semester: 'Spring 2018', archived: false },
-					{ id: '6bc87287-1271-4f0c-94a2', department: "Chemical Engineering", name: 'Fundamentals of Advanced Energy Conversion', number: '10.390J', semester: 'Spring 2018', archived: false },
-					{ id: '7bc87287-1271-4f0c-94a3', department: "Aeronautics and Astronautics", name: 'Dynamics', number: '16.07', semester: 'Spring 2018', archived: false },
-					{ id: '8bc87287-1271-4f0c-94a4', department: "Aeronautics and Astronautics", name: 'System Safety', number: '16.863J', semester: 'Spring 2018', archived: false }
-				]
+				otherClasses: []
 			}
 		},
 		methods: {
@@ -431,7 +426,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses']
+                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll']
             )
 		}
     }

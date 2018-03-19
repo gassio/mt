@@ -233,7 +233,7 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                             <div class="timeline-card__footer">
                                 <!-- TODO This line is buggy. This should print the author of the annotation on the annotation card -->
-                                <!-- <span class="timeline-card__id">{{ card.id }} {{ this.$root.$options.authService.getAuthData().user_id }}</span> -->
+                                <span class="timeline-card__id">{{ card.id }}</span>
                                 <div class="timeline-card__edit-container" @click.stop.prevent>
                                     <button class="edit-buttons-moreLess button" @click="toggleEditDelete($event)"><i class="fa fa-ellipsis-v" aria-hidden="true"></i></button>
                                     <button class="edit-buttons edit-buttons-edit button" @click="editing($event)"><i class="fa fa-pencil-square-o fa-1x" aria-hidden="true"></i></button>
@@ -266,7 +266,7 @@ You might also want to include a concrete strategy recommendation."
                 player: null,
                 clickCoords: 0,
                 videoDuration: 0,
-                videoAnnotations: [],
+                // videoAnnotations: [],
                 videoDurationMMSS: 0,
                 videoCurrentTime: 0,
                 videoCurrentTimeMMSS: 0,
@@ -315,14 +315,14 @@ You might also want to include a concrete strategy recommendation."
                     { studentName : 'Nicole Aniston', studentId: '3' },
                     { studentName : 'Andrew Mcmillan', studentId: '4' },
                 ],
-                secureHttpService : this.$root.$options.secureHttpService
+                authService : this.$root.$options.authService
             }
         },
         methods: {
             annotating() {
                 var self = this
 
-                // CHECKING for new annotations in current video (for real time annotating)
+                // Checking for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
 
                 this.isAnnotating = true
@@ -563,7 +563,8 @@ You might also want to include a concrete strategy recommendation."
                 }
 
                 var card = { 
-                    author: 'User',
+                    author: this.authService.getAuthData().firstName + ' ' + this.authService.getAuthData().lastName.slice[0] + '.', // Alexander T.
+                    videoId: this.id,
                     canon: this.annotateCanon,
                     category: this.annotateCategory,
                     label: annotateDesc, // category description
@@ -571,7 +572,6 @@ You might also want to include a concrete strategy recommendation."
                     from: this.annotateStart,
                     to: this.annotateEnd, 
                     rating: this.annotateRating,
-                    id: Math.floor((Math.random() * 1000000)),
                 }
 
                 // Pushing new annotation in current video
@@ -585,15 +585,8 @@ You might also want to include a concrete strategy recommendation."
 
                     // We are pushing the card the state because the PUT call needs to pass the whole video object in the body.
                     this.videos.annotations.push(card)
-                    this.$store.dispatch('addAnnotation', {
-                        video: this.videos,
-                        id: this.id,
-                        annotation: card
-                    })
+                    this.$store.dispatch('addAnnotation', card)
                     
-                    // We are pushing to card to videoAnnotations[]
-                    this.videoAnnotations.push(card)
-
                     // Seek to previous paused time.
                     this.player.seek(this.mmssToSeconds(this.annotateStart))
 
@@ -710,10 +703,11 @@ You might also want to include a concrete strategy recommendation."
                 // this.$store.dispatch('getVideoAnnotations', this.id)
 
                 var editingCard = $(event.currentTarget).parent().parent()
+                console.log("editingCard= ", editingCard)
 
                 // Get annotation id
                 var cardID = $(editingCard).find('.timeline-card__id').text()
-                cardID = parseInt(cardID)
+                // cardID = parseInt(cardID)
                 console.log("cardID", cardID)
 
                 // Hide .edit-buttons
@@ -734,20 +728,7 @@ You might also want to include a concrete strategy recommendation."
                         // Refresh fix
                         // self.player.seek(self.mmssToSeconds(self.videoAnnotations[self.id].from))
 
-                        // Delete from STATE
-                        for (var i=0, l = self.videos.annotations.length; i < l; i++) {
-                            if (self.videos.annotations[i].id === cardID) {
-                                console.log("anno id = ", self.videos.annotations[i].id)
-                                self.videos.annotations.splice(i, 1)
-                                self.videoAnnotations.splice(i, 1)
-                            }
-                        }
-
-                        self.$store.dispatch('deleteAnnotation', {
-                            id: self.id,
-                            video: self.videos,
-                            cardID: cardID
-                        })
+                        self.$store.dispatch('deleteAnnotation', cardID)
                     },
                 )
             },
@@ -1012,11 +993,8 @@ You might also want to include a concrete strategy recommendation."
      		}, 500),
         },
         created() {
-            var self = this
-
-            this.$store.dispatch('getVideo', this.id).then(() => {
-                self.videoAnnotations = self.videos[self.videoIndex].annotations
-            })
+            this.$store.dispatch('getVideo', this.id)
+            this.$store.dispatch('getVideoAnnotations', this.id)
         },
         mounted() {
             var self = this
@@ -1136,7 +1114,7 @@ You might also want to include a concrete strategy recommendation."
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons'
+                'videos', 'currentVideoID', 'canons', 'videoAnnotations'
             ])
         },
         components: {
