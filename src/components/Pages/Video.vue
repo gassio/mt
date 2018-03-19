@@ -173,6 +173,26 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
+                <button class="collaborators button" @click="modalCollaboratorsIsOpen = true">
+                    <i class="fa fa-users"></i><span>Collaborators</span>
+                </button>
+
+                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                    <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+                    <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
+                        <el-table-column prop="studentName" width="180">
+                            <template slot-scope="s1">
+                                <i class="fa fa-user"></i> {{ s1.row.studentName }}
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="studentId">
+                            <template slot-scope="s1b">
+                                <i class="fa fa-book"></i> {{ s1b.row.studentId }}
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-dialog>
+
             </div>
 
             <div class="cards column is-4">
@@ -234,6 +254,7 @@ You might also want to include a concrete strategy recommendation."
 <script>
     import { mapGetters } from 'vuex'
     import { mapMutations } from 'vuex'
+    import _ from 'lodash'
     import MyHeader from '../Layout/MyHeader.vue'
     import MyFooter from '../Layout/MyFooter.vue'
 
@@ -286,6 +307,14 @@ You might also want to include a concrete strategy recommendation."
                 id: this.$route.params.id,
                 selectedMove: 'Other',
                 otherMoveSelected: false,
+                modalCollaboratorsIsOpen: false,
+                collaboratorsInputValue: '',
+                collaborators: [
+                    { studentName : 'Adam Smith', studentId: '1' },
+                    { studentName : 'Erica Johnson', studentId: '2' },
+                    { studentName : 'Nicole Aniston', studentId: '3' },
+                    { studentName : 'Andrew Mcmillan', studentId: '4' },
+                ],
                 secureHttpService : this.$root.$options.secureHttpService
             }
         },
@@ -969,6 +998,18 @@ You might also want to include a concrete strategy recommendation."
                     moreLessBtn.siblings().hide()
                 }
             },
+            queryCollaborators: _.debounce(function () {
+                console.log('QUERY COLLABORATORS')
+
+                // Define the filter method that is used above.
+                var filterCollaborators = (queryString) => {
+                    return (collaborator) => {
+                        return collaborator.studentName.toLowerCase().indexOf(queryString) === 0
+                    }
+                } 
+
+                this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
+     		}, 500),
         },
         created() {
             var self = this
@@ -1202,6 +1243,24 @@ You might also want to include a concrete strategy recommendation."
         margin: 10px;    
         font-size: 1.4em;
     }
+
+
+
+
+
+/* ==============================================
+                #COLLABORATORS
+================================================= */
+.collaborators {
+    margin-top: 15px;
+}
+
+    .collaborators span {
+        margin-left: 5px;
+    }
+
+
+
 
 /* ==============================================
                 #PROGRESS BAR
