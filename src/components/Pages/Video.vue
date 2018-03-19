@@ -177,7 +177,7 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
-                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
                     <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                         <el-table-column prop="studentName" width="180">
@@ -191,7 +191,7 @@ You might also want to include a concrete strategy recommendation."
                             </template>
                         </el-table-column>
                     </el-table>
-                </el-dialog>
+                </el-dialog> -->
 
             </div>
 

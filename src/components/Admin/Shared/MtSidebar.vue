@@ -140,6 +140,7 @@
 					<strong class="classes-card-title">"{{ c.name }}"</strong> 
 					<p class="classes-card-title">{{ c.department }}</p> 
 					<p class=""> {{ c.number }} - {{ c.semester }}</p> 
+					<p style="visibility:hidden">{{ c.id }}</p> 
 				</a>
 			</el-dialog> 
 			
@@ -406,13 +407,23 @@
 			},
 			// Student
 			enrollToClass(event) {
-				const clickedClassName = event.currentTarget.children[1].innerHTML
-				for (var i = 0, l = this.otherClasses.length; i < l; i++) {
-					if (this.otherClasses[i].name === clickedClassName) {
-						this.currentClassSelected = this.otherClasses[i].name
-						this.studentClasses.push(this.otherClasses[i])
-						this.classes.push(this.otherClasses[i])
-						this.otherClasses.splice(i,1)	
+				const clickedClassId = event.currentTarget.children[4].innerHTML
+				
+				for (var i = 0, l = this.classesToEnroll.length; i < l; i++) {
+					if (this.classesToEnroll[i].id === clickedClassId) {
+						
+						var body = {
+							classId : clickedClassId,
+							userId : this.$root.$options.authService.getAuthData().user_id
+						}
+						console.log(body)
+						var self = this
+						this.$store.dispatch('createEnrollment', body)
+						.then(function(){
+							// TODO move this to store - mutation
+							self.studentClasses.push(self.classesToEnroll[i])
+							self.classesToEnroll.splice(i,1)	
+						})
 						break
 					}
 				}
