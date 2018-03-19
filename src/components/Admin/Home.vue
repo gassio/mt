@@ -17,7 +17,7 @@
 						</div>
 
 						
-						<div class="featured" v-show="role === 'admin'">
+						<div class="featured" v-show="role === 'administrator'">
 							<h3 class="featured__heading">Featured videos of Home</h3>
 							<div class="featured__container">
 								<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true">
@@ -239,6 +239,7 @@
 		created() {	
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
+			this.$store.dispatch('getEnrollments')
 			this.$store.state.currentClassSelected = 'Home'
 		},
 		mounted() {

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import secureHttpService from '../services/SecureHttpService'
+import authService from '../services/AuthService'
 
 Vue.use(Vuex)
 
@@ -18,6 +19,7 @@ let errorHTML = `
 export const store = new Vuex.Store({
     state: {
         videos: [],
+        videoAnnotations: [],
         classes: [],
         canons: [   
             { 
@@ -185,12 +187,13 @@ export const store = new Vuex.Store({
         activeClasses: [], // only for professor.
         archivedClasses: [], // only for professor.
         studentClasses: [], // only for student.
+        classesToEnroll: [],
         departments: [], 
         currentClassSelected: 'Home', // the class that is click from the user
         currentClassNumber: '',
         currentVideoID: null,
         uploadingVideo: false,
-        uploadUrl: ''
+        uploadUrl: '',
     },
 
     actions: {
@@ -215,16 +218,7 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
-        getVideoAnnotations: function ({ commit }, payload) {
-            secureHttpService.get("video/" + payload)
-                .then(function (response)
-                {
-                    commit('GET_VIDEO_ANNOTATIONS', response.data.data.annotations)
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        },
+        
         createVideo: function ({ commit }, payload) {
             secureHttpService.post("video/" + payload)
                 .then( response => {
@@ -288,12 +282,22 @@ export const store = new Vuex.Store({
             })
             .catch( response => console.log(response.error))
         },
-        /* ANNOTATIONS */ 
+        /* ANNOTATIONS */
+        getVideoAnnotations: function ({ commit, state }, payload) {
+            secureHttpService.get("annotation/?videoId=" + payload)
+                .then(function (response)
+                {
+                    commit( 'GET_VIDEO_ANNOTATIONS', response.data.data )
+                    state.videoAnnotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
         addAnnotation: function ({ commit, state }, payload) {
-            secureHttpService.put("video/" + payload.id, payload.video)
+            secureHttpService.post("annotation/?videoId=" + payload.videoId, payload)
                 .then(response => {
-                    // commit('ADD_ANNOTATION', payload.annotation)
-                    // theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+                    commit('ADD_ANNOTATION', response.data.data)
                 })
                 .catch(function (err) {
                     console.log('Error annotation add...', err)
@@ -307,10 +311,11 @@ export const store = new Vuex.Store({
                     console.log('Error annotation edit...', err)
                 })
         },
-        deleteAnnotation: function ({ commit }, payload) {            
-            secureHttpService.put("video/" + payload.id, payload.video)
+        deleteAnnotation: function ({ commit }, payload) {           
+            secureHttpService.delete("annotation/" + payload) // payload is the cardID
                 .then(response => {
-                    theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
+                    commit('DELETE_ANNOTATION', payload)
+                    // theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
                 })
                 .catch(function (err) {
                     console.log('Error annotation delete...', err)
@@ -324,7 +329,6 @@ export const store = new Vuex.Store({
                     commit('GET_ALL_CLASSES', response.data.data)
                     commit('CREATE_ADMIN_CLASSES' )
                     commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
-                    commit('CREATE_STUDENT_CLASSES' )
                     commit('FILL_DEPARTMENTS')
                 })
                 .catch(function (err) {
@@ -339,6 +343,18 @@ export const store = new Vuex.Store({
                 })
                 .catch(function (err) {
                     console.log(err)
+                })
+        },
+        getEnrollments: function ({ commit }) {
+            secureHttpService.get("enrollment/?userId=" + authService.getAuthData().user_id)
+                .then(function (response)
+                {
+                    var enrolledClassIds = []
+                    var enrollments = response.data.data
+                    for (var i = 0, l = enrollments.length; i < l; i++) {
+                        enrolledClassIds.push(enrollments[i].classId)
+                    }
+                    commit( 'FILL_STUDENT_CLASSES', enrolledClassIds)
                 })
         },
         createClass: function ({ commit }, payload) {
@@ -393,9 +409,6 @@ export const store = new Vuex.Store({
             loadingInstance.close()
             state.videos = video
         },
-        GET_VIDEO_ANNOTATIONS: (state, newAnnos) => {
-            state.videos.annotations = newAnnos
-        },
         CREATE_VIDEO: (state, payload) => {
             var videos = state.videos
             videos.push(payload)
@@ -429,11 +442,11 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload.link.protocol + '://' + payload.link.address + payload.link.path + '?api_format=xml&key=' + payload.link.query.key + '&token=' + payload.link.query.token
         },
         /* ANNOTATIONS */
-        // Not used.
+        GET_VIDEO_ANNOTATIONS: (state, newAnnotations) => {
+            state.videoAnnotations = newAnnotations
+        },
         ADD_ANNOTATION: (state, payload) => {
-            state.videos.annotations.push(payload)
-            // Sorting annotations[] by from property
-            // annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+            state.videoAnnotations.push(payload)
         },
         EDIT_ANNOTATION: (state, payload) => {
             var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
@@ -457,12 +470,11 @@ export const store = new Vuex.Store({
             })
         },
         DELETE_ANNOTATION: (state, payload) => {
-            var annotations = state.videos.annotations
-            
-            for (var i=0, l = annotations.length; i < l; i++) {
-                if (annotations[i].id === payload.video.videoAnnotations._id)
-                    annotations.splice(i, 1)
-            }
+            for (var i = 0, l = state.videoAnnotations.length; i < l; i++) {
+                if (state.videoAnnotations[i].id === payload) {
+                    state.videoAnnotations.splice(i, 1)
+                }
+            } 
         },
         SORT_ANNOTATIONS: (state) => {
             var annotations = state.videos.annotations
@@ -511,10 +523,20 @@ export const store = new Vuex.Store({
                 state.adminClasses.push(state.classes[i])
             }
         },
-        CREATE_STUDENT_CLASSES: (state) => {
-            state.studentClasses = []
-            for (var i = 0, l = state.activeClasses.length; i < l; i++) {
-                state.studentClasses.push(state.activeClasses[i])
+        FILL_STUDENT_CLASSES: (state, payload) => {
+            var enrolledClassIds = payload
+            for (var j = 0, m = state.classes.length; j < m; j++) {
+                if (state.classes[j].archived === false) {
+                    for (var i = 0, l = enrolledClassIds.length; i < l; i++) {
+                        if (enrolledClassIds[i] === state.classes[j].id) {
+                            state.studentClasses.push(state.classes[j])
+                            break
+                        } 
+                        else if (enrolledClassIds[i] !== state.classes[j].id) {
+                            state.classesToEnroll.push(state.classes[j])
+                        }
+                    }
+                }
             }
         },
         ARCHIVE_CLASS: (state, payload) => {
@@ -621,6 +643,9 @@ export const store = new Vuex.Store({
         videos: state => {
             return state.videos
         },
+        videoAnnotations: state => {
+            return state.videoAnnotations
+        },
         classes: state => {
             return state.classes
         },
@@ -629,6 +654,9 @@ export const store = new Vuex.Store({
         },
         canons: state => {
             return state.canons
+        },
+        classesToEnroll: state => {
+            return state.classesToEnroll
         },
         adminClasses: state => {
             return state.adminClasses

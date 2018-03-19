@@ -58,7 +58,6 @@ export default {
               // this.$store.commit('SET_USER_PROFILE', this.authService.getAuthData())
               // console.log("Login.vue: login success")
               this.$router.push('/')
-              this.$store.dispatch('getAllVideos') // TODO is this needed? it was in created and it wouldnt run, it need a token
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')
@@ -115,11 +114,11 @@ export default {
         }
     },
     created() {
-      // this.$store.dispatch('getAllVideos')
     },
     mounted() {
       document.body.style.backgroundImage = "url(" + bgImage + ")"
-      document.body.style.backgroundSize = "100%" 
+      document.body.style.backgroundSize = "100%"
+      console.log(bgImage) 
     }
 }
 </script>
