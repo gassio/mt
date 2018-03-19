@@ -2,11 +2,11 @@
 
 	<div class="classvideo">
 
-			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'Admin' && currentVideo.featuredGlobal === false" @click="featureGlobal($event)">
-			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'Admin' &&  currentVideo.featuredGlobal === true" @click="unfeatureGlobal($event)">
+			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'administrator' && currentVideo.featuredGlobal === false" @click="featureGlobal($event)">
+			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'administrator' &&  currentVideo.featuredGlobal === true" @click="unfeatureGlobal($event)">
 			
-			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'Professor' && currentVideo.featuredClass === false" @click="featureVideo($event)">
-			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'Professor' && currentVideo.featuredClass === true" @click="unfeatureVideo($event)">
+			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'professor' && currentVideo.featuredClass === false" @click="featureVideo($event)">
+			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'professor' && currentVideo.featuredClass === true" @click="unfeatureVideo($event)">
 
 
 		<div class="classvideo__metadata">
