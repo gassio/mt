@@ -5,7 +5,7 @@
         <img class="logo" src="../../assets/logo.png" alt="Logo">
 
         <form class="login-form" v-show="formLoginIsShown" v-on:submit.prevent="loginUser()">
-          <input class="login-form__username" type="text" placeholder="email" v-model="username">
+          <input class="login-form__username" type="text" placeholder="email" v-model="email">
           <input class="login-form__password" type="password" placeholder="password" v-model="password">
           <span class="login-form__error">We don't recognize these credentials.</span>
           <button type="submit">LOGIN</button>
@@ -13,9 +13,11 @@
         </form>
 
         <form class="register-form login-form" v-show="formRegisterIsShown" v-on:submit.prevent="registerUser()">
-          <input class="login-form__username" type="text" placeholder="First and last name"/>
-          <input class="login-form__password" type="password" placeholder="Password"/>
-          <input class="login-form__username" type="text" placeholder="E-mail address"/>
+          <input class="login-form__username" type="text" placeholder="First name" v-model="firstName"/>
+          <input class="login-form__username" type="text" placeholder="Last name" v-model="lastName"/>
+          <input class="login-form__username" type="text" placeholder="E-mail address" v-model="newEmail"/>
+          <input class="login-form__password" type="password" placeholder="Password" v-model="newPassword"/>
+          <input class="login-form__password" type="password" placeholder="Repeat Password" v-model="repeatedPassword"/>
           <button type="submit">CREATE ACCOUNT</button>
           <p class="login-form__switchform">Already registered? <a class="login-form__switchform-link" @click="showLoginForm()">Sign In</a></p>
         </form>
@@ -32,30 +34,63 @@
 export default {
     data() {
         return {
-          username: '',
+          // Signup
+          firstName: '',
+          lastName: '',
+          newEmail: '',
+          newPassword: '',
+          repeatedPassword: '',
+          // Login
+          email: '',
           password: '',
-          rememberMe: true,
+          // Misc
           formLoginIsShown: true,
           formRegisterIsShown: false,
-          authService : this.$root.$options.authService
+          authService : this.$root.$options.authService,
+          secureHttpService : this.$root.$options.secureHttpService
         }
     },
     methods: {
         loginUser() {
-          this.authService.login({ username: this.username, password: this.password })
+          this.authService.login({ email: this.email, password: this.password })
             .then(() => {
               // this.$store.commit('AUTHENTICATED', "login")
               // this.$store.commit('SET_USER_PROFILE', this.authService.getAuthData())
+              // console.log("Login.vue: login success")
               this.$router.push('/')
+              this.$store.dispatch('getAllVideos') // TODO is this needed? it was in created and it wouldnt run, it need a token
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')
               this.$router.push('/login')
             })
-          // authService.login({ residentID: this.username, password: this.password })
         },
         registerUser() {
-          // TODO
+          if (this.firstName === "" || this.lastName === "" || this.newEmail === "" || this.newPassword === "" || this.repeatedPassword === "") {
+            // TODO front
+            console.log("Please complete all the fields.")
+          }
+          else if (this.newPassword != this.repeatedPassword) {
+            // TODO front
+            console.log("Please repeat password correctly.")
+          }
+          else {
+            var body =
+            {
+              "firstName" : this.firstName,
+              "lastName" : this.lastName,
+              "email" : this.newEmail,
+              "password" : this.newPassword,
+              "role" : ""
+            }
+            this.secureHttpService.post("user", body)
+            // TODO add a .then here and continue to this.email = .. and this.showLogin
+            // only if then is ran, else got to catch (or something) and show post error
+            // TODO front show some "successful" screen
+            this.email = this.newEmail
+            this.showLoginForm()
+          }
+          // console.log("registerUserCalled")
         },
         showRegisterForm() {
           this.formRegisterIsShown = true
@@ -80,11 +115,11 @@ export default {
         }
     },
     created() {
-      this.$store.dispatch('getAllVideos')
+      // this.$store.dispatch('getAllVideos')
     },
     mounted() {
-        document.body.style.backgroundImage = "url("+ bgImage + ")"
-        document.body.style.backgroundSize = "100%" 
+      document.body.style.backgroundImage = "url(" + bgImage + ")"
+      document.body.style.backgroundSize = "100%" 
     }
 }
 </script>
@@ -170,14 +205,6 @@ export default {
     }
     .login-form__switchform-link:hover {
       text-decoration: underline;
-    }
-
-  .login-form__rememberme {
-    display: flex;
-    justify-content: center;
-  }
-    .login-form__rememberme-input {
-      margin-top: 5px;
     }
 
 </style>

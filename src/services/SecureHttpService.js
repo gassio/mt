@@ -3,12 +3,20 @@ import axios from 'axios';
 // import Config
 import authService from './AuthService'
 
-var apiURLLocal = "http://localhost:3000"
-var apiURLRemote = "https://metalogon-api.herokuapp.com/rest"
+// var apiURLLocal = "http://localhost:3000"
+// var apiURLRemote = "https://metalogon-api.herokuapp.com/rest"
+var URL = "http://agtheodorides.dyndns.org:84/rest"
 
 export default {
     getHeaders() {
-        return {token: authService.token} 
+        try {
+            // console.log("httpservice, authdata: ", authService.getAuthData().token)
+            return {token: authService.getAuthData().token}
+        }
+        catch (err) {
+            // console.log("SecureHttpService: getHeaders: ", err)
+            return {} 
+        }
     },
     get(uri, qs, params) {
         return this.request("get", uri, qs, params)
@@ -22,14 +30,16 @@ export default {
     delete(uri, qs, params) {
         return this.request("delete", uri, qs, params)
     },
-    request(method, uri, qs, params) {
-        // Temporary workaround until official backend is ready
-        if (uri == "auth") var apiURL = apiURLLocal
-        else var apiURL = apiURLRemote
-
+    request(Method, uri, qs, Params) {
+        // console.log("Method: ", Method)
+        // console.log("URL+/+URI: ", URL + "/" + uri)
+        // console.log("qs: ", qs)
+        // console.log("params: ", Params)
+        // console.log("headers: ", this.getHeaders())
         var self = this
         return new Promise(function (resolve, reject) {
-            axios[method](apiURL + "/" + uri, qs, params, self.getHeaders())
+            // axios[method](URL + "/" + uri, qs, params,self.getHeaders())
+            axios({ method: Method, url: URL + "/" + uri, headers: self.getHeaders(), data: qs, params: Params })
                 .then(function (response) {
                     // See https://en.wikipedia.org/wiki/List_of_HTTP_status_codes for more status codes
                     // if (response.status == "401") {
@@ -45,6 +55,7 @@ export default {
                     // else {
                     //     resolve(response)
                     // }
+                    // console.log(response)
                     resolve(response)
                 })
                 .catch(function (err) {
