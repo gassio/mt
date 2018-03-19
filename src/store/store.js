@@ -345,6 +345,14 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
+        createEnrollment: function ({ commit }, payload) {
+            secureHttpService.post("enrollment", payload)
+                .then(function (response)
+                {
+                    // TODO call mutation
+                    console.log(response)
+                })
+        },
         getEnrollments: function ({ commit }) {
             secureHttpService.get("enrollment/?userId=" + authService.getAuthData().user_id)
                 .then(function (response)
@@ -352,7 +360,9 @@ export const store = new Vuex.Store({
                     var enrolledClassIds = []
                     var enrollments = response.data.data
                     for (var i = 0, l = enrollments.length; i < l; i++) {
-                        enrolledClassIds.push(enrollments[i].classId)
+                        if (enrollments[i].accepted){
+                            enrolledClassIds.push(enrollments[i].classId)
+                        }
                     }
                     commit( 'FILL_STUDENT_CLASSES', enrolledClassIds)
                 })
@@ -524,6 +534,9 @@ export const store = new Vuex.Store({
             }
         },
         FILL_STUDENT_CLASSES: (state, payload) => {
+            state.studentClasses = []
+            state.classesToEnroll = []
+
             var enrolledClassIds = payload
             for (var j = 0, m = state.classes.length; j < m; j++) {
                 if (state.classes[j].archived === false) {
@@ -532,9 +545,20 @@ export const store = new Vuex.Store({
                             state.studentClasses.push(state.classes[j])
                             break
                         } 
-                        else if (enrolledClassIds[i] !== state.classes[j].id) {
-                            state.classesToEnroll.push(state.classes[j])
-                        }
+                    }
+                }
+            }
+            for (var j = 0, m = state.classes.length; j < m; j++) {
+                if (state.classes[j].archived === false) {
+                    for (var i = 0, l = state.studentClasses.length; i < l; i++) {
+                        var foundInStudentClasses = false
+                        if (state.studentClasses[i].id === state.classes[j].id) {
+                            foundInStudentClasses = true
+                            break
+                        } 
+                    }
+                    if (!foundInStudentClasses){
+                        state.classesToEnroll.push(state.classes[j])
                     }
                 }
             }
