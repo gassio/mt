@@ -39,7 +39,7 @@
 		props: ['currentVideo'],
 		data() {
 			return {
-				role: this.$root.$options.authService.getAuthData().role_id
+				role: this.$root.$options.authService.getAuthData().role
 			}
 		},
 		methods: {
@@ -110,7 +110,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'userData']
+                ['videos']
             ),
 		},
 		mounted() {

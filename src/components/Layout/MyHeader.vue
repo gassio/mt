@@ -17,9 +17,9 @@
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                 </div>
                 <div class="navbar-end">
-                    <!-- {{ authData.user_id }} - {{ authData.role_id }} -->
+                    <!-- {{ authData.user_id }} - {{ authData.role }} -->
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
-                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ this.$root.$options.authService.authData.user_id }} - {{ this.$root.$options.authService.getAuthData().role_id }}</p></a> <!-- <i class="fa fa-angle-down"></i> -->
+                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ this.$root.$options.authService.authData.user_id }} - {{ this.$root.$options.authService.getAuthData().role }}</p></a> <!-- <i class="fa fa-angle-down"></i> -->
                     <a class="head__nav-item navbar-item" @click="logOut()"><p><i class="fa fa-sign-out"></i>Logout</p></a>
                 </div>
             </div>
@@ -233,7 +233,7 @@
         },
         computed: {
             ...mapGetters([
-				'uploadingVideo', 'userData'
+				'uploadingVideo'
             ])
         },
     }
