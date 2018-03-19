@@ -9,7 +9,7 @@
         methods: {
             decideHome() {
                 try {
-                    const role = this.$root.$options.authService.getAuthData().role_id
+                    const role = this.$root.$options.authService.getAuthData().role
                     // console.log("DecideHome redirecting user to " + role + " home page...")
                     this.$router.push('/' + role)
                 }

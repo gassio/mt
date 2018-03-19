@@ -4,27 +4,27 @@
 
 			<!-- Sidebar buttons/actions  -->
 			<div class="sidebar__actions">
-				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'Admin' || role === 'Professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'Professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
-				<a class="sidebar__actionsLink" v-show="role === 'Admin' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'Student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
+				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
+				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
 			<!-- Sidebar Classes menu for student -->
-			<div class="sidebar__classes" v-show="role === 'Student'">	
-				<el-input class="sidebar__classesInput" v-show="role === 'Student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'Student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} -{{ c.name }}</a>
+			<div class="sidebar__classes" v-show="role === 'student'">	
+				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
+				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} -{{ c.name }}</a>
 			</div>
 
-			<!-- Sidebar Classes menu for professor/admin-->
-			<div class="sidebar__classes" v-show="role === 'Admin' || role === 'Professor'">
+			<!-- Sidebar Classes menu for professor/administrator-->
+			<div class="sidebar__classes" v-show="role === 'administrator' || role === 'professor'">
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'Admin'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
-							<a class="sidebar__classesLink" v-show="role === 'Professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
 							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
 					</el-tab-pane>
@@ -37,7 +37,7 @@
 				</el-tabs>
 			</div>
 
-			<!-- Admin, Professor -->
+			<!-- administrator, professor -->
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
 							<el-form-item label="Name">
@@ -116,13 +116,13 @@
 					</span>
 			</el-dialog>	
 
-			<!-- Admin -->
+			<!-- administrator -->
 			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
 				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
 				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
 			</el-dialog>
 
-			<!-- Professor -->
+			<!-- professor -->
 			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
                 <el-tabs v-model="classAssignmentsTab">
                     <el-tab-pane v-for="s in submissions" :key="s.assignmentId" :label="s.name">
@@ -156,8 +156,8 @@
 		props: [],
 		data() {
 			return {
-				role: this.$root.$options.authService.getAuthData().role_id,
-				// ADMIN, PROFESSOR
+				role: this.$root.$options.authService.getAuthData().role,
+				// administrator, professor
 				sidebarClassesTab: 'activeClasses',
 				searchInputValue: '',
 				activeClassesInputValue: '',
@@ -319,7 +319,7 @@
 			}
 		},
 		methods: {
-			// Admin
+			// administrator
 			deleteClass() {
 				var objectId
 				for (var i = 0, l = this.adminClasses.length; i < l; i++) {
@@ -337,7 +337,7 @@
 
 				this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
 			}, 300),
-			// Admin, Professor
+			// administrator, professor
 			setCurrentClass(className, classNumber) {
 				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 			},

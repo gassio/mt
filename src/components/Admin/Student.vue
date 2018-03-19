@@ -61,7 +61,7 @@
 			},
 			mounted() {
 				// Check if role is student. If not redirect to current role's homePage
-				const role = this.$root.$options.authService.getAuthData().role_id
+				const role = this.$root.$options.authService.getAuthData().role
 				// console.log("student.vue, role: " + role)
 				if (role.toLowerCase() != "student") {
 					// console.log("student.vue, pushing router /decideHome")

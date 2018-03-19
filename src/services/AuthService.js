@@ -20,18 +20,21 @@ class AuthService {
 
     login(value, cb) {
         var self = this
-        // console.log(secureHTTPService.post("auth", "",""))
         
         return new Promise(function(resolve, reject) {
-            secureHTTPService.post("auth", value,"")
+            secureHTTPService.post("login", value)
             .then((response) => {
-                // console.log("authService: first time login")
+                console.log("authService: first time login")
                 var serverResponseObject = {
-                    'token' : response.data.token,
-                    'user_id' : response.data.data.user_id,
-                    'role_id' : response.data.data.role_id
+                    'token' : response.data.data.token,
+                    'user_id' : response.data.data.id,
+                    'role' : response.data.data.role,
+                    // TODO this
+                    "firstName": "firstName",
+                    "lastName": "lastName",
+                    "email": "email"
                 }
-
+                console.log(response.data)
                 // Save userData both in localStorage and in authData so the user is "remembered"
                 localStorage.setItem('authData', JSON.stringify(serverResponseObject))
                 self.authData = serverResponseObject
@@ -39,6 +42,7 @@ class AuthService {
                 resolve()
             })
             .catch((err) => {
+                console.log("authService: login failed")
                 reject(err)
             })
         })
