@@ -27,14 +27,12 @@ class AuthService {
                 console.log("authService: first time login")
                 var serverResponseObject = {
                     'token' : response.data.data.token,
-                    'user_id' : response.data.data.id,
+                    'userId' : response.data.data.id,
                     'role' : response.data.data.role,
-                    // TODO this
                     "firstName": "firstName",
                     "lastName": "lastName",
                     "email": "email"
                 }
-                console.log(response.data)
                 // Save userData both in localStorage and in authData so the user is "remembered"
                 localStorage.setItem('authData', JSON.stringify(serverResponseObject))
                 self.authData = serverResponseObject
@@ -69,9 +67,9 @@ class AuthService {
         return this.authData
     }
 
-    setAuthData(value) {
-        this.authData = value
-    }
+    // setAuthData(value) {
+    //     this.authData = value
+    // }
 }
 
 var authService = new AuthService()

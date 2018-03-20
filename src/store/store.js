@@ -354,7 +354,7 @@ export const store = new Vuex.Store({
                 })
         },
         getEnrollments: function ({ commit }) {
-            secureHttpService.get("enrollment/?userId=" + authService.getAuthData().user_id)
+            secureHttpService.get("enrollment/?userId=" + authService.getAuthData().userId)
                 .then(function (response)
                 {
                     var enrolledClassIds = []
