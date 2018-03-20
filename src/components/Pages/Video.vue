@@ -216,10 +216,8 @@ You might also want to include a concrete strategy recommendation."
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
-                                    <span class="timeline-card__time">
-                                        <!-- <img src="../../assets/big-idea.svg"> -->
-                                        {{ card.from }} - {{ card.to }}
-                                        </span>
+                                    <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
+                                    <!-- <img src="../../assets/big-idea.svg"> -->
                                 </div>
                                 <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
@@ -835,7 +833,7 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = true
             },
             seekCard(event) {
-                var time = $(event.currentTarget).find('.timeline-card__time').text()
+                var time = event.currentTarget.getElementsByClassName('timeline-card__time')[0].innerHTML
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
                 var endTime = time.substring(8,13); // 03:17
@@ -848,6 +846,7 @@ You might also want to include a concrete strategy recommendation."
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
 
                 // Seek player according to annotateStart var
+                // console.log("seekCard(): ", startSec)
                 this.player.seek(startSec)
 
                 // Move the timeline according to the annotateStart & annotateEnd vars
@@ -950,12 +949,12 @@ You might also want to include a concrete strategy recommendation."
                     allEndTime[k] = self.mmssToSeconds(allEndTime[k])
                 }
                 
-                console.log("_________")
+                // console.log("_________")
                 for (var j=0, l = allCards.length; j < l; j++) {
                     // Checking if currentTime is between start/end time 
                     // AND if the bgcolor is white.
                     if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)") {
-                        console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
+                        // console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', '#fff293')
                         var firstCard = $('.timeline-card').eq(0)
                         $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
@@ -963,7 +962,7 @@ You might also want to include a concrete strategy recommendation."
                         if ($('.timeline-container').scrollTop !== 0) 
                             $('.timeline-container').animate({scrollTop:0}, 500)
                     } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j])) {
-                        console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
+                        // console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', 'white')
                     }
                 }
@@ -1110,7 +1109,7 @@ You might also want to include a concrete strategy recommendation."
             // this.moreAnnotations()
 
             // Color a card when videoCurrentTime is between card from and end
-            // this.hooping()
+            this.hooping()
         },
         computed: {
             ...mapGetters([
