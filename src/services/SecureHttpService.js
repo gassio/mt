@@ -2,10 +2,11 @@ import Vue from 'vue';
 import axios from 'axios';
 // import Config
 import authService from './AuthService'
+import {ourApp} from '../main'
 
 // var apiURLLocal = "http://localhost:3000"
-// var URL = "http://agtheodorides.dyndns.org:84/rest"
 var URL = "https://metalogon-api.herokuapp.com/rest"
+// var URL = "http://agtheodorides.dyndns.org:84/rest"
 
 export default {
     getHeaders() {
@@ -42,23 +43,24 @@ export default {
             axios({ method: Method, url: URL + "/" + uri, headers: self.getHeaders(), data: qs, params: Params })
                 .then(function (response) {
                     // See https://en.wikipedia.org/wiki/List_of_HTTP_status_codes for more status codes
-                    // if (response.status == "401") {
-                    //     console.log("secureHttpService: response status 401")
-                    //     router.go(login)
-                    //     reject()
-                    // }
-                    // else if (response.status == "404") {
-                    //     console.log("secureHttpService: response status 404")
-                    //     router.go(login)
-                    //     reject()
-                    // }
-                    // else {
-                    //     resolve(response)
-                    // }
-                    // console.log(response)
+                    // console.log("Resolved.")
                     resolve(response)
                 })
                 .catch(function (err) {
+                    if (err.response.status == "401") {
+                        console.log("secureHttpService: response status 401")
+                        localStorage.clear()
+                        ourApp.$router.push('/Login')
+                        // ourApp.$router.push('/ErrorPage')
+                        reject()
+                    }
+                    else if (err.response.status == "404") {
+                        console.log("secureHttpService: response status 404")
+                        localStorage.clear()
+                        ourApp.$router.push('/Login')
+                        // ourApp.$router.push('/ErrorPage')
+                        reject()
+                    }
                     reject(err)
                 })
         });

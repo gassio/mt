@@ -5,6 +5,7 @@ import { store } from './store/store'
 import authService from './services/AuthService'
 import Login from './components/Login/Login.vue'
 import DecideHome from './components/Pages/DecideHome.vue'
+import ErrorPage from './components/Pages/ErrorPage.vue'
 // import Admin from './components/Admin/Admin.vue'
 // import Professor from './components/Admin/Professor.vue'
 // import Student from './components/Admin/Student.vue'
@@ -34,6 +35,10 @@ export const routes = [
         path: '/DecideHome', 
         component: DecideHome,
         beforeEnter: requiresAuth
+    },
+    { 
+        path: '/ErrorPage', 
+        component: ErrorPage,
     },
     { 
         name: 'Login', 
