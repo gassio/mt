@@ -246,6 +246,7 @@
 			this.role = this.$root.$options.authService.getAuthData().role
 			document.body.style.backgroundImage = "none"
 			document.body.style.backgroundColor = "#FFF"
+			document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "100"
 		},
 		computed: {
 			...mapGetters(

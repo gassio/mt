@@ -194,6 +194,7 @@ export const store = new Vuex.Store({
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
+        assignments: []
     },
 
     actions: {
@@ -218,7 +219,6 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
-        
         createVideo: function ({ commit }, payload) {
             secureHttpService.post("video/" + payload)
                 .then( response => {
@@ -402,6 +402,27 @@ export const store = new Vuex.Store({
             .catch(function (err) {
                 console.log('unarchiveClass() action error: ', err)
             })
+        },
+        /* ASSIGNMENTS */ 
+        getAssignments: function ({ commit }, payload) {
+            secureHttpService.get("assignment?classId=" + payload)
+                .then(function (response)
+                {
+                    commit('GET_ASSIGNMENTS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        createAssignment: function ({ commit }, payload) {
+            secureHttpService.get("assignment?classId=" + payload)
+                .then(function (response)
+                {
+                    commit('GET_ASSIGNMENTS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
         },
     },
 
@@ -660,7 +681,12 @@ export const store = new Vuex.Store({
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
-        }
+        },
+        /* ASSIGNMENTS */
+        GET_ASSIGNMENTS: (state, assignments) => {
+            console.log(assignments)
+            state.assignments = assignments
+        },
     },
 
     getters: {
@@ -672,6 +698,9 @@ export const store = new Vuex.Store({
         },
         classes: state => {
             return state.classes
+        },
+        assignments: state => {
+            return state.assignments
         },
         currentVideoID: state => {
             return state.currentVideoID

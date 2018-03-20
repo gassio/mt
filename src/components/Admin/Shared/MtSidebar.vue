@@ -123,12 +123,14 @@
 			</el-dialog>
 
 			<!-- professor -->
-			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
+			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments" size="full">
+				<el-select v-model="assignmentsClassSelectedString" placeholder="Select the class" style="width:50%" @change="fetchAssignments()">
+					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
+				</el-select>
                 <el-tabs v-model="classAssignmentsTab">
-                    <el-tab-pane v-for="s in submissions" :key="s.assignmentId" :label="s.name">
-						<p>{{ s.description }}</p>
-						<p>{{ s.studentId }}</p>
-						<p>{{ s.videoId }}</p>
+                    <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
+						<p>{{ a.description }}</p>
+						<p>{{ a.id }}</p>
                     </el-tab-pane>
                 </el-tabs>
             </el-dialog>
@@ -311,7 +313,9 @@
 				},
 				// STUDENT
 				modalEnrollClassIsOpen: false,
-				otherClasses: []
+				otherClasses: [],
+				// Assignments
+				assignmentsClassSelectedString: ''
 			}
 		},
 		methods: {
@@ -402,6 +406,9 @@
 				this.classIdClicked = classId
 				this.modalUnarchiveClassIsOpen = true
 			},
+			fetchAssignments() {
+				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedString)
+			},
 			handleNodeClick(data) {
 				console.log(data);
 			},
@@ -437,7 +444,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll']
+                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll', 'assignments']
             )
 		}
     }
