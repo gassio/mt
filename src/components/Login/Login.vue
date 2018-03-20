@@ -57,11 +57,29 @@ export default {
               // this.$store.commit('AUTHENTICATED', "login")
               // this.$store.commit('SET_USER_PROFILE', this.authService.getAuthData())
               // console.log("Login.vue: login success")
+              this.getUserDetails()
               this.$router.push('/')
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')
               this.$router.push('/login')
+            })
+        },
+        getUserDetails()
+        {
+          var self = this
+          this.secureHttpService.get("user/" + this.authService.getAuthData().userId)
+            .then((response) => {
+              try{
+                self.authService.authData.firstName = response.data.data.firstName
+                self.authService.authData.lastName = response.data.data.lastName
+                self.authService.authData.email = response.data.data.email
+              }
+              catch(err){console.log(err)}
+            })
+            .catch((err) => {
+                console.log("get user details failed")
+                reject(err)
             })
         },
         registerUser() {

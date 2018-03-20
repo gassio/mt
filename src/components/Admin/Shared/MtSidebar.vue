@@ -414,7 +414,7 @@
 						
 						var body = {
 							classId : clickedClassId,
-							userId : this.$root.$options.authService.getAuthData().user_id
+							userId : this.$root.$options.authService.getAuthData().userId
 						}
 						console.log(body)
 						var self = this
