@@ -195,7 +195,8 @@ export const store = new Vuex.Store({
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
-        assignments: []
+        assignments: [],
+        collaborators: []
     },
 
     actions: {
@@ -432,6 +433,17 @@ export const store = new Vuex.Store({
                 {
                     console.log('GENRE: ', response.data.data)
                     commit('GET_GENRES', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+         /* COLLABORATORS */ 
+         getCollaborators: function ({ commit }, payload) {
+            secureHttpService.get("collaboration?videoId=" + payload)
+                .then(function (response)
+                {
+                    commit('GET_COLLABORATORS', response.data.data)
                 })
                 .catch(function (err) {
                     
@@ -706,6 +718,10 @@ export const store = new Vuex.Store({
         GET_GENRES: (state, genres) => {
             state.genres = genres
         },
+        /* COLLABORATORS */
+        GET_COLLABORATORS: (state, collaborators) => {
+            state.collaborators = collaborators
+        },
     },
 
     getters: {
@@ -723,6 +739,9 @@ export const store = new Vuex.Store({
         },
         genres: state => {
             return state.genres
+        },
+        collaborators: state => {
+            return state.collaborators
         },
         currentVideoID: state => {
             return state.currentVideoID

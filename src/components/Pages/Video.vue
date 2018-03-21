@@ -173,13 +173,14 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
-                <button class="collaborators button" @click="modalCollaboratorsIsOpen = true">
+                <button class="collaborators button" @click="openModalCollaborators()">
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
-                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                    <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
+                    <p v-for="c in collaborators" :key="c.id">{{c.userId}}</p>
+                    <!-- <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                         <el-table-column prop="studentName" width="180">
                             <template slot-scope="s1">
                                 <i class="fa fa-user"></i> {{ s1.row.studentName }}
@@ -190,8 +191,8 @@ You might also want to include a concrete strategy recommendation."
                                 <i class="fa fa-book"></i> {{ s1b.row.studentId }}
                             </template>
                         </el-table-column>
-                    </el-table>
-                </el-dialog> -->
+                    </el-table> -->
+                </el-dialog>
 
             </div>
 
@@ -307,12 +308,6 @@ You might also want to include a concrete strategy recommendation."
                 otherMoveSelected: false,
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
-                collaborators: [
-                    { studentName : 'Adam Smith', studentId: '1' },
-                    { studentName : 'Erica Johnson', studentId: '2' },
-                    { studentName : 'Nicole Aniston', studentId: '3' },
-                    { studentName : 'Andrew Mcmillan', studentId: '4' },
-                ],
                 authService : this.$root.$options.authService
             }
         },
@@ -989,7 +984,11 @@ You might also want to include a concrete strategy recommendation."
                 } 
 
                 this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
-     		}, 500),
+             }, 500),
+             openModalCollaborators() {
+                 this.modalCollaboratorsIsOpen = true
+                 this.$store.dispatch('getCollaborators', this.id)
+             }
         },
         created() {
             this.$store.dispatch('getVideo', this.id)
@@ -1113,7 +1112,7 @@ You might also want to include a concrete strategy recommendation."
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons', 'videoAnnotations'
+                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators'
             ])
         },
         components: {
