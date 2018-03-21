@@ -183,6 +183,7 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
+        genres: [],
         adminClasses: [], // only for admin.
         activeClasses: [], // only for professor.
         archivedClasses: [], // only for professor.
@@ -415,10 +416,22 @@ export const store = new Vuex.Store({
                 })
         },
         createAssignment: function ({ commit }, payload) {
-            secureHttpService.get("assignment?classId=" + payload)
+            secureHttpService.post("assignment", payload)
                 .then(function (response)
                 {
-                    commit('GET_ASSIGNMENTS', response.data.data)
+                    commit('CREATE_ASSIGNMENT', payload)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        /* GENRES */ 
+        getGenres: function ({ commit }) {
+            secureHttpService.get("genre")
+                .then(function (response)
+                {
+                    console.log('GENRE: ', response.data.data)
+                    commit('GET_GENRES', response.data.data)
                 })
                 .catch(function (err) {
                     
@@ -684,8 +697,14 @@ export const store = new Vuex.Store({
         },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
-            console.log(assignments)
             state.assignments = assignments
+        },
+        CREATE_ASSIGNMENT: (state, newAssignment) => {
+            state.assignments.push(newAssignment)
+        },
+        /* GENRES */
+        GET_GENRES: (state, genres) => {
+            state.genres = genres
         },
     },
 
@@ -701,6 +720,9 @@ export const store = new Vuex.Store({
         },
         assignments: state => {
             return state.assignments
+        },
+        genres: state => {
+            return state.genres
         },
         currentVideoID: state => {
             return state.currentVideoID

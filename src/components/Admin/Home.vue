@@ -240,6 +240,8 @@
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
 			this.$store.dispatch('getEnrollments')
+			this.$store.dispatch('getGenres')
+
 			this.$store.state.currentClassSelected = 'Home'
 		},
 		mounted() {

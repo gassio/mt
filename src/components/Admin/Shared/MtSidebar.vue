@@ -123,14 +123,22 @@
 			</el-dialog>
 
 			<!-- professor -->
-			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments" size="full">
-				<el-select v-model="assignmentsClassSelectedString" placeholder="Select the class" style="width:50%" @change="fetchAssignments()">
+			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
+				<el-select v-model="assignmentsClassSelectId" placeholder="Select the class" style="width:50%" @change="fetchAssignments()">
 					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
 				</el-select>
-                <el-tabs v-model="classAssignmentsTab">
+                <el-tabs>
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
 						<p>{{ a.description }}</p>
 						<p>{{ a.id }}</p>
+                    </el-tab-pane>
+					<el-tab-pane label="+ Add assignment">
+						<el-input v-model="assignmentTitle" placeholder="Set a title"></el-input>
+						<el-input v-model="assignmentDescription" placeholder="Set a description" type="textarea"></el-input>
+						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%">
+							<el-option :label="g.name" :value="g.id" v-for="g in genres" v-bind:key="g.id"></el-option>
+						</el-select>
+						<el-button @click="createAssignment()">Create</el-button>
                     </el-tab-pane>
                 </el-tabs>
             </el-dialog>
@@ -172,22 +180,16 @@
 				modalGenreCustomization: false,
 				modalGenreCustomization2: false,
 				classIdClicked: '',
-				// Class Assignments
+				// Assignments
 				modalClassAssignmentsIsOpen: false,
-				classAssignmentsTab: 'assignment1',
-				submissions: [
-					{ name: "Assignment 1", assignmentId: '1', videoId: 'vidId1', studentId: 'studentId1', description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.' },
-					{ name: "Assignment 2", assignmentId: '2', videoId: 'vidId2', studentId: 'studentId2', description: 'Wwill be distracted by the readable content of a page when looking at its layout.' },
-					{ name: "Assignment 3", assignmentId: '3', videoId: 'vidId3', studentId: 'studentId3', description: 'The readable content of a page when looking at its layout.' }
-				],
+				assignmentsClassSelectId: '',
+				assignmentTitle: '',
+				assignmentDescription: '',
+				assignmentGenre: '',
+				// STUDENT
+				modalEnrollClassIsOpen: false,
+				otherClasses: [],
 				// Genre customization
-				genres: [
-					{ name: 'Elevator pitch' },
-					{ name: 'Lab presentation' },
-					{ name: 'Thesis talk' },
-					{ name: 'Progress report' },
-					{ name: 'Conference talk' }
-				],
 				currentGenre: 'Lab presentation',
 				// Genre version 1
 				canons: [
@@ -311,11 +313,6 @@
 					number: '',
 					semester: ''
 				},
-				// STUDENT
-				modalEnrollClassIsOpen: false,
-				otherClasses: [],
-				// Assignments
-				assignmentsClassSelectedString: ''
 			}
 		},
 		methods: {
@@ -406,8 +403,20 @@
 				this.classIdClicked = classId
 				this.modalUnarchiveClassIsOpen = true
 			},
+			// Assignments
 			fetchAssignments() {
-				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedString)
+				this.$store.dispatch('getAssignments', this.assignmentsClassSelectId)
+			},
+			createAssignment() {
+				this.$store.dispatch('createAssignment', {
+					classId: this.assignmentsClassSelectId,
+					title: this.assignmentTitle,
+					description: this.assignmentDescription,
+					genre: this.assignmentGenre
+				})
+				this.assignmentTitle = ''
+				this.assignmentDescription = ''
+				this.assignmentGenre = ''
 			},
 			handleNodeClick(data) {
 				console.log(data);
@@ -444,7 +453,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll', 'assignments']
+                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll', 'assignments', 'genres']
             )
 		}
     }
