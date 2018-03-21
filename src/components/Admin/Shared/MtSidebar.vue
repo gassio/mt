@@ -7,6 +7,7 @@
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
+				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="modalClassCategoriesIsOpen = true"><i class="fa fa-commenting-o"></i>Categories</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
@@ -36,6 +37,8 @@
 					</el-tab-pane>
 				</el-tabs>
 			</div>
+
+			<a @click="modalGenreCustomization = true">Customize</a>
 
 			<!-- administrator, professor -->
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
@@ -91,7 +94,7 @@
 					</span>
 			</el-dialog>	
 
-			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
+			<!-- <el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
 					<h3 style="margin-bottom:10px;">Choose genre:</h3>
 					<el-select v-model="currentGenre" placeholder="Choose a genre">
 						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
@@ -114,7 +117,7 @@
 					<span slot="footer" class="dialog-footer">
 							<el-button @click="modalGenreCustomization2 = false">Close</el-button>
 					</span>
-			</el-dialog>	
+			</el-dialog>	 -->
 
 			<!-- administrator -->
 			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
@@ -124,13 +127,16 @@
 
 			<!-- professor -->
 			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
-				<el-select v-model="assignmentsClassSelectId" placeholder="Select the class" style="width:50%" @change="fetchAssignments()">
+				<el-select v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
 					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
 				</el-select>
-                <el-tabs>
+                <el-tabs v-show="!!assignmentsClassSelectedId">
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
-						<p style="font-size: 16px">Description: {{ a.description }}</p>
-						<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.class === 'Materials Science Lab'" style="cursor:pointer">
+						<p style="font-size: 16px"><strong>Description:</strong> {{ a.description }}</p>
+						<hr>
+						<p style="font-size: 16px" v-for="g in genres" v-if="g.id === a.genre" :key="g.id"><strong>Genre:</strong> {{ g.name }}</p>
+						<hr>
+						<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.assignmentId === a.id" style="cursor:pointer">
 							<div class="classvideo__metadata">
 								<img class="classvideo__image" :src="v.thumb">
 								<div class="classvideo__titles">
@@ -142,17 +148,50 @@
 								</div>
 							</div>
 						</router-link>
-
+						<button class="button" @click="deleteAssignment(a.id)" style="background-color:red;color:white;font-size:12px;"><i class="fa fa-trash"></i>Delete assignment</button>						
                     </el-tab-pane>
 					<el-tab-pane label="+ Add assignment">
 						<el-input v-model="assignmentTitle" placeholder="Set a title" style="width:70%;margin-bottom:15px;"></el-input>
 						<el-input v-model="assignmentDescription" placeholder="Set a description" type="textarea" style="width:70%;margin-bottom:15px;"></el-input>
-						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:40%;margin-bottom:15px;">
-							<el-option :label="g.name" :value="g.id" v-for="g in genres" v-bind:key="g.id"></el-option>
+						<p>Choose genre:</p>
+						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%" @change="fetchAssignments()">
+							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
 						</el-select>
+						<hr>
 						<el-button @click="createAssignment()">Create</el-button>
                     </el-tab-pane>
                 </el-tabs>
+            </el-dialog>
+
+			<el-dialog title="Class Categories" :visible.sync="modalClassCategoriesIsOpen" class="modal-class-categories" size="small">
+				<el-select v-model="categoriesGenre" placeholder="Select a genre" style="width:50%" @change="fetchCategories()">
+					<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
+				</el-select>
+				<div v-if="!!categoriesGenre">
+					<p>Choose categories:</p>
+					<el-checkbox-group v-model="categoriesCheckList" @change="categoriesListChanged()">
+						<p>STRUCTURE</p>
+						<el-checkbox :label="cat.name" v-for="cat in categories" v-if="cat.canon === 'Structure'" :key="cat._id" :value="cat.name" checked>
+							<strong>{{cat.name}}:</strong> {{cat.description}}
+						</el-checkbox>
+						<p>DELIVERY</p>
+						<el-checkbox :label="cat.name" v-for="cat in categories" v-if="cat.canon === 'Delivery'" :key="cat._id" :value="cat.name" checked>
+							<strong>{{cat.name}}:</strong> {{cat.description}}
+						</el-checkbox>
+						<p>VISUALS</p>
+						<el-checkbox :label="cat.name" v-for="cat in categories" v-if="cat.canon === 'Visuals'" :key="cat._id" :value="cat.name" checked>
+							<strong>{{cat.name}}:</strong> {{cat.description}}
+						</el-checkbox>
+						<p>STYLE</p>
+						<el-checkbox :label="cat.name" v-for="cat in categories" v-if="cat.canon === 'Style'" :key="cat._id" :value="cat.name" checked>
+							<strong>{{cat.name}}:</strong> {{cat.description}}
+						</el-checkbox>
+						<p>MOVES</p>
+						<el-checkbox :label="cat.name" v-for="cat in categories" v-if="cat.canon === 'Moves'" :key="cat._id" :value="cat.name" checked>
+							<strong>{{cat.name}}:</strong>
+						</el-checkbox>
+					</el-checkbox-group>
+				</div>
             </el-dialog>
 
 			<!-- Student -->
@@ -164,7 +203,9 @@
 					<p class=""> {{ c.number }} - {{ c.semester }}</p> 
 					<p style="visibility:hidden">{{ c.id }}</p> 
 				</a>
-			</el-dialog> 
+			</el-dialog>
+
+			<!-- <el-tree :data="categories" :props="genreProps" @node-click="handleNodeClick" show-checkbox></el-tree> -->
 			
 		</aside>
 
@@ -194,10 +235,16 @@
 				classIdClicked: '',
 				// Assignments
 				modalClassAssignmentsIsOpen: false,
-				assignmentsClassSelectId: '',
+				assignmentSelectedId: '',
+				assignmentsClassSelectedId: '',
 				assignmentTitle: '',
 				assignmentDescription: '',
 				assignmentGenre: '',
+				assignmentCategorySelected: '',
+				categoriesCheckList: [],
+				// Categories
+				categoriesGenre: '',
+				modalClassCategoriesIsOpen: false,
 				// STUDENT
 				modalEnrollClassIsOpen: false,
 				otherClasses: [],
@@ -205,40 +252,40 @@
 				currentGenre: 'Lab presentation',
 				// Genre version 1
 				canons: [
-					{
-						label: 'Moves',
-						children: [
-							{ label: 'Introduction', children: [
-								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-								{ label: 'States the value of the present research and explains why it was conducted' },
-								{ label: 'Discusses the definitions of key terms' },
-								{ label: 'Summarizes and previews the methods used' },
-								{ label: 'Presents basic equations' },
-							]},
-							{ label: 'Methodology', children: [
-								{ label: 'Describes materials and instrumentation in the study' },
-								{ label: 'Describes tasks (actions) in the study' },
-								{ label: 'Describes the procedures of an experiment (activities)' },
-								{ label: 'Presents justification of techniques' },
-								{ label: 'Describes variables in the study' },
-								{ label: 'Describes the procedures used in data analysis' },
-								{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
-							]},
-							{ label: 'Results and Discussion', children: [
-								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-								{ label: 'States the value of the present research and explains why it was conducted' },
-								{ label: 'Discusses the definitions of key terms' },
-								{ label: 'Summarizes and previews the methods used' },
-								{ label: 'Presents basic equations' },
-							]},
-							{ label: 'Conclusion', children: [
-								{ label: 'xxxxxxxxxx' },
-							]},
-							{ label: 'Question and Answer', children: [
-								{ label: 'xxxxxxxxxx' },
-							]},
-						]
-					}, 
+					// {
+					// 	label: 'Moves',
+					// 	children: [
+					// 		{ label: 'Introduction', children: [
+					// 			{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+					// 			{ label: 'States the value of the present research and explains why it was conducted' },
+					// 			{ label: 'Discusses the definitions of key terms' },
+					// 			{ label: 'Summarizes and previews the methods used' },
+					// 			{ label: 'Presents basic equations' },
+					// 		]},
+					// 		{ label: 'Methodology', children: [
+					// 			{ label: 'Describes materials and instrumentation in the study' },
+					// 			{ label: 'Describes tasks (actions) in the study' },
+					// 			{ label: 'Describes the procedures of an experiment (activities)' },
+					// 			{ label: 'Presents justification of techniques' },
+					// 			{ label: 'Describes variables in the study' },
+					// 			{ label: 'Describes the procedures used in data analysis' },
+					// 			{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
+					// 		]},
+					// 		{ label: 'Results and Discussion', children: [
+					// 			{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
+					// 			{ label: 'States the value of the present research and explains why it was conducted' },
+					// 			{ label: 'Discusses the definitions of key terms' },
+					// 			{ label: 'Summarizes and previews the methods used' },
+					// 			{ label: 'Presents basic equations' },
+					// 		]},
+					// 		{ label: 'Conclusion', children: [
+					// 			{ label: 'xxxxxxxxxx' },
+					// 		]},
+					// 		{ label: 'Question and Answer', children: [
+					// 			{ label: 'xxxxxxxxxx' },
+					// 		]},
+					// 	]
+					// }, 
 					{
 						label: 'Structure',
 						children: [
@@ -281,6 +328,11 @@
 					},
 				],
 				genreProps: {
+					children: 'children',
+					label: 'label',
+					desc: 'desc'
+				},
+				categoryProps: {
 					children: 'children',
 					label: 'label',
 					desc: 'desc'
@@ -417,12 +469,12 @@
 			},
 			// Assignments
 			fetchAssignments() {
-				this.$store.dispatch('getAssignments', this.assignmentsClassSelectId)
+				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedId)
 			},
 			createAssignment() {
-				if (this.assignmentsClassSelectId !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
+				if (this.assignmentsClassSelectedId !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
 					this.$store.dispatch('createAssignment', {
-						classId: this.assignmentsClassSelectId,
+						classId: this.assignmentsClassSelectedId,
 						title: this.assignmentTitle,
 						description: this.assignmentDescription,
 						genre: this.assignmentGenre
@@ -433,6 +485,22 @@
 				} else {
 					alert('Please complete all assignment fields.')
 				}
+			},
+			deleteAssignment(assignmentId) {
+				console.log('delete assignment')
+				this.$store.dispatch('deleteAssignment', assignmentId)
+			},
+			assignmentTabClicked(assignmentId) {
+				console.log('tab clicked: ', assignmentId)
+			},
+			// Categories
+			fetchCategories() {
+				this.$store.dispatch('getCategories')
+				console.log('fetchAssignments')
+			},
+			categoriesListChanged() {
+				console.log(this.categoriesCheckList)
+				console.log('fetchCategories')
 			},
 			handleNodeClick(data) {
 				console.log(data);
@@ -477,7 +545,11 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll', 'assignments', 'genres']
+				[ 'videos', 'classes', 'activeClasses', 
+				'archivedClasses', 'currentClassSelected', 'currentClassNumber', 
+				'adminClasses', 'studentClasses', 'classesToEnroll', 
+				'assignments', 'genres', 'categories'
+				]
             )
 		},
     }
