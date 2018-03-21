@@ -129,13 +129,25 @@
 				</el-select>
                 <el-tabs>
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
-						<p>{{ a.description }}</p>
-						<p>{{ a.id }}</p>
+						<p style="font-size: 16px">Description: {{ a.description }}</p>
+						<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.class === 'Materials Science Lab'" style="cursor:pointer">
+							<div class="classvideo__metadata">
+								<img class="classvideo__image" :src="v.thumb">
+								<div class="classvideo__titles">
+									<p class="classvideo__title">{{ v.title }}</p>
+									<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
+								</div>
+								<div class="classvideo__metameta">
+									
+								</div>
+							</div>
+						</router-link>
+
                     </el-tab-pane>
 					<el-tab-pane label="+ Add assignment">
-						<el-input v-model="assignmentTitle" placeholder="Set a title"></el-input>
-						<el-input v-model="assignmentDescription" placeholder="Set a description" type="textarea"></el-input>
-						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%">
+						<el-input v-model="assignmentTitle" placeholder="Set a title" style="width:70%;margin-bottom:15px;"></el-input>
+						<el-input v-model="assignmentDescription" placeholder="Set a description" type="textarea" style="width:70%;margin-bottom:15px;"></el-input>
+						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:40%;margin-bottom:15px;">
 							<el-option :label="g.name" :value="g.id" v-for="g in genres" v-bind:key="g.id"></el-option>
 						</el-select>
 						<el-button @click="createAssignment()">Create</el-button>
@@ -408,15 +420,19 @@
 				this.$store.dispatch('getAssignments', this.assignmentsClassSelectId)
 			},
 			createAssignment() {
-				this.$store.dispatch('createAssignment', {
-					classId: this.assignmentsClassSelectId,
-					title: this.assignmentTitle,
-					description: this.assignmentDescription,
-					genre: this.assignmentGenre
-				})
-				this.assignmentTitle = ''
-				this.assignmentDescription = ''
-				this.assignmentGenre = ''
+				if (this.assignmentsClassSelectId !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
+					this.$store.dispatch('createAssignment', {
+						classId: this.assignmentsClassSelectId,
+						title: this.assignmentTitle,
+						description: this.assignmentDescription,
+						genre: this.assignmentGenre
+					})
+					this.assignmentTitle = ''
+					this.assignmentDescription = ''
+					this.assignmentGenre = ''
+				} else {
+					alert('Please complete all assignment fields.')
+				}
 			},
 			handleNodeClick(data) {
 				console.log(data);
@@ -449,13 +465,21 @@
 				console.log('QUERY STUDENT CLASSES')
 
 				this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
-			}, 300)
+			}, 300),
+			secondsToMMSS(s) {
+				s = Number(s);
+
+				var m = Math.floor(s % 3600 / 60);
+				var s = Math.floor(s % 3600 % 60);
+
+				return ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+			},
 		},
         computed: {
             ...mapGetters(
                 ['videos', 'classes', 'activeClasses', 'archivedClasses', 'currentClassSelected', 'currentClassNumber', 'adminClasses', 'studentClasses', 'classesToEnroll', 'assignments', 'genres']
             )
-		}
+		},
     }
 </script>
 
