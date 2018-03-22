@@ -156,7 +156,12 @@ export default {
     mounted() {
       document.body.style.backgroundImage = "url(" + bgImage + ")"
       document.body.style.backgroundSize = "70%"
-      document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "-1"
+      try {
+        document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "-1"
+      }
+      catch (err) {
+        // console.log(err)
+      }
     }
 }
 </script>

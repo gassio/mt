@@ -57,7 +57,7 @@ class AuthService {
     getUserDetails() {
         var self = this
         return new Promise(function(resolve, reject) {
-                try {
+            try {
                 secureHTTPService.get("user/" + self.authData.userId)
                 .then((userDetailsResponse) => {
                     // Save userData in authData for this session
