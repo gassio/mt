@@ -3,7 +3,7 @@ import App from './App.vue'
 
 import { store } from './store/store'
 
-import secureHttpService from './services/SecureHttpService'
+import secureHTTPService from './services/SecureHttpService'
 
 import authService from './services/AuthService'
 
@@ -38,7 +38,7 @@ export const ourApp = new Vue({
   router,
   store,
   authService,
-  secureHttpService,
+  secureHTTPService,
   render: h => h(App)
 })
 

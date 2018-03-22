@@ -119,7 +119,7 @@
                         { type: 'date', required: true, message: 'Please choose date', trigger: 'blur' },
                     ],
                 },
-                secureHttpService : this.$root.$options.secureHttpService
+                secureHTTPService : this.$root.$options.secureHTTPService
             }
         },
         created() {
@@ -132,7 +132,7 @@
                 let self = this 
                 this.modalDragDropIsOpen = true
                 
-                this.secureHttpService.post("jwvideo")
+                this.secureHTTPService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
 
@@ -197,7 +197,7 @@
 
                     // Fetching link and duration
                     let intervalID = setInterval(function () {
-                        self.secureHttpService.get("jwconversion?videoId=" + jwVideoId)
+                        self.secureHTTPService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
@@ -338,7 +338,7 @@
                         }, 
                 })
                 let self = this
-                this.secureHttpService.post("jwvideo")
+                this.secureHTTPService.post("jwvideo")
                     .then( response => {
                         let theData = response.data.data
                         let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
