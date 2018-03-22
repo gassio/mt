@@ -237,7 +237,9 @@ You might also want to include a concrete strategy recommendation."
                                     <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
                                 </div>
                             </div>
+                            <div class="timeline-card__author">{{ card.author }}</div>
                             <div class="timeline-card__footer">
+                                <!-- <div class="timeline-card__comment">authorName</div> -->
                                 <!-- TODO This line is buggy. This should print the author of the annotation on the annotation card -->
                                 <span class="timeline-card__id">{{ card.id }}</span>
                                 <div class="timeline-card__edit-container" @click.stop.prevent>
@@ -563,7 +565,7 @@ You might also want to include a concrete strategy recommendation."
                 }
 
                 var card = { 
-                    author: this.authService.getAuthData().firstName + ' ' + this.authService.getAuthData().lastName.slice[0] + '.', // Alexander T.
+                    author: this.authService.getAuthData().firstName + ' ' + this.authService.getAuthData().lastName.slice()[0] + '.', // Alexander T.
                     videoId: this.id,
                     canon: this.annotateCanon,
                     category: this.annotateCategory,
