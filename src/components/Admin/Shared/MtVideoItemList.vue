@@ -18,8 +18,8 @@
 			</div>
 			<div class="classvideo__metameta">
 				<span class="classvideo__score">
-					<p class="classvideo__scoreNum">94%</p>
-					<p class="classvideo__scoreLabel">Score</p>
+					<p class="classvideo__scoreNum">4.2</p>
+					<p class="classvideo__scoreLabel">Effectiveness</p>
 				</span>
 				<span class="classvideo__annotations">
 					<p class="classvideo__annotationsNum">{{ currentVideo.annotations.length }}</p>

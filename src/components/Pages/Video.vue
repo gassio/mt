@@ -68,7 +68,8 @@
                         </nav>
                         
                     </div>
-                    <div class="annotate-fields annotate-annotating" :class="annotateCanon" v-show="isAnnotateFields">
+                    <div class="annotate-fields annotate-annotating" v-show="isAnnotateFields"> 
+                        <!-- :class="annotateCanon" -->
                         <div class="annotate-fields-left">
                             <button class="button annotate-fields-left-back" @click="isAnnotateFields = false; isVideoline = false; isAnnotateMenu = true; selectedMove = 'Other'">
                                 <i aria-hidden="true" class="fa fa-chevron-left"></i>Back
@@ -212,6 +213,8 @@ You might also want to include a concrete strategy recommendation."
                             </div>
                         </div>
                     </nav>
+
+
                     <div class="timeline-container">
                         <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
@@ -226,7 +229,11 @@ You might also want to include a concrete strategy recommendation."
                                 <p class="timeline-card__body-title">COMMENT:</p>
                                 <read-more class="timeline-card__comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="70"></read-more> 
                                 <div class="timeline-card__effectiveness">
-                                    <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress>
+                                    <div class="timeline-card__progress">
+                                        <span class="timeline-card__progressSpan" :style="{ width: 20 * card.rating + '%' }" :class="card.canon"></span>
+                                    </div>
+                                    <!-- <el-progress :stroke-width="11" :percentage="20 * card.rating" :show-text="false" status="fail"></el-progress> -->
+                                    <!-- <progress class="progress is-small is-info" v-bind:value="20 * card.rating" max="100"></progress> -->
                                     <p class="timeline-card__effectiveness-label">{{ card.rating }} / 5 effective</p>
                                 </div>
                             </div>
@@ -1127,23 +1134,23 @@ You might also want to include a concrete strategy recommendation."
                 #GENERIC
 ================================================= */
 
-.Moves { background-color: #18435a;}
-.Structure { background-color: #2a628f; }
-.Delivery { background-color: #3e92cc; }
-.Visuals { background-color: #65afff; }
-.Style { background-color: #88a9c0; }
+.Moves { background-color: #15314F;}
+.Structure { background-color: #F2992E; }
+.Delivery { background-color: #39A0ED; }
+.Visuals { background-color: #717C89; }
+.Style { background-color: #38C97C; }
 
-.Moves-border { border-left: 12px solid #18435a;}
-.Structure-border { border-left: 12px solid #2a628f; }
-.Delivery-border { border-left: 12px solid #3e92cc; }
-.Visuals-border { border-left: 12px solid #65afff; }
-.Style-border { border-left: 12px solid #88a9c0; }
+.Moves-border { border-left: 12px solid #15314F;}
+.Structure-border { border-left: 12px solid #F2992E; }
+.Delivery-border { border-left: 12px solid #39A0ED; }
+.Visuals-border { border-left: 12px solid #717C89; }
+.Style-border { border-left: 12px solid #38C97C; }
 
-.Moves-border-triangle { border-top-color: #18435a;}
-.Structure-border-triangle { border-top-color: #2a628f; }
-.Delivery-border-triangle { border-top-color: #3e92cc; }
-.Visuals-border-triangle { border-top-color: #65afff; }
-.Style-border-triangle { border-top-color: #88a9c0; }
+.Moves-border-triangle { border-top-color: #15314F;}
+.Structure-border-triangle { border-top-color: #F2992E; }
+.Delivery-border-triangle { border-top-color: #39A0ED; }
+.Visuals-border-triangle { border-top-color: #717C89; }
+.Style-border-triangle { border-top-color: #38C97C; }
 
 .video__body {
     margin: 5px 15px 15px 15px;
@@ -1426,7 +1433,7 @@ You might also want to include a concrete strategy recommendation."
     }
 
     .annotate-menu__canons {
-        background-color:#18435a;
+        background-color:#39425C;
         display: flex;
         justify-content: center;
     }
@@ -1489,7 +1496,7 @@ You might also want to include a concrete strategy recommendation."
     .annotate-fields {
         padding: 5px;
         display: flex;
-        /* background-color: #39425C; */
+        background-color: #39425C;
     }
     
     .annotate-fields p,
@@ -1631,6 +1638,7 @@ You might also want to include a concrete strategy recommendation."
     .timeline-container {
         height: 556px;
         overflow-y: scroll;
+        margin-top: 20px;
     }
 
         .timeline {
@@ -1704,7 +1712,23 @@ You might also want to include a concrete strategy recommendation."
 
                     .timeline-card__effectiveness {
                         display: flex;
+                        align-items: center;
                     }
+
+                        /* NEW */
+                        .timeline-card__progress {
+                            width: 60%;
+                            height: 12px;
+                            background-color: #d8dcdb;
+                            border-radius: 3px;
+                            display: flex;
+                        }
+                            .timeline-card__progressSpan {
+                                height: 12px;
+                                border-radius: 3px;
+                            }
+                        /* /NEW */
+
                         .timeline-card__effectiveness progress {
                             width: 75%;
                             margin-top: 5px;
