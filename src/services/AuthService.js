@@ -12,20 +12,21 @@ class AuthService {
             // console.log("Autologin.", this.authData)
         }
         else {
-            // If local storage does not have authData, initialize to empty authData
-            this.authData = {
-                'token': "",
-                'userId': "",
-                'role': "",
-                'firstName': "",
-                'lastName': "",
-                'email': ""
-            }
+            // If local storage does not have authData, initialize to null
+            this.authData = null
             // console.log("No autologin.")
         }
     }
 
     login(value, cb) {
+        this.authData = {
+            'token': "",
+            'userId': "",
+            'role': "",
+            'firstName': "",
+            'lastName': "",
+            'email': ""
+        }
         // console.log("authService: first time login")
         return this.postLogin(value)
         .then(() => this.getUserDetails())
