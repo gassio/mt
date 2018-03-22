@@ -18,25 +18,29 @@
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
                 <el-form-item label="Class" prop="class">
-                    <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" >
-                        <el-option :label="c.name" :value="c.name" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
+                    <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" @change="getAssignmentsByThisClass()">
+                        <el-option :label="c.name" :value="c.name" v-for="c in activeClasses" :key="c.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Class number" prop="classNumber">
-                    <el-input v-model="uploadVidMetadata.classNumber"></el-input>
+                    <el-select v-model="uploadVidMetadata.classNumber" placeholder="Get the class number">
+                        <el-option :label="c.number" :value="c.number" v-for="c in activeClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="Department" prop="classDepartment"> <!--   -->
+                <el-form-item label="Assignment" prop="assignment">
+                    <el-select v-model="uploadVidMetadata.assignmentId" placeholder="Select an assignment" >
+                        <el-option :label="a.title" :value="a.id" v-for="a in assignments" :key="a.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="Department" prop="classDepartment">
                     <el-select placeholder="Select the department" v-model="uploadVidMetadata.classDepartment">
-                        <el-option v-for="d in departments" :label="d" :value="d" v-bind:key="d"></el-option>
+                        <el-option v-for="d in departments" :label="d" :value="d" :key="d"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Genre" prop="genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
-                        <el-option label="Elevator pitch" value="Elevator pitch"></el-option>
-                        <el-option label="Lab presentation" value="Lab presentation"></el-option>
-                        <el-option label="Thesis talk" value="Thesis talk"></el-option>
-                        <el-option label="Progress report" value="Progress report"></el-option>
-                        <el-option label="Conference talk" value="Conference talk"></el-option>
+                        <el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
+
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Presentation date" required>
@@ -99,6 +103,7 @@
                     classDepartment: '',
                     genre: '',
                     presentedAt: '',
+                    assignmentId: ''
                 },
                 uploadVidMetadataRules: {
                     title: [
@@ -357,11 +362,24 @@
                     message: 'Video uploading was stopped...',
                     showClose: true
                 })
+            },
+            getAssignmentsByThisClass() {
+                this.uploadVidMetadata.classNumber = ''
+                var classIdToBeDeleted;
+                for (var i = 0, l = this.classes.length; i < l; i++) {
+                    if (this.classes[i].name === this.uploadVidMetadata.class) {
+                        classIdToBeDeleted = this.classes[i].id
+                        break
+                    }
+                }
+                this.$store.dispatch('getAssignments', classIdToBeDeleted)
             }
         },
         computed: {
             ...mapGetters([
-				'videos', 'uploadUrl', 'classes', 'activeClasses', 'departments'
+                'videos', 'uploadUrl', 'classes', 
+                'activeClasses', 'departments', 'assignments',
+                'genres'
             ]),
         }    
 }

@@ -240,12 +240,15 @@
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
 			this.$store.dispatch('getEnrollments')
+			this.$store.dispatch('getGenres')
+
 			this.$store.state.currentClassSelected = 'Home'
 		},
 		mounted() {
 			this.role = this.$root.$options.authService.getAuthData().role
 			document.body.style.backgroundImage = "none"
 			document.body.style.backgroundColor = "#FFF"
+			document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "100"
 		},
 		computed: {
 			...mapGetters(

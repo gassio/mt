@@ -173,13 +173,14 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
-                <button class="collaborators button" @click="modalCollaboratorsIsOpen = true">
+                <button class="collaborators button" @click="openModalCollaborators()">
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
-                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                    <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
+                    <p v-for="c in collaborators" :key="c.id">{{c.userId}}</p>
+                    <!-- <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                         <el-table-column prop="studentName" width="180">
                             <template slot-scope="s1">
                                 <i class="fa fa-user"></i> {{ s1.row.studentName }}
@@ -190,8 +191,8 @@ You might also want to include a concrete strategy recommendation."
                                 <i class="fa fa-book"></i> {{ s1b.row.studentId }}
                             </template>
                         </el-table-column>
-                    </el-table>
-                </el-dialog> -->
+                    </el-table> -->
+                </el-dialog>
 
             </div>
 
@@ -216,10 +217,8 @@ You might also want to include a concrete strategy recommendation."
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
-                                    <span class="timeline-card__time">
-                                        <!-- <img src="../../assets/big-idea.svg"> -->
-                                        {{ card.from }} - {{ card.to }}
-                                        </span>
+                                    <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
+                                    <!-- <img src="../../assets/big-idea.svg"> -->
                                 </div>
                                 <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
@@ -309,12 +308,6 @@ You might also want to include a concrete strategy recommendation."
                 otherMoveSelected: false,
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
-                collaborators: [
-                    { studentName : 'Adam Smith', studentId: '1' },
-                    { studentName : 'Erica Johnson', studentId: '2' },
-                    { studentName : 'Nicole Aniston', studentId: '3' },
-                    { studentName : 'Andrew Mcmillan', studentId: '4' },
-                ],
                 authService : this.$root.$options.authService
             }
         },
@@ -835,7 +828,7 @@ You might also want to include a concrete strategy recommendation."
                 this.isVideoline = true
             },
             seekCard(event) {
-                var time = $(event.currentTarget).find('.timeline-card__time').text()
+                var time = event.currentTarget.getElementsByClassName('timeline-card__time')[0].innerHTML
                 var startTime = time.substring(0,5); // 03:05
                 this.annotateStart = startTime
                 var endTime = time.substring(8,13); // 03:17
@@ -848,6 +841,7 @@ You might also want to include a concrete strategy recommendation."
                 var endSec = (+b[0]) * 60 + (+b[1]) // in sec
 
                 // Seek player according to annotateStart var
+                // console.log("seekCard(): ", startSec)
                 this.player.seek(startSec)
 
                 // Move the timeline according to the annotateStart & annotateEnd vars
@@ -950,12 +944,12 @@ You might also want to include a concrete strategy recommendation."
                     allEndTime[k] = self.mmssToSeconds(allEndTime[k])
                 }
                 
-                console.log("_________")
+                // console.log("_________")
                 for (var j=0, l = allCards.length; j < l; j++) {
                     // Checking if currentTime is between start/end time 
                     // AND if the bgcolor is white.
                     if (this.videoCurrentTime >= allStartTime[j] && this.videoCurrentTime <= allEndTime[j] && $('.timeline-card').eq(j).css('background-color') === "rgb(255, 255, 255)") {
-                        console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
+                        // console.log('#' + j + ' annotation is in "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', '#fff293')
                         var firstCard = $('.timeline-card').eq(0)
                         $('.timeline-card').eq(j).effect('bounce',{times: 2}, 300)
@@ -963,7 +957,7 @@ You might also want to include a concrete strategy recommendation."
                         if ($('.timeline-container').scrollTop !== 0) 
                             $('.timeline-container').animate({scrollTop:0}, 500)
                     } else if ((this.videoCurrentTime < allStartTime[j] || this.videoCurrentTime > allEndTime[j])) {
-                        console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
+                        // console.log('#' + j + ' annotation is out "' + $('.timeline-card').eq(j).find('.timeline-card__comment p').text() + '"')
                         $('.timeline-card').eq(j).css('background-color', 'white')
                     }
                 }
@@ -990,7 +984,11 @@ You might also want to include a concrete strategy recommendation."
                 } 
 
                 this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
-     		}, 500),
+             }, 500),
+             openModalCollaborators() {
+                 this.modalCollaboratorsIsOpen = true
+                 this.$store.dispatch('getCollaborators', this.id)
+             }
         },
         created() {
             this.$store.dispatch('getVideo', this.id)
@@ -1110,11 +1108,11 @@ You might also want to include a concrete strategy recommendation."
             // this.moreAnnotations()
 
             // Color a card when videoCurrentTime is between card from and end
-            // this.hooping()
+            this.hooping()
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons', 'videoAnnotations'
+                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators'
             ])
         },
         components: {

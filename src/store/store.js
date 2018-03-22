@@ -183,6 +183,8 @@ export const store = new Vuex.Store({
                 ]
             }
         ],
+        categories: [],
+        genres: [],
         adminClasses: [], // only for admin.
         activeClasses: [], // only for professor.
         archivedClasses: [], // only for professor.
@@ -194,6 +196,8 @@ export const store = new Vuex.Store({
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
+        assignments: [],
+        collaborators: []
     },
 
     actions: {
@@ -218,7 +222,6 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
-        
         createVideo: function ({ commit }, payload) {
             secureHttpService.post("video/" + payload)
                 .then( response => {
@@ -402,6 +405,70 @@ export const store = new Vuex.Store({
             .catch(function (err) {
                 console.log('unarchiveClass() action error: ', err)
             })
+        },
+        /* ASSIGNMENTS */ 
+        getAssignments: function ({ commit }, payload) {
+            secureHttpService.get("assignment?classId=" + payload)
+                .then(function (response)
+                {
+                    commit('GET_ASSIGNMENTS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        createAssignment: function ({ commit }, payload) {
+            secureHttpService.post("assignment", payload)
+                .then(function (response)
+                {
+                    commit('CREATE_ASSIGNMENT', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        deleteAssignment: function ({ commit }, payload) {
+            secureHttpService.delete("assignment/" + payload)
+                .then(function (response)
+                {
+                    commit('DELETE_ASSIGNMENT', payload)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        /* GENRES */ 
+        getGenres: function ({ commit }) {
+            secureHttpService.get("genre")
+                .then(function (response)
+                {
+                    commit('GET_GENRES', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        /* CATEGORIES */ 
+        getCategories: function ({ commit }) {
+            secureHttpService.get("category")
+                .then(function (response)
+                {
+                    commit('GET_CATEGORIES', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+         /* COLLABORATORS */ 
+         getCollaborators: function ({ commit }, payload) {
+            secureHttpService.get("collaboration?videoId=" + payload)
+                .then(function (response)
+                {
+                    commit('GET_COLLABORATORS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
         },
     },
 
@@ -660,7 +727,32 @@ export const store = new Vuex.Store({
         CURRENT_CLASS_SELECT: (state, payload) => {
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
-        }
+        },
+        /* ASSIGNMENTS */
+        GET_ASSIGNMENTS: (state, assignments) => {
+            state.assignments = assignments
+        },
+        CREATE_ASSIGNMENT: (state, newAssignment) => {
+            state.assignments.push(newAssignment)
+        },
+        DELETE_ASSIGNMENT: (state, assignmentIdToBeDeleted) => {
+            for (var i = 0, l = state.assignments.length; i < l; i++) {
+                if (state.assignments[i].id === assignmentIdToBeDeleted) 
+                    state.assignments.splice(i,1)
+            }
+        },
+        /* GENRES */
+        GET_GENRES: (state, genres) => {
+            state.genres = genres
+        },
+        /* CATEGORIES */
+        GET_CATEGORIES: (state, categories) => {
+            state.categories = categories
+        },
+        /* COLLABORATORS */
+        GET_COLLABORATORS: (state, collaborators) => {
+            state.collaborators = collaborators
+        },
     },
 
     getters: {
@@ -672,6 +764,18 @@ export const store = new Vuex.Store({
         },
         classes: state => {
             return state.classes
+        },
+        assignments: state => {
+            return state.assignments
+        },
+        genres: state => {
+            return state.genres
+        },
+        categories: state => {
+            return state.categories
+        },
+        collaborators: state => {
+            return state.collaborators
         },
         currentVideoID: state => {
             return state.currentVideoID
