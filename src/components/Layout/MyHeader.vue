@@ -1,5 +1,5 @@
 <template>
-    <nav class="head navbar" role="navigation">
+    <nav class="head navbar">
         <div class="container">
 
             <div class="navbar-brand">
@@ -18,7 +18,7 @@
                 </div>
                 <div class="navbar-end">
                     <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
-                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ username }}</p></a> 
+                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a> 
                     <!-- <i class="fa fa-angle-down"></i> -->
                     <a class="head__nav-item navbar-item" @click="logOut()"><p><i class="fa fa-sign-out"></i>Logout</p></a>
                 </div>
@@ -79,7 +79,7 @@
         props: ['userProfile'],
         data() {
             return {
-                username: " ",
+                usernameRole: "",
                 studentRequests: 2,
                 modalStudentRequestsIsOpen: false,
                 studentRequestsTab: 'enrolledStudents',
@@ -192,7 +192,7 @@
         },
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()
-            this.username = this.authData.firstName + " " + this.authData.lastName[0].toUpperCase() + ". - " + this.authData.role[0].toUpperCase() + this.authData.role.slice(1)
+            this.usernameRole = this.authData.firstName + " " + this.authData.lastName[0].toUpperCase() + ". - " + this.authData.role[0].toUpperCase() + this.authData.role.slice(1)
             // setInterval(() => {
             //     const authService = this.$root.$options.authService
             //     console.log(authService.getAuthData())
