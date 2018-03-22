@@ -32,7 +32,30 @@
             <div class="wiki__content">
                 <el-tabs class="wiki__tabs">
                     <el-tab-pane label="Recent Terms">
-                        Recent Terms
+                        <div class="term">
+                            <span class="term__img"></span>
+                            <div class="term__metadata">
+                                <span class="term__head">
+                                    <h3 class="term__title">Term 1</h3>
+                                </span>
+                                <span class="term__content">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable.</span>
+                                <span class="term__tags">
+
+                                </span>
+                            </div>
+                        </div>
+                        <div class="term">
+                            <span class="term__img"></span>
+                            <div class="term__metadata">
+                                <span class="term__head">
+                                    <h3 class="term__title">Term 2</h3>
+                                </span>
+                                <span class="term__content">Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. </span>
+                                <span class="term__tags">
+
+                                </span>
+                            </div>
+                        </div>
                     </el-tab-pane>
                     
                     <el-tab-pane label="Popular Terms">
@@ -70,7 +93,9 @@
     
 }
 
-
+/* ==============================================
+                    #WIKI-SUBMENU
+================================================= */
 
     .wiki__subhead {
         height: 52px;
@@ -97,6 +122,10 @@
             }
 
 
+
+/* ==============================================
+                    #WIKI-HERO
+================================================= */
 
     .wiki__hero {
         background-color: #1d1f1e;
@@ -149,6 +178,10 @@
 
 
 
+/* ==============================================
+                    #WIKI-TABS
+================================================= */
+
     .wiki__content {
         height: 300px;
         display: flex;
@@ -156,11 +189,13 @@
     }
 
         .wiki__tabs {
-            /* width: 100%; */
+            width: 60%;
+        }
+
+        .wiki__tabs .el-tabs__nav {
         }
 
             .wiki__tabs .el-tabs__active-bar {
-                width: 250px;
                 background-color: #AF0931;
             }
 
@@ -168,12 +203,53 @@
                 width: 220px;
                 text-align: center;
                 font-size: 16px;
+                margin-top: 12px;
+                margin-bottom: 12px;
+                margin-left: 30px;
             }
             
             .wiki__tabs .el-tabs__item.is-active{
                 color: #1d1f1e;
             }
 
+
+
+/* ==============================================
+                    #WIKI-TERM
+================================================= */
+
+            .term {
+                display: flex;
+                justify-content: center;
+                padding-top: 20px;
+                padding-bottom: 20px;
+            }
+
+                .term__img {
+                    width: 100px;
+                    background-color: black;
+                    margin-right: 20px;
+                }
+
+                .term__metadata {
+
+                }
+
+                    .term__head {
+
+                    }
+                        .term__title {
+                            font-size: 18px;
+                            font-weight: 700;
+                        }
+
+                    .term__content {
+
+                    }
+
+                    .term__tags {
+
+                    }
 
 
 </style>
