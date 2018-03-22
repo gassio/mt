@@ -48,14 +48,14 @@ export default {
                 })
                 .catch(function (err) {
                     if (err.response.status == "401") {
-                        console.log("secureHttpService: response status 401")
+                        console.log("secureHTTPService: response status 401")
                         localStorage.clear()
                         ourApp.$router.push('/Login')
                         // ourApp.$router.push('/ErrorPage')
                         reject()
                     }
                     else if (err.response.status == "404") {
-                        console.log("secureHttpService: response status 404")
+                        console.log("secureHTTPService: response status 404")
                         localStorage.clear()
                         ourApp.$router.push('/Login')
                         // ourApp.$router.push('/ErrorPage')

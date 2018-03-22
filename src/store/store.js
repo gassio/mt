@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import secureHttpService from '../services/SecureHttpService'
+import secureHTTPService from '../services/SecureHttpService'
 import authService from '../services/AuthService'
 
 Vue.use(Vuex)
@@ -203,7 +203,7 @@ export const store = new Vuex.Store({
     actions: {
         /* VIDEOS  */
         getAllVideos: function ({ commit }) {
-            secureHttpService.get("video")
+            secureHTTPService.get("video")
                 .then(function (response)
                 {
                     commit('GET_ALL_VIDEOS', response.data.data )
@@ -213,7 +213,7 @@ export const store = new Vuex.Store({
                 })
         },
         getVideo: function ({ commit }, payload) {
-            secureHttpService.get("video/" + payload)
+            secureHTTPService.get("video/" + payload)
                 .then(function (response)
                 {
                     commit('GET_VIDEO', response.data.data)
@@ -223,7 +223,7 @@ export const store = new Vuex.Store({
                 })
         },
         createVideo: function ({ commit }, payload) {
-            secureHttpService.post("video/" + payload)
+            secureHTTPService.post("video/" + payload)
                 .then( response => {
                     console.log('-----')
                     console.log('POST video')
@@ -236,7 +236,7 @@ export const store = new Vuex.Store({
                 })
         },
         editVideo: function ({ commit }, payload) {
-            secureHttpService.put("video/" + payload.videoId, payload.linkDurationThumb)
+            secureHTTPService.put("video/" + payload.videoId, payload.linkDurationThumb)
                 .then( response => {
                     console.log('-----')
                     console.log('PUT video')
@@ -245,7 +245,7 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         deleteVideo: function ({ commit }, payload) {
-            secureHttpService.delete("video/" + payload)
+            secureHTTPService.delete("video/" + payload)
                 .then( response => {
                     console.log('-----')
                     console.log('DELETE video')
@@ -254,7 +254,7 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         featureVideo: function ({ commit }, payload) {
-            secureHttpService.put("video/" + payload.id, payload)
+            secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -262,7 +262,7 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         featureGlobal: function ({ commit }, payload) {
-            secureHttpService.put("video/" + payload.id, payload)
+            secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -270,7 +270,7 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         unfeatureGlobal: function ({ commit }, payload) {
-            secureHttpService.put("video/" + payload.id, payload)
+            secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
                     console.log("store.js: Video object that sent: ", payload)
                     console.log(response)
@@ -278,7 +278,7 @@ export const store = new Vuex.Store({
                 .catch( response => console.log(response.error))
         },
         unfeatureVideo: function ({ commit }, payload) {
-            secureHttpService.put("video/" + payload.id, payload)
+            secureHTTPService.put("video/" + payload.id, payload)
             .then( response => {
                 console.log("store.js: Video object that sent: ", payload)
                 console.log(response)
@@ -287,7 +287,7 @@ export const store = new Vuex.Store({
         },
         /* ANNOTATIONS */
         getVideoAnnotations: function ({ commit, state }, payload) {
-            secureHttpService.get("annotation/?videoId=" + payload)
+            secureHTTPService.get("annotation/?videoId=" + payload)
                 .then(function (response)
                 {
                     commit( 'GET_VIDEO_ANNOTATIONS', response.data.data )
@@ -298,7 +298,7 @@ export const store = new Vuex.Store({
                 })
         },
         addAnnotation: function ({ commit, state }, payload) {
-            secureHttpService.post("annotation/?videoId=" + payload.videoId, payload)
+            secureHTTPService.post("annotation/?videoId=" + payload.videoId, payload)
                 .then(response => {
                     commit('ADD_ANNOTATION', response.data.data)
                 })
@@ -307,7 +307,7 @@ export const store = new Vuex.Store({
                 })
         },
         editAnnotation: function ({ commit }, payload) {            
-            secureHttpService.put("video/" + payload.id, payload.video)
+            secureHTTPService.put("video/" + payload.id, payload.video)
                 .then(response => {
                 })
                 .catch(function (err) {
@@ -315,7 +315,7 @@ export const store = new Vuex.Store({
                 })
         },
         deleteAnnotation: function ({ commit }, payload) {           
-            secureHttpService.delete("annotation/" + payload) // payload is the cardID
+            secureHTTPService.delete("annotation/" + payload) // payload is the cardID
                 .then(response => {
                     commit('DELETE_ANNOTATION', payload)
                     // theVideo.annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );                    
@@ -326,7 +326,7 @@ export const store = new Vuex.Store({
         },
         /* CLASSES */  
         getAllClasses: function ({ commit }) {
-            secureHttpService.get("class/")
+            secureHTTPService.get("class/")
                 .then(function (response)
                 {
                     commit('GET_ALL_CLASSES', response.data.data)
@@ -339,7 +339,7 @@ export const store = new Vuex.Store({
                 })
         },
         getClass: function ({ commit }, payload) {
-            secureHttpService.get("class/" + payload)
+            secureHTTPService.get("class/" + payload)
                 .then(function (response)
                 {
                     commit('GET_CLASS', response.data.data )
@@ -349,7 +349,7 @@ export const store = new Vuex.Store({
                 })
         },
         createEnrollment: function ({ commit }, payload) {
-            secureHttpService.post("enrollment", payload)
+            secureHTTPService.post("enrollment", payload)
                 .then(function (response)
                 {
                     // TODO call mutation
@@ -357,7 +357,7 @@ export const store = new Vuex.Store({
                 })
         },
         getEnrollments: function ({ commit }) {
-            secureHttpService.get("enrollment/?userId=" + authService.getAuthData().userId)
+            secureHTTPService.get("enrollment/?userId=" + authService.getAuthData().userId)
                 .then(function (response)
                 {
                     var enrolledClassIds = []
@@ -371,7 +371,7 @@ export const store = new Vuex.Store({
                 })
         },
         createClass: function ({ commit }, payload) {
-            secureHttpService.post("class/", payload.newClass)
+            secureHTTPService.post("class/", payload.newClass)
             .then(response => {
                 commit('CREATE_CLASS', response.data.data)
             })
@@ -380,7 +380,7 @@ export const store = new Vuex.Store({
             })
         },
         deleteClass: function ({ commit }, payload) {
-            secureHttpService.delete("class/" + payload)
+            secureHTTPService.delete("class/" + payload)
             .then(response => {
                 commit('DELETE_CLASS', payload)
             })
@@ -389,7 +389,7 @@ export const store = new Vuex.Store({
             })
         },
         archiveClass: function ({ commit }, payload) {
-            secureHttpService.put("class/" + payload.classId, payload.classObject)
+            secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
                 commit('ARCHIVE_CLASS', payload)
             })
@@ -398,7 +398,7 @@ export const store = new Vuex.Store({
             })
         },
         unArchiveClass: function ({ commit }, payload) {
-            secureHttpService.put("class/" + payload.classId, payload.classObject)
+            secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
                 commit('UNARCHIVE_CLASS', payload)
             })
@@ -408,7 +408,7 @@ export const store = new Vuex.Store({
         },
         /* ASSIGNMENTS */ 
         getAssignments: function ({ commit }, payload) {
-            secureHttpService.get("assignment?classId=" + payload)
+            secureHTTPService.get("assignment?classId=" + payload)
                 .then(function (response)
                 {
                     commit('GET_ASSIGNMENTS', response.data.data)
@@ -418,7 +418,7 @@ export const store = new Vuex.Store({
                 })
         },
         createAssignment: function ({ commit }, payload) {
-            secureHttpService.post("assignment", payload)
+            secureHTTPService.post("assignment", payload)
                 .then(function (response)
                 {
                     commit('CREATE_ASSIGNMENT', response.data.data)
@@ -428,7 +428,7 @@ export const store = new Vuex.Store({
                 })
         },
         deleteAssignment: function ({ commit }, payload) {
-            secureHttpService.delete("assignment/" + payload)
+            secureHTTPService.delete("assignment/" + payload)
                 .then(function (response)
                 {
                     commit('DELETE_ASSIGNMENT', payload)
@@ -439,7 +439,7 @@ export const store = new Vuex.Store({
         },
         /* GENRES */ 
         getGenres: function ({ commit }) {
-            secureHttpService.get("genre")
+            secureHTTPService.get("genre")
                 .then(function (response)
                 {
                     commit('GET_GENRES', response.data.data)
@@ -450,7 +450,7 @@ export const store = new Vuex.Store({
         },
         /* CATEGORIES */ 
         getCategories: function ({ commit }) {
-            secureHttpService.get("category")
+            secureHTTPService.get("category")
                 .then(function (response)
                 {
                     commit('GET_CATEGORIES', response.data.data)
@@ -461,7 +461,7 @@ export const store = new Vuex.Store({
         },
          /* COLLABORATORS */ 
          getCollaborators: function ({ commit }, payload) {
-            secureHttpService.get("collaboration?videoId=" + payload)
+            secureHTTPService.get("collaboration?videoId=" + payload)
                 .then(function (response)
                 {
                     commit('GET_COLLABORATORS', response.data.data)
@@ -537,7 +537,7 @@ export const store = new Vuex.Store({
             // Sorting annotations[] by from property
             annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
             
-            secureHttpService.put("video/" + payload.id)
+            secureHTTPService.put("video/" + payload.id)
             .then(response => {
                 console.log(payload.videoObj)
                 console.log('Success edit!')

@@ -63,39 +63,19 @@ export default {
           formRegisterIsShown: false,
           formInvitationIsShown: false,
           authService : this.$root.$options.authService,
-          secureHttpService : this.$root.$options.secureHttpService
+          secureHTTPService : this.$root.$options.secureHTTPService
         }
     },
     methods: {
         loginUser() {
           this.authService.login({ email: this.email, password: this.password })
             .then(() => {
-              // this.$store.commit('AUTHENTICATED', "login")
-              // this.$store.commit('SET_USER_PROFILE', this.authService.getAuthData())
               // console.log("Login.vue: login success")
-              this.getUserDetails()
               this.$router.push('/')
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')
               this.$router.push('/login')
-            })
-        },
-        getUserDetails()
-        {
-          var self = this
-          this.secureHttpService.get("user/" + this.authService.getAuthData().userId)
-            .then((response) => {
-              try{
-                self.authService.authData.firstName = response.data.data.firstName
-                self.authService.authData.lastName = response.data.data.lastName
-                self.authService.authData.email = response.data.data.email
-              }
-              catch(err){console.log(err)}
-            })
-            .catch((err) => {
-                console.log("get user details failed")
-                reject(err)
             })
         },
         registerUser() {
@@ -114,7 +94,7 @@ export default {
               "password" : this.newPassword,
               "role" : ""
             }
-            this.secureHttpService.post("user", body)
+            this.secureHTTPService.post("user", body)
             // TODO add a .then here and continue to this.email = .. and this.showLogin
             // only if then is ran, else got to catch (or something) and show post error
             // TODO front show some "successful" screen
