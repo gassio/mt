@@ -451,6 +451,7 @@
 									font-size: 1.8em;
 									height: 50%;
 									margin-top: 10px;
+									text-align: center;
 								}
 								.classvideo__scoreLabel {
 									font-size: 0.8em;
