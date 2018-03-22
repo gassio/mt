@@ -9,41 +9,74 @@ class AuthService {
             // Initialize authData with data from local storage
             // console.log(window.localStorage.getItem('authData'))
             this.authData = JSON.parse(window.localStorage.getItem('authData'))
-            // console.log("Autologin.")
+            // console.log("Autologin.", this.authData)
         }
         else {
-            // If local storage does not have authData, initialize to null
-            this.authData = null
+            // If local storage does not have authData, initialize to empty authData
+            this.authData = {
+                'token': "",
+                'userId': "",
+                'role': "",
+                'firstName': "",
+                'lastName': "",
+                'email': ""
+            }
             // console.log("No autologin.")
         }
     }
 
     login(value, cb) {
+        // console.log("authService: first time login")
+        return this.postLogin(value)
+        .then(() => this.getUserDetails())
+    }
+
+    postLogin(value) {
         var self = this
         
         return new Promise(function(resolve, reject) {
-            secureHTTPService.post("login", value)
-            .then((response) => {
-                console.log("authService: first time login")
-                var serverResponseObject = {
-                    'token' : response.data.data.token,
-                    'userId' : response.data.data.id,
-                    'role' : response.data.data.role,
-                    "firstName": "firstName",
-                    "lastName": "lastName",
-                    "email": "email"
-                }
-                // Save userData both in localStorage and in authData so the user is "remembered"
-                localStorage.setItem('authData', JSON.stringify(serverResponseObject))
-                self.authData = serverResponseObject
-
-                resolve()
-            })
-            .catch((err) => {
-                console.log("authService: login failed")
-                reject(err)
-            })
+            try {
+                // Post login to get token, userId, role
+                secureHTTPService.post("login", value)
+                .then((loginResponse) => {
+                    // Save loginResponse to authData so we are authorized to get user details
+                    self.authData.token = loginResponse.data.data.token
+                    self.authData.userId = loginResponse.data.data.id
+                    self.authData.role = loginResponse.data.data.role
+                    resolve() 
+                }) // post then
+                .catch((err) => {
+                    console.log("authService: login failed: ", err)
+                    reject(err)
+                })
+            } catch (err) {console.log(err)}
         })
+    }
+    
+    getUserDetails() {
+        var self = this
+        return new Promise(function(resolve, reject) {
+                try {
+                secureHTTPService.get("user/" + self.authData.userId)
+                .then((userDetailsResponse) => {
+                    // Save userData in authData for this session
+                    self.authData.firstName = userDetailsResponse.data.data.firstName
+                    self.authData.lastName = userDetailsResponse.data.data.lastName
+                    self.authData.email = userDetailsResponse.data.data.email
+
+                    // Save userData in localStorage so the user is "remembered"
+                    localStorage.setItem('authData', JSON.stringify(self.authData))
+                    
+                    // Login complete, resolve
+                    resolve()
+                }) // get then
+                .catch((err) => {
+                    console.log("get user details failed: ", err)
+                    reject(err)
+                })
+            } catch (err) {console.log(err)}
+        })
+        
     }
 
     logOff() {
