@@ -77,20 +77,39 @@
 
 			<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
 					<h3 style="margin-bottom:10px;">Choose genre:</h3>
-					<!-- <el-select v-model="currentGenre" placeholder="Choose a genre">
+					<el-select v-model="currentGenre" placeholder="Choose a genre" style="width:300px">
 						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-					</el-select> -->
-
-					<el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio>
+					</el-select>
+					<br>
+					<el-button v-show="currentGenre !== ''" style="margin-top:10px" @click="modalAddCategoryIsOpen = true"> Add category</el-button>
+					<!-- <el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio> -->
 
 					<br/>
 					<br/>
-					<p>Choose canons:</p>
-					<el-tree :data="canons" :props="genreProps" @node-click="handleNodeClick" show-checkbox>
-					</el-tree>
+					<div v-show="currentGenre">
+						<p>Choose canons:</p>
+						<el-tree :data="canons" :props="genreProps" @node-click="handleNodeClick" show-checkbox>
+						</el-tree>
+					</div>
 					
 					<span slot="footer" class="dialog-footer">
 							<el-button @click="modalGenreCustomization = false">Close</el-button>
+					</span>
+			</el-dialog>	
+
+			<el-dialog title="Add category" :visible.sync="modalAddCategoryIsOpen" size="small">
+					<el-select style="margin-bottom:10px;" v-model="newCategoryCanon" placeholder="Choose a canon">
+						<el-option v-for="c in canons" :key="c.label" :label="c.label" :value="c.label"></el-option>
+					</el-select>
+					<el-input style="margin-bottom:10px;" placeholder="Category name" v-model="newCategoryName"></el-input>
+					<el-input
+						type="textarea"
+						:rows="2"
+						placeholder="Category description"
+						v-model="newCategoryDesc">
+					</el-input>
+					<span slot="footer" class="dialog-footer">
+							<el-button @click="modalAddCategoryIsOpen = false; addNewCategory()">Add</el-button>
 					</span>
 			</el-dialog>	
 
@@ -230,8 +249,8 @@
 				modalDeleteClassIsOpen: false,
 				modalArchiveClassIsOpen: false,
 				modalUnarchiveClassIsOpen: false,
-				modalGenreCustomization: false,
-				modalGenreCustomization2: false,
+				// modalGenreCustomization2: false,
+				// modalClassCategoriesIsOpen: false,
 				classIdClicked: '',
 				// Assignments
 				modalClassAssignmentsIsOpen: false,
@@ -243,13 +262,17 @@
 				assignmentCategorySelected: '',
 				categoriesCheckList: [],
 				// Categories
-				categoriesGenre: '',
-				modalClassCategoriesIsOpen: false,
+				// categoriesGenre: '',
+				currentGenre: '',
+				modalGenreCustomization: false,
+				modalAddCategoryIsOpen: false,
+				newCategoryCanon: "",
+				newCategoryName: "",
+				newCategoryDesc: "",
 				// STUDENT
 				modalEnrollClassIsOpen: false,
 				otherClasses: [],
 				// Genre customization
-				currentGenre: 'Lab presentation',
 				// Genre version 1
 				canons: [
 					{
@@ -531,6 +554,22 @@
 				}
 				catch (err) {
 					console.log("MtSidebar.vue: createCategoriesTreeDataForm error: ", err)
+				}
+			},
+			addNewCategory() {
+				console.log("Adding ", this.newCategoryName, "category to ", this.newCategoryCanon, "canon")
+				console.log("With description ", this.newCategoryDesc)
+				for (var canon = 0; canon < this.canons.length; canon++) {
+					if (this.canons[canon].label === this.newCategoryCanon){
+						this.canons[canon].children.push(
+							{
+								label: this.newCategoryName, 
+								desc: this.newCategoryName
+							}
+						)
+						this.newCategoryName = ''
+						this.newCategoryDesc = ''
+					}
 				}
 			},
 			categoriesListChanged() {
