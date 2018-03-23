@@ -12,6 +12,7 @@ import ErrorPage from './components/Pages/ErrorPage.vue'
 import Home from './components/Admin/Home.vue'
 import Video from './components/Pages/Video.vue'
 import Wiki from './components/Pages/Wiki.vue'
+import WikiTerm from './components/Pages/WikiTerm.vue'
 
 const requiresAuth = (to, from, next) => {
     authService.isAuthenticated()
@@ -74,6 +75,12 @@ export const routes = [
         name: 'Wiki', 
         path: '/wiki', 
         component: Wiki, 
+        beforeEnter: requiresAuth
+    },
+    { 
+        name: 'WikiTerm', 
+        path: '/wiki-term', 
+        component: WikiTerm, 
         beforeEnter: requiresAuth
     }
 ]

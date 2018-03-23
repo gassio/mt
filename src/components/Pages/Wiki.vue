@@ -32,8 +32,8 @@
             <div class="wiki__content">
                 <el-tabs class="wiki__tabs">
                     <el-tab-pane label="Recent Terms">
-                        <div class="term">
-                            <span class="term__img"></span>
+                        <router-link to="/wiki-term" tag="div" class="term">
+                            <img src="../../assets/black-img.png" class="term__img">
                             <div class="term__metadata">
                                 <span class="term__head">
                                     <h3 class="term__title">Term 1</h3>
@@ -43,9 +43,9 @@
 
                                 </span>
                             </div>
-                        </div>
-                        <div class="term">
-                            <span class="term__img"></span>
+                        </router-link>
+                        <router-link to="/wiki-term" tag="div" class="term">
+                            <img src="../../assets/black-img.png" class="term__img">
                             <div class="term__metadata">
                                 <span class="term__head">
                                     <h3 class="term__title">Term 2</h3>
@@ -55,7 +55,7 @@
 
                                 </span>
                             </div>
-                        </div>
+                        </router-link>
                     </el-tab-pane>
                     
                     <el-tab-pane label="Popular Terms">
@@ -128,7 +128,8 @@
 ================================================= */
 
     .wiki__hero {
-        background-color: #1d1f1e;
+        background: url('../../assets/wiki-background.jpg'); 
+        background-size: 90%;      
         height: 250px;
         display: flex;
         flex-direction: column;
@@ -183,6 +184,7 @@
 ================================================= */
 
     .wiki__content {
+        margin-bottom: 80px;
         height: 300px;
         display: flex;
         justify-content: center;
@@ -223,11 +225,10 @@
                 justify-content: center;
                 padding-top: 20px;
                 padding-bottom: 20px;
+                cursor: pointer;
             }
 
                 .term__img {
-                    width: 100px;
-                    background-color: black;
                     margin-right: 20px;
                 }
 
