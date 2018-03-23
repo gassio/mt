@@ -93,7 +93,7 @@
 					</div>
 					
 					<span slot="footer" class="dialog-footer">
-							<el-button @click="modalGenreCustomization = false">Close</el-button>
+							<el-button @click="modalGenreCustomization = false; currentGenre = ''">Close</el-button>
 					</span>
 			</el-dialog>	
 
@@ -569,6 +569,7 @@
 						)
 						this.newCategoryName = ''
 						this.newCategoryDesc = ''
+						this.newCategoryCanon = ''
 					}
 				}
 			},
