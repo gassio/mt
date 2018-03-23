@@ -68,10 +68,6 @@
         height: 100%;
     }
 
-    a {
-        color: #FFF;
-    }
-
     .app {
       width: 100vw; 
       height: 100vh;
