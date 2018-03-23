@@ -7,7 +7,7 @@
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
-				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="modalClassCategoriesIsOpen = true"><i class="fa fa-commenting-o"></i>Categories</a>
+				<a class="sidebar__actionsLink" v-show="role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
@@ -38,7 +38,7 @@
 				</el-tabs>
 			</div>
 
-			<a @click="modalGenreCustomization = true">Customize</a>
+			<!-- <a @click="modalGenreCustomization = true">Customize</a> -->
 
 			<!-- administrator, professor -->
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
@@ -163,7 +163,7 @@
                 </el-tabs>
             </el-dialog>
 
-			<el-dialog title="Class Categories" :visible.sync="modalClassCategoriesIsOpen" class="modal-class-categories" size="small">
+			<!-- <el-dialog title="Class Categories" :visible.sync="modalClassCategoriesIsOpen" class="modal-class-categories" size="small">
 				<el-select v-model="categoriesGenre" placeholder="Select a genre" style="width:50%" @change="fetchCategories()">
 					<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
 				</el-select>
@@ -192,7 +192,7 @@
 						</el-checkbox>
 					</el-checkbox-group>
 				</div>
-            </el-dialog>
+            </el-dialog> -->
 
 			<!-- Student -->
 			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
@@ -252,9 +252,9 @@
 				currentGenre: 'Lab presentation',
 				// Genre version 1
 				canons: [
-					// {
-					// 	label: 'Moves',
-					// 	children: [
+					{
+						label: 'Moves',
+						children: [
 					// 		{ label: 'Introduction', children: [
 					// 			{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
 					// 			{ label: 'States the value of the present research and explains why it was conducted' },
@@ -284,46 +284,52 @@
 					// 		{ label: 'Question and Answer', children: [
 					// 			{ label: 'xxxxxxxxxx' },
 					// 		]},
-					// 	]
-					// }, 
+						]
+					}, 
 					{
 						label: 'Structure',
 						children: [
-							{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
-							{ label: 'Conceptual transitions' },
-							{ label: 'Line of argument' },
-							{ label: 'Central moves' },
+							// {
+							// 	"_id": "59a86e7e0110587e400ff79b",
+							// 	"name": "Coherence", // child label
+							// 	"canon": "Structure", // canon label
+							// 	"description": "Connects the central rhetorical moves for each section explicitly to each other" //desc
+							// }
+							// { label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
+							// { label: 'Conceptual transitions' },
+							// { label: 'Line of argument' },
+							// { label: 'Central moves' },
 						]
 					}, 
 					{
 						label: 'Delivery',
 						children: [
-							{ label: 'Volume' },
-							{ label: 'Gestures' },
-							{ label: 'Metadiscourse' },
-							{ label: 'Posture' },
-							{ label: 'Language' },
+							// { label: 'Volume' },
+							// { label: 'Gestures' },
+							// { label: 'Metadiscourse' },
+							// { label: 'Posture' },
+							// { label: 'Language' },
 						]
 					}, 
 					{
 						label: 'Style',
 						children: [
-							{ label: 'Coherence' },
-							{ label: 'Concision' },
-							{ label: 'Flow' },
-							{ label: 'Emphasis' },
-							{ label: 'Figures of Speech' },
-							{ label: 'Figures of Sound' },
+							// { label: 'Coherence' },
+							// { label: 'Concision' },
+							// { label: 'Flow' },
+							// { label: 'Emphasis' },
+							// { label: 'Figures of Speech' },
+							// { label: 'Figures of Sound' },
 						]
 					},
 					{
 						label: 'Visuals',
 						children: [
-							{ label: 'Pictorial cues' },
-							{ label: 'Slide titles' },
-							{ label: 'Image-text highlight' },
-							{ label: 'Graphics' },
-							{ label: 'Memorable images' }
+							// { label: 'Pictorial cues' },
+							// { label: 'Slide titles' },
+							// { label: 'Image-text highlight' },
+							// { label: 'Graphics' },
+							// { label: 'Memorable images' }
 						]
 					},
 				],
@@ -338,38 +344,38 @@
 					desc: 'desc'
 				},
 				// Genre version 2
-				structureData: [
-					{ key: 0, label: 'Terms'},
-					{ key: 1, label: 'Conceptual transitions' },
-					{ key: 2, label: 'Line of argument' },
-					{ key: 3, label: 'Central moves' }
-				],
-				structurePassed: [],
-				deliveryData: [
-					{ key: 0, label: 'Volume' },
-					{ key: 1, label: 'Gestures' },
-					{ key: 2, label: 'Metadiscourse' },
-					{ key: 3, label: 'Posture' },
-					{ key: 4, label: 'Language' },
-				],
-				deliveryPassed: [],
-				styleData: [
-					{ key: 0, label: 'Coherence' },
-					{ key: 1, label: 'Concision' },
-					{ key: 2, label: 'Flow' },
-					{ key: 3, label: 'Emphasis' },
-					{ key: 4, label: 'Figures of Speech' },
-					{ key: 5, label: 'Figures of Sound' },
-				],
-				stylePassed: [],
-				visualsData: [
-					{ label: 'Pictorial cues' },
-					{ label: 'Slide titles' },
-					{ label: 'Image-text highlight' },
-					{ label: 'Graphics' },
-					{ label: 'Memorable images' }
-				],
-				visualsPassed: [],
+				// structureData: [
+				// 	{ key: 0, label: 'Terms'},
+				// 	{ key: 1, label: 'Conceptual transitions' },
+				// 	{ key: 2, label: 'Line of argument' },
+				// 	{ key: 3, label: 'Central moves' }
+				// ],
+				// structurePassed: [],
+				// deliveryData: [
+				// 	{ key: 0, label: 'Volume' },
+				// 	{ key: 1, label: 'Gestures' },
+				// 	{ key: 2, label: 'Metadiscourse' },
+				// 	{ key: 3, label: 'Posture' },
+				// 	{ key: 4, label: 'Language' },
+				// ],
+				// deliveryPassed: [],
+				// styleData: [
+				// 	{ key: 0, label: 'Coherence' },
+				// 	{ key: 1, label: 'Concision' },
+				// 	{ key: 2, label: 'Flow' },
+				// 	{ key: 3, label: 'Emphasis' },
+				// 	{ key: 4, label: 'Figures of Speech' },
+				// 	{ key: 5, label: 'Figures of Sound' },
+				// ],
+				// stylePassed: [],
+				// visualsData: [
+				// 	{ label: 'Pictorial cues' },
+				// 	{ label: 'Slide titles' },
+				// 	{ label: 'Image-text highlight' },
+				// 	{ label: 'Graphics' },
+				// 	{ label: 'Memorable images' }
+				// ],
+				// visualsPassed: [],
 				newClass: {
 					archived: false,
 					department: '',
@@ -378,6 +384,9 @@
 					semester: ''
 				},
 			}
+		},
+		mounted () {
+			this.fetchCategories()
 		},
 		methods: {
 			// administrator
@@ -497,6 +506,32 @@
 			fetchCategories() {
 				this.$store.dispatch('getCategories')
 				console.log('fetchAssignments')
+			},
+			createCategoriesTreeDataForm() {
+				try{
+					// Clear out canon children, to get fresh ones from server
+					for (var canon = 0; canon < this.canons.length; canon++) {
+						this.canons[canon].children = []
+					}
+					// Loop through server categories
+					for (var category = 0; category < this.categories.length; category++) {
+						// Search for this category.canon in canons array
+						for (var canon = 0; canon < this.canons.length; canon++) {
+							if (this.canons[canon].label === this.categories[category].canon){
+								// Push this category to the appropriate canon children array
+								this.canons[canon].children.push(
+									{
+										label: this.categories[category].name, 
+										desc: this.categories[category].description
+									}
+								)
+							}
+						}
+					}
+				}
+				catch (err) {
+					console.log("MtSidebar.vue: createCategoriesTreeDataForm error: ", err)
+				}
 			},
 			categoriesListChanged() {
 				console.log(this.categoriesCheckList)
