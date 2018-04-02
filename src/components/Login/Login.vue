@@ -42,7 +42,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import { mapMutations } from 'vuex'
-  import bgImage from "../../assets/login-bg.png"
+  import bgImage from "../../assets/login-bg-low.jpg"
 
 export default {
     data() {

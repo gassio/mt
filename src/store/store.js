@@ -330,9 +330,12 @@ export const store = new Vuex.Store({
                 .then(function (response)
                 {
                     commit('GET_ALL_CLASSES', response.data.data)
-                    commit('CREATE_ADMIN_CLASSES' )
-                    commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
                     commit('FILL_DEPARTMENTS')
+                    if (authService.getAuthData().role === 'administrator') {
+                        commit('CREATE_ADMIN_CLASSES' )
+                    } else if (authService.getAuthData().role === 'professor') { 
+                        commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
+                    }
                 })
                 .catch(function (err) {
                     $('.classes').html(errorHTML)
@@ -367,7 +370,7 @@ export const store = new Vuex.Store({
                             enrolledClassIds.push(enrollments[i].classId)
                         }
                     }
-                    commit( 'FILL_STUDENT_CLASSES', enrolledClassIds)
+                    commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
                 })
         },
         createClass: function ({ commit }, payload) {
@@ -584,6 +587,14 @@ export const store = new Vuex.Store({
             // state.classes.push(payload.newClass)
             state.activeClasses.push(payload)
         },
+        // ADMIN
+        CREATE_ADMIN_CLASSES: (state) => {
+            state.adminClasses = []
+            for (var i = 0, l = state.classes.length; i < l; i++) {
+                state.adminClasses.push(state.classes[i])
+            }
+        },
+        // PROFESSOR
         CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
             state.activeClasses = []
             state.archivedClasses = []
@@ -594,13 +605,8 @@ export const store = new Vuex.Store({
                     state.archivedClasses.push(state.classes[i])
             }
         },
-        CREATE_ADMIN_CLASSES: (state) => {
-            state.adminClasses = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                state.adminClasses.push(state.classes[i])
-            }
-        },
-        FILL_STUDENT_CLASSES: (state, payload) => {
+        // STUDENT
+        CREATE_STUDENT_CLASSES: (state, payload) => {
             state.studentClasses = []
             state.classesToEnroll = []
 
