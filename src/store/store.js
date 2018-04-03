@@ -430,6 +430,18 @@ export const store = new Vuex.Store({
                     
                 })
         },
+        editAssignment: function ({ commit }, payload) {
+            console.log('editAssignment()')
+            console.log(payload.assignment)
+            secureHTTPService.put("assignment/" + payload.id, payload.assignment)
+                .then(function (response)
+                {
+                    console.log(response)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
         deleteAssignment: function ({ commit }, payload) {
             secureHTTPService.delete("assignment/" + payload)
                 .then(function (response)
