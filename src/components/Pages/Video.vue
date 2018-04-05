@@ -195,7 +195,7 @@ You might also want to include a concrete strategy recommendation."
                 <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
                         <el-tab-pane label="Collaborators">
-                            <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+                            <!-- <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input> -->
                             <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No collaborators">
                                 <el-table-column prop="name" width="180">
                                     <template slot-scope="s1">
@@ -204,33 +204,33 @@ You might also want to include a concrete strategy recommendation."
                                 </el-table-column>
                                 <el-table-column prop="class">
                                     <template slot-scope="s1b">
-                                        <i class="fa fa-book"></i> {{ s1b.row.email }} / {{ s1b.row.role }}
+                                        <i class="fa fa-book"></i> {{ s1b.row.email }}
                                     </template>
                                 </el-table-column>
                             </el-table>
                         </el-tab-pane>
-                        <!-- <el-tab-pane label="Other students">
-                            <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
-                            <el-table ref="multipleTable" :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
-                                <el-table-column prop="name" width="140">
+                        <el-tab-pane label="Other students">
+                            <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
+                            <el-table ref="multipleTable" :data="users" :border="false" style="width: 100%" :show-header="false" empty-text="No other students">
+                                <el-table-column prop="name">
                                     <template slot-scope="s2">
-                                        <i class="fa fa-user"></i> {{ s2.row.name }}
+                                        <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column prop="class" width="280">
+                                <el-table-column prop="class">
                                     <template slot-scope="s2b">
-                                        <i class="fa fa-book"></i> {{ s2b.row.class }}
+                                        <i class="fa fa-book"></i> {{ s2b.row.email }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column>
+                                <!-- <el-table-column>
                                     <template slot-scope="scope">
                                         <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
                                     </template>
-                                </el-table-column>
+                                </el-table-column> -->
                             </el-table>
                             <br>
                             <el-button @click="acceptAllStudents()">Accept all</el-button>
-                        </el-tab-pane> -->
+                        </el-tab-pane>
                     </el-tabs>
                 </el-dialog>
 
@@ -1036,6 +1036,7 @@ You might also want to include a concrete strategy recommendation."
              openModalCollaborators() {
                  this.modalCollaboratorsIsOpen = true
                  this.$store.dispatch('getCollaborators', this.id)
+                 this.$store.dispatch('getUsers')
              }
         },
         created() {
@@ -1160,7 +1161,7 @@ You might also want to include a concrete strategy recommendation."
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators'
+                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators', 'users'
             ])
         },
         components: {
