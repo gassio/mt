@@ -38,8 +38,6 @@
 				</el-tabs>
 			</div>
 
-			<!-- <a @click="modalGenreCustomization = true">Customize</a> -->
-
 			<!-- administrator, professor -->
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
@@ -112,31 +110,6 @@
 							<el-button @click="modalAddCategoryIsOpen = false; addNewCategory()">Add</el-button>
 					</span>
 			</el-dialog>	
-
-			<!-- <el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
-					<h3 style="margin-bottom:10px;">Choose genre:</h3>
-					<el-select v-model="currentGenre" placeholder="Choose a genre">
-						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-					</el-select>
-					<br/>
-					<br/>
-					<p style="font-weight:700; margin-top:10px;">STRUCTURE</p>
-					<el-transfer v-model="structurePassed" :data="structureData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">DELIVERY</p>
-					<el-transfer v-model="deliveryPassed" :data="deliveryData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">STYLE</p>
-					<el-transfer v-model="stylePassed" :data="styleData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">VISUALS</p>
-					<el-transfer v-model="visualsPassed" :data="visualsData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					
-					<span slot="footer" class="dialog-footer">
-							<el-button @click="modalGenreCustomization2 = false">Close</el-button>
-					</span>
-			</el-dialog>	 -->
 
 			<!-- administrator -->
 			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
@@ -546,6 +519,7 @@
 			assignmentTabClicked(assignmentId) {
 				console.log('tab clicked: ', assignmentId)
 			},
+			// edit functionality
 			toggleTitleEdit(ev) {
 				console.log("toggleTitleEdit()")
 				ev.currentTarget.style.display = 'none'

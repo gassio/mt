@@ -476,7 +476,7 @@ export const store = new Vuex.Store({
         },
          /* COLLABORATORS */ 
          getCollaborators: function ({ commit }, payload) {
-            secureHTTPService.get("collaboration?videoId=" + payload)
+            secureHTTPService.get("collaborator?videoId=" + payload)
                 .then(function (response)
                 {
                     commit('GET_COLLABORATORS', response.data.data)
