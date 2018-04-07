@@ -38,8 +38,6 @@
 				</el-tabs>
 			</div>
 
-			<!-- <a @click="modalGenreCustomization = true">Customize</a> -->
-
 			<!-- administrator, professor -->
 			<el-dialog title="Add new class" :visible.sync="modalCreateClassIsOpen">
 					<el-form :model="newClass">
@@ -113,31 +111,6 @@
 					</span>
 			</el-dialog>	
 
-			<!-- <el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
-					<h3 style="margin-bottom:10px;">Choose genre:</h3>
-					<el-select v-model="currentGenre" placeholder="Choose a genre">
-						<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-					</el-select>
-					<br/>
-					<br/>
-					<p style="font-weight:700; margin-top:10px;">STRUCTURE</p>
-					<el-transfer v-model="structurePassed" :data="structureData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">DELIVERY</p>
-					<el-transfer v-model="deliveryPassed" :data="deliveryData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">STYLE</p>
-					<el-transfer v-model="stylePassed" :data="styleData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					<p style="font-weight:700; margin-top:10px;">VISUALS</p>
-					<el-transfer v-model="visualsPassed" :data="visualsData" :titles="['Disabled', 'Enabled']">
-					</el-transfer>
-					
-					<span slot="footer" class="dialog-footer">
-							<el-button @click="modalGenreCustomization2 = false">Close</el-button>
-					</span>
-			</el-dialog>	 -->
-
 			<!-- administrator -->
 			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
 				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
@@ -151,23 +124,43 @@
 				</el-select>
                 <el-tabs v-show="!!assignmentsClassSelectedId">
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
-						<p style="font-size: 16px"><strong>Description:</strong> {{ a.description }}</p>
-						<hr>
-						<p style="font-size: 16px" v-for="g in genres" v-if="g.id === a.genre" :key="g.id"><strong>Genre:</strong> {{ g.name }}</p>
-						<hr>
-						<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.assignmentId === a.id" style="cursor:pointer">
-							<div class="classvideo__metadata">
-								<img class="classvideo__image" :src="v.thumb">
-								<div class="classvideo__titles">
-									<p class="classvideo__title">{{ v.title }}</p>
-									<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
+						<div class="assignments-content">
+							<span class="assignments__title">
+								<strong>Title:</strong>
+								<span class="assignments__titleId">{{ a.id }}</span>
+								<p class="assignments__titleText" @click="toggleTitleEdit($event)">{{ a.title }}</p>
+								<input v-model="a.title" @blur="saveTitleEdit($event)" type="text" class="input assignments__titleInput"></textarea>
+							</span>
+							<hr>
+							<span class="assignments__desc">
+								<strong class="assignments__descTitle">Description:</strong>
+								<span class="assignments__descId">{{ a.id }}</span>
+								<p class="assignments__descText" @click="toggleDescriptionEdit($event)">{{ a.description }}</p>
+								<textarea v-model="a.description" @blur="saveDescriptionEdit($event)" type="text" class="textarea assignments__descTextarea"></textarea>
+							</span>
+							<hr>
+							<span class="assignments__genre" v-for="g in genres" v-if="g.id === a.genre" :key="g.id">
+								<strong class="assignments__genreTitle">Genre:</strong> 
+								<span class="assignments__genreId">{{ a.id }}</span>
+								<p class="assignments__genreName" @click="toggleGenreEdit($event)">{{ g.name }}</p>
+								<select v-model="a.genre" @change="saveGenreEdit($event)" class="assignments__genreSelect select">
+									<option v-for="g in genres" :label="g.name" :value="g.id" :key="g.id" class="option"></option>
+								</select>
+							</span>
+							<hr>
+							<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.assignmentId === a.id" style="cursor:pointer">
+								<div class="classvideo__metadata">
+									<img class="classvideo__image" :src="v.thumb">
+									<div class="classvideo__titles">
+										<p class="classvideo__title">{{ v.title }}</p>
+										<p class="classvideo__genre">{{ secondsToMMSS(v.duration) }} / {{ v.genre }} </p>
+									</div>
+									<div class="classvideo__metameta">
+										
+									</div>
 								</div>
-								<div class="classvideo__metameta">
-									
-								</div>
-							</div>
-						</router-link>
-						<button class="button" @click="deleteAssignment(a.id)" style="background-color:red;color:white;font-size:12px;"><i class="fa fa-trash"></i>Delete assignment</button>						
+							</router-link>
+						</div>
                     </el-tab-pane>
 					<el-tab-pane label="+ Add assignment">
 						<el-input v-model="assignmentTitle" placeholder="Set a title" style="width:70%;margin-bottom:15px;"></el-input>
@@ -499,8 +492,9 @@
 				this.classIdClicked = classId
 				this.modalUnarchiveClassIsOpen = true
 			},
-			// Assignments
+			// ASSIGNMENTS
 			fetchAssignments() {
+				console.log(this.assignments)
 				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedId)
 			},
 			createAssignment() {
@@ -525,10 +519,93 @@
 			assignmentTabClicked(assignmentId) {
 				console.log('tab clicked: ', assignmentId)
 			},
-			// Categories
+			// edit functionality
+			toggleTitleEdit(ev) {
+				console.log("toggleTitleEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByClassName('assignments__titleInput')[0].style.display = 'block'
+			},
+			saveTitleEdit(ev) {
+				console.log("saveTitleEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByClassName('assignments__titleText')[0].style.display = 'block'
+				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__titleId')[0].innerHTML
+
+				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
+				
+				for (var i = 0, l = this.assignments.length; i < l; i++) {
+					if (this.assignments[i].id === editedId) {
+						assignmentObj.classId = this.assignments[i].classId
+						assignmentObj.title = ev.currentTarget.parentElement.getElementsByClassName('assignments__titleInput')[0].value
+						assignmentObj.description = this.assignments[i].description
+						assignmentObj.genre = this.assignments[i].genre
+						assignmentObj.id = editedId
+					}
+				}
+				this.$store.dispatch('editAssignment', {
+					id: editedId,
+					assignment: assignmentObj
+				})
+			},
+			toggleDescriptionEdit(ev) {
+				console.log("toggleDescriptionEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByTagName('textarea')[0].style.display = 'block'
+				console.log(this.assignments) 
+			},
+			saveDescriptionEdit(ev) {
+				console.log("saveDescriptionEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByClassName('assignments__descText')[0].style.display = 'block'
+				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__descId')[0].innerHTML
+
+				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
+
+				for (var i = 0, l = this.assignments.length; i < l; i++) {
+					if (this.assignments[i].id === editedId) {
+						assignmentObj.classId = this.assignments[i].classId
+						assignmentObj.title = this.assignments[i].title
+						assignmentObj.description = ev.currentTarget.parentElement.getElementsByClassName('assignments__descText')[0].innerHTML
+						assignmentObj.genre = this.assignments[i].genre
+						assignmentObj.id = editedId
+					}
+				}
+				
+				this.$store.dispatch('editAssignment', {
+					id: editedId,
+					assignment: assignmentObj
+				})
+			},
+			toggleGenreEdit(ev) {
+				console.log("toggleGenreEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByClassName('assignments__genreSelect')[0].style.display = 'block'
+			},
+			saveGenreEdit(ev) {
+				console.log("saveGenreEdit()")
+				ev.currentTarget.style.display = 'none'
+				ev.currentTarget.parentElement.getElementsByClassName('assignments__genreName')[0].style.display = 'block'
+				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__genreId')[0].innerHTML
+
+				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
+				
+				for (var i = 0, l = this.assignments.length; i < l; i++) {
+					if (this.assignments[i].id === editedId) {
+						assignmentObj.classId = this.assignments[i].classId
+						assignmentObj.title = this.assignments[i].title
+						assignmentObj.description = this.assignments[i].description
+						assignmentObj.genre = ev.currentTarget.parentElement.getElementsByClassName('assignments__genreSelect')[0].value
+						assignmentObj.id = editedId
+					}
+				}
+				this.$store.dispatch('editAssignment', {
+					id: editedId,
+					assignment: assignmentObj
+				})
+			},
+			// CATEGORIES
 			fetchCategories() {
 				this.$store.dispatch('getCategories')
-				console.log('fetchAssignments')
 			},
 			createCategoriesTreeDataForm() {
 				try{
@@ -712,6 +789,83 @@
 				.classes-card-title {
 					text-align: center;
 					font-size: 18px;
+				}
+
+
+
+	/* ==============================================
+                #MODAL-ASSIGNMENTS
+	================================================= */
+		.assignments-content {
+
+		}
+
+			.assignments__title {
+				font-size: 16px;
+			}
+
+				.assignments__titleId {
+					visibility: hidden;
+				}
+
+				.assignments__titleText {
+					cursor: pointer;
+					padding: 5px 0px;
+				}
+				.assignments__titleText:hover {
+					background-color: #eee;
+				}
+
+				.assignments__titleInput {
+					display: none;
+				}
+
+			.assignments__desc {
+				font-size: 16px
+			}
+
+				.assignments__descTitle {
+				}
+
+				.assignments__descId {
+					visibility: hidden;
+				}
+				
+				.assignments__descText {
+					cursor: pointer;
+					padding: 5px 0px;
+				}
+				.assignments__descText:hover {
+					background-color: #eee;
+				}
+
+				.assignments__descTextarea {
+					display: none;
+				}
+
+			
+			.assignments__genre {
+
+			}
+
+				.assignments__genreTitle {
+					font-size: 16px;
+				}
+				.assignments__genreId {
+					visibility: hidden;
+				}
+
+				.assignments__genreName {
+					font-size: 16px;
+					cursor: pointer;
+					padding: 5px 0px;
+				}
+				.assignments__genreName:hover {
+					background-color: #eee;
+				}
+
+				.assignments__genreSelect {
+					display: none
 				}
 
 </style>

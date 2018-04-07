@@ -197,7 +197,8 @@ export const store = new Vuex.Store({
         uploadingVideo: false,
         uploadUrl: '',
         assignments: [],
-        collaborators: []
+        collaborators: [],
+        users: []
     },
 
     actions: {
@@ -430,6 +431,18 @@ export const store = new Vuex.Store({
                     
                 })
         },
+        editAssignment: function ({ commit }, payload) {
+            console.log('editAssignment()')
+            console.log(payload.assignment)
+            secureHTTPService.put("assignment/" + payload.id, payload.assignment)
+                .then(function (response)
+                {
+                    console.log(response)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
         deleteAssignment: function ({ commit }, payload) {
             secureHTTPService.delete("assignment/" + payload)
                 .then(function (response)
@@ -462,12 +475,23 @@ export const store = new Vuex.Store({
                     
                 })
         },
-         /* COLLABORATORS */ 
-         getCollaborators: function ({ commit }, payload) {
-            secureHTTPService.get("collaboration?videoId=" + payload)
+        /* COLLABORATORS */ 
+        getCollaborators: function ({ commit }, payload) {
+            secureHTTPService.get("collaborator?videoId=" + payload)
                 .then(function (response)
                 {
                     commit('GET_COLLABORATORS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        /* USERS */ 
+        getUsers: function ({ commit }, payload) {
+            secureHTTPService.get("user")
+                .then(function (response)
+                {
+                    commit('GET_USERS', response.data.data)
                 })
                 .catch(function (err) {
                     
@@ -759,6 +783,10 @@ export const store = new Vuex.Store({
         GET_COLLABORATORS: (state, collaborators) => {
             state.collaborators = collaborators
         },
+        /* USERS */
+        GET_USERS: (state, users) => {
+            state.users = users
+        },
     },
 
     getters: {
@@ -782,6 +810,9 @@ export const store = new Vuex.Store({
         },
         collaborators: state => {
             return state.collaborators
+        },
+        users: state => {
+            return state.users
         },
         currentVideoID: state => {
             return state.currentVideoID

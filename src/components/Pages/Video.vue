@@ -178,21 +178,60 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
+                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                    <el-tabs>
+                        <el-tab-pane label="Collaborators">
+                            <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+                            <div v-for="c in collaborators" :key="c.id">
+                                <p><i class="fa fa-user"></i> {{ c.firstName }} {{ c.lastName }} / {{ c.email }} / {{ c.role }}</p>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="Other students">
+                            
+                        </el-tab-pane>
+				    </el-tabs>
+                </el-dialog> -->
+
                 <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
-                    <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                    <p v-for="c in collaborators" :key="c.id">{{c.userId}}</p>
-                    <!-- <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No enrolled students">
-                        <el-table-column prop="studentName" width="180">
-                            <template slot-scope="s1">
-                                <i class="fa fa-user"></i> {{ s1.row.studentName }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column prop="studentId">
-                            <template slot-scope="s1b">
-                                <i class="fa fa-book"></i> {{ s1b.row.studentId }}
-                            </template>
-                        </el-table-column>
-                    </el-table> -->
+                    <el-tabs >
+                        <el-tab-pane label="Collaborators">
+                            <!-- <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input> -->
+                            <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No collaborators">
+                                <el-table-column prop="name" width="180">
+                                    <template slot-scope="s1">
+                                        <i class="fa fa-user"></i> {{ s1.row.firstName }} {{ s1.row.lastName }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="class">
+                                    <template slot-scope="s1b">
+                                        <i class="fa fa-book"></i> {{ s1b.row.email }}
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="Other students">
+                            <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
+                            <el-table ref="multipleTable" :data="users" :border="false" style="width: 100%" :show-header="false" empty-text="No other students">
+                                <el-table-column prop="name">
+                                    <template slot-scope="s2">
+                                        <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column prop="class">
+                                    <template slot-scope="s2b">
+                                        <i class="fa fa-book"></i> {{ s2b.row.email }}
+                                    </template>
+                                </el-table-column>
+                                <!-- <el-table-column>
+                                    <template slot-scope="scope">
+                                        <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
+                                    </template>
+                                </el-table-column> -->
+                            </el-table>
+                            <br>
+                            <el-button @click="acceptAllStudents()">Accept all</el-button>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-dialog>
 
             </div>
@@ -997,6 +1036,7 @@ You might also want to include a concrete strategy recommendation."
              openModalCollaborators() {
                  this.modalCollaboratorsIsOpen = true
                  this.$store.dispatch('getCollaborators', this.id)
+                 this.$store.dispatch('getUsers')
              }
         },
         created() {
@@ -1121,7 +1161,7 @@ You might also want to include a concrete strategy recommendation."
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators'
+                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators', 'users'
             ])
         },
         components: {
