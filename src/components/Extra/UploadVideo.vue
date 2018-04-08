@@ -234,6 +234,7 @@
                                                         
                                                 // POST video 
                                                 self.$store.dispatch('createVideo', {
+                                                    "assignmentId": self.uploadVidMetadata.assignmentId,
                                                     "title": self.uploadVidMetadata.title,
                                                     "class": self.uploadVidMetadata.class,
                                                     "classNumber": self.uploadVidMetadata.classNumber,
@@ -246,8 +247,6 @@
                                                     "link": link,
                                                     "duration": parseInt(duration),
                                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                                    "annotations": [],
-                                                    // sources missing ?
                                                 })
                                                 
                                                 self.modalSyncOpen = false  // Close loading bar
@@ -365,14 +364,14 @@
             },
             getAssignmentsByThisClass() {
                 this.uploadVidMetadata.classNumber = ''
-                var classIdToBeDeleted;
+                var classId;
                 for (var i = 0, l = this.classes.length; i < l; i++) {
                     if (this.classes[i].name === this.uploadVidMetadata.class) {
-                        classIdToBeDeleted = this.classes[i].id
+                        classId = this.classes[i].id
                         break
                     }
                 }
-                this.$store.dispatch('getAssignments', classIdToBeDeleted)
+                this.$store.dispatch('getAssignments', classId)
             }
         },
         computed: {

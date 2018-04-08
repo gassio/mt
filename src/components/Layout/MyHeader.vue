@@ -17,14 +17,14 @@
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                 </div>
                 <div class="navbar-end">
-                    <!-- <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>-->
+                    <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>
                     <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a> 
                     <!-- <i class="fa fa-angle-down"></i> -->
                     <a class="head__nav-item navbar-item" @click="logOut()"><p><i class="fa fa-sign-out"></i>Logout</p></a>
                 </div>
             </div>
 
-            <!-- <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
@@ -64,7 +64,7 @@
                         <el-button @click="acceptAllStudents()">Accept all</el-button>
                     </el-tab-pane>
                 </el-tabs>
-            </el-dialog>	 -->
+            </el-dialog>	
 
         </div>
     </nav>

@@ -22,7 +22,7 @@
 					<p class="classvideo__scoreLabel">Effectiveness</p>
 				</span>
 				<span class="classvideo__annotations">
-					<p class="classvideo__annotationsNum">{{ currentVideo.annotations.length }}</p>
+					<p class="classvideo__annotationsNum">3</p>
 					<p class="classvideo__annotationsLabel">Comments</p>
 				</span>
 			</div>
@@ -39,10 +39,14 @@
 		props: ['currentVideo'],
 		data() {
 			return {
-				role: this.$root.$options.authService.getAuthData().role
+				role: this.$root.$options.authService.getAuthData().role,
+				// totalAnnotations: this.getAnnotations()
 			}
 		},
 		methods: {
+			getAnnotations() {
+				this.$store.dispatch('getAnnotations', this.currentVideo.id)
+			},
 			featureGlobal(event) {
 				var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
 				// The string '/video/' has 7 seven characters.
@@ -114,7 +118,6 @@
             ),
 		},
 		mounted() {
-			// console.log(this.role)
 		}
     }
 </script>

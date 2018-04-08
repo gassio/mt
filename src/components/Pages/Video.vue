@@ -229,7 +229,7 @@ You might also want to include a concrete strategy recommendation."
                                 </el-table-column> -->
                             </el-table>
                             <br>
-                            <el-button @click="acceptAllStudents()">Accept all</el-button>
+                            <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
                         </el-tab-pane>
                     </el-tabs>
                 </el-dialog>
@@ -1045,8 +1045,6 @@ You might also want to include a concrete strategy recommendation."
         },
         mounted() {
             var self = this
-
-            // console.log('videoAnnotations: ', this.videoAnnotations.comment)
             
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
@@ -1057,7 +1055,7 @@ You might also want to include a concrete strategy recommendation."
             }
 
             this.videoIndex = vIndex
-            
+
             this.videoDuration = this.videos[vIndex].duration
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
 
@@ -1071,14 +1069,17 @@ You might also want to include a concrete strategy recommendation."
             // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
             // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
             // So, we get the last object - 1 = sourcesLength - 2
-            var sourcesLength = this.videos[vIndex].sources.length
-            var correctSource = sourcesLength - 2
+            var sourcesLength, correctSource
+            if (this.videos[vIndex].hasOwnProperty("sources")) {
+                sourcesLength = this.videos[vIndex].sources.length
+                correctSource = sourcesLength - 2
+            }
 
             this.player = jwplayer('player')            
             this.player.setup({
                 // If the video has sources (old way) then play the file: sources.[correctSource].file
                 // Else the video has no sources and has instead a link field (new way) then play the file: link
-                file: (this.videos[vIndex].sources.length !== 0) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
+                file: (this.videos[vIndex].hasOwnProperty("sources")) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
                 image: this.videos[vIndex].thumb,
                 "height": $('.player').height(),
             });

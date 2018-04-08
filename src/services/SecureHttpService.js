@@ -3,11 +3,9 @@ import axios from 'axios';
 // import Config
 import authService from './AuthService'
 import {ourApp} from '../main'
-
 // var apiURLLocal = "http://localhost:3000"
-var URL = "https://metalogon-api.herokuapp.com/rest"
-// var URL = "http://agtheodorides.dyndns.org:84/rest"
-
+// var URL = "https://metalogon-api.herokuapp.com/rest"
+var URL = "http://agtheodorides.dyndns.org:84/rest"
 export default {
     getHeaders() {
         try {
@@ -32,6 +30,14 @@ export default {
         return this.request("delete", uri, qs, params)
     },
     request(Method, uri, qs, Params) {
+        const options = {
+            Method: Method || "GET",
+            uri: uri || "",
+            qs: qs,
+            Params: Params
+        }
+        // options.uri = uri | "";
+        console.log("Options:", options)
         // console.log("Method: ", Method)
         // console.log("URL+/+URI: ", URL + "/" + uri)
         // console.log("qs: ", qs)
@@ -40,7 +46,7 @@ export default {
         var self = this
         return new Promise(function (resolve, reject) {
             // axios[method](URL + "/" + uri, qs, params,self.getHeaders())
-            axios({ method: Method, url: URL + "/" + uri, headers: self.getHeaders(), data: qs, params: Params })
+            axios({ method: options.Method, url: URL + "/" + options.uri, headers: self.getHeaders(), data: options.qs, params: options.Params })
                 .then(function (response) {
                     // See https://en.wikipedia.org/wiki/List_of_HTTP_status_codes for more status codes
                     // console.log("Resolved.")
