@@ -223,12 +223,13 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
-        createVideo: function ({ commit }, payload) {
+        createVideo: function ({ commit, dispatch }, payload) {
             secureHTTPService.post("video", payload)
                 .then( response => {
                     console.log('-----')
                     console.log('POST video')
                     commit('CREATE_VIDEO', response.data.data)
+                    dispatch( 'createCollaboration', { videoId: response.data.data.id, userId: authService.getAuthData().userId } )
                 })
                 .catch( response => {
                     console.log('createVideo action error.')
@@ -486,7 +487,7 @@ export const store = new Vuex.Store({
                     
                 })
         },
-        createCollaborator: function ({ commit, dispatch }, payload) {
+        createCollaboration: function ({ commit, dispatch }, payload) {
             secureHTTPService.post("collaboration", payload)
                 .then(function (response)
                 {

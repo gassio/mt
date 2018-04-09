@@ -1026,7 +1026,7 @@ You might also want to include a concrete strategy recommendation."
              },
              addCollaborator(scope, row) {
                 console.log('addCollaborator')
-                this.$store.dispatch( 'createCollaborator', { videoId: this.id, userId: row.id } )
+                this.$store.dispatch( 'createCollaboration', { videoId: this.id, userId: row.id } )
              }
         },
         created() {
