@@ -178,20 +178,6 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
-                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
-                    <el-tabs>
-                        <el-tab-pane label="Collaborators">
-                            <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                            <div v-for="c in collaborators" :key="c.id">
-                                <p><i class="fa fa-user"></i> {{ c.firstName }} {{ c.lastName }} / {{ c.email }} / {{ c.role }}</p>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="Other students">
-                            
-                        </el-tab-pane>
-				    </el-tabs>
-                </el-dialog> -->
-
                 <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
                         <el-tab-pane label="Collaborators">
@@ -222,11 +208,11 @@ You might also want to include a concrete strategy recommendation."
                                         <i class="fa fa-book"></i> {{ s2b.row.email }}
                                     </template>
                                 </el-table-column>
-                                <!-- <el-table-column>
+                                <el-table-column>
                                     <template slot-scope="scope">
-                                        <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
+                                        <el-button size="small" type="info" @click="addCollaborator(scope.$index, scope.row)">Add collaborator</el-button>
                                     </template>
-                                </el-table-column> -->
+                                </el-table-column>
                             </el-table>
                             <br>
                             <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
@@ -1037,6 +1023,10 @@ You might also want to include a concrete strategy recommendation."
                  this.modalCollaboratorsIsOpen = true
                  this.$store.dispatch('getCollaborators', this.id)
                  this.$store.dispatch('getUsers')
+             },
+             addCollaborator(scope, row) {
+                console.log('addCollaborator')
+                this.$store.dispatch( 'createCollaborator', { videoId: this.id, userId: row.id } )
              }
         },
         created() {

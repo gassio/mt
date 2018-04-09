@@ -486,6 +486,16 @@ export const store = new Vuex.Store({
                     
                 })
         },
+        createCollaborator: function ({ commit, dispatch }, payload) {
+            secureHTTPService.post("collaboration", payload)
+                .then(function (response)
+                {
+                    dispatch('getCollaborators', payload.videoId)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
         /* USERS */ 
         getUsers: function ({ commit }, payload) {
             secureHTTPService.get("user")
