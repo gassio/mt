@@ -616,7 +616,7 @@ You might also want to include a concrete strategy recommendation."
                 } else {
 
                     // We are pushing the card the state because the PUT call needs to pass the whole video object in the body.
-                    this.videos.annotations.push(card)
+                    // this.videos.annotations.push(card)
                     this.$store.dispatch('addAnnotation', card)
                     
                     // Seek to previous paused time.
