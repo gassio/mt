@@ -4,8 +4,8 @@ import axios from 'axios';
 import authService from './AuthService'
 import {ourApp} from '../main'
 // var apiURLLocal = "http://localhost:3000"
-var URL = "https://metalogon-api.herokuapp.com/rest"
-// var URL = "http://agtheodorides.dyndns.org:84/rest"
+// var URL = "https://metalogon-api.herokuapp.com/rest"
+var URL = "http://agtheodorides.dyndns.org:84/rest"
 export default {
     getHeaders() {
         try {
