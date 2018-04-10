@@ -112,6 +112,9 @@
                     class: [
                         { required: true, message: 'Please select class', trigger: 'blur' },
                     ],
+                    classNumber: [
+                        { required: true, message: 'Choose the classNumber', trigger: 'blur' },
+                    ],
                     genre: [
                         { required: true, message: 'Please select genre', trigger: 'blur' },
                     ],
@@ -119,13 +122,15 @@
                         { type: 'date', required: true, message: 'Please choose date', trigger: 'blur' },
                     ],
                 },
-                secureHTTPService : this.$root.$options.secureHTTPService
+                secureHTTPService : this.$root.$options.secureHTTPService,
+                authData: null
             }
         },
         created() {
             this.$store.dispatch('getAllClasses')
         },
         mounted() {
+            this.authData = this.$root.$options.authService.getAuthData()
         },
         methods: {
             createJwVideo() {
@@ -248,6 +253,8 @@
                                                     "duration": parseInt(duration),
                                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
                                                 })
+
+                                                // self.$store.dispatch( 'createVideo', { videoId: this.id, userId: self.authData.userId } )
                                                 
                                                 self.modalSyncOpen = false  // Close loading bar
                                                 self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  

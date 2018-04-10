@@ -198,7 +198,8 @@ export const store = new Vuex.Store({
         uploadUrl: '',
         assignments: [],
         collaborators: [],
-        users: []
+        users: [],
+        enrolledUsers: []
     },
 
     actions: {
@@ -223,12 +224,13 @@ export const store = new Vuex.Store({
                     $('.video').html(errorHTML)
                 })
         },
-        createVideo: function ({ commit }, payload) {
+        createVideo: function ({ commit, dispatch }, payload) {
             secureHTTPService.post("video", payload)
                 .then( response => {
                     console.log('-----')
                     console.log('POST video')
                     commit('CREATE_VIDEO', response.data.data)
+                    dispatch( 'createCollaboration', { videoId: response.data.data.id, userId: authService.getAuthData().userId } )
                 })
                 .catch( response => {
                     console.log('createVideo action error.')
@@ -352,28 +354,6 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
-        createEnrollment: function ({ commit }, payload) {
-            secureHTTPService.post("enrollment", payload)
-                .then(function (response)
-                {
-                    // TODO call mutation
-                    console.log(response)
-                })
-        },
-        getEnrollments: function ({ commit }) {
-            secureHTTPService.get("enrollment/?userId=" + authService.getAuthData().userId)
-                .then(function (response)
-                {
-                    var enrolledClassIds = []
-                    var enrollments = response.data.data
-                    for (var i = 0, l = enrollments.length; i < l; i++) {
-                        if (enrollments[i].accepted){
-                            enrolledClassIds.push(enrollments[i].classId)
-                        }
-                    }
-                    commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
-                })
-        },
         createClass: function ({ commit }, payload) {
             secureHTTPService.post("class/", payload.newClass)
             .then(response => {
@@ -409,6 +389,37 @@ export const store = new Vuex.Store({
             .catch(function (err) {
                 console.log('unarchiveClass() action error: ', err)
             })
+        },
+        /* ENROLLMENTS */ 
+        createEnrollment: function ({ commit }, payload) {
+            secureHTTPService.post("enrollment", payload)
+                .then(function (response)
+                {
+                    // TODO call mutation
+                    console.log(response)
+                })
+        },
+        getEnrollments: function ({ commit }) {
+            secureHTTPService.get("enrollment/?userId=" + authService.getAuthData().userId)
+                .then(function (response)
+                {
+                    var enrolledClassIds = []
+                    var enrollments = response.data.data
+                    for (var i = 0, l = enrollments.length; i < l; i++) {
+                        if (enrollments[i].accepted){
+                            enrolledClassIds.push(enrollments[i].classId)
+                        }
+                    }
+                    commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
+                })
+        },
+        getEnrolledUser: function ({ commit }, payload) {
+            secureHTTPService.get("enrolledUser/?classId=" + payload)
+                .then(function (response)
+                {
+                    console.log("getEnrolledUser")
+                    commit( 'GET_ENROLLED_USER', response.data.data)
+                })
         },
         /* ASSIGNMENTS */ 
         getAssignments: function ({ commit }, payload) {
@@ -484,6 +495,36 @@ export const store = new Vuex.Store({
                 })
                 .catch(function (err) {
                     
+                })
+        },
+        createCollaboration: function ({ commit, dispatch }, payload) {
+            secureHTTPService.post("collaboration", payload)
+                .then(function (response)
+                {
+                    dispatch('getCollaborators', payload.videoId)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        deleteCollaboration: function ({ commit, dispatch }, payload) {
+            secureHTTPService.get("collaboration")
+                .then(function (response)
+                {
+                    var collaborations = response.data.data
+
+                    for (var i = 0, l = collaborations.length; i < l; i++) {
+                        if (collaborations[i].videoId === payload.videoId && collaborations[i].userId === payload.userId) {
+                            secureHTTPService.delete("collaboration/" + collaborations[i].id)
+                                .then(function (response)
+                                {
+                                    console.log('deleted collaboration: ')
+                                    dispatch('getCollaborators', payload.videoId)
+                                })
+                        }
+                    } 
+                    
+
                 })
         },
         /* USERS */ 
@@ -758,6 +799,10 @@ export const store = new Vuex.Store({
             state.currentClassSelected = payload.className
             state.currentClassNumber = payload.classNumber
         },
+        /* ENROLLMENTS */
+        GET_ENROLLED_USER: (state, payload) => {
+            state.enrolledUsers = payload
+        },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
             state.assignments = assignments
@@ -813,6 +858,9 @@ export const store = new Vuex.Store({
         },
         users: state => {
             return state.users
+        },
+        enrolledUsers: state => {
+            return state.enrolledUsers
         },
         currentVideoID: state => {
             return state.currentVideoID

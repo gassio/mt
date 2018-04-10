@@ -178,20 +178,6 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
 
-                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
-                    <el-tabs>
-                        <el-tab-pane label="Collaborators">
-                            <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                            <div v-for="c in collaborators" :key="c.id">
-                                <p><i class="fa fa-user"></i> {{ c.firstName }} {{ c.lastName }} / {{ c.email }} / {{ c.role }}</p>
-                            </div>
-                        </el-tab-pane>
-                        <el-tab-pane label="Other students">
-                            
-                        </el-tab-pane>
-				    </el-tabs>
-                </el-dialog> -->
-
                 <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
                         <el-tab-pane label="Collaborators">
@@ -207,14 +193,19 @@ You might also want to include a concrete strategy recommendation."
                                         <i class="fa fa-book"></i> {{ s1b.row.email }}
                                     </template>
                                 </el-table-column>
+                                <el-table-column>
+                                    <template slot-scope="scope">
+                                        <el-button size="small"  @click="deleteCollaborator(scope.$index, scope.row)">Delete collaborator</el-button>
+                                    </template>
+                                </el-table-column>
                             </el-table>
                         </el-tab-pane>
                         <el-tab-pane label="Other students">
                             <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
-                            <el-table ref="multipleTable" :data="users" :border="false" style="width: 100%" :show-header="false" empty-text="No other students">
+                            <el-table ref="multipleTable" :data="enrolledUsers" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template slot-scope="s2">
-                                        <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
+                                        <i class="fa fa-user"></i>{{ s2.row.firstName }} {{ s2.row.lastName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="class">
@@ -222,11 +213,11 @@ You might also want to include a concrete strategy recommendation."
                                         <i class="fa fa-book"></i> {{ s2b.row.email }}
                                     </template>
                                 </el-table-column>
-                                <!-- <el-table-column>
+                                <el-table-column>
                                     <template slot-scope="scope">
-                                        <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
+                                        <el-button size="small" type="success" @click="addCollaborator(scope.$index, scope.row)">Add collaborator</el-button>
                                     </template>
-                                </el-table-column> -->
+                                </el-table-column>
                             </el-table>
                             <br>
                             <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
@@ -356,7 +347,7 @@ You might also want to include a concrete strategy recommendation."
                 otherMoveSelected: false,
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
-                authService : this.$root.$options.authService
+                authService : this.$root.$options.authService,
             }
         },
         methods: {
@@ -1033,11 +1024,25 @@ You might also want to include a concrete strategy recommendation."
 
                 this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
              }, 500),
-             openModalCollaborators() {
-                 this.modalCollaboratorsIsOpen = true
-                 this.$store.dispatch('getCollaborators', this.id)
-                 this.$store.dispatch('getUsers')
-             }
+            openModalCollaborators() {
+                this.modalCollaboratorsIsOpen = true
+                this.$store.dispatch('getCollaborators', this.id)
+                this.$store.dispatch('getUsers')
+                
+                for (var i = 0, l = this.classes.length; i < l; i++) { 
+                    if (this.classes[i].name === this.videos.class) {
+                        this.$store.dispatch( 'getEnrolledUser', this.classes[i].id )
+                    }
+                }
+            },
+            addCollaborator(scope, row) {
+                console.log('addCollaborator')
+                this.$store.dispatch( 'createCollaboration', { videoId: this.id, userId: row.id } )
+            },
+            deleteCollaborator(scope, row) {
+                console.log('deleteCollaborator')
+                this.$store.dispatch( 'deleteCollaboration', { videoId: this.id, userId: row.id } )
+            }
         },
         created() {
             this.$store.dispatch('getVideo', this.id)
@@ -1162,7 +1167,9 @@ You might also want to include a concrete strategy recommendation."
         },
         computed: {
             ...mapGetters([
-                'videos', 'currentVideoID', 'canons', 'videoAnnotations', 'collaborators', 'users'
+                'videos', 'currentVideoID', 'canons', 
+                'videoAnnotations', 'collaborators', 'users',
+                'enrolledUsers', 'classes'
             ])
         },
         components: {
