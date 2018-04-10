@@ -199,7 +199,8 @@ export const store = new Vuex.Store({
         assignments: [],
         collaborators: [],
         users: [],
-        enrolledUsers: []
+        enrolledUsers: [],
+        enrollments: [], // All enrollments, simple get enrollments
     },
 
     actions: {
@@ -399,7 +400,17 @@ export const store = new Vuex.Store({
                     console.log(response)
                 })
         },
-        getEnrollments: function ({ commit }) {
+        getEnrollments: function ({ commit }, payload) {
+            secureHTTPService.get("enrollment")
+                .then(function (response)
+                {
+                    commit('GET_ENROLLMENTS', response.data.data)
+                })
+                .catch(function (err) {
+                    
+                })
+        },
+        getEnrollmentsByUserId: function ({ commit }) {
             secureHTTPService.get("enrollment/?userId=" + authService.getAuthData().userId)
                 .then(function (response)
                 {
@@ -413,7 +424,7 @@ export const store = new Vuex.Store({
                     commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
                 })
         },
-        getEnrolledUser: function ({ commit }, payload) {
+        getEnrolledUserByClassId: function ({ commit }, payload) {
             secureHTTPService.get("enrolledUser/?classId=" + payload)
                 .then(function (response)
                 {
@@ -537,7 +548,7 @@ export const store = new Vuex.Store({
                 .catch(function (err) {
                     
                 })
-        },
+        }
     },
 
     mutations: {
@@ -832,6 +843,10 @@ export const store = new Vuex.Store({
         GET_USERS: (state, users) => {
             state.users = users
         },
+        /* ENROLLMENTS */
+        GET_ENROLLMENTS: (state, enrollments) => {
+            state.enrollments = enrollments
+        },
     },
 
     getters: {
@@ -861,6 +876,9 @@ export const store = new Vuex.Store({
         },
         enrolledUsers: state => {
             return state.enrolledUsers
+        },
+        enrollments: state => {
+            return state.enrollments
         },
         currentVideoID: state => {
             return state.currentVideoID
