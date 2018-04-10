@@ -31,27 +31,27 @@
                         <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
                                 <template slot-scope="s1">
-                                    <i class="fa fa-user"></i> {{ s1.row.name }}
+                                    <!-- <i class="fa fa-user"></i> {{ s1.row.name }} -->
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class">
                                 <template slot-scope="s1b">
-                                    <i class="fa fa-book"></i> {{ s1b.row.class }}
+                                    <!-- <i class="fa fa-book"></i> {{ s1b.row.class }} -->
                                 </template>
                             </el-table-column>
                         </el-table>
                     </el-tab-pane>
                     <el-tab-pane label="Requested students" name="requestedStudents">
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
-                        <el-table ref="multipleTable" :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
+                        <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
                             <el-table-column prop="name" width="140">
                                 <template slot-scope="s2">
-                                    <i class="fa fa-user"></i> {{ s2.row.name }}
+                                    <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class" width="280">
                                 <template slot-scope="s2b">
-                                    <i class="fa fa-book"></i> {{ s2b.row.class }}
+                                    <!-- <i class="fa fa-book"></i> {{ s2b.row.class }} -->
                                 </template>
                             </el-table-column>
                             <el-table-column>
@@ -98,16 +98,9 @@
                         name: 'Linus Torvalds',
                         class: 'Rhetoric and Writing'
                     }],
+                requestedStudents: [],
                 enrolledStudentsClone: [],
                 requestedStudentsInputValue: '',
-                requestedStudents: [
-                    {
-                        name: 'Julius Caesar',
-                        class: 'Materials Science and Engineering'
-                    }, {
-                        name: 'Alan Turing',
-                        class: 'Aeronautics and Astronautics'
-                    }],
                 requestedStudentsClone: [],
                 multipleSelection: [],
                 authData: {}
@@ -126,9 +119,12 @@
             },
             openModalStudentRequests() {
                 this.modalStudentRequestsIsOpen = true
-
-                this.cloneEnrolledStudents() // Clone the enrolledStudents array
-                this.cloneRequestedStudents() // Clone the requestedStudents array
+                var self = this
+                this.$store.dispatch('getEnrollments').then(function() {
+                    self.filterEnrollments()
+                    self.cloneEnrolledStudents() // Clone the enrolledStudents array
+                    self.cloneRequestedStudents() // Clone the requestedStudents array
+                }).catch(function(err) {console.log('getEnrollments failed ', err)})
             },
             cloneEnrolledStudents() {
                 this.enrolledStudentsClone = []
@@ -165,7 +161,17 @@
                 } 
 
                 this.requestedStudentsClone = this.requestedStudents.filter(filterStudents(this.requestedStudentsInputValue))
-     		}, 500),
+             }, 500),
+            filterEnrollments(){
+                for (var i = 0, l = this.enrollments.length; i < l; i++) {
+                    if (!this.enrollments[i].accepted) {
+                        for (var j = 0, l = this.users.length; j < l; i++) {
+                            if (this.users[j].id == this.enrollments.userId)
+                                this.requestedStudents.push(this.users[j])
+                        }
+                    }
+                }
+            },
             acceptStudent(index, row) {
                 this.requestedStudents.splice(index, 1)
                 this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
@@ -236,7 +242,7 @@
         },
         computed: {
             ...mapGetters([
-				'uploadingVideo'
+				'uploadingVideo', 'users', 'enrollments'
             ])
         },
     }
