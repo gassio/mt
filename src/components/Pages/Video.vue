@@ -1027,7 +1027,6 @@ You might also want to include a concrete strategy recommendation."
             openModalCollaborators() {
                 this.modalCollaboratorsIsOpen = true
                 this.$store.dispatch('getCollaborators', this.id)
-                this.$store.dispatch('getUsers')
                 
                 for (var i = 0, l = this.classes.length; i < l; i++) { 
                     if (this.classes[i].name === this.videos.class) {

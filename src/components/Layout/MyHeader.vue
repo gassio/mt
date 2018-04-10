@@ -24,19 +24,19 @@
                 </div>
             </div>
 
-            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests" :close="closeModalStudentRequests()">
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
                         <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
                                 <template slot-scope="s1">
-                                    <!-- <i class="fa fa-user"></i> {{ s1.row.name }} -->
+                                    <i class="fa fa-user"></i> {{ s1.row.user.firstName + " " +  s1.row.user.lastName}}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class">
                                 <template slot-scope="s1b">
-                                    <!-- <i class="fa fa-book"></i> {{ s1b.row.class }} -->
+                                    <i class="fa fa-book"></i> {{ s1b.row.class.name }}
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -44,14 +44,14 @@
                     <el-tab-pane label="Requested students" name="requestedStudents">
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
                         <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
-                            <el-table-column prop="name" width="140">
+                            <el-table-column prop="name">
                                 <template slot-scope="s2">
-                                    <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
+                                    <i class="fa fa-user"></i> {{ s2.row.user.firstName + " " +  s2.row.user.lastName}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="class" width="280">
+                            <el-table-column prop="class">
                                 <template slot-scope="s2b">
-                                    <!-- <i class="fa fa-book"></i> {{ s2b.row.class }} -->
+                                    <i class="fa fa-book"></i> {{ s2b.row.class.name }}
                                 </template>
                             </el-table-column>
                             <el-table-column>
@@ -83,22 +83,7 @@
                 studentRequests: 2,
                 modalStudentRequestsIsOpen: false,
                 studentRequestsTab: 'enrolledStudents',
-                enrolledStudentsInputValue: '',                          
-                enrolledStudents: [
-                    {
-                        name: 'Ben Domino',
-                        class: 'Materials Science and Engineering'
-                    }, {
-                        name: 'Bill Gates',
-                        class: 'Materials Science and Engineering'
-                    }, {
-                        name: 'Steve Jobs',
-                        class: 'Aeronautics and Astronautics'
-                    }, {
-                        name: 'Linus Torvalds',
-                        class: 'Rhetoric and Writing'
-                    }],
-                requestedStudents: [],
+                enrolledStudentsInputValue: '',
                 enrolledStudentsClone: [],
                 requestedStudentsInputValue: '',
                 requestedStudentsClone: [],
@@ -121,10 +106,13 @@
                 this.modalStudentRequestsIsOpen = true
                 var self = this
                 this.$store.dispatch('getEnrollments').then(function() {
-                    self.filterEnrollments()
+                    self.$store.commit('FILTER_ENROLLMENTS')
                     self.cloneEnrolledStudents() // Clone the enrolledStudents array
                     self.cloneRequestedStudents() // Clone the requestedStudents array
                 }).catch(function(err) {console.log('getEnrollments failed ', err)})
+            },
+            closeModalStudentRequests() {
+                this.requestedStudents = []
             },
             cloneEnrolledStudents() {
                 this.enrolledStudentsClone = []
@@ -162,29 +150,24 @@
 
                 this.requestedStudentsClone = this.requestedStudents.filter(filterStudents(this.requestedStudentsInputValue))
              }, 500),
-            filterEnrollments(){
-                for (var i = 0, l = this.enrollments.length; i < l; i++) {
-                    if (!this.enrollments[i].accepted) {
-                        for (var j = 0, l = this.users.length; j < l; i++) {
-                            if (this.users[j].id == this.enrollments.userId)
-                                this.requestedStudents.push(this.users[j])
-                        }
-                    }
-                }
-            },
+
             acceptStudent(index, row) {
-                this.requestedStudents.splice(index, 1)
-                this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
-                this.enrolledStudents.push(row)
-                this.enrolledStudentsClone.push(row) // Same for the Cloned array.
+                var acceptedEnrollment = row.enrollment
+                acceptedEnrollment.accepted = true
+                this.$store.dispatch( 'acceptEnrollment', { id: row.enrollment.id , body: acceptedEnrollment } )
+                // this.requestedStudents.splice(index, 1)
+                // this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
+                // this.enrolledStudents.push(row)
+                // this.enrolledStudentsClone.push(row) // Same for the Cloned array.
             },
             acceptAllStudents() {
-                for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
-                    this.enrolledStudents.push(this.requestedStudents[i])
-                    this.enrolledStudentsClone.push(this.requestedStudents[i]) // Same for the Cloned array.
-                }
-                this.requestedStudents = []
-                this.requestedStudentsClone = [] // Same for the Cloned array.
+                // this.$store.commit('ACCEPT_ENROLLMENT')
+                // for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
+                //     this.enrolledStudents.push(this.requestedStudents[i])
+                //     this.enrolledStudentsClone.push(this.requestedStudents[i]) // Same for the Cloned array.
+                // }
+                // this.requestedStudents = []
+                // this.requestedStudentsClone = [] // Same for the Cloned array.
             },
             toggleSelection(rows) {
                 if (rows) {
@@ -242,7 +225,7 @@
         },
         computed: {
             ...mapGetters([
-				'uploadingVideo', 'users', 'enrollments'
+                'uploadingVideo', 'requestedStudents', 'enrolledStudents'
             ])
         },
     }
