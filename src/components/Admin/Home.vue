@@ -241,6 +241,8 @@
 			this.$store.dispatch('getAllClasses')
 			this.$store.dispatch('getEnrollmentsByUserId')
 			this.$store.dispatch('getGenres')
+			this.$store.dispatch('getUsers')
+			this.$store.dispatch('getEnrollments')
 
 			this.$store.state.currentClassSelected = 'Home'
 		},
