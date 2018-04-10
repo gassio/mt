@@ -27,6 +27,7 @@
           <form class="invitation-form login-form" v-show="formInvitationIsShown" v-on:submit.prevent="invitationUser()">
             <input class="login-form__username" type="text" placeholder="First name" v-model="firstName"/>
             <input class="login-form__username" type="text" placeholder="Last name" v-model="lastName"/>
+            <input class="login-form__username" type="text" placeholder="E-mail address" v-model="invEmail"/>
             <input class="login-form__password" type="password" placeholder="Password" v-model="newPassword"/>
             <input class="login-form__password" type="password" placeholder="Repeat Password" v-model="repeatedPassword"/>
             <input class="login-form__username" type="text" placeholder="Invitation code" v-model="invitationCode"/>
@@ -53,6 +54,7 @@ export default {
           newEmail: '',
           newPassword: '',
           repeatedPassword: '',
+          invEmail: '',
           // Login
           email: '',
           password: '',
@@ -103,22 +105,30 @@ export default {
           }
         },
         invitationUser() {
-          if (this.firstName === "" || this.lastName === "" || this.newPassword === "" || this.repeatedPassword === "" || this.invitationCode === "") {
+          if (this.firstName === "" || this.lastName === "" || this.invEmail === "" || this.newPassword === "" || this.repeatedPassword === "" || this.invitationCode === "") {
             alert("Please complete all the fields.")
           }
           else if (this.newPassword != this.repeatedPassword) {
             alert("Please repeat password correctly.")
           }
           else {
-            // TODO: post call
             var body =
             {
+              "email" : this.invEmail,
               "firstName" : this.firstName,
               "lastName" : this.lastName,
               "invitationCode" : this.invitationCode,
               "password" : this.newPassword,
               "role" : ""
             }
+            this.secureHTTPService.post("user", body)
+            .then(function(){
+              console.log("Post invitation successful.")
+            })
+            .catch(function(err){
+              console.log(err)
+            })
+            //TODO create appropriate feedback with .then and .catch
             this.showLoginForm()
           }
         },
