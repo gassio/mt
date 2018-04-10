@@ -37,7 +37,7 @@ export default {
             Params: Params
         }
         // options.uri = uri | "";
-        console.log("Options:", options)
+        // console.log("Options:", options)
         // console.log("Method: ", Method)
         // console.log("URL+/+URI: ", URL + "/" + uri)
         // console.log("qs: ", qs)
