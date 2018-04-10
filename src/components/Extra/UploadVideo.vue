@@ -19,12 +19,12 @@
                 </el-form-item>
                 <el-form-item label="Class" prop="class">
                     <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" @change="getAssignmentsByThisClass()">
-                        <el-option :label="c.name" :value="c.name" v-for="c in activeClasses" :key="c.id"></el-option>
+                        <el-option :label="c.name" :value="c.name" v-for="c in classes" :key="c.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Class number" prop="classNumber">
                     <el-select v-model="uploadVidMetadata.classNumber" placeholder="Get the class number">
-                        <el-option :label="c.number" :value="c.number" v-for="c in activeClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
+                        <el-option :label="c.number" :value="c.number" v-for="c in classes" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Assignment" prop="assignment">
@@ -201,12 +201,14 @@
                     let link, duration, thumb
 
                     // Fetching link and duration
+                    console.log("Starting upload interval..")
                     let intervalID = setInterval(function () {
+                        console.log("Sending get jwconversion?videoId=jwVideoId call")
                         self.secureHTTPService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
                                 console.log(' getting conversions...')
                                 let conversions = response.data.data.conversions
-                                var conversionNames = ['720p', '406p', 'Original'] // Conversion names in order of preference
+                                var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
                                 console.log("conv1: ", conversions)
                                 var everythingReady = true // this is a trick
                                 for (var i = 0, l = conversions.length; i < l; i++) {
@@ -216,9 +218,15 @@
                                     else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
                                         everythingReady = false
                                     }
-                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
                                         everythingReady = false
                                     }
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                                        everythingReady = false
+                                    }
+                                    // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                    //     everythingReady = false
+                                    // }
                                 }
                                 if (conversions.length === 1) everythingReady = false
                                 if (everythingReady) {
@@ -272,7 +280,10 @@
                                     }     
                                 }                           
                             })
-                            .catch( (error) => console.log("Couldn't get conversions \n ", error))
+                            .catch( function(error) {
+                                console.log("Couldn't get conversions \n ", error)
+                                clearInterval(intervalID)
+                            })
                     }, 5000)
 
                 
