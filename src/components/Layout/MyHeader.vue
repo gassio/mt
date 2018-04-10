@@ -17,25 +17,25 @@
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                 </div>
                 <div class="navbar-end">
-                    <a class="head__nav-item navbar-item badge" :data-badge="studentRequests" @click="openModalStudentRequests()"><p>Student requests</p></a>
+                    <a class="head__nav-item navbar-item badge" :data-badge="this.requestedStudentsLen"  @click="openModalStudentRequests()"><p>Student requests</p></a>
                     <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a> 
                     <!-- <i class="fa fa-angle-down"></i> -->
                     <a class="head__nav-item navbar-item" @click="logOut()"><p><i class="fa fa-sign-out"></i>Logout</p></a>
                 </div>
             </div>
 
-            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests" :close="closeModalStudentRequests()">
+            <el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
                         <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
-                                <template slot-scope="s1">
+                                <template scope="s1">
                                     <i class="fa fa-user"></i> {{ s1.row.user.firstName + " " +  s1.row.user.lastName}}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class">
-                                <template slot-scope="s1b">
+                                <template scope="s1b">
                                     <i class="fa fa-book"></i> {{ s1b.row.class.name }}
                                 </template>
                             </el-table-column>
@@ -45,17 +45,17 @@
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
                         <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
                             <el-table-column prop="name">
-                                <template slot-scope="s2">
+                                <template scope="s2">
                                     <i class="fa fa-user"></i> {{ s2.row.user.firstName + " " +  s2.row.user.lastName}}
                                 </template>
                             </el-table-column>
                             <el-table-column prop="class">
-                                <template slot-scope="s2b">
+                                <template scope="s2b">
                                     <i class="fa fa-book"></i> {{ s2b.row.class.name }}
                                 </template>
                             </el-table-column>
                             <el-table-column>
-                                <template slot-scope="scope">
+                                <template scope="scope">
                                     <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
                                 </template>
                             </el-table-column>
@@ -80,7 +80,6 @@
         data() {
             return {
                 usernameRole: "",
-                studentRequests: 2,
                 modalStudentRequestsIsOpen: false,
                 studentRequestsTab: 'enrolledStudents',
                 enrolledStudentsInputValue: '',
@@ -104,15 +103,17 @@
             },
             openModalStudentRequests() {
                 this.modalStudentRequestsIsOpen = true
+                this.updateEnrollments() 
+            },
+            updateEnrollments() {
+                // console.log("updenr")
                 var self = this
                 this.$store.dispatch('getEnrollments').then(function() {
                     self.$store.commit('FILTER_ENROLLMENTS')
                     self.cloneEnrolledStudents() // Clone the enrolledStudents array
                     self.cloneRequestedStudents() // Clone the requestedStudents array
+                    // console.log(self.requestedStudentsLen)
                 }).catch(function(err) {console.log('getEnrollments failed ', err)})
-            },
-            closeModalStudentRequests() {
-                this.requestedStudents = []
             },
             cloneEnrolledStudents() {
                 this.enrolledStudentsClone = []
@@ -154,7 +155,14 @@
             acceptStudent(index, row) {
                 var acceptedEnrollment = row.enrollment
                 acceptedEnrollment.accepted = true
+                var self = this
                 this.$store.dispatch( 'acceptEnrollment', { id: row.enrollment.id , body: acceptedEnrollment } )
+                .then(function(){
+                    self.updateEnrollments()
+                })
+                .catch(function(err){
+                    console.log(err)
+                })
                 // this.requestedStudents.splice(index, 1)
                 // this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
                 // this.enrolledStudents.push(row)
@@ -194,7 +202,6 @@
             //     }
             // }, 1000)
 
-
             document.addEventListener('DOMContentLoaded', function () {
 
                 // Get all "navbar-burger" elements
@@ -225,7 +232,8 @@
         },
         computed: {
             ...mapGetters([
-                'uploadingVideo', 'requestedStudents', 'enrolledStudents'
+                'uploadingVideo', 'requestedStudents', 'enrolledStudents',
+                'requestedStudentsLen'
             ])
         },
     }

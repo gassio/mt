@@ -184,17 +184,17 @@ You might also want to include a concrete strategy recommendation."
                             <!-- <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input> -->
                             <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No collaborators">
                                 <el-table-column prop="name" width="180">
-                                    <template slot-scope="s1">
+                                    <template scope="s1">
                                         <i class="fa fa-user"></i> {{ s1.row.firstName }} {{ s1.row.lastName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="class">
-                                    <template slot-scope="s1b">
+                                    <template scope="s1b">
                                         <i class="fa fa-book"></i> {{ s1b.row.email }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column>
-                                    <template slot-scope="scope">
+                                    <template scope="scope">
                                         <el-button size="small"  @click="deleteCollaborator(scope.$index, scope.row)">Delete collaborator</el-button>
                                     </template>
                                 </el-table-column>
@@ -204,17 +204,17 @@ You might also want to include a concrete strategy recommendation."
                             <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
                             <el-table ref="multipleTable" :data="enrolledUsers" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
-                                    <template slot-scope="s2">
+                                    <template scope="s2">
                                         <i class="fa fa-user"></i>{{ s2.row.firstName }} {{ s2.row.lastName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="class">
-                                    <template slot-scope="s2b">
+                                    <template scope="s2b">
                                         <i class="fa fa-book"></i> {{ s2b.row.email }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column>
-                                    <template slot-scope="scope">
+                                    <template scope="scope">
                                         <el-button size="small" type="success" @click="addCollaborator(scope.$index, scope.row)">Add collaborator</el-button>
                                     </template>
                                 </el-table-column>

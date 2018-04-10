@@ -200,9 +200,10 @@ export const store = new Vuex.Store({
         collaborators: [],
         users: [],
         enrolledUsers: [],
-        enrollments: [], // All enrollments, simple get enrollments,
+        enrollments: [], // All enrollments, simple get enrollments
         enrolledStudents: [],
-        requestedStudents: []
+        requestedStudents: [],
+        requestedStudentsLen: 0
     },
 
     actions: {
@@ -438,8 +439,8 @@ export const store = new Vuex.Store({
             secureHTTPService.put("enrollment/" + payload.id, payload.body)
                 .then(function (response)
                 {
-                    dispatch('getEnrollments')
-                    commit('FILTER_ENROLLMENTS')
+                    // dispatch('getEnrollments')
+                    // commit('FILTER_ENROLLMENTS')
                 })
                 .catch(function (err)
                 {
@@ -890,6 +891,7 @@ export const store = new Vuex.Store({
                     }
                 }
             }
+            state.requestedStudentsLen = state.requestedStudents.length
         }
     },
 
@@ -926,6 +928,9 @@ export const store = new Vuex.Store({
         },
         requestedStudents: state => {
             return state.requestedStudents
+        },
+        requestedStudentsLen: state => {
+            return state.requestedStudentsLen
         },
         enrolledStudents: state => {
             return state.enrolledStudents
