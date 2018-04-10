@@ -233,6 +233,7 @@
 		data() {
 			return {
 				role: this.$root.$options.authService.getAuthData().role,
+				userId: this.$root.$options.authService.getAuthData().userId,
 				// administrator, professor
 				sidebarClassesTab: 'activeClasses',
 				searchInputValue: '',
@@ -359,39 +360,6 @@
 					label: 'label',
 					desc: 'desc'
 				},
-				// Genre version 2
-				// structureData: [
-				// 	{ key: 0, label: 'Terms'},
-				// 	{ key: 1, label: 'Conceptual transitions' },
-				// 	{ key: 2, label: 'Line of argument' },
-				// 	{ key: 3, label: 'Central moves' }
-				// ],
-				// structurePassed: [],
-				// deliveryData: [
-				// 	{ key: 0, label: 'Volume' },
-				// 	{ key: 1, label: 'Gestures' },
-				// 	{ key: 2, label: 'Metadiscourse' },
-				// 	{ key: 3, label: 'Posture' },
-				// 	{ key: 4, label: 'Language' },
-				// ],
-				// deliveryPassed: [],
-				// styleData: [
-				// 	{ key: 0, label: 'Coherence' },
-				// 	{ key: 1, label: 'Concision' },
-				// 	{ key: 2, label: 'Flow' },
-				// 	{ key: 3, label: 'Emphasis' },
-				// 	{ key: 4, label: 'Figures of Speech' },
-				// 	{ key: 5, label: 'Figures of Sound' },
-				// ],
-				// stylePassed: [],
-				// visualsData: [
-				// 	{ label: 'Pictorial cues' },
-				// 	{ label: 'Slide titles' },
-				// 	{ label: 'Image-text highlight' },
-				// 	{ label: 'Graphics' },
-				// 	{ label: 'Memorable images' }
-				// ],
-				// visualsPassed: [],
 				newClass: {
 					archived: false,
 					department: '',
@@ -428,6 +396,7 @@
 				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
 			},
 			createClass() {	
+				this.newClass['professorId'] = this.userId
 				this.$store.dispatch('createClass', { 
 					newClass: this.newClass
 				})
