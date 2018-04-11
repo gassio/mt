@@ -19,12 +19,14 @@
                 </el-form-item>
                 <el-form-item label="Class" prop="class">
                     <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" @change="getAssignmentsByThisClass()">
-                        <el-option :label="c.name" :value="c.name" v-for="c in classes" :key="c.id"></el-option>
+                        <el-option v-show="role === 'administrator'" :label="c.name" :value="c.name" v-for="c in adminClasses" :key="c.id"></el-option>
+                        <el-option v-show="role === 'professor'" :label="c.name" :value="c.name" v-for="c in activeClasses" :key="c.id"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Class number" prop="classNumber">
                     <el-select v-model="uploadVidMetadata.classNumber" placeholder="Get the class number">
-                        <el-option :label="c.number" :value="c.number" v-for="c in classes" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
+                        <el-option v-show="role === 'administrator'" :label="c.number" :value="c.number" v-for="c in adminClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
+                        <el-option v-show="role === 'professor'" :label="c.number" :value="c.number" v-for="c in activeClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Assignment" prop="assignment">
@@ -123,7 +125,8 @@
                     ],
                 },
                 secureHTTPService : this.$root.$options.secureHTTPService,
-                authData: null
+                authData: null,
+                role: null
             }
         },
         created() {
@@ -131,6 +134,7 @@
         },
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()
+            this.role = this.authData.role
         },
         methods: {
             createJwVideo() {
@@ -396,7 +400,7 @@
             ...mapGetters([
                 'videos', 'uploadUrl', 'classes', 
                 'activeClasses', 'departments', 'assignments',
-                'genres'
+                'genres', 'adminClasses'
             ]),
         }    
 }
