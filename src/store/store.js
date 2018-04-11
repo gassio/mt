@@ -201,6 +201,7 @@ export const store = new Vuex.Store({
         collaborators: [],
         users: [],
         enrolledUsers: [],
+        enrolledUsersNotAccepted: [],
         enrollments: [] // All enrollments
     },
 
@@ -398,13 +399,14 @@ export const store = new Vuex.Store({
                 .then(function (response)
                 {
                     // TODO call mutation
-                    console.log(response)
+                    // console.log(response)
                 })
         },
         getEnrollments: function ({ commit }, payload) {
-            secureHTTPService.get("enrollment")
+            return secureHTTPService.get("enrollment")
                 .then(function (response)
                 {
+                    // console.log("getEnrollments")
                     commit('GET_ENROLLMENTS', response.data.data)
                 })
                 .catch(function (err) {
@@ -412,7 +414,7 @@ export const store = new Vuex.Store({
                 })
         },
         getEnrollmentsByUserId: function ({ commit }) {
-            secureHTTPService.get("enrollment/?userId=" + authService.getAuthData().userId)
+            secureHTTPService.get("enrollment?userId=" + authService.getAuthData().userId)
                 .then(function (response)
                 {
                     var enrolledClassIds = []
@@ -426,10 +428,9 @@ export const store = new Vuex.Store({
                 })
         },
         getEnrolledUserByClassId: function ({ commit }, payload) {
-            secureHTTPService.get("enrolledUser?classId=" + payload)
+            return secureHTTPService.get("enrolledUser?classId=" + payload)
                 .then(function (response)
                 {
-                    console.log("getEnrolledUser")
                     var responseObj = {data: response.data.data, classId: payload}
                     commit( 'GET_ENROLLED_USER', responseObj)
                 })
@@ -819,18 +820,25 @@ export const store = new Vuex.Store({
         GET_ENROLLED_USER: (state, payload) => {
             var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
             var activeEnrolledUsers = [] // The users that have been accepted in this class
+            var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
+            // console.log(enrolledUsersInThisClass)
             for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
-                console.log(enrolledUsersInThisClass[i])
                 for(var j = 0; j < state.enrollments.length; j++){
+                    // UserId must be found in enrollments and the classId of that enrollment must be the current class
                     if (state.enrollments[j].userId === enrolledUsersInThisClass[i].id && state.enrollments[j].classId === payload.classId){
+                        // The enrollment should be in accepted status or else the user is not considered "enrolled"/active
                         if (state.enrollments[j].accepted){
                             activeEnrolledUsers.push(enrolledUsersInThisClass[i])
+                        }
+                        else {
+                            inactiveEnrolledUsers.push(enrolledUsersInThisClass[i])
                         }
                     }
                 }
             }
-            console.log(activeEnrolledUsers)
+            // console.log(activeEnrolledUsers)
             state.enrolledUsers = activeEnrolledUsers
+            state.enrolledUsersNotAccepted = inactiveEnrolledUsers
         },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
@@ -894,6 +902,9 @@ export const store = new Vuex.Store({
         },
         enrolledUsers: state => {
             return state.enrolledUsers
+        },
+        enrolledUsersNotAccepted: state => {
+            return state.enrolledUsersNotAccepted
         },
         enrollments: state => {
             return state.enrollments

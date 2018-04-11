@@ -5,9 +5,9 @@
 			<!-- Sidebar buttons/actions  -->
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
@@ -187,12 +187,12 @@
                         <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
                                 <template scope="s1">
-                                    <i class="fa fa-user"></i> {{ s1.row.user.firstName + " " +  s1.row.user.lastName}}
+                                    <i class="fa fa-user"></i> {{ s1.row.firstName + " " +  s1.row.lastName}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="class">
-                                <template scope="s1b">
-                                    <i class="fa fa-book"></i> {{ s1b.row.class.name }}
+                            <el-table-column>
+                                <template>
+                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
                                 </template>
                             </el-table-column>
                         </el-table>
@@ -202,12 +202,12 @@
                         <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
                             <el-table-column prop="name">
                                 <template scope="s2">
-                                    <i class="fa fa-user"></i> {{ s2.row.user.firstName + " " +  s2.row.user.lastName}}
+                                    <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
                                 </template>
                             </el-table-column>
-                            <el-table-column prop="class">
-                                <template scope="s2b">
-                                    <i class="fa fa-book"></i> {{ s2b.row.class.name }}
+                            <el-table-column>
+                                <template>
+                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
                                 </template>
                             </el-table-column>
                             <el-table-column>
@@ -293,7 +293,7 @@
 				// modalGenreCustomization2: false,
 				// modalClassCategoriesIsOpen: false,
 				classIdClicked: '',
-				// Student requests
+				// Student requests/enrollments
                 modalStudentRequestsIsOpen: false,
 				studentRequestsTab: 'enrolledStudents', // required to select a tab when the modal is first opened
 				enrolledStudents: [],
@@ -301,7 +301,7 @@
 				enrolledStudentsInputValue: '',
 				requestedStudents: [],
                 requestedStudentsClone: [],
-                requestedStudentsInputValue: '',
+				requestedStudentsInputValue: '',
 				// Assignments
 				modalClassAssignmentsIsOpen: false,
 				assignmentSelectedId: '',
@@ -520,15 +520,46 @@
 			// STUDENT REQUESTS
 			// administrator, professor
             openModalStudentRequests() {
-                this.modalStudentRequestsIsOpen = true
-                this.updateEnrollments() 
-            },
-            updateEnrollments() {
-				console.log("Updating enrollments")
-				// TODO get call enrolled users for this class
-				console.log(this.enrolledUsers, this.currentClassIdSelected)
-				this.$store.dispatch('getEnrolledUserByClassId', this.currentClassIdSelected )
-				console.log(this.enrolledUsers)
+				this.enrolledStudents = []
+				this.enrolledStudentsClone = []
+				this.requestedStudents = []
+				this.requestedStudentsClone = []
+				this.updateEnrolledStudents()
+			},
+            updateEnrolledStudents() {
+				// console.log("Updating enrollments")
+				var self = this
+				this.secureHTTPService.get("enrolledUser?classId=" + this.currentClassIdSelected)
+				.then(function(response){
+					// console.log("running enrolled/requested selection", response)
+					var enrolledUsersInThisClass = response.data.data // All users that have enrolled, including the not yet accepted enrollments
+					self.enrolledStudents = []
+					self.requestedStudents = []
+					self.$store.dispatch('getEnrollments') // Update the store.enrollments array first
+					.then(function(){
+						for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
+							for(var j = 0; j < self.enrollments.length; j++){
+								// UserId must be found in enrollments and the classId of that enrollment must be the current class
+								if (self.enrollments[j].userId === enrolledUsersInThisClass[i].id && self.enrollments[j].classId === self.currentClassIdSelected){
+									// The enrollment should be in accepted status or else the user is not considered "enrolled"/active
+									if (self.enrollments[j].accepted){
+										self.enrolledStudents.push(enrolledUsersInThisClass[i])
+									}
+									else {
+										self.requestedStudents.push(enrolledUsersInThisClass[i])
+									}
+								}
+							}
+						}
+						// console.log("cloning and opening modal")
+						self.cloneEnrolledStudents()
+						self.cloneRequestedStudents()
+						self.modalStudentRequestsIsOpen = true
+					})
+				})
+				.catch(function(err) {
+					console.log("Error while updating enrolled users of class: ", err)
+				})
             },
             cloneEnrolledStudents() {
                 this.enrolledStudentsClone = []
@@ -548,11 +579,12 @@
                 // Define the filter method that is used above.
                 var filterStudents = (queryString) => {
                     return (student) => {
-                        return student.name.toLowerCase().indexOf(queryString) === 0
+						var name = student.firstName + " " + student.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                     }
-                } 
+				} 
 
-                this.enrolledStudentsClone = this.enrolledStudents.filter(filterStudents(this.enrolledStudentsInputValue))
+				this.enrolledStudentsClone = this.enrolledStudents.filter(filterStudents(this.enrolledStudentsInputValue))
      		}, 500),
             queryRequestedStudents: _.debounce(function () {
                 console.log('QUERY REQUESTED STUDENTS')
@@ -560,28 +592,55 @@
                 // Define the filter method that is used above.
                 var filterStudents = (queryString) => {
                     return (student) => {
-                        return student.name.toLowerCase().indexOf(queryString) === 0
+						var name = student.firstName + " " + student.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
                     }
                 } 
 
                 this.requestedStudentsClone = this.requestedStudents.filter(filterStudents(this.requestedStudentsInputValue))
 			 }, 500),
-            acceptStudent(index, row) {
-                var acceptedEnrollment = row.enrollment
-                acceptedEnrollment.accepted = true
-                var self = this
-                this.$store.dispatch( 'acceptEnrollment', { id: row.enrollment.id , body: acceptedEnrollment } )
-                .then(function(){
-                    self.updateEnrollments()
-                })
+			acceptStudent(index, row) {				
+				// Accept student locally
+				this.requestedStudents.splice(index, 1)
+				this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
+				this.enrolledStudents.push(row)
+				this.enrolledStudentsClone.push(row) // Same for the Cloned array.
+
+				// Handle the enrollment resource
+				var userToBeAccepted = row
+				var self = this
+				// This get returns the userId's enrollments
+				this.secureHTTPService.get("enrollment?userId=" + userToBeAccepted.id)
+                .then(function (response) {
+					var enrollmentToBeAccepted = null
+					// Need to search for currentClassId to get the enrollment resource
+					var userEnrollments = response.data.data
+                    for (var i = 0, l = userEnrollments.length; i < l; i++) {
+                        if (userEnrollments[i].classId === self.currentClassIdSelected) {
+							enrollmentToBeAccepted = userEnrollments[i]
+							break
+						}
+					}
+					try {
+						enrollmentToBeAccepted.accepted = true
+						// console.log("Get user enrollment successful", enrollmentToBeAccepted)
+						return enrollmentToBeAccepted
+					}
+					catch(err){
+						console.log("Error while accepting enrollment. Enrollment to be accepted not found?", err)
+					}
+				})
+				.then(function(enrollmentToBeAccepted){
+					self.secureHTTPService.put("enrollment/" + enrollmentToBeAccepted.id, enrollmentToBeAccepted)
+					.then(function() {
+						self.updateEnrolledStudents()
+					})
+				})
                 .catch(function(err){
                     console.log(err)
                 })
-                // this.requestedStudents.splice(index, 1)
-                // this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
-                // this.enrolledStudents.push(row)
-                // this.enrolledStudentsClone.push(row) // Same for the Cloned array.
-            },
+				
+			},
             acceptAllStudents() {
                 // this.$store.commit('ACCEPT_ENROLLMENT')
                 // for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
@@ -767,7 +826,7 @@
 							classId : clickedClassId,
 							userId : this.$root.$options.authService.getAuthData().userId
 						}
-						console.log(body)
+						// console.log(body)
 						var self = this
 						this.$store.dispatch('createEnrollment', body)
 						.then(function(){
@@ -802,7 +861,7 @@
 				'archivedClasses', 'currentClassSelected', 'currentClassNumber', 
 				'currentClassIdSelected', 'adminClasses', 'studentClasses', 
 				'classesToEnroll', 'assignments', 'genres', 
-				'categories', 'enrolledUsers'
+				'categories', 'enrollments'
 				]
             )
 		},
