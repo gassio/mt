@@ -18,11 +18,11 @@
 			</div>
 			<div class="classvideo__metameta">
 				<span class="classvideo__score">
-					<p class="classvideo__scoreNum">4.2</p>
+					<p class="classvideo__scoreNum">{{ ratingSum.toFixed(1) }}</p>
 					<p class="classvideo__scoreLabel">Effectiveness</p>
 				</span>
 				<span class="classvideo__annotations">
-					<p class="classvideo__annotationsNum">3</p>
+					<p class="classvideo__annotationsNum">{{ annotationsSum }}</p>
 					<p class="classvideo__annotationsLabel">Comments</p>
 				</span>
 			</div>
@@ -40,13 +40,12 @@
 		data() {
 			return {
 				role: this.$root.$options.authService.getAuthData().role,
-				// totalAnnotations: this.getAnnotations()
+				secureHTTPService : this.$root.$options.secureHTTPService,
+				annotationsSum: 0,
+				ratingSum: 0
 			}
 		},
 		methods: {
-			getAnnotations() {
-				this.$store.dispatch('getAnnotations', this.currentVideo.id)
-			},
 			featureGlobal(event) {
 				var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
 				// The string '/video/' has 7 seven characters.
@@ -118,8 +117,23 @@
             ),
 		},
 		mounted() {
+			var self = this
+			
+			// Calculate the annotationsSum
+			this.secureHTTPService.get("annotation/?videoId=" + this.currentVideo.id)
+                .then(function (response) { 
+					self.annotationsSum =  response.data.data.length
+					let sum = 0
+					for (var i = 0; i < response.data.data.length; i++) {
+						sum = sum + response.data.data[i].rating
+					}
+					if (self.annotationsSum !== 0) { 
+						self.ratingSum = sum / self.annotationsSum
+					}
+				})
+                .catch(function (err) { console.log(err) })
 		}
-    }
+	}
 </script>
 
 <style>
