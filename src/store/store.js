@@ -690,10 +690,12 @@ export const store = new Vuex.Store({
             state.activeClasses = []
             state.archivedClasses = []
             for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes[i].archived === false)
-                    state.activeClasses.push(state.classes[i])
-                else
-                    state.archivedClasses.push(state.classes[i])
+                if (state.classes[i].professorId === authService.getAuthData().userId) {
+                    if (state.classes[i].archived === false)
+                        state.activeClasses.push(state.classes[i])
+                    else
+                        state.archivedClasses.push(state.classes[i])
+                }
             }
         },
         // STUDENT
@@ -766,7 +768,7 @@ export const store = new Vuex.Store({
             // An array that helps for the filtering.
             const activeClassesLocal = []
             for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes[i].archived === false)
+                if (state.classes[i].archived === false && state.classes[i].professorId === authService.getAuthData().userId)
                     activeClassesLocal.push(state.classes[i])
             }
 
