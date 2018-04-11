@@ -5,8 +5,9 @@
 			<!-- Sidebar buttons/actions  -->
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor' && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
@@ -15,7 +16,7 @@
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
 				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} -{{ c.name }}</a>
+				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} -{{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for professor/administrator-->
@@ -24,10 +25,10 @@
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
-							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
-							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number)">{{ c.number }} - {{ c.name }}</a> -->
+							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
@@ -179,6 +180,47 @@
                 </el-tabs>
             </el-dialog>
 
+			<el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
+                <el-tabs v-model="studentRequestsTab">
+                    <el-tab-pane label="Enrolled students" name="enrolledStudents">
+                        <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+                        <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
+                            <el-table-column prop="name" width="180">
+                                <template scope="s1">
+                                    <i class="fa fa-user"></i> {{ s1.row.firstName + " " +  s1.row.lastName}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template>
+                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                    <el-tab-pane label="Requested students" name="requestedStudents">
+                        <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
+                        <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
+                            <el-table-column prop="name">
+                                <template scope="s2">
+                                    <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template>
+                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
+                                </template>
+                            </el-table-column>
+                            <el-table-column>
+                                <template scope="scope">
+                                    <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                        <br>
+                        <el-button @click="acceptAllStudents()">Accept all</el-button>
+                    </el-tab-pane>
+                </el-tabs>
+            </el-dialog>
 			<!-- <el-dialog title="Class Categories" :visible.sync="modalClassCategoriesIsOpen" class="modal-class-categories" size="small">
 				<el-select v-model="categoriesGenre" placeholder="Select a genre" style="width:50%" @change="fetchCategories()">
 					<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
@@ -238,6 +280,7 @@
 			return {
 				role: this.$root.$options.authService.getAuthData().role,
 				userId: this.$root.$options.authService.getAuthData().userId,
+                secureHTTPService : this.$root.$options.secureHTTPService,
 				// administrator, professor
 				sidebarClassesTab: 'activeClasses',
 				searchInputValue: '',
@@ -250,6 +293,15 @@
 				// modalGenreCustomization2: false,
 				// modalClassCategoriesIsOpen: false,
 				classIdClicked: '',
+				// Student requests/enrollments
+                modalStudentRequestsIsOpen: false,
+				studentRequestsTab: 'enrolledStudents', // required to select a tab when the modal is first opened
+				enrolledStudents: [],
+                enrolledStudentsClone: [],
+				enrolledStudentsInputValue: '',
+				requestedStudents: [],
+                requestedStudentsClone: [],
+				requestedStudentsInputValue: '',
 				// Assignments
 				modalClassAssignmentsIsOpen: false,
 				assignmentSelectedId: '',
@@ -396,8 +448,8 @@
 				this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
 			}, 300),
 			// administrator, professor
-			setCurrentClass(className, classNumber) {
-				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber})
+			setCurrentClass(className, classNumber, classId) {
+				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId})
 			},
 			createClass() {	
 				this.newClass['professorId'] = this.userId
@@ -444,7 +496,7 @@
 					classId: self.classIdClicked,
 					classObject: objectToBeUnarchived 
 				})
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number })				
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number, classId: objectToBeUnarchived.id })				
 				this.modalUnarchiveClassIsOpen = false
 			},
 			// A Vue setter.
@@ -465,6 +517,139 @@
 				this.classIdClicked = classId
 				this.modalUnarchiveClassIsOpen = true
 			},
+			// STUDENT REQUESTS
+			// administrator, professor
+            openModalStudentRequests() {
+				this.enrolledStudents = []
+				this.enrolledStudentsClone = []
+				this.requestedStudents = []
+				this.requestedStudentsClone = []
+				this.updateEnrolledStudents()
+			},
+            updateEnrolledStudents() {
+				// console.log("Updating enrollments")
+				var self = this
+				this.secureHTTPService.get("enrolledUser?classId=" + this.currentClassIdSelected)
+				.then(function(response){
+					// console.log("running enrolled/requested selection", response)
+					var enrolledUsersInThisClass = response.data.data // All users that have enrolled, including the not yet accepted enrollments
+					self.enrolledStudents = []
+					self.requestedStudents = []
+					self.$store.dispatch('getEnrollments') // Update the store.enrollments array first
+					.then(function(){
+						for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
+							for(var j = 0; j < self.enrollments.length; j++){
+								// UserId must be found in enrollments and the classId of that enrollment must be the current class
+								if (self.enrollments[j].userId === enrolledUsersInThisClass[i].id && self.enrollments[j].classId === self.currentClassIdSelected){
+									// The enrollment should be in accepted status or else the user is not considered "enrolled"/active
+									if (self.enrollments[j].accepted){
+										self.enrolledStudents.push(enrolledUsersInThisClass[i])
+									}
+									else {
+										self.requestedStudents.push(enrolledUsersInThisClass[i])
+									}
+								}
+							}
+						}
+						// console.log("cloning and opening modal")
+						self.cloneEnrolledStudents()
+						self.cloneRequestedStudents()
+						self.modalStudentRequestsIsOpen = true
+					})
+				})
+				.catch(function(err) {
+					console.log("Error while updating enrolled users of class: ", err)
+				})
+            },
+            cloneEnrolledStudents() {
+                this.enrolledStudentsClone = []
+                for (var i = 0, l = this.enrolledStudents.length; i < l; i++) {
+                    this.enrolledStudentsClone.push(this.enrolledStudents[i])
+                }
+            },
+            cloneRequestedStudents() {
+                this.requestedStudentsClone = []
+                for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
+                    this.requestedStudentsClone.push(this.requestedStudents[i])
+                }
+			},
+            queryEnrolledStudents: _.debounce(function () {
+                console.log('QUERY ENROLLED STUDENTS')
+
+                // Define the filter method that is used above.
+                var filterStudents = (queryString) => {
+                    return (student) => {
+						var name = student.firstName + " " + student.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+                    }
+				} 
+
+				this.enrolledStudentsClone = this.enrolledStudents.filter(filterStudents(this.enrolledStudentsInputValue))
+     		}, 500),
+            queryRequestedStudents: _.debounce(function () {
+                console.log('QUERY REQUESTED STUDENTS')
+
+                // Define the filter method that is used above.
+                var filterStudents = (queryString) => {
+                    return (student) => {
+						var name = student.firstName + " " + student.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+                    }
+                } 
+
+                this.requestedStudentsClone = this.requestedStudents.filter(filterStudents(this.requestedStudentsInputValue))
+			 }, 500),
+			acceptStudent(index, row) {				
+				// Accept student locally
+				this.requestedStudents.splice(index, 1)
+				this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
+				this.enrolledStudents.push(row)
+				this.enrolledStudentsClone.push(row) // Same for the Cloned array.
+
+				// Handle the enrollment resource
+				var userToBeAccepted = row
+				var self = this
+				// This get returns the userId's enrollments
+				this.secureHTTPService.get("enrollment?userId=" + userToBeAccepted.id)
+                .then(function (response) {
+					var enrollmentToBeAccepted = null
+					// Need to search for currentClassId to get the enrollment resource
+					var userEnrollments = response.data.data
+                    for (var i = 0, l = userEnrollments.length; i < l; i++) {
+                        if (userEnrollments[i].classId === self.currentClassIdSelected) {
+							enrollmentToBeAccepted = userEnrollments[i]
+							break
+						}
+					}
+					try {
+						enrollmentToBeAccepted.accepted = true
+						// console.log("Get user enrollment successful", enrollmentToBeAccepted)
+						return enrollmentToBeAccepted
+					}
+					catch(err){
+						console.log("Error while accepting enrollment. Enrollment to be accepted not found?", err)
+					}
+				})
+				.then(function(enrollmentToBeAccepted){
+					self.secureHTTPService.put("enrollment/" + enrollmentToBeAccepted.id, enrollmentToBeAccepted)
+					.then(function() {
+						self.updateEnrolledStudents()
+					})
+				})
+                .catch(function(err){
+                    console.log(err)
+                })
+				
+			},
+            acceptAllStudents() {
+                // this.$store.commit('ACCEPT_ENROLLMENT')
+                // for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
+                //     this.enrolledStudents.push(this.requestedStudents[i])
+                //     this.enrolledStudentsClone.push(this.requestedStudents[i]) // Same for the Cloned array.
+                // }
+                // this.requestedStudents = []
+                // this.requestedStudentsClone = [] // Same for the Cloned array.
+            },
 			// ASSIGNMENTS
 			fetchAssignments() {
 				console.log(this.assignments)
@@ -641,13 +826,15 @@
 							classId : clickedClassId,
 							userId : this.$root.$options.authService.getAuthData().userId
 						}
-						console.log(body)
+						// console.log(body)
 						var self = this
 						this.$store.dispatch('createEnrollment', body)
 						.then(function(){
 							// TODO move this to store - mutation
-							self.studentClasses.push(self.classesToEnroll[i])
-							self.classesToEnroll.splice(i,1)	
+							alert("Enrollment request sent.")
+						})
+						.catch(function(err) {
+							console.log("Error while creating enrollment: ", err)
 						})
 						break
 					}
@@ -672,8 +859,9 @@
             ...mapGetters(
 				[ 'videos', 'classes', 'activeClasses', 
 				'archivedClasses', 'currentClassSelected', 'currentClassNumber', 
-				'adminClasses', 'studentClasses', 'classesToEnroll', 
-				'assignments', 'genres', 'categories'
+				'currentClassIdSelected', 'adminClasses', 'studentClasses', 
+				'classesToEnroll', 'assignments', 'genres', 
+				'categories', 'enrollments'
 				]
             )
 		},
