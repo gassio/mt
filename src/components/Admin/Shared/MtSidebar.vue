@@ -16,7 +16,7 @@
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
 				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} -{{ c.name }}</a>
+				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} -{{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for professor/administrator-->
@@ -25,10 +25,10 @@
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a>
-							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
-							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id)">{{ c.number }} - {{ c.name }}</a> -->
+							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
@@ -184,48 +184,21 @@
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-						<li v-for="s in enrolledStudentsClone" :key="s.id">
-							<span><i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i>{{ currentClassSelected }}</span>
-						</li>
-						<!-- <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
-                            <el-table-column prop="name" width="180">
-                                <template scope="s1">
-                                    <i class="fa fa-user"></i> {{ s1.row.firstName + " " +  s1.row.lastName}}
-                                </template>
-                            </el-table-column>
-                            <el-table-column>
-                                <template>
-                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
-                                </template>
-                            </el-table-column>
-                        </el-table> -->
+						<div class="mt-table">
+							<li v-for="s in enrolledStudentsClone" :key="s.id">
+								<span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i> {{ currentClassSelected }}</span>
+							</li>
+						</div>
                     </el-tab-pane>
                     <el-tab-pane label="Requested students" name="requestedStudents">
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
-						<li v-for="(s, index) in requestedStudentsClone" :key="s.id" style="list-style:none">
-							<span>
-								<i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}} - 
-								<i class="fa fa-book"></i>{{ currentClassSelected }}
-							 	<el-button size="small" type="info" @click="acceptStudent(index, s)">Accept request</el-button>
-							</span>
-						</li>
-						<!-- <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
-                            <el-table-column prop="name">
-                                <template scope="s2">
-                                    <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="class">
-								<template scope="s1b">
-									<i class="fa fa-book"></i> {{ currentClassSelected }}
-								</template>
-							</el-table-column>
-                            <el-table-column>
-                                <template scope="scope">
-                                    <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table> -->
+						<div class="mt-table">
+							<li v-for="(s, index) in requestedStudentsClone" :key="s.id" style="list-style:none">
+								<span><i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}}</span>
+								<span style="margin-left:20px;"><i class="fa fa-book"></i>{{ currentClassSelected }}</span>
+								<el-button size="small" type="info" @click="acceptStudent(index, s)" style="margin-left:20px;">Accept request</el-button>
+							</li>
+						</div>
                         <br>
                         <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
                     </el-tab-pane>
@@ -458,8 +431,8 @@
 				this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
 			}, 300),
 			// administrator, professor
-			setCurrentClass(className, classNumber, classId) {
-				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId})
+			setCurrentClass(className, classNumber, classId, classDepartment) {
+				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
 			},
 			createClass() {	
 				this.newClass['professorId'] = this.userId
@@ -938,9 +911,9 @@
 	}
 			.classes-card {
 				background-color: rgba(169,9,49,0.04);
-				color: #A90931;
+				color: #A90931 !important;
 				padding: 45px;
-				margin: 20px;
+				margin: 10px !important;
 				height: auto;
 				transition:  box-shadow 0.5s ease;
 				width: 250px;
@@ -953,7 +926,7 @@
 					cursor: pointer;
 					transition: 0.2s;
 					-webkit-transition: 0.2s;
-					background-color: #A90931;
+					background-color: #A90931 !important;
 					color: #FFF !important;
 				}
 
@@ -1038,5 +1011,17 @@
 				.assignments__genreSelect {
 					display: none
 				}
+
+
+/* MT-TABLE*/
+
+.mt-table li {
+	padding: 5px 5px;
+	border-bottom: 1px solid #ccc;
+	list-style: none;
+}
+.mt-table li:hover {
+	background-color: #F5F5F5;
+}
 
 </style>
