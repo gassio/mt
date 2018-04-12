@@ -7,8 +7,7 @@
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
 				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
-				 <!-- <a v-show="authData.role !== 'student'" class="head__nav-item navbar-item badge"   @click="openModalStudentRequests()"><p>Student requests</p></a> -->
-				<a class="sidebar__actionsLink badge" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()" data-badge="2"><i class="fa fa-file-text-o"></i>Student requests</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
@@ -434,6 +433,7 @@
 			// administrator, professor
 			setCurrentClass(className, classNumber, classId, classDepartment) {
 				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
+				this.updateEnrolledStudents()
 			},
 			createClass() {	
 				this.newClass['professorId'] = this.userId
@@ -509,16 +509,19 @@
 			// STUDENT REQUESTS
 			// administrator, professor
             openModalStudentRequests() {
+				var self = this
 				this.enrolledStudents = []
 				this.enrolledStudentsClone = []
 				this.requestedStudents = []
 				this.requestedStudentsClone = []
-				this.updateEnrolledStudents()
+				this.updateEnrolledStudents().then(function() {
+					self.modalStudentRequestsIsOpen = true
+				})
 			},
             updateEnrolledStudents() {
 				// console.log("Updating enrollments")
 				var self = this
-				this.secureHTTPService.get("enrolledUser?classId=" + this.currentClassIdSelected)
+				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClassIdSelected)
 				.then(function(response){
 					// console.log("running enrolled/requested selection", response)
 					var enrolledUsersInThisClass = response.data.data // All users that have enrolled, including the not yet accepted enrollments
@@ -543,7 +546,7 @@
 						// console.log("cloning and opening modal")
 						self.cloneEnrolledStudents()
 						self.cloneRequestedStudents()
-						self.modalStudentRequestsIsOpen = true
+						// self.modalStudentRequestsIsOpen = true
 					})
 				})
 				.catch(function(err) {
@@ -1018,7 +1021,9 @@
 				}
 
 
-/* MT-TABLE*/
+/* ==============================================
+			#MT-TABLE
+	================================================= */
 
 .mt-table li {
 	padding: 5px 5px;
@@ -1028,6 +1033,14 @@
 .mt-table li:hover {
 	background-color: #F5F5F5;
 }
+
+
+
+
+
+/* ==============================================
+			#BADGE
+================================================= */
 
 .badge {
 	position:relative;

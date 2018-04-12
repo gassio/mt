@@ -17,7 +17,7 @@
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                 </div>
                 <div class="navbar-end">
-                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a> 
+                    <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a>
                     <!-- <i class="fa fa-angle-down"></i> -->
                     <a class="head__nav-item navbar-item" @click="logOut()"><p><i class="fa fa-sign-out"></i>Logout</p></a>
                 </div>
