@@ -16,7 +16,7 @@
 
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
-				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
+				<!-- <el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input> -->
 				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
