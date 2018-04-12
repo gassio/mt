@@ -13,7 +13,6 @@
 			<img class="classvideo__image" :src="currentVideo.thumb">
 			<div class="classvideo__titles">
 				<router-link :to="'/video/' + currentVideo.id" tag="a" class="classvideo__title">{{ currentVideo.title }}</router-link>
-				<p>{{ currentVideo.link }}</p>
 				<p class="classvideo__class">{{ currentVideo.class }}</p>
 				<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ currentVideo.genre }} </p>
 			</div>
