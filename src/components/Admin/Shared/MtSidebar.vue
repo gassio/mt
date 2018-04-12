@@ -17,7 +17,7 @@
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
 				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} -{{ c.name }}</a>
+				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for professor/administrator-->
@@ -26,7 +26,7 @@
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'administrator'"     v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'administrator'" v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
 							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
@@ -486,7 +486,12 @@
 			// A Vue setter.
 			queryActiveClasses: _.debounce(function () {
 				console.log('QUERY ACTIVE CLASSES')
-				this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
+				if (this.role === "professor"){
+					this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
+				}
+				else if (this.role === "administrator"){
+					this.$store.commit('FILTER_ADMIN_CLASSES', this.activeClassesInputValue)
+				}
 			}, 300),
 			// A Vue setter.
 			queryArchivedClasses: _.debounce(function () {
@@ -828,7 +833,7 @@
 			queryStudentClasses: _.debounce(function () {
 				console.log('QUERY STUDENT CLASSES')
 
-				this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue) 
+				this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue)
 			}, 300),
 			secondsToMMSS(s) {
 				s = Number(s);
