@@ -17,7 +17,7 @@
                 <el-form-item label="Title" prop="title">
                     <el-input v-model="uploadVidMetadata.title"></el-input>
                 </el-form-item>
-                <el-form-item label="Class" prop="class">
+                <!-- <el-form-item label="Class" prop="class">
                     <el-select v-model="uploadVidMetadata.class" placeholder="Select the class" @change="getAssignmentsByThisClass()">
                         <el-option v-show="role === 'administrator'" :label="c.name" :value="c.name" v-for="c in adminClasses" :key="c.id"></el-option>
                         <el-option v-show="role === 'professor'" :label="c.name" :value="c.name" v-for="c in activeClasses" :key="c.id"></el-option>
@@ -28,17 +28,17 @@
                         <el-option v-show="role === 'administrator'" :label="c.number" :value="c.number" v-for="c in adminClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
                         <el-option v-show="role === 'professor'" :label="c.number" :value="c.number" v-for="c in activeClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
                     </el-select>
-                </el-form-item>
-                <el-form-item label="Assignment" prop="assignment">
+                </el-form-item> -->
+                <el-form-item label="Assignment" prop="assignment" required>
                     <el-select v-model="uploadVidMetadata.assignmentId" placeholder="Select an assignment" >
                         <el-option :label="a.title" :value="a.id" v-for="a in assignments" :key="a.id"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="Department" prop="classDepartment">
+                <!-- <el-form-item label="Department" prop="classDepartment">
                     <el-select placeholder="Select the department" v-model="uploadVidMetadata.classDepartment">
                         <el-option v-for="d in departments" :label="d" :value="d" :key="d"></el-option>
                     </el-select>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="Genre" prop="genre">
                     <el-select v-model="uploadVidMetadata.genre" placeholder="Select the video genre">
                         <el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
@@ -93,7 +93,7 @@
                 uploadVidMetadata: {
 					title: '',
 					class: this.currentClassProp,
-                    classNumber: '',
+                    classNumber: this.currentClassNumber,
                     classDepartment: '',
                     genre: '',
                     presentedAt: '',
@@ -167,14 +167,19 @@
                 // File added 
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
-                    // Resets the value of metadataModal fields
-                    this.uploadVidMetadata.title = '';this.uploadVidMetadata.class = this.currentClassProp;this.uploadVidMetadata.genre = '';this.uploadVidMetadata.presentedAt = '';
-                    // Closes and opens the modals
-                    this.modalDragDropIsOpen = false
-                    this.modalMetadataIsOpen = true
-                    // Sets the title field as the added file.name 
-                    this.uploadVidMetadata.title = file.name
-                    console.log("Added file.")
+                    var self = this
+                    this.getAssignmentsByThisClass().then(function() {
+                        // Resets the value of metadataModal fields
+                        self.uploadVidMetadata.title = ''; self.uploadVidMetadata.class = self.currentClassProp; self.uploadVidMetadata.genre = ''; self.uploadVidMetadata.presentedAt = '';
+                        self.uploadVidMetadata.classNumber = self.currentClassNumber; self.uploadVidMetadata.classDepartment = self.currentClassDepartment
+                        // Closes and opens the modals
+                        self.modalDragDropIsOpen = false
+                        self.modalMetadataIsOpen = true
+                        // Sets the title field as the added file.name 
+                        self.uploadVidMetadata.title = file.name
+                        console.log("Added file.")
+                        console.log(self.uploadVidMetadata)
+                    })
                 })
 
                 // Updates the upload progress bar
@@ -388,15 +393,8 @@
                 })
             },
             getAssignmentsByThisClass() {
-                this.uploadVidMetadata.classNumber = ''
-                var classId;
-                for (var i = 0, l = this.classes.length; i < l; i++) {
-                    if (this.classes[i].name === this.uploadVidMetadata.class) {
-                        classId = this.classes[i].id
-                        break
-                    }
-                }
-                this.$store.dispatch('getAssignments', classId)
+                console.log("Getting assignments")
+                return this.$store.dispatch('getAssignments', this.currentClassIdSelected)
             }
         },
         created() {
@@ -411,7 +409,8 @@
             ...mapGetters([
                 'videos', 'uploadUrl', 'classes', 
                 'activeClasses', 'departments', 'assignments',
-                'genres', 'adminClasses'
+                'genres', 'adminClasses', 'currentClassNumber',
+                'currentClassDepartment', 'currentClassIdSelected'
             ]),
         }    
 }

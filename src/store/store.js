@@ -194,6 +194,7 @@ export const store = new Vuex.Store({
         currentClassSelected: 'Home', // the class that is click from the user
         currentClassIdSelected: '',
         currentClassNumber: '',
+        currentClassDepartment: '',
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
@@ -812,6 +813,7 @@ export const store = new Vuex.Store({
             state.currentClassSelected = payload.className
             state.currentClassIdSelected = payload.classId
             state.currentClassNumber = payload.classNumber
+            state.currentClassDepartment = payload.classDepartment
         },
         /* ENROLLMENTS */
         GET_ENROLLED_USER: (state, payload) => {
@@ -938,6 +940,9 @@ export const store = new Vuex.Store({
         },
         currentClassNumber: state => {
             return state.currentClassNumber
+        },
+        currentClassDepartment: state => {
+            return state.currentClassDepartment
         },
         uploadVideoProps: state => {
             return state.uploadVideoProps
