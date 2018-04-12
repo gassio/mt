@@ -84,7 +84,7 @@
                                 </div>
                                 <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateFields = false; isVideoline = false; selectedMove = 'Other'">X</span></div>
                             </div>  
-                            <div class="annotate-subcategories" v-if="annotateCanon === 'Moves'">
+                            <div class="annotate-subcategories" v-if="annotateCanon === 'Invention'">
                                 <label class="label">Choose move</label>
                                 <el-select v-model="selectedMove" v-for="cat in canons[0].categories" v-if="cat.name === annotateCategory" :key="cat.name" placeholder="Choose move:">
                                     <el-option v-for="mv in cat.mvs" :key="mv.desc" :label="mv.desc" :value="mv.desc">
@@ -232,7 +232,7 @@ You might also want to include a concrete strategy recommendation."
                     <nav class="card-menu">
                         <!-- title="Hide/show" -->
                         <a class="card-menu__item" :class="canon.name" v-for="canon in canons" :key="canon.name"  @click="chooseCanonFilter($event, canon.name)">
-                            <i class="card-menu__icon fa fa_1x" style="margin-top:20px;" :class="{ 'fa-pencil-square-o': (canon.name === 'Moves'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
+                            <i class="card-menu__icon fa fa_1x" style="margin-top:20px;" :class="{ 'fa-pencil-square-o': (canon.name === 'Invention'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
                             <span class="card-menu__title">{{ canon.name }}</span>
                             <div class="card-menu__triangle" :class="canon.name + '-border-triangle'" ></div> 
                         </a>
@@ -246,7 +246,7 @@ You might also want to include a concrete strategy recommendation."
 
 
                     <div class="timeline-container">
-                        <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isMoves || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
+                        <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isInvention || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
                                     <span class="timeline-card__title">{{ card.category }}</span>
@@ -341,7 +341,7 @@ You might also want to include a concrete strategy recommendation."
                 startDragTime: 0,
                 endDragTime: 0,
                 filterCanon: 'All',
-                isMoves: 'Moves',
+                isInvention: 'Invention',
                 isStructure: 'Structure',
                 isDelivery: 'Delivery',
                 isVisuals: 'Visuals',
@@ -353,7 +353,7 @@ You might also want to include a concrete strategy recommendation."
                 annotationPauseTime: 0,
                 id: this.$route.params.id,
                 selectedMove: 'Other',
-                otherMoveSelected: false,
+                otherInventionelected: false,
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
                 authService : this.$root.$options.authService,
@@ -785,15 +785,15 @@ You might also want to include a concrete strategy recommendation."
                 var triangleActiveElement = event.currentTarget.getElementsByClassName('card-menu__triangle')[0] // When the canon is active.
                 var triangleDisabledElement = event.currentTarget.children[2] // When the canon is disabled.
 
-                if (canon === 'Moves') {
-                    if (this.isMoves !== '')  {
-                        this.isMoves = ''
+                if (canon === 'Invention') {
+                    if (this.isInvention !== '')  {
+                        this.isInvention = ''
                         triangleActiveElement.classList.remove("card-menu__triangle")
                         event.currentTarget.style.padding = '20px'
                         event.currentTarget.style.paddingTop = '0px'
                     }
                     else {
-                        this.isMoves = 'Moves'
+                        this.isInvention = 'Invention'
                         triangleDisabledElement.classList.add("card-menu__triangle")
                         event.currentTarget.style.padding = '0px'
                     }
@@ -1292,19 +1292,19 @@ You might also want to include a concrete strategy recommendation."
                 #GENERIC
 ================================================= */
 
-.Moves { background-color: #15314F;}
+.Invention { background-color: #15314F;}
 .Structure { background-color: #F2992E; }
 .Delivery { background-color: #39A0ED; }
 .Visuals { background-color: #717C89; }
 .Style { background-color: #38C97C; }
 
-.Moves-border { border-left: 12px solid #15314F;}
+.Invention-border { border-left: 12px solid #15314F;}
 .Structure-border { border-left: 12px solid #F2992E; }
 .Delivery-border { border-left: 12px solid #39A0ED; }
 .Visuals-border { border-left: 12px solid #717C89; }
 .Style-border { border-left: 12px solid #38C97C; }
 
-.Moves-border-triangle { border-top-color: #15314F;}
+.Invention-border-triangle { border-top-color: #15314F;}
 .Structure-border-triangle { border-top-color: #F2992E; }
 .Delivery-border-triangle { border-top-color: #39A0ED; }
 .Visuals-border-triangle { border-top-color: #717C89; }
