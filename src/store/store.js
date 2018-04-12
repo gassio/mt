@@ -776,9 +776,9 @@ export const store = new Vuex.Store({
         FILTER_STUDENT_CLASSES: (state, inputValue) => {
             // An array that helps for the filtering.
             const studentClassesLocal = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes.archived === false)
-                    studentClassesLocal.push(state.classes[i])
+            for (var i = 0, l = state.studentClasses.length; i < l; i++) {
+                if (state.studentClasses[i].archived === false)
+                    studentClassesLocal.push(state.studentClasses[i])
             }
 
             // Define the filter method that will be used above.
