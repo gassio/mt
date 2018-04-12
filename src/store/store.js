@@ -242,13 +242,15 @@ export const store = new Vuex.Store({
                 })
         },
         editVideo: function ({ commit }, payload) {
-            secureHTTPService.put("video/" + payload.videoId, payload.linkDurationThumb)
+            secureHTTPService.put("video/" + payload.videoId, payload.videoBody)
                 .then( response => {
-                    console.log('-----')
                     console.log('PUT video')
-                    commit('EDIT_VIDEO', payload.linkDurationThumb, payload.videoId)
+                    commit('EDIT_VIDEO', payload.videoBody)
                 })
-                .catch( response => console.log(response.error))
+                .catch( function(response) {
+                    console.log(response.error)
+                    console.log('videoBody: ', payload.videoBody)
+                })
         },
         deleteVideo: function ({ commit }, payload) {
             secureHTTPService.delete("video/" + payload)
@@ -573,14 +575,9 @@ export const store = new Vuex.Store({
             videos.push(payload)
         },
         EDIT_VIDEO: (state, payload) => {
-            var videos = state.videos
-            for (var i=0, l = state.videos.length; i < l; i++) {
-                if (videos[i].id === payload.videoId) {
-                    
-                } 
-            }
-            
-            videos.push(payload)
+            state.videos.link = payload.link
+            state.videos.duration = payload.duration
+            state.videos.status = payload.status
         },
         DELETE_VIDEO: (state, payload) => {
             var videos = state.videos

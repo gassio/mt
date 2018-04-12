@@ -16,7 +16,7 @@
         </div>-->
         <div class="video__body columns">
             <div class="player column is-8">
-                <div id="player">Loading the player...</div>
+                <div id="player"></div>
 
                 <div class="times" v-show="isVideoline">
                     <!-- <span v-for="min in times" class="times-min" v-bind:style="{ marginLeft: min.marginleft }"></span> -->
@@ -284,7 +284,16 @@ You might also want to include a concrete strategy recommendation."
         </div>
         </div>
 
-        <my-footer></my-footer>	
+        <my-footer></my-footer>
+
+        <el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false">
+            <div class="uploadvid__sync-load" 
+                v-loading="modalSyncOpen" 
+                element-loading-text="Processing your file..." 
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+            <button class="button" @click="goHome()">Go home</button>
+        </el-dialog>
         
     </div>
 </template>
@@ -348,6 +357,9 @@ You might also want to include a concrete strategy recommendation."
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
                 authService : this.$root.$options.authService,
+                modalSyncOpen: false,
+                secureHTTPService : this.$root.$options.secureHTTPService,
+                authData: {}
             }
         },
         methods: {
@@ -1041,6 +1053,9 @@ You might also want to include a concrete strategy recommendation."
             deleteCollaborator(scope, row) {
                 console.log('deleteCollaborator')
                 this.$store.dispatch( 'deleteCollaboration', { videoId: this.id, userId: row.id } )
+            },
+            goHome() {
+                this.$router.push('/' + this.authData.role)
             }
         },
         created() {
@@ -1049,6 +1064,7 @@ You might also want to include a concrete strategy recommendation."
         },
         mounted() {
             var self = this
+            this.authData = this.$root.$options.authService.getAuthData()
             
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
@@ -1064,9 +1080,9 @@ You might also want to include a concrete strategy recommendation."
             this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
 
             // Loads video sources: 
-            // link 
+            // link
             // duration
-            // thumb (not done yet GA)
+            // thumb TODO
             // this.getVideoSources(vIndex)
 
             // Get the correct source of the video. 
@@ -1079,33 +1095,138 @@ You might also want to include a concrete strategy recommendation."
                 correctSource = sourcesLength - 2
             }
 
-            this.player = jwplayer('player')            
-            this.player.setup({
-                // If the video has sources (old way) then play the file: sources.[correctSource].file
-                // Else the video has no sources and has instead a link field (new way) then play the file: link
-                file: (this.videos[vIndex].hasOwnProperty("sources")) ? this.videos[vIndex].sources[correctSource].file : this.videos[vIndex].link,
-                image: this.videos[vIndex].thumb,
-                "height": $('.player').height(),
-            });
-        
-            // Animate progress bar width
-            this.player.on('time', function(event) {
-                if (self.player.getState() === 'playing') {
-                    var totalTime = self.videoDuration;
-                    var currentTime = event.position;
+            if (this.videos[vIndex].status === 0) {
+                this.modalSyncOpen = true // Shows loading spinner
 
-                    // Get the current time of video in sec
-                    self.videoCurrentTime = self.player.getPosition()
-                    // Convert the time to MM:SS
-                    self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+                let link, duration, thumb
 
-                    // Scaling = 3 minutes 
-                    var percentTime = (currentTime / 180) * 100;
+                // Fetching link and duration
+                let intervalID = setInterval(function () {
+                    console.log("Sending get jwconversion?videoId=jwVideoId call")
+                    self.secureHTTPService.get("jwconversion?videoId=" + self.videos.jwVideoId)
+                        .then( response => {
+                            console.log(' getting conversions...')
+                            let conversions = response.data.data.conversions
+                            var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
+                            console.log("conv1: ", conversions)
+                            var everythingReady = true // this is a trick
+                            for (var i = 0, l = conversions.length; i < l; i++) {
+                                if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
+                                    everythingReady = false
+                                }
+                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
+                                    everythingReady = false
+                                }
+                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
+                                    everythingReady = false
+                                }
+                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                                    everythingReady = false
+                                }
+                                // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                //     everythingReady = false
+                                // }
+                            }
+                            if (conversions.length === 1) everythingReady = false
+                            if (everythingReady) {
+                                // Pick conversion logic
+                                var pickedVidIndex = 0
+                                var foundIt = false
+                                for (var n = 0; n < conversionNames.length; n++) {
+                                    console.log("conv2: ", conversions, conversionNames[n])
+                                    for (var i = 0, l = conversions.length; i < l; i++) {
+                                        if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
+                                            pickedVidIndex = i
+                                            foundIt = true
+                                            // Do necessary stuff after picking a conversion
+                                            link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                                            duration = conversions[i].duration
+                                            console.log('|> Link: ', link)
+                                            console.log('|> Duration: ', duration)
+                                                    
+                                            // PUT video (update link, status 1)
+                                            self.$store.dispatch('editVideo', { 
+                                                videoId: self.id, 
+                                                videoBody: {
+                                                    "link": link,
+                                                    "duration": parseInt(duration),
+                                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                                                    "status": 1,
+                                                    "featuredGlobal": false,
+                                                    "featuredClass": false
+                                                } 
+                                            })
 
-                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+                                            self.player = jwplayer('player')            
+                                            self.player.setup({
+                                                file: link,
+                                                image: self.videos.thumb,
+                                                "height": $('.player').height(),
+                                            })
+                                            // Animate progress bar width
+                                            self.player.on('time', function(event) {
+                                                if (self.player.getState() === 'playing') {
+                                                    var totalTime = self.videoDuration;
+                                                    var currentTime = event.position;
 
-                }
-            })
+                                                    // Get the current time of video in sec
+                                                    self.videoCurrentTime = self.player.getPosition()
+                                                    // Convert the time to MM:SS
+                                                    self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+
+                                                    // Scaling = 3 minutes 
+                                                    var percentTime = (currentTime / 180) * 100;
+
+                                                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
+                                                }
+                                            })
+
+                                            self.modalSyncOpen = false  // Close loading bar
+                                            clearInterval(intervalID)
+
+                                            break
+                                        }
+                                    }
+                                    if (foundIt) {
+                                        break
+                                    }
+                                }     
+                            }                           
+                        })
+                        .catch( function(error) {
+                            console.log("Couldn't get conversions \n ", error)
+                            clearInterval(intervalID)
+                        })
+                }, 5000)
+            }
+            // else if (this.videos[vIndex].status === 1) {
+            else {
+                self.player = jwplayer('player')            
+                self.player.setup({
+                    file: self.videos[vIndex].link,
+                    image: self.videos.thumb,
+                    "height": $('.player').height(),
+                })
+                // Animate progress bar width
+                self.player.on('time', function(event) {
+                    if (self.player.getState() === 'playing') {
+                        var totalTime = self.videoDuration;
+                        var currentTime = event.position;
+
+                        // Get the current time of video in sec
+                        self.videoCurrentTime = self.player.getPosition()
+                        // Convert the time to MM:SS
+                        self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+
+                        // Scaling = 3 minutes 
+                        var percentTime = (currentTime / 180) * 100;
+
+                        $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
+                    }
+                })
+            }
 
             // DRAGGABLE RIBBON
             $( ".videoline-ribbon" ).draggable({
@@ -1140,15 +1261,7 @@ You might also want to include a concrete strategy recommendation."
                 },
                 stop(event) {
                 }
-            })
-
-            // var cardCommentsArray = document.getElementsByClassName('timeline-container')[0].childNodes
-            // console.log(cardCommentsArray)
-            // for(var i = 0, l = cardCommentsArray.length; i < l; i++){
-            //     var comment = cardCommentsArray[i].getElementsByClassName('timeline-card__comment')
-            //     console.log(comment.text)
-            // }
-                
+            })   
         },
         updated() {
             // Fixes unknown man picture bug
@@ -1987,6 +2100,14 @@ You might also want to include a concrete strategy recommendation."
 .el-select {
     display: flex !important;
     width: 80%;
+}
+
+.uploadvid__sync .el-loading-text {
+    font-size: 1.5em;
+}
+
+.uploadvid__sync .uploadvid__sync-load {
+    padding: 10em 0 5em 0;        
 }
 
 </style>

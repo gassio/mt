@@ -184,7 +184,10 @@
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-                        <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
+						<li v-for="s in enrolledStudentsClone" :key="s.id">
+							<span><i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i>{{ currentClassSelected }}</span>
+						</li>
+						<!-- <el-table :data="enrolledStudentsClone" style="width: 100%" :show-header="false" empty-text="No enrolled students">
                             <el-table-column prop="name" width="180">
                                 <template scope="s1">
                                     <i class="fa fa-user"></i> {{ s1.row.firstName + " " +  s1.row.lastName}}
@@ -195,29 +198,36 @@
                                     <i class="fa fa-book"></i> {{ currentClassSelected }}
                                 </template>
                             </el-table-column>
-                        </el-table>
+                        </el-table> -->
                     </el-tab-pane>
                     <el-tab-pane label="Requested students" name="requestedStudents">
                         <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input>
-                        <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
+						<li v-for="(s, index) in requestedStudentsClone" :key="s.id" style="list-style:none">
+							<span>
+								<i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}} - 
+								<i class="fa fa-book"></i>{{ currentClassSelected }}
+							 	<el-button size="small" type="info" @click="acceptStudent(index, s)">Accept request</el-button>
+							</span>
+						</li>
+						<!-- <el-table :data="requestedStudentsClone" :border="false" style="width: 100%" :show-header="false" empty-text="No student requests">
                             <el-table-column prop="name">
                                 <template scope="s2">
                                     <i class="fa fa-user"></i> {{ s2.row.firstName + " " +  s2.row.lastName}}
                                 </template>
                             </el-table-column>
-                            <el-table-column>
-                                <template>
-                                    <i class="fa fa-book"></i> {{ currentClassSelected }}
-                                </template>
-                            </el-table-column>
+                            <el-table-column prop="class">
+								<template scope="s1b">
+									<i class="fa fa-book"></i> {{ currentClassSelected }}
+								</template>
+							</el-table-column>
                             <el-table-column>
                                 <template scope="scope">
                                     <el-button size="small" type="info" @click="acceptStudent(scope.$index, scope.row)">Accept request</el-button>
                                 </template>
                             </el-table-column>
-                        </el-table>
+                        </el-table> -->
                         <br>
-                        <el-button @click="acceptAllStudents()">Accept all</el-button>
+                        <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
                     </el-tab-pane>
                 </el-tabs>
             </el-dialog>
