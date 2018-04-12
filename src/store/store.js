@@ -23,61 +23,50 @@ export const store = new Vuex.Store({
         classes: [],
         canons: [   
             { 
-                name: 'Moves', 
+                name: 'Invention', 
                 categories: [
                     { 
-                        name: 'Introduction',
+                        name: 'Appeals',
                         mvs: [
-                            { desc: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-                            { desc: 'States the value of the present research and explains why it was conducted' },
-                            { desc: 'Discusses the definitions of key terms' },
-                            { desc: 'Summarizes and previews the methods used' },
-                            { desc: 'Presents basic equations' }
+                            { desc: 'Logos: Appeals to reason or logic, including appeals to statistics, math, logic, order, and \"objectivity.\"' },
+                            { desc: 'Pathos: Appeals to human emotion, desire, or passion' },
+                            { desc: 'Ethos: Appeals to the character or authority of the speaker (situated or invented)' }
                         ]
                     },
                     { 
-                        name: 'Methodology',
+                        name: 'Kairos',
                         mvs: [
-                            { desc: 'Describes materials and instrumentation in the study' },
-                            { desc: 'Describes tasks (actions) in the study' },
-                            { desc: 'Describes the procedures of an experiment (activities)'},
-                            { desc: 'Presents justification of techniques ' },
-                            { desc: 'Describes variables in the study' },
-                            { desc: 'Describes the procedures used in data analysis' },
-                            { desc: 'Describes the relations between the experiment and prior/subsequent experiments' }
+                            { desc: 'Exigence (situation-driven): Recent events to show urgency or relevance to the present' },
+                            { desc: 'Audience-speaker relationship at the moment' },
+                            { desc: 'Alignment to communities taking positions and serving a set of interests' },
+                            { desc: 'Power dynamics between communities or groups ' },
+                            { desc: 'Preferred or appropriate lines of argument, given the audience’s values/needsy' }
                         ]
                     },
                     { 
-                        name: 'Results and Discussion',
+                        name: 'Stasis',
                         mvs: [
-                            { desc: 'Provides a description of the analysis conducted'},
-                            { desc: 'Provides a comprehensive/complete explanation of the results and of the data analysis'},
-                            { desc: 'Describes the reliability/validity of the measures used in the experiment'},
-                            { desc: 'States the data that neither support nor conflict with the major finding '},
-                            { desc: 'Evaluates findings with respect to the hypotheses and comments on whether the results are expected '},
-                            { desc: 'Evaluates trends and patterns '},
-                            { desc: 'Accounts for data that do not support the major finding  '},
-                            { desc: 'Describes established knowledge on the topic and refers to previous research for comparison  '},
-                            { desc: 'Makes a claim about the generalizability of particular results  '},
-                            { desc: 'Indicates limits of sources (including error analysis) '},
-                            { desc: 'Indicates significance of the outcome'},
+                            { desc: 'Fact (conjecture)' },
+                            { desc: 'Definition' },
+                            { desc: 'Causation' },
+                            { desc: 'Quality (value)' },
+                            { desc: 'Policy' },
+                            { desc: 'Place (forum)' },
                         ]
                     },
                     { 
-                        name: 'Conclusion',
+                        name: 'Topoi',
                         mvs: [
-                            { desc: 'Summarizes findings qualitatively and highlights the overall research outcomes'},
-                            { desc: 'Strengthens the discussion by recapitulating main points (such as research questions, aims and purposes, and theoretical or methodological approach)'},
-                            { desc: 'Makes suggestions for future research '}
+                            { desc: 'Comparative' },
+                            { desc: 'Causal' },
+                            { desc: 'Dimensional' }
                         ]
                     },
                     { 
-                        name: 'Question and Answer',
+                        name: 'Extrinsic proof',
                         mvs: [
-                            { desc: 'Responds to questions directly'},
-                            { desc: 'Provides conceptual links to the talk '},
-                            { desc: 'Uses specific details to respond '},
-                            { desc: 'Recommends future research in the field '},
+                            { desc: 'Testimony' },
+                            { desc: 'Data'}
                         ]
                     }
                 ]
