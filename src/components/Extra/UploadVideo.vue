@@ -60,15 +60,7 @@
 		</el-dialog>
 
 		<el-dialog class="uploadvid__progress" title="Upload in progress" :visible.sync="modalProgressIsOpen" :before-close="closeModalProgress" :close-on-click-modal="false">
-            <el-progress :percentage="parseFloat(uploadProgress.toFixed(2))" :stroke-width="14"></el-progress> 
-        </el-dialog>
-
-		<el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false">
-            <div class="uploadvid__sync-load" 
-                v-loading="modalSyncOpen" 
-                element-loading-text="Processing your file..." 
-                element-loading-spinner="el-icon-loading"
-                element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+            <el-progress :percentage="parseFloat(uploadProgress.toFixed(0))" :stroke-width="14"></el-progress> 
         </el-dialog>
 
         <!-- <el-dialog class="uploadvid__maintenance" title="Upload video" :visible.sync="modalMaintenanceIsOpen" :before-close="closeModalMaintenance" >
@@ -117,6 +109,9 @@
                     classNumber: [
                         { required: true, message: 'Choose the classNumber', trigger: 'blur' },
                     ],
+                    // assignment: [
+                    //     { required: true, message: 'Choose an assignment', trigger: 'blur' },
+                    // ],
                     genre: [
                         { required: true, message: 'Please select genre', trigger: 'blur' },
                     ],
@@ -128,13 +123,6 @@
                 authData: null,
                 role: null
             }
-        },
-        created() {
-            this.$store.dispatch('getAllClasses')
-        },
-        mounted() {
-            this.authData = this.$root.$options.authService.getAuthData()
-            this.role = this.authData.role
         },
         methods: {
             createJwVideo() {
@@ -198,104 +186,119 @@
                 // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
-                    
-                    this.modalSyncOpen = true
 
-                    // Shows loading spinner
-                    let link, duration, thumb
+                    var videoBody = {
+                        "title": self.uploadVidMetadata.title,
+                        "class": self.uploadVidMetadata.class,
+                        "classNumber": self.uploadVidMetadata.classNumber,
+                        "classDepartment": self.uploadVidMetadata.classDepartment,
+                        "jwVideoId": jwVideoId,
+                        "genre": self.uploadVidMetadata.genre,
+                        "presentedAt": self.uploadVidMetadata.presentedAt,
+                        "featuredGlobal": false,
+                        "featuredClass": false,
+                        "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                        "link": 'http://www.test.com',
+                        "duration": 0,
+                        "status": 0
+                    }
 
-                    // Fetching link and duration
-                    console.log("Starting upload interval..")
-                    let intervalID = setInterval(function () {
-                        console.log("Sending get jwconversion?videoId=jwVideoId call")
-                        self.secureHTTPService.get("jwconversion?videoId=" + jwVideoId)
-                            .then( response => {
-                                console.log(' getting conversions...')
-                                let conversions = response.data.data.conversions
-                                var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
-                                console.log("conv1: ", conversions)
-                                var everythingReady = true // this is a trick
-                                for (var i = 0, l = conversions.length; i < l; i++) {
-                                    if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
-                                        everythingReady = false
-                                    }
-                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
-                                        everythingReady = false
-                                    }
-                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
-                                        everythingReady = false
-                                    }
-                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
-                                        everythingReady = false
-                                    }
-                                    // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
-                                    //     everythingReady = false
-                                    // }
-                                }
-                                if (conversions.length === 1) everythingReady = false
-                                if (everythingReady) {
-                                    // Pick conversion logic
-                                    var pickedVidIndex = 0
-                                    var foundIt = false
-                                    for (var n = 0; n < conversionNames.length; n++) {
-                                        console.log("conv2: ", conversions, conversionNames[n])
-                                        for (var i = 0, l = conversions.length; i < l; i++) {
-                                            if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
-                                                pickedVidIndex = i
-                                                foundIt = true
-                                                // Do necessary stuff after picking a conversion
-                                                link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
-                                                duration = conversions[i].duration
-                                                console.log('|> Link: ', link)
-                                                console.log('|> Duration: ', duration)
-                                                        
-                                                // POST video 
-                                                self.$store.dispatch('createVideo', {
-                                                    "assignmentId": self.uploadVidMetadata.assignmentId,
-                                                    "title": self.uploadVidMetadata.title,
-                                                    "class": self.uploadVidMetadata.class,
-                                                    "classNumber": self.uploadVidMetadata.classNumber,
-                                                    "classDepartment": self.uploadVidMetadata.classDepartment,
-                                                    "jwVideoId": jwVideoId,
-                                                    "genre": self.uploadVidMetadata.genre,
-                                                    "presentedAt": self.uploadVidMetadata.presentedAt,
-                                                    "featuredGlobal": false,
-                                                    "featuredClass": false,
-                                                    "link": link,
-                                                    "duration": parseInt(duration),
-                                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                                })
+                    if (self.uploadVidMetadata.assignmentId) {
+                        videoBody["assignmentId"] = self.uploadVidMetadata.assignmentId
+                    }
 
-                                                // self.$store.dispatch( 'createVideo', { videoId: this.id, userId: self.authData.userId } )
-                                                
-                                                self.modalSyncOpen = false  // Close loading bar
-                                                self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                                                console.log("currentClassSelected: ", self.currentClassSelected)
-                                                clearInterval(intervalID)
-
-                                                // Clearing modal form
-                                                self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
-                                                break
-                                            }
-                                        }
-                                        if (foundIt) {
-                                            break
-                                        }
-                                    }     
-                                }                           
-                            })
-                            .catch( function(error) {
-                                console.log("Couldn't get conversions \n ", error)
-                                clearInterval(intervalID)
-                            })
-                    }, 5000)
-
-                
-                    let uploadedId, 
-                        uploadedTitle = self.uploadVidMetadata.title;
+                    // POST video (status 0)
+                    self.$store.dispatch('createVideo', videoBody)
 
                     // Closing the progress modal
                     this.modalProgressIsOpen = false
+
+                    // Clearing modal form
+                    self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+                    
+                    // this.modalSyncOpen = true
+
+                    // // Shows loading spinner
+                    // let link, duration, thumb
+
+                    // // Fetching link and duration
+                    // console.log("Starting upload interval..")
+                    // let intervalID = setInterval(function () {
+                    //     console.log("Sending get jwconversion?videoId=jwVideoId call")
+                    //     self.secureHTTPService.get("jwconversion?videoId=" + jwVideoId)
+                    //         .then( response => {
+                    //             console.log(' getting conversions...')
+                    //             let conversions = response.data.data.conversions
+                    //             var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
+                    //             console.log("conv1: ", conversions)
+                    //             var everythingReady = true // this is a trick
+                    //             for (var i = 0, l = conversions.length; i < l; i++) {
+                    //                 if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                    //                 //     everythingReady = false
+                    //                 // }
+                    //             }
+                    //             if (conversions.length === 1) everythingReady = false
+                    //             if (everythingReady) {
+                    //                 // Pick conversion logic
+                    //                 var pickedVidIndex = 0
+                    //                 var foundIt = false
+                    //                 for (var n = 0; n < conversionNames.length; n++) {
+                    //                     console.log("conv2: ", conversions, conversionNames[n])
+                    //                     for (var i = 0, l = conversions.length; i < l; i++) {
+                    //                         if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
+                    //                             pickedVidIndex = i
+                    //                             foundIt = true
+                    //                             // Do necessary stuff after picking a conversion
+                    //                             link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                    //                             duration = conversions[i].duration
+                    //                             console.log('|> Link: ', link)
+                    //                             console.log('|> Duration: ', duration)
+                                                        
+                    //                             // PUT video (update link, status 1)
+                    //                             self.$store.dispatch('editVideo', {
+                    //                                 "link": link,
+                    //                                 "duration": parseInt(duration),
+                    //                                 "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                    //                                 "status": 1
+                    //                             })
+                                                
+                    //                             self.modalSyncOpen = false  // Close loading bar
+                    //                             self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                    //                             console.log("currentClassSelected: ", self.currentClassSelected)
+                    //                             clearInterval(intervalID)
+
+                    //                             // Clearing modal form
+                    //                             self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+                    //                             break
+                    //                         }
+                    //                     }
+                    //                     if (foundIt) {
+                    //                         break
+                    //                     }
+                    //                 }     
+                    //             }                           
+                    //         })
+                    //         .catch( function(error) {
+                    //             console.log("Couldn't get conversions \n ", error)
+                    //             clearInterval(intervalID)
+                    //         })
+                    // }, 5000)
+
+                    // NOT USED
+                    // let uploadedId, 
+                    //     uploadedTitle = self.uploadVidMetadata.title;
 
                 })
 
@@ -395,6 +398,14 @@
                 }
                 this.$store.dispatch('getAssignments', classId)
             }
+        },
+        created() {
+            this.$store.dispatch('getAllClasses')
+        },
+        mounted() {
+            this.authData = this.$root.$options.authService.getAuthData()
+            this.role = this.authData.role
+            this.getAssignmentsByThisClass()
         },
         computed: {
             ...mapGetters([

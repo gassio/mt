@@ -31,7 +31,7 @@
 							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
 						</div>
 
-						<upload-video :currentClassProp="currentClassSelected"></upload-video>
+						<upload-video :currentClassProp="currentClassSelected" v-show="currentClassSelected !== 'Home'"></upload-video>
 
 					</div>
 
