@@ -479,7 +479,7 @@
 					classId: self.classIdClicked,
 					classObject: objectToBeUnarchived 
 				})
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number, classId: objectToBeUnarchived.id })				
+				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number, classId: objectToBeUnarchived.id, classDepartment: objectToBeUnarchived.classDepartment })				
 				this.modalUnarchiveClassIsOpen = false
 			},
 			// A Vue setter.
