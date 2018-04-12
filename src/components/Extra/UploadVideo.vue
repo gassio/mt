@@ -29,7 +29,7 @@
                         <el-option v-show="role === 'professor'" :label="c.number" :value="c.number" v-for="c in activeClasses" :key="c.id" v-if="uploadVidMetadata.class === c.name"></el-option>
                     </el-select>
                 </el-form-item> -->
-                <el-form-item label="Assignment" prop="assignment" required>
+                <el-form-item label="Assignment" prop="assignment">
                     <el-select v-model="uploadVidMetadata.assignmentId" placeholder="Select an assignment" >
                         <el-option :label="a.title" :value="a.id" v-for="a in assignments" :key="a.id"></el-option>
                     </el-select>
