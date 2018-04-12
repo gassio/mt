@@ -243,8 +243,10 @@
 			this.$store.dispatch('getGenres')
 			this.$store.dispatch('getUsers')
 			this.$store.dispatch('getEnrollments')
-
-			this.$store.state.currentClassSelected = 'Home'
+			
+			if (this.$store.state.currentClassSelected === ''){
+				this.$store.state.currentClassSelected = 'Home'
+			}
 		},
 		mounted() {
 			this.role = this.$root.$options.authService.getAuthData().role
