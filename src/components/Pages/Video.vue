@@ -256,8 +256,8 @@ You might also want to include a concrete strategy recommendation."
                                 <p class="timeline-card__desc">{{ card.label }}</p>                                
                             </div>
                             <div class="timeline-card__body" @click.stop.prevent>
-                                <p class="timeline-card__body-title">COMMENT:</p>
-                                <read-more class="timeline-card__comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="70"></read-more> 
+                                <p class="timeline-card__body-title" v-show="!!card.comment">COMMENT:</p>
+                                <read-more class="timeline-card__comment" v-if="!!card.comment" :text="card.comment" more-str="Read More" link="#" less-str="Read less" :max-chars="70"></read-more> 
                                 <div class="timeline-card__effectiveness">
                                     <div class="timeline-card__progress">
                                         <span class="timeline-card__progressSpan" :style="{ width: 20 * card.rating + '%' }" :class="card.canon"></span>
