@@ -7,7 +7,8 @@
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
 				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
-				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests</a>
+				 <!-- <a v-show="authData.role !== 'student'" class="head__nav-item navbar-item badge"   @click="openModalStudentRequests()"><p>Student requests</p></a> -->
+				<a class="sidebar__actionsLink badge" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()" data-badge="2"><i class="fa fa-file-text-o"></i>Student requests</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
@@ -121,10 +122,10 @@
 
 			<!-- administrator, professor -->
 			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
-				<el-select v-show="role === 'administrator'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
+				<el-select v-if="role === 'administrator'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
 					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in adminClasses" v-bind:key="c.name"></el-option>
 				</el-select>
-				<el-select v-show="role === 'professor'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
+				<el-select v-else-if="role === 'professor'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
 					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
 				</el-select>
                 <el-tabs v-show="!!assignmentsClassSelectedId">
@@ -635,7 +636,7 @@
             },
 			// ASSIGNMENTS
 			fetchAssignments() {
-				console.log(this.assignments)
+				console.log(this.role)
 				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedId)
 			},
 			createAssignment() {
@@ -900,7 +901,6 @@
 				padding-right: 5px;
 			}
 
-
 	/* ==============================================
                 #ENROLL-TO-CLASS CLASSES-CARD
 	================================================= */
@@ -1024,4 +1024,21 @@
 	background-color: #F5F5F5;
 }
 
+.badge {
+	position:relative;
+}
+.badge[data-badge]:after {
+	content:attr(data-badge);
+	position:absolute;
+	top:3px;
+	right:-5px;
+	font-size:.7em;
+	background:green;
+	color:white;
+	width:18px;height:18px;
+	text-align:center;
+	line-height:18px;
+	border-radius:50%;
+	box-shadow:0 0 1px #333;
+}
 </style>

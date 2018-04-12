@@ -14,7 +14,7 @@
 			<div class="classvideo__titles">
 				<router-link :to="'/video/' + currentVideo.id" tag="a" class="classvideo__title">{{ currentVideo.title }}</router-link>
 				<p class="classvideo__class">{{ currentVideo.class }}</p>
-				<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ currentVideo.genre }} </p>
+				<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ genreName }} </p>
 			</div>
 			<div class="classvideo__metameta">
 				<span class="classvideo__score">
@@ -42,7 +42,8 @@
 				role: this.$root.$options.authService.getAuthData().role,
 				secureHTTPService : this.$root.$options.secureHTTPService,
 				annotationsSum: 0,
-				ratingSum: 0
+				ratingSum: 0,
+				genreName: ''
 			}
 		},
 		methods: {
@@ -113,7 +114,7 @@
 		},
         computed: {
             ...mapGetters(
-                ['videos']
+                ['videos', 'genres']
             ),
 		},
 		mounted() {
@@ -131,7 +132,18 @@
 						self.ratingSum = sum / self.annotationsSum
 					}
 				})
-                .catch(function (err) { console.log(err) })
+				.catch(function (err) { console.log(err) })
+			
+			// console.log(this.genres)
+			for (var i = 0; i < this.genres.length; i++) {
+				// console.log(this.genres[i].id,", ", this.currentVideo.id)
+				if (this.genres[i].id === this.currentVideo.genre){
+					// console.log("found it")
+					this.genreName = this.genres[i].name
+					break
+				}
+			}
+			// console.log(this.genreName)
 		}
 	}
 </script>
