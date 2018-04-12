@@ -619,12 +619,8 @@ You might also want to include a concrete strategy recommendation."
                 }
 
                 // Pushing new annotation in current video
-                if (card.comment === '' && card.rating === null) {
-                    alert('Please insert a comment and set a rate.')
-                } else if (card.rating === null) {
+                if (card.rating === null) {
                     alert('Please set a rate.')
-                } else if (card.comment === '') {
-                    alert('Please insert a comment.')
                 } else {
 
                     // We are pushing the card the state because the PUT call needs to pass the whole video object in the body.
