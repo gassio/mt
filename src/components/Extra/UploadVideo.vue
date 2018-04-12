@@ -167,17 +167,19 @@
                 // File added 
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
-                    // Resets the value of metadataModal fields
-                    this.uploadVidMetadata.title = '';this.uploadVidMetadata.class = this.currentClassProp;this.uploadVidMetadata.genre = '';this.uploadVidMetadata.presentedAt = '';
-                    this.uploadVidMetadata.classNumber = this.currentClassNumber; this.uploadVidMetadata.classDepartment = this.currentClassDepartment
-                    // Closes and opens the modals
-                    this.modalDragDropIsOpen = false
-                    this.modalMetadataIsOpen = true
-                    // Sets the title field as the added file.name 
-                    this.uploadVidMetadata.title = file.name
-                    console.log("Added file.")
-                    this.getAssignmentsByThisClass()
-                    console.log(this.uploadVidMetadata)
+                    var self = this
+                    this.getAssignmentsByThisClass().then(function() {
+                        // Resets the value of metadataModal fields
+                        self.uploadVidMetadata.title = ''; self.uploadVidMetadata.class = self.currentClassProp; self.uploadVidMetadata.genre = ''; self.uploadVidMetadata.presentedAt = '';
+                        self.uploadVidMetadata.classNumber = self.currentClassNumber; self.uploadVidMetadata.classDepartment = self.currentClassDepartment
+                        // Closes and opens the modals
+                        self.modalDragDropIsOpen = false
+                        self.modalMetadataIsOpen = true
+                        // Sets the title field as the added file.name 
+                        self.uploadVidMetadata.title = file.name
+                        console.log("Added file.")
+                        console.log(self.uploadVidMetadata)
+                    })
                 })
 
                 // Updates the upload progress bar
@@ -392,15 +394,7 @@
             },
             getAssignmentsByThisClass() {
                 console.log("Getting assignments")
-                this.uploadVidMetadata.classNumber = this.currentClassNumber
-                var classId;
-                for (var i = 0, l = this.classes.length; i < l; i++) {
-                    if (this.classes[i].name === this.uploadVidMetadata.class) {
-                        classId = this.classes[i].id
-                        break
-                    }
-                }
-                this.$store.dispatch('getAssignments', classId)
+                return this.$store.dispatch('getAssignments', this.currentClassIdSelected)
             }
         },
         created() {
@@ -416,7 +410,7 @@
                 'videos', 'uploadUrl', 'classes', 
                 'activeClasses', 'departments', 'assignments',
                 'genres', 'adminClasses', 'currentClassNumber',
-                "currentClassDepartment"
+                'currentClassDepartment', 'currentClassIdSelected'
             ]),
         }    
 }
