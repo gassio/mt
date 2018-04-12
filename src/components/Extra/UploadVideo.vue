@@ -170,8 +170,15 @@
                     var self = this
                     this.getAssignmentsByThisClass().then(function() {
                         // Resets the value of metadataModal fields
-                        self.uploadVidMetadata.title = ''; self.uploadVidMetadata.class = self.currentClassProp; self.uploadVidMetadata.genre = ''; self.uploadVidMetadata.presentedAt = '';
-                        self.uploadVidMetadata.classNumber = self.currentClassNumber; self.uploadVidMetadata.classDepartment = self.currentClassDepartment
+                        self.uploadVidMetadata = {
+                            title: '',
+                            class: self.currentClassProp,
+                            classNumber: self.currentClassNumber,
+                            classDepartment: self.currentClassDepartment,
+                            genre: '',
+                            presentedAt: '',
+                            assignmentId: ''
+                        }
                         // Closes and opens the modals
                         self.modalDragDropIsOpen = false
                         self.modalMetadataIsOpen = true
@@ -191,7 +198,8 @@
                 // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
-
+                    console.log(self.uploadVidMetadata)
+                    self.uploadProgress = 0
                     var videoBody = {
                         "title": self.uploadVidMetadata.title,
                         "class": self.uploadVidMetadata.class,
@@ -219,8 +227,15 @@
                     this.modalProgressIsOpen = false
 
                     // Clearing modal form
-                    self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
-                    
+                    self.uploadVidMetadata = {
+                        title: '',
+                        class: self.currentClassProp,
+                        classNumber: self.currentClassNumber,
+                        classDepartment: self.currentClassDepartment,
+                        genre: '',
+                        presentedAt: '',
+                        assignmentId: ''
+                    }
                     // this.modalSyncOpen = true
 
                     // // Shows loading spinner
@@ -351,41 +366,41 @@
             closeModalMaintenance() {
                 this.modalMaintenanceIsOpen = false
             },
-            loadUrlPOC() {
-                this.modalDragDropIsOpen = true
+            // loadUrlPOC() {
+            //     this.modalDragDropIsOpen = true
 
-                this.dropzoneInstance = new Dropzone('#mydropo', { 
-                        url: 'http://www.test.com', // this.uploadUrl
-                        uploadMultiple: true,
-                        autoProcessQueue: false,
-                        parallelUploads: 100,
-                        maxFiles: 1,
-                        timeout:  3000,// 1800000, // 30min 
-                        headers: {
-                            'Cache-Control': null,
-                            'X-Requested-With': null,
-                        }, 
-                })
-                let self = this
-                this.secureHTTPService.post("jwvideo")
-                    .then( response => {
-                        let theData = response.data.data
-                        let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
-                        self.$store.commit('SET_UPLOAD_URL', theUrl)
-                        console.log("Upload url created. The url is ", theUrl)
+            //     this.dropzoneInstance = new Dropzone('#mydropo', { 
+            //             url: 'http://www.test.com', // this.uploadUrl
+            //             uploadMultiple: true,
+            //             autoProcessQueue: false,
+            //             parallelUploads: 100,
+            //             maxFiles: 1,
+            //             timeout:  3000,// 1800000, // 30min 
+            //             headers: {
+            //                 'Cache-Control': null,
+            //                 'X-Requested-With': null,
+            //             }, 
+            //     })
+            //     let self = this
+            //     this.secureHTTPService.post("jwvideo")
+            //         .then( response => {
+            //             let theData = response.data.data
+            //             let theUrl = theData.link.protocol + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
+            //             self.$store.commit('SET_UPLOAD_URL', theUrl)
+            //             console.log("Upload url created. The url is ", theUrl)
 
-                        // document.getElementsByClassName('form.uploadvid__form').action = theUrl;
-                        $("form.uploadvid__area").attr("action", theUrl); 
-                        console.log('Form action assigned!')
+            //             // document.getElementsByClassName('form.uploadvid__form').action = theUrl;
+            //             $("form.uploadvid__area").attr("action", theUrl); 
+            //             console.log('Form action assigned!')
 
-                        $("form.uploadvid__area input:file").change(function() {
-                            self.modalMetadataIsOpen = true
-                        })
-                    })
-                    .catch( error => { 
-                        console.log("Couldn't post jwvideo \n", error)
-                    })
-            },
+            //             $("form.uploadvid__area input:file").change(function() {
+            //                 self.modalMetadataIsOpen = true
+            //             })
+            //         })
+            //         .catch( error => { 
+            //             console.log("Couldn't post jwvideo \n", error)
+            //         })
+            // },
             openMsgUploadStopped(vidTitle) {
                 this.$message({
                     message: 'Video uploading was stopped...',
@@ -403,7 +418,7 @@
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()
             this.role = this.authData.role
-            this.getAssignmentsByThisClass()
+            // this.getAssignmentsByThisClass()
         },
         computed: {
             ...mapGetters([
