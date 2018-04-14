@@ -72,6 +72,7 @@ export default {
             .then(() => {
               // console.log("Login.vue: login success")
               this.$router.push('/')
+              this.$store.state.currentClassSelected = 'Home'
             })
             .catch(() => {
               $('.login-form__error').css('display', 'block')

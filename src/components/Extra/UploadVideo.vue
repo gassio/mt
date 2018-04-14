@@ -413,7 +413,7 @@
             }
         },
         created() {
-            this.$store.dispatch('getAllClasses')
+            // this.$store.dispatch('getAllClasses')
         },
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()

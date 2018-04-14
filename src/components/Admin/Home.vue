@@ -237,12 +237,16 @@
 			}
 		},
 		created() {	
+			// if (this.role === 'student') {
+			// 	this.$store.dispatch('getAllUserEnrollmentsByUserId') // Initializes only this user's enrollments
+			// }
+			// else {
+			// 	this.$store.dispatch('getAllEnrollments') // Initializes all enrollments
+			// }
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
-			this.$store.dispatch('getEnrollmentsByUserId')
 			this.$store.dispatch('getGenres')
 			this.$store.dispatch('getUsers')
-			this.$store.dispatch('getEnrollments')
 			
 			if (this.$store.state.currentClassSelected === ''){
 				this.$store.state.currentClassSelected = 'Home'

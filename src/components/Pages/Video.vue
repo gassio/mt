@@ -1038,7 +1038,7 @@ You might also want to include a concrete strategy recommendation."
                 
                 for (var i = 0, l = this.classes.length; i < l; i++) { 
                     if (this.classes[i].name === this.videos.class) {
-                        this.$store.dispatch( 'getEnrolledUserByClassId', this.classes[i].id )
+                        this.$store.dispatch( 'getEnrolledUsersByClassId', this.classes[i].id )
                     }
                 }
             },

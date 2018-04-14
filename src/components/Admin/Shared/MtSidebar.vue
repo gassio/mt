@@ -15,8 +15,8 @@
 
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
-				<!-- <el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputValue" @change="queryStudentClasses()" placeholder="Search for a class..."></el-input> -->
-				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in studentClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
+				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for professor/administrator-->
@@ -24,17 +24,17 @@
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="activeClassesInputValue" @change="queryActiveClasses()" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'administrator'" v-for="c in adminClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
-							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in activeClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-show="role === 'administrator'" v-for="c in classes"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in classes" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
 							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="archivedClassesInputValue" @change="queryArchivedClasses()" placeholder="Search archived classes..."></el-input>							
-							<a class="sidebar__classesLink" v-for="c in archivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -122,10 +122,10 @@
 			<!-- administrator, professor -->
 			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
 				<el-select v-if="role === 'administrator'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
-					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in adminClasses" v-bind:key="c.name"></el-option>
+					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in classes" v-bind:key="c.name"></el-option>
 				</el-select>
 				<el-select v-else-if="role === 'professor'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
-					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in activeClasses" v-bind:key="c.name"></el-option>
+					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in classes" v-bind:key="c.name"></el-option>
 				</el-select>
                 <el-tabs v-show="!!assignmentsClassSelectedId">
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
@@ -236,15 +236,30 @@
             </el-dialog> -->
 
 			<!-- Student -->
-			<el-dialog title="Find a class to enroll" class="student__enrollModal" :visible.sync="modalEnrollClassIsOpen" size="full">
-				<a class="classes-card" v-for="c in classesToEnroll" :key="c.id" @click="enrollToClass($event)">
+			<el-dialog title="Find a class to enroll" class="modal-student-requests" :visible.sync="modalEnrollClassIsOpen">
+				<p><b>Classes to enroll</b></p>
+				<el-input icon="search" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+				<div class="mt-table">
+					<li v-for="c in filteredNotEnrolledClasses" :key="c.id" @click="enrollToClass($event)">
+						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
+						<i style="visibility:hidden">{{ c.id }}</i>
+					</li>
+				</div>
+				<br>
+				<span><b>Requests Pending</b></span>
+				<div label="" class="mt-table">
+					<li v-for="c in requestedClasses" :key="c.id">
+						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
+						<!-- <i style="visibility:hidden">{{ c.id }}</i> -->
+					</li>
+				</div>
+			</el-dialog>
+				<!-- <a class="classes-card" v-for="c in filteredNotEnrolledClasses" :key="c.id" @click="enrollToClass($event)">
 					<i aria-hidden="true" class="fa fa-book fa-5x"></i>
 					<strong class="classes-card-title">"{{ c.name }}"</strong> 
 					<p class="classes-card-title">{{ c.department }}</p> 
 					<p class=""> {{ c.number }} - {{ c.semester }}</p> 
-					<p style="visibility:hidden">{{ c.id }}</p> 
-				</a>
-			</el-dialog>
+				</a> -->
 
 			<!-- <el-tree :data="categories" :props="genreProps" @node-click="handleNodeClick" show-checkbox></el-tree> -->
 			
@@ -261,23 +276,41 @@
 		props: [],
 		data() {
 			return {
+				// GENERAL
 				role: this.$root.$options.authService.getAuthData().role,
 				userId: this.$root.$options.authService.getAuthData().userId,
-                secureHTTPService : this.$root.$options.secureHTTPService,
-				// administrator, professor
-				sidebarClassesTab: 'activeClasses',
-				searchInputValue: '',
-				activeClassesInputValue: '',
-				archivedClassesInputValue: '',
+				secureHTTPService : this.$root.$options.secureHTTPService,
+				// CLASSES
+				sidebarClassesTab: 'activeClasses', // required to select a tab when first opened
+				searchInput: '', // General search variable uUsed in search text areas
+				searchInputClassModal: '', // Used in search text area in find a class to enroll modal
+				searchInputClassSidebar: '', // Used in search text area in sidebar classes
+				classIdClicked: '',
+				// Student classes
+				enrolledClasses: [],
+				filteredEnrolledClasses: [],
+				notEnrolledClasses: [],
+				filteredNotEnrolledClasses: [],
+				requestedClasses: [],
+
+				// Administrator classes
+				
+				// Professor classes
+
+				// MODALS
+				// Student
+				modalEnrollClassIsOpen: false,
+				// Professor, Administrator
 				modalCreateClassIsOpen: false,
-				modalDeleteClassIsOpen: false,
 				modalArchiveClassIsOpen: false,
 				modalUnarchiveClassIsOpen: false,
-				// modalGenreCustomization2: false,
-				// modalClassCategoriesIsOpen: false,
-				classIdClicked: '',
-				// Student requests/enrollments
-                modalStudentRequestsIsOpen: false,
+				modalClassAssignmentsIsOpen: false,
+				modalStudentRequestsIsOpen: false,
+				// Administrator
+				modalDeleteClassIsOpen: false,
+
+				// ENROLLMENTS
+				// Professor/Administrator side
 				studentRequestsTab: 'enrolledStudents', // required to select a tab when the modal is first opened
 				enrolledStudents: [],
                 enrolledStudentsClone: [],
@@ -285,8 +318,7 @@
 				requestedStudents: [],
                 requestedStudentsClone: [],
 				requestedStudentsInputValue: '',
-				// Assignments
-				modalClassAssignmentsIsOpen: false,
+				// ASSIGNMENTS
 				assignmentSelectedId: '',
 				assignmentsClassSelectedId: '',
 				assignmentTitle: '',
@@ -294,6 +326,8 @@
 				assignmentGenre: '',
 				assignmentCategorySelected: '',
 				categoriesCheckList: [],
+
+				//-----------------------------------
 				// Categories
 				// categoriesGenre: '',
 				currentGenre: '',
@@ -302,9 +336,6 @@
 				newCategoryCanon: "",
 				newCategoryName: "",
 				newCategoryDesc: "",
-				// STUDENT
-				modalEnrollClassIsOpen: false,
-				otherClasses: [],
 				// Genre customization
 				// Genre version 1
 				canons: [
@@ -409,9 +440,102 @@
 			}
 		},
 		mounted () {
-			this.fetchCategories()
+			this.$store.dispatch('getCategories')
+			// Initialize classes arrays
+			// console.log("dispatching get all classes")
+			var self = this
+			this.$store.dispatch("getAllClasses") // Update state.classes
+			.then(function() {
+				// console.log("dispatching getAllUserEnrollmentsByUserId")
+				return self.$store.dispatch("getAllUserEnrollmentsByUserId", self.userId) // Update state.userEnrollments
+			})
+			.then(function() {
+				// Initialize arrays
+				if (self.role === 'student') {
+					self.updateStudentClasses() 
+				}
+				else if (self.role === 'professor'){
+					// self.updateProfessorClasses()
+				}
+				else if (self.role === 'administrator'){
+					// self.updateAdministratorClasses()
+				}
+			})
 		},
 		methods: {
+            filterClassArray: _.debounce(function (arrayName, filteredArrayName, filterString) {
+				// Filters any class array
+				// Requires the array's name as string in the first argument and 
+				// the filtered array's name as string in the second argument and
+				// the search input in the third argument
+
+                // Define the filter method that is used
+                var filterClasses = (queryString) => {
+                    return (c) => {
+                        return c.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
+                    }
+				} 
+				this[filteredArrayName] = this[arrayName].filter(filterClasses(filterString))
+				
+     		}, 500),
+			updateStudentClasses(){
+				// This method updates the "student classes", ie enrolledClasses, requestedClasses, notEnrolledClasses
+				// It relies on the store's classes and userEnrollments, so they might need to be updated before calling
+				// this method, depending on previous actions.
+				this.enrolledClasses = []
+				this.filteredEnrolledClasses = []
+				this.notEnrolledClasses = []
+				this.filteredNotEnrolledClasses = []
+				this.requestedClasses = []
+				for (var c = 0; c < this.classes.length; c++) {
+					if (!this.classes[c].archived) {
+						for (var e = 0; e < this.userEnrollments.length; e++) {
+							if (this.userEnrollments[e].classId === this.classes[c].id) {
+								if (this.userEnrollments[e].accepted) {
+									// Accepted enrollment
+									this.enrolledClasses.push(this.classes[c])
+									this.filteredEnrolledClasses.push(this.classes[c])
+									break
+								}
+								else {
+									// Not yet accepted enrollment
+									this.requestedClasses.push(this.classes[c])
+									break
+								}
+							} 
+						}
+					}
+				}
+				for (var c = 0; c < this.classes.length; c++) {
+					if (!this.classes[c].archived) {
+						var foundInEnrolledClasses = false
+						var foundInRequestedClasses = false
+						// Search for this class in enrolled classes
+						for (var e = 0; e < this.enrolledClasses.length; e++) {
+							// If it is found, it should not be added in the notEnrolledClasses
+							if (this.enrolledClasses[e].id === this.classes[c].id) {
+								foundInEnrolledClasses = true
+								break
+							} 
+						}
+						// Search for this class in requested classes
+						for (var r = 0; r < this.requestedClasses.length; r++) {
+							if (this.requestedClasses[r].id === this.classes[c].id) {
+								foundInRequestedClasses = true
+								break
+							}
+						}
+						// This class is neither enrolled nor requested => it is not enrolled yet
+						if (!foundInEnrolledClasses && !foundInRequestedClasses){
+							this.notEnrolledClasses.push(this.classes[c])
+							this.filteredNotEnrolledClasses.push(this.classes[c])
+						}
+					}
+				}
+				// console.log(this.enrolledClasses)
+				// console.log(this.requestedClasses)
+				// console.log(this.notEnrolledClasses)
+			},
 			// administrator
 			deleteClass() {
 				var objectId
@@ -425,11 +549,6 @@
 				this.modalDeleteClassIsOpen = false
 				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
 			},
-			queryAdminClasses: _.debounce(function () {
-				console.log('QUERY ADMIN CLASSES')
-
-				this.$store.commit('FILTER_ADMIN_CLASSES', this.searchInputValue) 
-			}, 300),
 			// administrator, professor
 			setCurrentClass(className, classNumber, classId, classDepartment) {
 				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
@@ -483,21 +602,6 @@
 				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number, classId: objectToBeUnarchived.id, classDepartment: objectToBeUnarchived.classDepartment })				
 				this.modalUnarchiveClassIsOpen = false
 			},
-			// A Vue setter.
-			queryActiveClasses: _.debounce(function () {
-				console.log('QUERY ACTIVE CLASSES')
-				if (this.role === "professor"){
-					this.$store.commit('FILTER_ACTIVE_CLASSES', this.activeClassesInputValue)
-				}
-				else if (this.role === "administrator"){
-					this.$store.commit('FILTER_ADMIN_CLASSES', this.activeClassesInputValue)
-				}
-			}, 300),
-			// A Vue setter.
-			queryArchivedClasses: _.debounce(function () {
-				console.log('QUERY ARCHIVED CLASSES')
-				this.$store.commit('FILTER_ARCHIVED_CLASSES', this.archivedClassesInputValue)
-			}, 300),
 			openModalArchiveClass() {
 				if (this.currentClassSelected !== '')
 					this.modalArchiveClassIsOpen = true
@@ -527,7 +631,7 @@
 					var enrolledUsersInThisClass = response.data.data // All users that have enrolled, including the not yet accepted enrollments
 					self.enrolledStudents = []
 					self.requestedStudents = []
-					self.$store.dispatch('getEnrollments') // Update the store.enrollments array first
+					self.$store.dispatch('getAllEnrollments') // Update the store.enrollments array first
 					.then(function(){
 						for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
 							for(var j = 0; j < self.enrollments.length; j++){
@@ -754,9 +858,6 @@
 				})
 			},
 			// CATEGORIES
-			fetchCategories() {
-				this.$store.dispatch('getCategories')
-			},
 			createCategoriesTreeDataForm() {
 				try{
 					// Clear out canon children, to get fresh ones from server
@@ -800,44 +901,35 @@
 					}
 				}
 			},
-			categoriesListChanged() {
-				console.log(this.categoriesCheckList)
-				console.log('fetchCategories')
-			},
+			// categoriesListChanged() {
+			// 	console.log(this.categoriesCheckList)
+			// 	console.log('fetchCategories')
+			// },
 			handleNodeClick(data) {
 				console.log(data);
 			},
 			// Student
 			enrollToClass(event) {
-				const clickedClassId = event.currentTarget.children[4].innerHTML
-				
-				for (var i = 0, l = this.classesToEnroll.length; i < l; i++) {
-					if (this.classesToEnroll[i].id === clickedClassId) {
+				const clickedClassId = event.currentTarget.children[1].innerHTML
+				for (var i = 0, l = this.classes.length; i < l; i++) {
+					if (this.classes[i].id === clickedClassId) {
 						
 						var body = {
 							classId : clickedClassId,
-							userId : this.$root.$options.authService.getAuthData().userId
+							userId : this.userId
 						}
 						// console.log(body)
 						var self = this
 						this.$store.dispatch('createEnrollment', body)
-						.then(function(){
-							// TODO move this to store - mutation
-							alert("Enrollment request sent.")
-						})
-						.catch(function(err) {
-							console.log("Error while creating enrollment: ", err)
+						.then(function() {
+                    		alert("Enrollment request sent.")
+							self.updateStudentClasses()
 						})
 						break
 					}
 				}
 				this.modalEnrollClassIsOpen = false
 			},
-			queryStudentClasses: _.debounce(function () {
-				console.log('QUERY STUDENT CLASSES')
-
-				this.$store.commit('FILTER_STUDENT_CLASSES', this.searchInputValue)
-			}, 300),
 			secondsToMMSS(s) {
 				s = Number(s);
 
@@ -849,11 +941,10 @@
 		},
         computed: {
             ...mapGetters(
-				[ 'videos', 'classes', 'activeClasses', 
-				'archivedClasses', 'currentClassSelected', 'currentClassNumber', 
-				'currentClassIdSelected', 'adminClasses', 'studentClasses', 
-				'classesToEnroll', 'assignments', 'genres', 
-				'categories', 'enrollments'
+				['videos', 'classes', 'currentClassSelected', 
+				'currentClassNumber', 'currentClassIdSelected', 'assignments', 
+				'genres', 'categories', 'enrollments', 
+				'userEnrollments'
 				]
             )
 		},
