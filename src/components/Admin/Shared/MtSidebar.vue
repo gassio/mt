@@ -44,16 +44,16 @@
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-for="c in classes" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('professorActiveClasses', 'filteredProfessorActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-for="c in filteredProfessorActiveClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
 							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search archived classes..."></el-input>							
-							<a class="sidebar__classesLink" v-for="c in adminArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('professorArchivedClasses', 'filteredProfessorArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in filteredProfessorArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -320,6 +320,10 @@
 				adminArchivedClasses: [],
 				filteredAdminArchivedClasses: [],
 				// Professor classes
+				professorActiveClasses: [], // All not archived classes "owned" by this professor
+				filteredProfessorActiveClasses: [],
+				professorArchivedClasses: [],
+				filteredProfessorArchivedClasses: [],
 
 				// MODALS
 				// Student
@@ -485,6 +489,12 @@
 					self.updateAdminClasses()
 				})
 			}
+			else if (this.role == 'professor') {
+				this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					self.updateProfessorClasses()
+				})
+			}
 		},
 		methods: {
 			// TODO ADD REJECT ENROLLMENT REQUEST BuTTON FOR PROF/ADMIN WHICH DELETES THE ENROLLMENT REQUEST RESOURCE
@@ -580,6 +590,27 @@
 					}
 				}
 			},
+			updateProfessorClasses() {
+				// This method updates the "professor classes", ie professorActiveClasses, professorArchivedClasses
+				// It relies on the store's classes, so they might need to be updated before calling
+				// this method, depending on previous actions.
+				this.professorActiveClasses = [] // All not archived classes of metalogon
+				this.filteredProfessorActiveClasses = [] 
+				this.professorArchivedClasses = []
+				this.filteredProfessorArchivedClasses = []
+				for (var c = 0; c < this.classes.length; c++) {
+					if (this.classes[c].professorId === this.userId){
+						if (this.classes[c].archived) {
+							this.professorArchivedClasses.push(this.classes[c])
+							this.filteredProfessorArchivedClasses.push(this.classes[c])
+						}
+						else {
+							this.professorActiveClasses.push(this.classes[c])
+							this.filteredProfessorActiveClasses.push(this.classes[c])
+						}
+					}
+				}
+			},
 			// administrator
 			deleteClass() {
 				var objectId
@@ -625,14 +656,19 @@
 					classObject: objectToBeArchived 
 				})
 				.then(function() {
-					self.updateAdminClasses()
+					if (self.role == 'administrator') {
+						self.updateAdminClasses()
+					}
+					else if (self.role === 'professor'){
+						self.updateProfessorClasses()
+					}
 
 					self.modalArchiveClassIsOpen = false // Closes the modal
 
 					self.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to home
 				})
 				.catch(function(err) {
-					console.log("Error on archive class PUT: ", err)
+					console.log('Error on archive class PUT: ', err)
 				})
 				
 			},
@@ -653,7 +689,14 @@
 					classObject: objectToBeUnarchived 
 				})
 				.then(function() {
-					self.updateAdminClasses()
+					if (self.role == 'administrator') {
+						self.updateAdminClasses()
+						self.sidebarClassesTab = 'activeClasses'
+					}
+					else if (self.role === 'professor'){
+						self.updateProfessorClasses()
+						self.sidebarClassesTab = 'activeClasses'
+					}
 
 					self.modalUnarchiveClassIsOpen = false
 
@@ -666,7 +709,7 @@
 					})				
 				})
 				.catch(function(err) {
-					console.log("Error on unarchive class PUT: ", err)
+					console.log('Error on unarchive class PUT: ', err)
 				})
 			},
 			openModalArchiveClass() {
