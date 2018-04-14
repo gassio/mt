@@ -362,18 +362,18 @@ export const store = new Vuex.Store({
             })
         },
         archiveClass: function ({ commit }, payload) {
-            secureHTTPService.put("class/" + payload.classId, payload.classObject)
+            return secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
-                resolve()
+                // pass through
             })
             .catch(function (err) {
                 console.log('archiveClass PUT error: ', err)
             })
         },
         unArchiveClass: function ({ commit }, payload) {
-            secureHTTPService.put("class/" + payload.classId, payload.classObject)
+            return secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
-                resolve()
+                // pass through
             })
             .catch(function (err) {
                 console.log('unarchiveClass PUT error: ', err)

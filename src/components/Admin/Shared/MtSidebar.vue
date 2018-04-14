@@ -15,18 +15,37 @@
 
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
-				<el-input class="sidebar__classesInput" v-show="role === 'student'" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
+				<el-input class="sidebar__classesInput" v-show="role === 'student' && enrolledClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
 				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
-			<!-- Sidebar Classes menu for professor/administrator-->
-			<div class="sidebar__classes" v-show="role === 'administrator' || role === 'professor'">
+			<!-- Sidebar Classes menu for administrator-->
+			<div class="sidebar__classes" v-show="role === 'administrator'">
+				<el-tabs v-model="sidebarClassesTab">
+					<el-tab-pane label="Active classes" name="activeClasses">
+						<div class="sidebar__classes">
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('adminActiveClasses', 'filteredAdminActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-for="c in filteredAdminActiveClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							 <!-- && c.professorId === userId -->
+							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
+						</div>
+					</el-tab-pane>
+					<el-tab-pane label="Archived" name="archivedClasses">
+						<div class="sidebar__classes">
+							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('adminArchivedClasses', 'filteredAdminArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in filteredAdminArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+						</div>
+					</el-tab-pane>
+				</el-tabs>
+			</div>
+			
+			<!-- Sidebar Classes menu for professor-->
+			<div class="sidebar__classes" v-show="role === 'professor'">
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-show="role === 'administrator'" v-for="c in classes"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
-							<a class="sidebar__classesLink" v-show="role === 'professor'" v-for="c in classes" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-for="c in classes" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 							 <!-- && c.professorId === userId -->
 							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
 						</div>
@@ -34,7 +53,7 @@
 					<el-tab-pane label="Archived" name="archivedClasses">
 						<div class="sidebar__classes">
 							<el-input class="sidebar__classesInput" icon="search" v-model="searchInput" @change="" placeholder="Search archived classes..."></el-input>							
-							<a class="sidebar__classesLink" v-for="c in classes" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-for="c in adminArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -183,9 +202,9 @@
 			<el-dialog title="STUDENT REQUESTS" :visible.sync="modalStudentRequestsIsOpen" class="modal-student-requests">
                 <el-tabs v-model="studentRequestsTab">
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
-                        <el-input icon="search" v-model="enrolledStudentsInputValue" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+                        <el-input icon="search" v-model="searchInput" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
 						<div class="mt-table">
-							<li v-for="s in enrolledStudentsClone" :key="s.id">
+							<li v-for="s in filteredEnrolledStudents" :key="s.id">
 								<span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i> {{ currentClassSelected }}</span>
 							</li>
 						</div>
@@ -237,8 +256,9 @@
 
 			<!-- Student -->
 			<el-dialog title="Find a class to enroll" class="modal-student-requests" :visible.sync="modalEnrollClassIsOpen">
-				<p><b>Classes to enroll</b></p>
-				<el-input icon="search" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+				<p v-show="notEnrolledClasses.length !== 0" ><b>Classes to enroll</b></p>
+				<p v-show="notEnrolledClasses.length === 0" ><b>No classes to enroll</b></p>
+				<el-input icon="search" v-show="notEnrolledClasses.length !== 0" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
 				<div class="mt-table">
 					<li v-for="c in filteredNotEnrolledClasses" :key="c.id" @click="enrollToClass($event)">
 						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
@@ -246,7 +266,7 @@
 					</li>
 				</div>
 				<br>
-				<span><b>Requests Pending</b></span>
+				<span v-show="requestedClasses.length !== 0"><b>Requests Pending</b></span>
 				<div label="" class="mt-table">
 					<li v-for="c in requestedClasses" :key="c.id">
 						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
@@ -283,6 +303,8 @@
 				// CLASSES
 				sidebarClassesTab: 'activeClasses', // required to select a tab when first opened
 				searchInput: '', // General search variable uUsed in search text areas
+				searchInputActiveClassSidebar: '', // General search variable uUsed in search text areas
+				searchInputArchivedClassSidebar: '', // General search variable uUsed in search text areas
 				searchInputClassModal: '', // Used in search text area in find a class to enroll modal
 				searchInputClassSidebar: '', // Used in search text area in sidebar classes
 				classIdClicked: '',
@@ -292,9 +314,11 @@
 				notEnrolledClasses: [],
 				filteredNotEnrolledClasses: [],
 				requestedClasses: [],
-
 				// Administrator classes
-				
+				adminActiveClasses: [], // All not archived classes of metalogon
+				filteredAdminActiveClasses: [], 
+				adminArchivedClasses: [],
+				filteredAdminArchivedClasses: [],
 				// Professor classes
 
 				// MODALS
@@ -313,7 +337,7 @@
 				// Professor/Administrator side
 				studentRequestsTab: 'enrolledStudents', // required to select a tab when the modal is first opened
 				enrolledStudents: [],
-                enrolledStudentsClone: [],
+                filteredEnrolledStudents: [],
 				enrolledStudentsInputValue: '',
 				requestedStudents: [],
                 requestedStudentsClone: [],
@@ -444,32 +468,33 @@
 			// Initialize classes arrays
 			// console.log("dispatching get all classes")
 			var self = this
-			this.$store.dispatch("getAllClasses") // Update state.classes
-			.then(function() {
-				// console.log("dispatching getAllUserEnrollmentsByUserId")
-				return self.$store.dispatch("getAllUserEnrollmentsByUserId", self.userId) // Update state.userEnrollments
-			})
-			.then(function() {
-				// Initialize arrays
-				if (self.role === 'student') {
+			if (this.role === 'student') {
+				this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					// console.log("dispatching getAllUserEnrollmentsByUserId")
+					return self.$store.dispatch("getAllUserEnrollmentsByUserId", self.userId) // Update state.userEnrollments
+				})
+				.then(function() {
+					// Initialize arrays
 					self.updateStudentClasses() 
-				}
-				else if (self.role === 'professor'){
-					// self.updateProfessorClasses()
-				}
-				else if (self.role === 'administrator'){
-					// self.updateAdministratorClasses()
-				}
-			})
+				})
+			}
+			else if (this.role == 'administrator') {
+				this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					self.updateAdminClasses()
+				})
+			}
 		},
 		methods: {
+			// TODO ADD REJECT ENROLLMENT REQUEST BuTTON FOR PROF/ADMIN WHICH DELETES THE ENROLLMENT REQUEST RESOURCE
             filterClassArray: _.debounce(function (arrayName, filteredArrayName, filterString) {
 				// Filters any class array
 				// Requires the array's name as string in the first argument and 
 				// the filtered array's name as string in the second argument and
 				// the search input in the third argument
 
-                // Define the filter method that is used
+                // Define the filter method
                 var filterClasses = (queryString) => {
                     return (c) => {
                         return c.name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
@@ -536,6 +561,25 @@
 				// console.log(this.requestedClasses)
 				// console.log(this.notEnrolledClasses)
 			},
+			updateAdminClasses(){
+				// This method updates the "admin classes", ie adminActiveClasses, adminArchivedClasses
+				// It relies on the store's classes, so they might need to be updated before calling
+				// this method, depending on previous actions.
+				this.adminActiveClasses = [] // All not archived classes of metalogon
+				this.filteredAdminActiveClasses = [] 
+				this.adminArchivedClasses = []
+				this.filteredAdminArchivedClasses = []
+				for (var c = 0; c < this.classes.length; c++) {
+					if (this.classes[c].archived) {
+						this.adminArchivedClasses.push(this.classes[c])
+						this.filteredAdminArchivedClasses.push(this.classes[c])
+					}
+					else {
+						this.adminActiveClasses.push(this.classes[c])
+						this.filteredAdminActiveClasses.push(this.classes[c])
+					}
+				}
+			},
 			// administrator
 			deleteClass() {
 				var objectId
@@ -567,40 +611,63 @@
 				// 3. Modifies classes object.
 				var objectToBeArchived = {}
 				var objectId
-				for (var i = 0, l = this.activeClasses.length; i < l; i++) {
-					if (this.activeClasses[i].name === this.currentClassSelected) {
-						this.activeClasses[i].archived = true
-						objectToBeArchived = this.activeClasses[i]
-						objectId = this.activeClasses[i].id
+				for (var i = 0, l = this.classes.length; i < l; i++) {
+					if (this.classes[i].id === this.currentClassIdSelected && !this.classes[i].archived) {
+						this.classes[i].archived = true
+						objectId = this.classes[i].id
+						objectToBeArchived = this.classes[i]
 						break
 					}
 				}
+				var self = this
 				this.$store.dispatch('archiveClass', { 
 					classId: objectId,
 					classObject: objectToBeArchived 
 				})
+				.then(function() {
+					self.updateAdminClasses()
+
+					self.modalArchiveClassIsOpen = false // Closes the modal
+
+					self.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to home
+				})
+				.catch(function(err) {
+					console.log("Error on archive class PUT: ", err)
+				})
 				
-				this.modalArchiveClassIsOpen = false // Closes the modal.
-				var noClass = 'select a class'
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
 			},
 			unArchiveClass() {
-				var self = this
 				var objectToBeUnarchived = {}
 				var objectId
-				for (var i = 0, l = this.archivedClasses.length; i < l; i++) {
-					if (this.archivedClasses[i].id === this.classIdClicked && this.archivedClasses[i].archived === true) {
-						this.archivedClasses[i].archived = false
-						objectToBeUnarchived = this.archivedClasses[i]
+				for (var i = 0, l = this.classes.length; i < l; i++) {
+					if (this.classes[i].id === this.classIdClicked && this.classes[i].archived) {
+						this.classes[i].archived = false
+						objectId = this.classes[i].id
+						objectToBeUnarchived = this.classes[i]
 						break
 					}
 				}
+				var self = this
 				this.$store.dispatch('unArchiveClass', { 
-					classId: self.classIdClicked,
+					classId: objectId,
 					classObject: objectToBeUnarchived 
 				})
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: objectToBeUnarchived.name, classNumber: objectToBeUnarchived.number, classId: objectToBeUnarchived.id, classDepartment: objectToBeUnarchived.classDepartment })				
-				this.modalUnarchiveClassIsOpen = false
+				.then(function() {
+					self.updateAdminClasses()
+
+					self.modalUnarchiveClassIsOpen = false
+
+					self.$store.commit('CURRENT_CLASS_SELECT', 
+					{ 
+						className: objectToBeUnarchived.name, 
+						classNumber: objectToBeUnarchived.number, 
+						classId: objectToBeUnarchived.id, 
+						classDepartment: objectToBeUnarchived.classDepartment 
+					})				
+				})
+				.catch(function(err) {
+					console.log("Error on unarchive class PUT: ", err)
+				})
 			},
 			openModalArchiveClass() {
 				if (this.currentClassSelected !== '')
@@ -615,7 +682,7 @@
             openModalStudentRequests() {
 				var self = this
 				this.enrolledStudents = []
-				this.enrolledStudentsClone = []
+				this.filteredEnrolledStudents = []
 				this.requestedStudents = []
 				this.requestedStudentsClone = []
 				this.updateEnrolledStudents().then(function() {
@@ -658,9 +725,9 @@
 				})
             },
             cloneEnrolledStudents() {
-                this.enrolledStudentsClone = []
+                this.filteredEnrolledStudents = []
                 for (var i = 0, l = this.enrolledStudents.length; i < l; i++) {
-                    this.enrolledStudentsClone.push(this.enrolledStudents[i])
+                    this.filteredEnrolledStudents.push(this.enrolledStudents[i])
                 }
             },
             cloneRequestedStudents() {
@@ -680,7 +747,7 @@
                     }
 				} 
 
-				this.enrolledStudentsClone = this.enrolledStudents.filter(filterStudents(this.enrolledStudentsInputValue))
+				this.filteredEnrolledStudents = this.enrolledStudents.filter(filterStudents(this.searchInput))
      		}, 500),
             queryRequestedStudents: _.debounce(function () {
                 console.log('QUERY REQUESTED STUDENTS')
@@ -700,7 +767,7 @@
 				this.requestedStudents.splice(index, 1)
 				this.requestedStudentsClone.splice(index, 1) // Same for the Cloned array.
 				this.enrolledStudents.push(row)
-				this.enrolledStudentsClone.push(row) // Same for the Cloned array.
+				this.filteredEnrolledStudents.push(row) // Same for the Cloned array.
 
 				// Handle the enrollment resource
 				var userToBeAccepted = row
@@ -741,7 +808,7 @@
                 // this.$store.commit('ACCEPT_ENROLLMENT')
                 // for (var i = 0, l = this.requestedStudents.length; i < l; i++) {
                 //     this.enrolledStudents.push(this.requestedStudents[i])
-                //     this.enrolledStudentsClone.push(this.requestedStudents[i]) // Same for the Cloned array.
+                //     this.filteredEnrolledStudents.push(this.requestedStudents[i]) // Same for the Cloned array.
                 // }
                 // this.requestedStudents = []
                 // this.requestedStudentsClone = [] // Same for the Cloned array.
