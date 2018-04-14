@@ -422,39 +422,39 @@ export const store = new Vuex.Store({
         },
         getEnrolledClassesByUserId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledClass?userId=" + payload)
-                .then(function (response)
-                {
-                    commit('GET_ENROLLED_CLASSES', response.data.data)
-                })
+            .then(function (response)
+            {
+                commit('GET_ENROLLED_CLASSES', response.data.data)
+            })
         },
         getEnrolledUsersByClassId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledUser?classId=" + payload)
-                .then(function (response)
-                {
-                    var responseObj = {data: response.data.data, classId: payload}
-                    commit('GET_ENROLLED_USERS', responseObj)
-                })
+            .then(function (response)
+            {
+                var responseObj = {data: response.data.data, classId: payload}
+                commit('GET_ENROLLED_USERS', responseObj)
+            })
         },
         /* ASSIGNMENTS */ 
         getAssignments: function ({ commit }, payload) {
-            secureHTTPService.get("assignment?classId=" + payload)
-                .then(function (response)
-                {
-                    commit('GET_ASSIGNMENTS', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            return secureHTTPService.get("assignment?classId=" + payload)
+            .then(function (response)
+            {
+                commit('GET_ASSIGNMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getAssignments GET error: ', err)
+            })
         },
         createAssignment: function ({ commit }, payload) {
-            secureHTTPService.post("assignment", payload)
-                .then(function (response)
-                {
-                    commit('CREATE_ASSIGNMENT', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            return secureHTTPService.post("assignment", payload)
+            .then(function (response)
+            {
+                commit('CREATE_ASSIGNMENT', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('createAssignment POST error: ', err)
+            })
         },
         editAssignment: function ({ commit }, payload) {
             console.log('editAssignment()')
