@@ -503,7 +503,7 @@
 				this.$store.dispatch("getAllClasses") // Update state.classes
 				.then(function() {
 					self.updateAdminClasses() 
-					sself.loadingClasses = false
+					self.loadingClasses = false
 				})
 			}
 			else if (this.role == 'professor') {
