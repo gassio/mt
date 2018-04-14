@@ -5,23 +5,38 @@
 			<!-- Sidebar buttons/actions  -->
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
-				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openAssignmentsModal()"><i class="fa fa-file-text-o"></i>Assignments</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="modalArchiveClassIsOpen = true"><i class="fa fa-archive"></i>Archive this class</a>
 				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClass.name === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'administrator' && (currentClass.name !== 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
+				<!-- Loading -->
+				<div class="uploadvid__sync-load" 
+					v-loading="loadingClasses" 
+					v-show="loadingClasses"
+					element-loading-text="Loading..." 
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
+				<!-- The two lines below don't show, if the enrolledClasses array contains nothing, so there is no need for a v-show="!loadingClasses" -->
 				<el-input class="sidebar__classesInput" v-show="enrolledClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
 				<a class="sidebar__classesLink" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for administrator-->
 			<div class="sidebar__classes" v-show="role === 'administrator'">
-				<el-tabs v-model="sidebarClassesTab">
+				<!-- Loading -->
+				<div class="uploadvid__sync-load" 
+					v-loading="loadingClasses" 
+					v-show="loadingClasses"
+					element-loading-text="Loading..." 
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
+				<el-tabs v-model="sidebarClassesTab" v-show="!loadingClasses">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<i v-show="adminActiveClasses.length === 0"> &nbsp;&nbsp; No classes </i>
@@ -41,7 +56,14 @@
 			
 			<!-- Sidebar Classes menu for professor-->
 			<div class="sidebar__classes" v-show="role === 'professor'">
-				<el-tabs v-model="sidebarClassesTab">
+				<!-- Loading -->
+				<div class="uploadvid__sync-load" 
+					v-loading="loadingClasses" 
+					v-show="loadingClasses"
+					element-loading-text="Loading..." 
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
+				<el-tabs v-model="sidebarClassesTab" v-show="!loadingClasses">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
 							<i v-show="professorActiveClasses.length === 0"> &nbsp;&nbsp; No classes - Create one </i>
@@ -140,13 +162,13 @@
 
 			<!-- administrator, professor -->
 			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
-				<el-select v-if="role === 'administrator'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
-					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in classes" v-bind:key="c.name"></el-option>
-				</el-select>
-				<el-select v-else-if="role === 'professor'" v-model="assignmentsClassSelectedId" placeholder="Select a class" style="width:50%" @change="fetchAssignments()">
-					<el-option :label="c.number + ' - ' + c.name" :value="c.id" v-for="c in classes" v-bind:key="c.name"></el-option>
-				</el-select>
-                <el-tabs v-show="!!assignmentsClassSelectedId">
+				<!-- Loading Screen -->
+				<div class="uploadvid__sync-load" 
+					v-loading="loadingAssignments" 
+					element-loading-text="Loading..." 
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+                <el-tabs v-show="!!currentClass.id && !loadingAssignments">
                     <el-tab-pane v-for="a in assignments" :key="a.id" :label="a.title">
 						<div class="assignments-content">
 							<span class="assignments__title">
@@ -190,7 +212,7 @@
 						<el-input v-model="assignmentTitle" placeholder="Set a title" style="width:70%;margin-bottom:15px;"></el-input>
 						<el-input v-model="assignmentDescription" placeholder="Set a description" type="textarea" style="width:70%;margin-bottom:15px;"></el-input>
 						<p>Choose genre:</p>
-						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%" @change="fetchAssignments()">
+						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%" @change="updateAssignments()">
 							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
 						</el-select>
 						<hr>
@@ -273,16 +295,7 @@
 						<!-- <i style="visibility:hidden">{{ c.id }}</i> -->
 					</li>
 				</div>
-			</el-dialog>
-				<!-- <a class="classes-card" v-for="c in filteredNotEnrolledClasses" :key="c.id" @click="enrollToClass($event)">
-					<i aria-hidden="true" class="fa fa-book fa-5x"></i>
-					<strong class="classes-card-title">"{{ c.name }}"</strong> 
-					<p class="classes-card-title">{{ c.department }}</p> 
-					<p class=""> {{ c.number }} - {{ c.semester }}</p> 
-				</a> -->
-
-			<!-- <el-tree :data="categories" :props="genreProps" @node-click="handleNodeClick" show-checkbox></el-tree> -->
-			
+			</el-dialog>			
 		</aside>
 
 </template>
@@ -300,6 +313,8 @@
 				role: this.$root.$options.authService.getAuthData().role,
 				userId: this.$root.$options.authService.getAuthData().userId,
 				secureHTTPService : this.$root.$options.secureHTTPService,
+				loadingClasses: false,
+				loadingAssignments: false,
 				// CLASSES
 				sidebarClassesTab: 'activeClasses', // required to select a tab when first opened
 				searchInput: '', // General search variable uUsed in search text areas
@@ -348,7 +363,6 @@
 				requestedStudentsInputValue: '',
 				// ASSIGNMENTS
 				assignmentSelectedId: '',
-				assignmentsClassSelectedId: '',
 				assignmentTitle: '',
 				assignmentDescription: '',
 				assignmentGenre: '',
@@ -470,6 +484,7 @@
 		mounted () {
 			this.$store.dispatch('getCategories')
 			// Initialize classes arrays
+			this.loadingClasses = true
 			// console.log("dispatching get all classes")
 			var self = this
 			if (this.role === 'student') {
@@ -481,18 +496,23 @@
 				.then(function() {
 					// Initialize arrays
 					self.updateStudentClasses() 
+					self.loadingClasses = false
 				})
 			}
 			else if (this.role == 'administrator') {
 				this.$store.dispatch("getAllClasses") // Update state.classes
 				.then(function() {
-					self.updateAdminClasses()
+					self.updateAdminClasses() 
+					setTimeout(function() {
+						self.loadingClasses = false
+					}, 3000)
 				})
 			}
 			else if (this.role == 'professor') {
 				this.$store.dispatch("getAllClasses") // Update state.classes
 				.then(function() {
-					self.updateProfessorClasses()
+					self.updateProfessorClasses() 
+					self.loadingClasses = false
 				})
 			}
 		},
@@ -712,10 +732,6 @@
 					console.log('Error on unarchive class PUT: ', err)
 				})
 			},
-			openModalArchiveClass() {
-				if (this.currentClass.name !== '')
-					this.modalArchiveClassIsOpen = true
-			},
 			openModalUnarchiveClass(classId) {
 				this.classIdClicked = classId
 				this.modalUnarchiveClassIsOpen = true
@@ -857,14 +873,22 @@
                 // this.requestedStudentsClone = [] // Same for the Cloned array.
             },
 			// ASSIGNMENTS
-			fetchAssignments() {
-				console.log(this.role)
-				this.$store.dispatch('getAssignments', this.assignmentsClassSelectedId)
+			openAssignmentsModal(){
+				this.loadingAssignments = true
+				this.modalClassAssignmentsIsOpen = true
+				var self = this
+				this.updateAssignments()
+				.then(function() {
+					self.loadingAssignments = false
+				})
+			},
+			updateAssignments() {
+				return this.$store.dispatch('getAssignments', this.currentClass.id)
 			},
 			createAssignment() {
-				if (this.assignmentsClassSelectedId !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
+				if (this.currnetClass.id !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
 					this.$store.dispatch('createAssignment', {
-						classId: this.assignmentsClassSelectedId,
+						classId: this.currnetClass.id,
 						title: this.assignmentTitle,
 						description: this.assignmentDescription,
 						genre: this.assignmentGenre
