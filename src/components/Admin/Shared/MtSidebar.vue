@@ -6,17 +6,17 @@
 			<div class="sidebar__actions">
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalCreateClassIsOpen = true"><i class="fa fa-plus"></i>Create new class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="modalClassAssignmentsIsOpen = true"><i class="fa fa-file-text-o"></i>Assignments</a>
-				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
-				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClassSelected === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalArchiveClass()"><i class="fa fa-archive"></i>Archive this class</a>
+				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
-				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClassSelected === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
+				<a class="sidebar__actionsLink" v-show="role === 'administrator' && !(currentClass.name === 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
 				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
 			<!-- Sidebar Classes menu for student -->
 			<div class="sidebar__classes" v-show="role === 'student'">	
-				<el-input class="sidebar__classesInput" v-show="role === 'student' && enrolledClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-show="role === 'student'" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+				<el-input class="sidebar__classesInput" v-show="enrolledClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
+				<a class="sidebar__classesLink" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for administrator-->
@@ -24,16 +24,16 @@
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('adminActiveClasses', 'filteredAdminActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-for="c in filteredAdminActiveClasses"  :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
-							 <!-- && c.professorId === userId -->
-							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
+							<i v-show="adminActiveClasses.length === 0"> &nbsp;&nbsp; No classes </i>
+							<el-input class="sidebar__classesInput" v-show="adminActiveClasses.length !== 0" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('adminActiveClasses', 'filteredAdminActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-for="c in filteredAdminActiveClasses"  :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('adminArchivedClasses', 'filteredAdminArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
-							<a class="sidebar__classesLink" v-for="c in filteredAdminArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+							<i v-show="adminArchivedClasses.length === 0"> &nbsp;&nbsp; No archived classes </i>
+							<el-input class="sidebar__classesInput" v-show="adminArchivedClasses.length !== 0" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('adminArchivedClasses', 'filteredAdminArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in filteredAdminArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClass.name === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -44,16 +44,16 @@
 				<el-tabs v-model="sidebarClassesTab">
 					<el-tab-pane label="Active classes" name="activeClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('professorActiveClasses', 'filteredProfessorActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-for="c in filteredProfessorActiveClasses" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
-							 <!-- && c.professorId === userId -->
-							<!-- <a class="sidebar__classesLink" v-for="c in activeClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a> -->
+							<i v-show="professorActiveClasses.length === 0"> &nbsp;&nbsp; No classes - Create one </i>
+							<el-input class="sidebar__classesInput" v-show="professorActiveClasses.length !== 0" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('professorActiveClasses', 'filteredProfessorActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
+							<a class="sidebar__classesLink" v-for="c in filteredProfessorActiveClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
 						<div class="sidebar__classes">
-							<el-input class="sidebar__classesInput" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('professorArchivedClasses', 'filteredProfessorArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
-							<a class="sidebar__classesLink" v-for="c in filteredProfessorArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClassSelected === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
+							<i v-show="professorArchivedClasses.length === 0"> &nbsp;&nbsp; No archived classes </i>
+							<el-input class="sidebar__classesInput" v-show="professorArchivedClasses.length !== 0" icon="search" v-model="searchInputArchivedClassSidebar" @change="filterClassArray('professorArchivedClasses', 'filteredProfessorArchivedClasses', searchInputArchivedClassSidebar)" placeholder="Search archived classes..."></el-input>							
+							<a class="sidebar__classesLink" v-for="c in filteredProfessorArchivedClasses" :key="c.id" :class="{ 'is-bg-light' : (currentClass.name === c.name) }" @click="openModalUnarchiveClass(c.id)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 				</el-tabs>
@@ -84,7 +84,7 @@
 					</span>
 			</el-dialog>
 
-			<el-dialog :title="'Do you want to archive `' + currentClassSelected + '` class?'" :visible.sync="modalArchiveClassIsOpen">
+			<el-dialog :title="'Do you want to archive `' + currentClass.name + '` class?'" :visible.sync="modalArchiveClassIsOpen">
 				<el-button @click="modalArchiveClassIsOpen = false">Go back</el-button>
 				<el-button class="add-class-btn" @click="archiveClass()"><strong>Archive Class</strong></el-button>
 			</el-dialog>
@@ -133,7 +133,7 @@
 			</el-dialog>	
 
 			<!-- administrator -->
-			<el-dialog :title="'Do you want to delete `' + currentClassSelected + '` class?'" :visible.sync="modalDeleteClassIsOpen">
+			<el-dialog :title="'Do you want to delete `' + currentClass.name + '` class?'" :visible.sync="modalDeleteClassIsOpen">
 				<el-button @click="modalDeleteClassIsOpen = false">Go back</el-button>
 				<el-button class="add-class-btn" @click="deleteClass()"><strong>Delete Class</strong></el-button>
 			</el-dialog>
@@ -205,7 +205,7 @@
                         <el-input icon="search" v-model="searchInput" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
 						<div class="mt-table">
 							<li v-for="s in filteredEnrolledStudents" :key="s.id">
-								<span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i> {{ currentClassSelected }}</span>
+								<span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i> {{ currentClass.name }}</span>
 							</li>
 						</div>
                     </el-tab-pane>
@@ -214,7 +214,7 @@
 						<div class="mt-table">
 							<li v-for="(s, index) in requestedStudentsClone" :key="s.id" style="list-style:none">
 								<span><i class="fa fa-user"></i>{{ s.firstName + " " + s.lastName}}</span>
-								<span style="margin-left:20px;"><i class="fa fa-book"></i>{{ currentClassSelected }}</span>
+								<span style="margin-left:20px;"><i class="fa fa-book"></i>{{ currentClass.name }}</span>
 								<el-button size="small" type="info" @click="acceptStudent(index, s)" style="margin-left:20px;">Accept request</el-button>
 							</li>
 						</div>
@@ -613,16 +613,16 @@
 			},
 			// administrator
 			deleteClass() {
-				var objectId
-				for (var i = 0, l = this.adminClasses.length; i < l; i++) {
-					if (this.adminClasses[i].name === this.currentClassSelected) {
-						objectId = this.adminClasses[i].id
-					}
-				}
-				this.$store.dispatch( 'deleteClass', objectId )
-				
-				this.modalDeleteClassIsOpen = false
-				this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+				var objectId = this.currentClass.id
+
+				var self = this
+				this.$store.dispatch('deleteClass', objectId)
+				.then(function() {
+					self.updateAdminClasses()
+					this.modalDeleteClassIsOpen = false
+					alert('Class deleted.')
+					this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+				})
 			},
 			// administrator, professor
 			setCurrentClass(className, classNumber, classId, classDepartment) {
@@ -643,7 +643,7 @@
 				var objectToBeArchived = {}
 				var objectId
 				for (var i = 0, l = this.classes.length; i < l; i++) {
-					if (this.classes[i].id === this.currentClassIdSelected && !this.classes[i].archived) {
+					if (this.classes[i].id === this.currentClass.id && !this.classes[i].archived) {
 						this.classes[i].archived = true
 						objectId = this.classes[i].id
 						objectToBeArchived = this.classes[i]
@@ -713,7 +713,7 @@
 				})
 			},
 			openModalArchiveClass() {
-				if (this.currentClassSelected !== '')
+				if (this.currentClass.name !== '')
 					this.modalArchiveClassIsOpen = true
 			},
 			openModalUnarchiveClass(classId) {
@@ -735,7 +735,7 @@
             updateEnrolledStudents() {
 				// console.log("Updating enrollments")
 				var self = this
-				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClassIdSelected)
+				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClass.id)
 				.then(function(response){
 					// console.log("running enrolled/requested selection", response)
 					var enrolledUsersInThisClass = response.data.data // All users that have enrolled, including the not yet accepted enrollments
@@ -746,7 +746,7 @@
 						for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
 							for(var j = 0; j < self.enrollments.length; j++){
 								// UserId must be found in enrollments and the classId of that enrollment must be the current class
-								if (self.enrollments[j].userId === enrolledUsersInThisClass[i].id && self.enrollments[j].classId === self.currentClassIdSelected){
+								if (self.enrollments[j].userId === enrolledUsersInThisClass[i].id && self.enrollments[j].classId === self.currentClass.id){
 									// The enrollment should be in accepted status or else the user is not considered "enrolled"/active
 									if (self.enrollments[j].accepted){
 										self.enrolledStudents.push(enrolledUsersInThisClass[i])
@@ -819,10 +819,10 @@
 				this.secureHTTPService.get("enrollment?userId=" + userToBeAccepted.id)
                 .then(function (response) {
 					var enrollmentToBeAccepted = null
-					// Need to search for currentClassId to get the enrollment resource
+					// Need to search for currentClass.id to get the enrollment resource
 					var userEnrollments = response.data.data
                     for (var i = 0, l = userEnrollments.length; i < l; i++) {
-                        if (userEnrollments[i].classId === self.currentClassIdSelected) {
+                        if (userEnrollments[i].classId === self.currentClass.id) {
 							enrollmentToBeAccepted = userEnrollments[i]
 							break
 						}
@@ -879,9 +879,6 @@
 			deleteAssignment(assignmentId) {
 				console.log('delete assignment')
 				this.$store.dispatch('deleteAssignment', assignmentId)
-			},
-			assignmentTabClicked(assignmentId) {
-				console.log('tab clicked: ', assignmentId)
 			},
 			// edit functionality
 			toggleTitleEdit(ev) {
@@ -1021,24 +1018,15 @@
 			// Student
 			enrollToClass(event) {
 				const clickedClassId = event.currentTarget.children[1].innerHTML
-				for (var i = 0, l = this.classes.length; i < l; i++) {
-					if (this.classes[i].id === clickedClassId) {
-						
-						var body = {
-							classId : clickedClassId,
-							userId : this.userId
-						}
-						// console.log(body)
-						var self = this
-						this.$store.dispatch('createEnrollment', body)
-						.then(function() {
-                    		alert("Enrollment request sent.")
-							self.updateStudentClasses()
-						})
-						break
-					}
-				}
-				this.modalEnrollClassIsOpen = false
+				var body = {classId : clickedClassId, userId : this.userId}
+				
+				var self = this
+				this.$store.dispatch('createEnrollment', body)
+				.then(function() {
+					self.updateStudentClasses()
+					self.modalEnrollClassIsOpen = false
+					alert("Enrollment request sent.")
+				})
 			},
 			secondsToMMSS(s) {
 				s = Number(s);
@@ -1051,10 +1039,9 @@
 		},
         computed: {
             ...mapGetters(
-				['videos', 'classes', 'currentClassSelected', 
-				'currentClassNumber', 'currentClassIdSelected', 'assignments', 
-				'genres', 'categories', 'enrollments', 
-				'userEnrollments'
+				['videos', 'classes', 'currentClass',
+				 'assignments', 'genres', 'categories', 
+				 'enrollments', 'userEnrollments'
 				]
             )
 		},

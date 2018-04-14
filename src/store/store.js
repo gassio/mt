@@ -174,11 +174,14 @@ export const store = new Vuex.Store({
         ],
         categories: [],
         genres: [],
-        departments: [], 
-        currentClassSelected: 'Home', // the class that is click from the user
-        currentClassIdSelected: '',
-        currentClassNumber: '',
-        currentClassDepartment: '',
+        departments: [],
+        // The currently selected class 
+        currentClass: { 
+            name:'Home', 
+            id: '',
+            number: '',
+            department: ''
+        },
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
@@ -344,21 +347,21 @@ export const store = new Vuex.Store({
         //         })
         // },
         createClass: function ({ commit }, payload) {
-            secureHTTPService.post("class/", payload.newClass)
+            return secureHTTPService.post("class/", payload.newClass)
             .then(response => {
                 commit('CREATE_CLASS', response.data.data)
             })
             .catch(function (err) {
-                console.log('Error createClass()', err)
+                console.log('createClass POST error: ', err)
             })
         },
         deleteClass: function ({ commit }, payload) {
-            secureHTTPService.delete("class/" + payload)
+            return secureHTTPService.delete("class/" + payload)
             .then(response => {
                 commit('DELETE_CLASS', payload)
             })
             .catch(function (err) {
-                console.log('Error deleteClass()', err)
+                console.log('deleteClass DELETE error: ', err)
             })
         },
         archiveClass: function ({ commit }, payload) {
@@ -681,10 +684,10 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
-            state.currentClassSelected = payload.className
-            state.currentClassIdSelected = payload.classId
-            state.currentClassNumber = payload.classNumber
-            state.currentClassDepartment = payload.classDepartment
+            state.currentClass.name = payload.className
+            state.currentClass.id = payload.classId
+            state.currentClass.number = payload.classNumber
+            state.currentClass.department = payload.classDepartment
         },
         /* ENROLLMENTS */
         GET_ENROLLED_USERS: (state, payload) => {
@@ -797,17 +800,8 @@ export const store = new Vuex.Store({
         departments: state => {
             return state.departments
         },
-        currentClassSelected: state => {
-            return state.currentClassSelected
-        },
-        currentClassIdSelected: state => {
-            return state.currentClassIdSelected
-        },
-        currentClassNumber: state => {
-            return state.currentClassNumber
-        },
-        currentClassDepartment: state => {
-            return state.currentClassDepartment
+        currentClass: state => {
+            return state.currentClass
         },
         uploadVideoProps: state => {
             return state.uploadVideoProps

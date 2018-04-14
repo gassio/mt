@@ -41,9 +41,9 @@
             }
         },
         methods: {
-            setCurrentClass(className, classNumber, classId) {
+            setCurrentClass(className, classNumber, classId, classDepartment) {
                 console.log('CURRENT_CLASS_SELECT')
-                this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId})
+                this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
             },
             logOut() {
                 this.$router.push('/login')
