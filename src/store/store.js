@@ -238,8 +238,8 @@ export const store = new Vuex.Store({
                     console.log('PUT video')
                     commit('EDIT_VIDEO', payload.videoBody)
                 })
-                .catch( function(response) {
-                    console.log(response.error)
+                .catch( function(err) {
+                    console.log(err)
                     console.log('videoBody: ', payload.videoBody)
                 })
         },
@@ -350,6 +350,7 @@ export const store = new Vuex.Store({
             return secureHTTPService.post("class/", payload.newClass)
             .then(response => {
                 commit('CREATE_CLASS', response.data.data)
+                return response
             })
             .catch(function (err) {
                 console.log('createClass POST error: ', err)

@@ -1092,109 +1092,109 @@ You might also want to include a concrete strategy recommendation."
             }
 
             if (this.videos[vIndex].status === 0) {
-                this.modalSyncOpen = true // Shows loading spinner
+                // this.modalSyncOpen = true // Shows loading spinner
 
-                let link, duration, thumb
+                // let link, duration, thumb
 
-                // Fetching link and duration
-                let intervalID = setInterval(function () {
-                    console.log("Sending get jwconversion?videoId=jwVideoId call")
-                    self.secureHTTPService.get("jwconversion?videoId=" + self.videos.jwVideoId)
-                        .then( response => {
-                            console.log(' getting conversions...')
-                            let conversions = response.data.data.conversions
-                            var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
-                            console.log("conv1: ", conversions)
-                            var everythingReady = true // this is a trick
-                            for (var i = 0, l = conversions.length; i < l; i++) {
-                                if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
-                                    everythingReady = false
-                                }
-                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
-                                    everythingReady = false
-                                }
-                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
-                                    everythingReady = false
-                                }
-                                else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
-                                    everythingReady = false
-                                }
-                                // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
-                                //     everythingReady = false
-                                // }
-                            }
-                            if (conversions.length === 1) everythingReady = false
-                            if (everythingReady) {
-                                // Pick conversion logic
-                                var pickedVidIndex = 0
-                                var foundIt = false
-                                for (var n = 0; n < conversionNames.length; n++) {
-                                    console.log("conv2: ", conversions, conversionNames[n])
-                                    for (var i = 0, l = conversions.length; i < l; i++) {
-                                        if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
-                                            pickedVidIndex = i
-                                            foundIt = true
-                                            // Do necessary stuff after picking a conversion
-                                            link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
-                                            duration = conversions[i].duration
-                                            console.log('|> Link: ', link)
-                                            console.log('|> Duration: ', duration)
+                // // Fetching link and duration
+                // let intervalID = setInterval(function () {
+                //     console.log("Sending get jwconversion?videoId=jwVideoId call")
+                //     self.secureHTTPService.get("jwconversion?videoId=" + self.videos.jwVideoId)
+                //         .then( response => {
+                //             console.log(' getting conversions...')
+                //             let conversions = response.data.data.conversions
+                //             var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
+                //             console.log("conv1: ", conversions)
+                //             var everythingReady = true // this is a trick
+                //             for (var i = 0, l = conversions.length; i < l; i++) {
+                //                 if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
+                //                     everythingReady = false
+                //                 }
+                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
+                //                     everythingReady = false
+                //                 }
+                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
+                //                     everythingReady = false
+                //                 }
+                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                //                     everythingReady = false
+                //                 }
+                //                 // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                //                 //     everythingReady = false
+                //                 // }
+                //             }
+                //             if (conversions.length === 1) everythingReady = false
+                //             if (everythingReady) {
+                //                 // Pick conversion logic
+                //                 var pickedVidIndex = 0
+                //                 var foundIt = false
+                //                 for (var n = 0; n < conversionNames.length; n++) {
+                //                     console.log("conv2: ", conversions, conversionNames[n])
+                //                     for (var i = 0, l = conversions.length; i < l; i++) {
+                //                         if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
+                //                             pickedVidIndex = i
+                //                             foundIt = true
+                //                             // Do necessary stuff after picking a conversion
+                //                             link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                //                             duration = conversions[i].duration
+                //                             console.log('|> Link: ', link)
+                //                             console.log('|> Duration: ', duration)
                                                     
-                                            // PUT video (update link, status 1)
-                                            self.$store.dispatch('editVideo', { 
-                                                videoId: self.id, 
-                                                videoBody: {
-                                                    "link": link,
-                                                    "duration": parseInt(duration),
-                                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                                    "status": 1,
-                                                    "featuredGlobal": false,
-                                                    "featuredClass": false
-                                                } 
-                                            })
+                //                             // PUT video (update link, status 1)
+                //                             self.$store.dispatch('editVideo', { 
+                //                                 videoId: self.id, 
+                //                                 videoBody: {
+                //                                     "link": link,
+                //                                     "duration": parseInt(duration),
+                //                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                //                                     "status": 1,
+                //                                     "featuredGlobal": false,
+                //                                     "featuredClass": false
+                //                                 } 
+                //                             })
 
-                                            self.player = jwplayer('player')            
-                                            self.player.setup({
-                                                file: link,
-                                                image: self.videos.thumb,
-                                                "height": $('.player').height(),
-                                            })
-                                            // Animate progress bar width
-                                            self.player.on('time', function(event) {
-                                                if (self.player.getState() === 'playing') {
-                                                    var totalTime = self.videoDuration;
-                                                    var currentTime = event.position;
+                //                             self.player = jwplayer('player')            
+                //                             self.player.setup({
+                //                                 file: link,
+                //                                 image: self.videos.thumb,
+                //                                 "height": $('.player').height(),
+                //                             })
+                //                             // Animate progress bar width
+                //                             self.player.on('time', function(event) {
+                //                                 if (self.player.getState() === 'playing') {
+                //                                     var totalTime = self.videoDuration;
+                //                                     var currentTime = event.position;
 
-                                                    // Get the current time of video in sec
-                                                    self.videoCurrentTime = self.player.getPosition()
-                                                    // Convert the time to MM:SS
-                                                    self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+                //                                     // Get the current time of video in sec
+                //                                     self.videoCurrentTime = self.player.getPosition()
+                //                                     // Convert the time to MM:SS
+                //                                     self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
 
-                                                    // Scaling = 3 minutes 
-                                                    var percentTime = (currentTime / 180) * 100;
+                //                                     // Scaling = 3 minutes 
+                //                                     var percentTime = (currentTime / 180) * 100;
 
-                                                    $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+                //                                     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
 
-                                                }
-                                            })
+                //                                 }
+                //                             })
 
-                                            self.modalSyncOpen = false  // Close loading bar
-                                            clearInterval(intervalID)
+                //                             self.modalSyncOpen = false  // Close loading bar
+                //                             clearInterval(intervalID)
 
-                                            break
-                                        }
-                                    }
-                                    if (foundIt) {
-                                        break
-                                    }
-                                }     
-                            }                           
-                        })
-                        .catch( function(error) {
-                            console.log("Couldn't get conversions \n ", error)
-                            clearInterval(intervalID)
-                        })
-                }, 5000)
+                //                             break
+                //                         }
+                //                     }
+                //                     if (foundIt) {
+                //                         break
+                //                     }
+                //                 }     
+                //             }                           
+                //         })
+                //         .catch( function(error) {
+                //             console.log("Couldn't get conversions \n ", error)
+                //             clearInterval(intervalID)
+                //         })
+                // }, 5000)
             }
             // else if (this.videos[vIndex].status === 1) {
             else {
