@@ -161,7 +161,7 @@
 			</el-dialog>
 
 			<!-- administrator, professor -->
-			<el-dialog title="Class assignments" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
+			<el-dialog v-bind:title="this.currentClass.name + ' Class assignments'" :visible.sync="modalClassAssignmentsIsOpen" class="modal-class-assignments">
 				<!-- Loading Screen -->
 				<div class="uploadvid__sync-load" 
 					v-loading="loadingAssignments" 
