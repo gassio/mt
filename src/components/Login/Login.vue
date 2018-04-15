@@ -87,10 +87,12 @@ export default {
             alert("Please repeat password correctly.")
           }
           else {
+            var capitalizedFirstName = this.firstName[0].toUpperCase() + this.firstName.slice(1).toLowerCase()
+            var capitalizedLastName = this.lastName[0].toUpperCase() + this.lastName.slice(1).toLowerCase()
             var body =
             {
-              "firstName" : this.firstName,
-              "lastName" : this.lastName,
+              "firstName" : capitalizedFirstName,
+              "lastName" : capitalizedLastName,
               "email" : this.newEmail,
               "password" : this.newPassword,
               "role" : ""
