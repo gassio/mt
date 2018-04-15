@@ -278,7 +278,7 @@
 
 			<!-- Student -->
 			<el-dialog title="Find a class to enroll" class="modal-student-requests" :visible.sync="modalEnrollClassIsOpen">
-				<p v-show="notEnrolledClasses.length !== 0" ><b>Classes to enroll</b></p>
+				<!-- <p v-show="notEnrolledClasses.length !== 0" ><b>Classes to enroll</b></p> -->
 				<p v-show="notEnrolledClasses.length === 0" ><b>No classes to enroll</b></p>
 				<el-input icon="search" v-show="notEnrolledClasses.length !== 0" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
 				<div class="mt-table">
@@ -316,26 +316,26 @@
 				loadingClasses: false,
 				loadingAssignments: false,
 				// CLASSES
-				sidebarClassesTab: 'activeClasses', // required to select a tab when first opened
-				searchInput: '', // General search variable uUsed in search text areas
-				searchInputActiveClassSidebar: '', // General search variable uUsed in search text areas
-				searchInputArchivedClassSidebar: '', // General search variable uUsed in search text areas
-				searchInputClassModal: '', // Used in search text area in find a class to enroll modal
-				searchInputClassSidebar: '', // Used in search text area in sidebar classes
+				sidebarClassesTab: 'activeClasses',  // Required to select a tab. activeClasses is the initialization
+				searchInput: '',                     // General search variable used in search text areas
+				searchInputActiveClassSidebar: '',   // General search variable used in search text areas
+				searchInputArchivedClassSidebar: '', // General search variable used in search text areas
+				searchInputClassModal: '',           // Used in search text area in find a class to enroll modal
+				searchInputClassSidebar: '',         // Used in search text area in sidebar classes
 				classIdClicked: '',
 				// Student classes
-				enrolledClasses: [],
+				enrolledClasses: [],            // The classes that this student is enrolled to
 				filteredEnrolledClasses: [],
-				notEnrolledClasses: [],
+				notEnrolledClasses: [],         // The classes that this student hasn't enrolled or requested
 				filteredNotEnrolledClasses: [],
-				requestedClasses: [],
+				requestedClasses: [],           // The classes that this student has requested to be enrolled
 				// Administrator classes
-				adminActiveClasses: [], // All not archived classes of metalogon
+				adminActiveClasses: [],         // All not archived classes of metalogon
 				filteredAdminActiveClasses: [], 
 				adminArchivedClasses: [],
 				filteredAdminArchivedClasses: [],
 				// Professor classes
-				professorActiveClasses: [], // All not archived classes "owned" by this professor
+				professorActiveClasses: [],         // All not archived classes "owned" by this professor
 				filteredProfessorActiveClasses: [],
 				professorArchivedClasses: [],
 				filteredProfessorArchivedClasses: [],
@@ -636,10 +636,10 @@
 				var self = this
 				this.$store.dispatch('deleteClass', objectId)
 				.then(function() {
+					// Delete class can only be called by administrator, so only admin classes need to be updated
 					self.updateAdminClasses()
-					this.modalDeleteClassIsOpen = false
-					alert('Class deleted.')
-					this.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to null.
+					self.modalDeleteClassIsOpen = false
+					self.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to home
 				})
 			},
 			// administrator, professor
@@ -649,8 +649,15 @@
 			},
 			createClass() {	
 				this.newClass['professorId'] = this.userId
-				this.$store.dispatch('createClass', { 
-					newClass: this.newClass
+				var self = this
+				this.$store.dispatch('createClass', {newClass: this.newClass})
+				.then(function() {
+					if (self.role === 'administrator') {
+						self.updateAdminClasses()
+					}
+					else if (self.role === 'professor') {
+						self.updateProfessorClasses()
+					}
 				})
 				this.newClass = {}
 			},
