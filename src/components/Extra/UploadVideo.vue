@@ -295,8 +295,8 @@
                     //                             })
                                                 
                     //                             self.modalSyncOpen = false  // Close loading bar
-                    //                             self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                    //                             console.log("currentClassSelected: ", self.currentClassSelected)
+                    //                             self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                    //                             console.log("currentClass.name: ", self.currentClass.name)
                     //                             clearInterval(intervalID)
 
                     //                             // Clearing modal form
@@ -409,11 +409,11 @@
             },
             getAssignmentsByThisClass() {
                 console.log("Getting assignments")
-                return this.$store.dispatch('getAssignments', this.currentClassIdSelected)
+                return this.$store.dispatch('getAssignments', this.currentClass.id)
             }
         },
         created() {
-            this.$store.dispatch('getAllClasses')
+            // this.$store.dispatch('getAllClasses')
         },
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()
@@ -424,8 +424,7 @@
             ...mapGetters([
                 'videos', 'uploadUrl', 'classes', 
                 'activeClasses', 'departments', 'assignments',
-                'genres', 'adminClasses', 'currentClassNumber',
-                'currentClassDepartment', 'currentClassIdSelected'
+                'genres', 'adminClasses', 'currentClass'
             ]),
         }    
 }

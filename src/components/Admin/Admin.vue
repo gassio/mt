@@ -15,12 +15,12 @@
 								</div>
 						</div>
 
-					<div class="admin__classvideos" v-show="!(currentClassSelected === 'Home')">
-							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}</h3>
-							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
+					<div class="admin__classvideos" v-show="!(currentClass.name === 'Home')">
+							<h3 class="class__heading"> {{ currentClass.number }} - {{ currentClass.name }}</h3>
+							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClass.name"></mt-video-itemlist>
 					</div>
 					
-					<upload-video :currentClassProp="currentClassSelected"></upload-video>
+					<upload-video :currentClassProp="currentClass.name"></upload-video>
 
 				</div>
 
@@ -57,7 +57,7 @@
 			created() {
 				this.$store.dispatch('getAllVideos')
 				this.$store.dispatch('getAllClasses')
-				this.$store.state.currentClassSelected = 'Home'
+				this.$store.state.currentClass.name = 'Home'
 			},
 			mounted() {
 				// Check if role is admin. If not redirect to current role's homePage
@@ -72,7 +72,7 @@
 			},
 			computed: {
 				...mapGetters(
-					['videos', 'classes', 'currentClassSelected', 'currentClassNumber', 'adminClasses']
+					['videos', 'classes', 'currentClass', 'adminClasses']
 				),
 			},
 			components: {

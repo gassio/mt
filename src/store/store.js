@@ -174,25 +174,26 @@ export const store = new Vuex.Store({
         ],
         categories: [],
         genres: [],
-        adminClasses: [], // only for admin.
-        activeClasses: [], // only for professor.
-        archivedClasses: [], // only for professor.
-        studentClasses: [], // only for student.
-        classesToEnroll: [],
-        departments: [], 
-        currentClassSelected: 'Home', // the class that is click from the user
-        currentClassIdSelected: '',
-        currentClassNumber: '',
-        currentClassDepartment: '',
+        departments: [],
+        // The currently selected class 
+        currentClass: { 
+            name:'Home', 
+            id: '',
+            number: '',
+            department: ''
+        },
         currentVideoID: null,
         uploadingVideo: false,
         uploadUrl: '',
         assignments: [],
         collaborators: [],
         users: [],
-        enrolledUsers: [],
-        enrolledUsersNotAccepted: [],
-        enrollments: [] // All enrollments
+        // ENROLLMENTS
+        enrollments: [], // All enrollments
+        enrolledUsers: [], // TODO THIS WILL BE REFACTORED OUT, IT'S CURRENTLY USED IN COLLABORATORS
+        // For Student
+        userEnrollments: [], // Current student's enrollments
+        enrolledClasses: [] // Current student's classes (both accepted/not accepted)
     },
 
     actions: {
@@ -324,129 +325,136 @@ export const store = new Vuex.Store({
         },
         /* CLASSES */  
         getAllClasses: function ({ commit }) {
-            secureHTTPService.get("class/")
+            return secureHTTPService.get("class/")
                 .then(function (response)
                 {
+                    // console.log("getAllClasses action")
                     commit('GET_ALL_CLASSES', response.data.data)
                     commit('FILL_DEPARTMENTS')
-                    if (authService.getAuthData().role === 'administrator') {
-                        commit('CREATE_ADMIN_CLASSES' )
-                    } else if (authService.getAuthData().role === 'professor') { 
-                        commit('CREATE_ACTIVE_ARCHIVED_CLASSES' )
-                    }
                 })
                 .catch(function (err) {
                     $('.classes').html(errorHTML)
                 })
         },
-        getClass: function ({ commit }, payload) {
-            secureHTTPService.get("class/" + payload)
-                .then(function (response)
-                {
-                    commit('GET_CLASS', response.data.data )
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
-        },
+        // getClass: function ({ commit }, payload) {
+        //     secureHTTPService.get("class/" + payload)
+        //         .then(function (response)
+        //         {
+        //             commit('GET_CLASS', response.data.data )
+        //         })
+        //         .catch(function (err) {
+        //             console.log(err)
+        //         })
+        // },
         createClass: function ({ commit }, payload) {
-            secureHTTPService.post("class/", payload.newClass)
+            return secureHTTPService.post("class/", payload.newClass)
             .then(response => {
                 commit('CREATE_CLASS', response.data.data)
             })
             .catch(function (err) {
-                console.log('Error createClass()', err)
+                console.log('createClass POST error: ', err)
             })
         },
         deleteClass: function ({ commit }, payload) {
-            secureHTTPService.delete("class/" + payload)
+            return secureHTTPService.delete("class/" + payload)
             .then(response => {
                 commit('DELETE_CLASS', payload)
             })
             .catch(function (err) {
-                console.log('Error deleteClass()', err)
+                console.log('deleteClass DELETE error: ', err)
             })
         },
         archiveClass: function ({ commit }, payload) {
-            secureHTTPService.put("class/" + payload.classId, payload.classObject)
+            return secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
-                commit('ARCHIVE_CLASS', payload)
+                // pass through
             })
             .catch(function (err) {
-                console.log('archiveClass() action error: ', err)
+                console.log('archiveClass PUT error: ', err)
             })
         },
         unArchiveClass: function ({ commit }, payload) {
-            secureHTTPService.put("class/" + payload.classId, payload.classObject)
+            return secureHTTPService.put("class/" + payload.classId, payload.classObject)
             .then(response => {
-                commit('UNARCHIVE_CLASS', payload)
+                // pass through
             })
             .catch(function (err) {
-                console.log('unarchiveClass() action error: ', err)
+                console.log('unarchiveClass PUT error: ', err)
             })
         },
         /* ENROLLMENTS */ 
         createEnrollment: function ({ commit }, payload) {
-            secureHTTPService.post("enrollment", payload)
-                .then(function (response)
-                {
-                    // TODO call mutation
-                    // console.log(response)
+            return secureHTTPService.post("enrollment", payload)
+                .then(function(response){
+                    commit('CREATE_ENROLLMENT', response.data.data)
+                })
+                .catch(function(err) {
+                    console.log("createEnrollment PUT error: ", err)
                 })
         },
-        getEnrollments: function ({ commit }, payload) {
+        getAllEnrollments: function ({ commit }, payload) {
             return secureHTTPService.get("enrollment")
                 .then(function (response)
                 {
-                    // console.log("getEnrollments")
+                    // console.log("getAllEnrollments action")
                     commit('GET_ENROLLMENTS', response.data.data)
                 })
                 .catch(function (err) {
                     
                 })
         },
-        getEnrollmentsByUserId: function ({ commit }) {
-            secureHTTPService.get("enrollment?userId=" + authService.getAuthData().userId)
+        getAllUserEnrollmentsByUserId: function ({ commit }, payload) {
+            return secureHTTPService.get("enrollment?userId=" + payload)
                 .then(function (response)
                 {
-                    var enrolledClassIds = []
-                    var enrollments = response.data.data
-                    for (var i = 0, l = enrollments.length; i < l; i++) {
-                        if (enrollments[i].accepted){
-                            enrolledClassIds.push(enrollments[i].classId)
-                        }
-                    }
-                    commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
+                    // var enrolledClassIds = []
+                    // var enrollments = response.data.data
+                    // for (var i = 0, l = enrollments.length; i < l; i++) {
+                    //     if (enrollments[i].accepted){
+                    //         enrolledClassIds.push(enrollments[i].classId)
+                    //     }
+                    // }
+                    // commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
+                    
+                    // console.log("getAllUserEnrollmentsByUserId action")
+                    commit('GET_USER_ENROLLMENTS', response.data.data)
                 })
         },
-        getEnrolledUserByClassId: function ({ commit }, payload) {
+        getEnrolledClassesByUserId: function ({ commit }, payload) {
+            return secureHTTPService.get("enrolledClass?userId=" + payload)
+            .then(function (response)
+            {
+                commit('GET_ENROLLED_CLASSES', response.data.data)
+            })
+        },
+        getEnrolledUsersByClassId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledUser?classId=" + payload)
-                .then(function (response)
-                {
-                    var responseObj = {data: response.data.data, classId: payload}
-                    commit( 'GET_ENROLLED_USER', responseObj)
-                })
+            .then(function (response)
+            {
+                var responseObj = {data: response.data.data, classId: payload}
+                commit('GET_ENROLLED_USERS', responseObj)
+            })
         },
         /* ASSIGNMENTS */ 
         getAssignments: function ({ commit }, payload) {
-            secureHTTPService.get("assignment?classId=" + payload)
-                .then(function (response)
-                {
-                    commit('GET_ASSIGNMENTS', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            return secureHTTPService.get("assignment?classId=" + payload)
+            .then(function (response)
+            {
+                commit('GET_ASSIGNMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getAssignments GET error: ', err)
+            })
         },
         createAssignment: function ({ commit }, payload) {
-            secureHTTPService.post("assignment", payload)
-                .then(function (response)
-                {
-                    commit('CREATE_ASSIGNMENT', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            return secureHTTPService.post("assignment", payload)
+            .then(function (response)
+            {
+                commit('CREATE_ASSIGNMENT', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('createAssignment POST error: ', err)
+            })
         },
         editAssignment: function ({ commit }, payload) {
             console.log('editAssignment()')
@@ -637,158 +645,35 @@ export const store = new Vuex.Store({
         },
         CREATE_CLASS: (state, payload) => {
             state.classes.push(payload)
-            state.adminClasses.push(payload)
-            state.activeClasses.push(payload)
         },
         // Only for admin.
         DELETE_CLASS: (state, payload) => {
-            for (var i = 0, l = state.adminClasses.length; i < l; i++) {
-                if (state.adminClasses[i].id === payload) {
-                    state.adminClasses.splice(i, 1)              
+            for (var i = 0, l = state.classes.length; i < l; i++) {
+                if (state.classes[i].id === payload) {
+                    state.classes.splice(i, 1)              
                 }
             }
-        },
-        // Student only. Not completed.
-        ENROLL_TO_CLASS: (state, payload) => {
-            // state.classes.push(payload.newClass)
-            state.activeClasses.push(payload)
         },
         // ADMIN
-        CREATE_ADMIN_CLASSES: (state) => {
-            state.adminClasses = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                state.adminClasses.push(state.classes[i])
-            }
-        },
+        // CREATE_ADMIN_CLASSES: (state) => {
+        //     state.adminClasses = []
+        //     for (var i = 0, l = state.classes.length; i < l; i++) {
+        //         state.adminClasses.push(state.classes[i])
+        //     }
+        // },
         // PROFESSOR
-        CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
-            state.activeClasses = []
-            state.archivedClasses = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes[i].professorId === authService.getAuthData().userId) {
-                    if (state.classes[i].archived === false)
-                        state.activeClasses.push(state.classes[i])
-                    else
-                        state.archivedClasses.push(state.classes[i])
-                }
-            }
-        },
-        // STUDENT
-        CREATE_STUDENT_CLASSES: (state, payload) => {
-            state.studentClasses = []
-            state.classesToEnroll = []
-
-            var enrolledClassIds = payload
-            for (var j = 0, m = state.classes.length; j < m; j++) {
-                if (state.classes[j].archived === false) {
-                    for (var i = 0, l = enrolledClassIds.length; i < l; i++) {
-                        if (enrolledClassIds[i] === state.classes[j].id) {
-                            state.studentClasses.push(state.classes[j])
-                            break
-                        } 
-                    }
-                }
-            }
-            for (var j = 0, m = state.classes.length; j < m; j++) {
-                if (state.classes[j].archived === false) {
-                    for (var i = 0, l = state.studentClasses.length; i < l; i++) {
-                        var foundInStudentClasses = false
-                        if (state.studentClasses[i].id === state.classes[j].id) {
-                            foundInStudentClasses = true
-                            break
-                        } 
-                    }
-                    if (!foundInStudentClasses){
-                        state.classesToEnroll.push(state.classes[j])
-                    }
-                }
-            }
-        },
-        ARCHIVE_CLASS: (state, payload) => {
-            var classes = state.classes
-            for (var i = 0, l = state.activeClasses.length; i < l; i++) {
-                if (state.activeClasses[i].id === payload.classId) {
-                    state.activeClasses.splice(i, 1)
-                    state.archivedClasses.push(payload.classObject)
-                }
-            }
-        },
-        UNARCHIVE_CLASS: (state, payload) => {
-            var classes = state.classes
-            for (var i = 0, l = state.archivedClasses.length; i < l; i++) {
-                if (state.archivedClasses[i].id === payload.classId) {
-                    state.archivedClasses.splice(i, 1)
-                    state.activeClasses.push(payload.classObject)
-                }
-            }
-        },
-        // Is used for search functionality.    
-        FILTER_ADMIN_CLASSES: (state, inputValue) => {
-            // An array that helps for the filtering.
-            const adminClassesLocal = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                adminClassesLocal.push(state.classes[i])
-            }
-
-            // Define the filter method that will be used above.
-            var filterClasses = (queryString) => {
-                return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-                }
-            }  
-            state.adminClasses = adminClassesLocal.filter(filterClasses(inputValue))
-        },
-        // Is used for search functionality.
-        FILTER_ACTIVE_CLASSES: (state, inputValue) => {
-            // An array that helps for the filtering.
-            const activeClassesLocal = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes[i].archived === false && state.classes[i].professorId === authService.getAuthData().userId)
-                    activeClassesLocal.push(state.classes[i])
-            }
-
-            // Define the filter method that will be used above.
-            var filterClasses = (queryString) => {
-                return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-                }
-            }  
-            state.activeClasses = activeClassesLocal.filter(filterClasses(inputValue))
-        },
-        // Is used for search functionality.    
-        FILTER_ARCHIVED_CLASSES: (state, inputValue) => {
-            // An array that helps for the filtering.
-            const archivedClassesLocal = []
-            for (var i = 0, l = state.classes.length; i < l; i++) {
-                if (state.classes[i].archived === true)
-                archivedClassesLocal.push(state.classes[i])
-            }
-
-            // Define the filter method that will be used above.
-            var filterClasses = (queryString) => {
-                return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-                }
-            }  
-            state.archivedClasses = archivedClassesLocal.filter(filterClasses(inputValue))
-        },
-        // Is used for search functionality.    
-        FILTER_STUDENT_CLASSES: (state, inputValue) => {
-            // An array that helps for the filtering.
-            const studentClassesLocal = []
-            for (var i = 0, l = state.studentClasses.length; i < l; i++) {
-                if (state.studentClasses[i].archived === false)
-                    studentClassesLocal.push(state.studentClasses[i])
-            }
-
-            // Define the filter method that will be used above.
-            var filterClasses = (queryString) => {
-                return (theClass) => {
-                    return theClass.name.toLowerCase().indexOf(queryString.toLowerCase()) === 0
-                }
-            }  
-            state.studentClasses = studentClassesLocal.filter(filterClasses(inputValue))
-        },
+        // CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
+        //     state.activeClasses = []
+        //     state.archivedClasses = []
+        //     for (var i = 0, l = state.classes.length; i < l; i++) {
+        //         if (state.classes[i].professorId === authService.getAuthData().userId) {
+        //             if (state.classes[i].archived === false)
+        //                 state.activeClasses.push(state.classes[i])
+        //             else
+        //                 state.archivedClasses.push(state.classes[i])
+        //         }
+        //     }
+        // },
         FILL_DEPARTMENTS: (state) => {
             for (var i = 0, l = state.classes.length; i < l; i++) {
                 if (!state.departments.includes(state.classes[i].department))
@@ -799,13 +684,13 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
-            state.currentClassSelected = payload.className
-            state.currentClassIdSelected = payload.classId
-            state.currentClassNumber = payload.classNumber
-            state.currentClassDepartment = payload.classDepartment
+            state.currentClass.name = payload.className
+            state.currentClass.id = payload.classId
+            state.currentClass.number = payload.classNumber
+            state.currentClass.department = payload.classDepartment
         },
         /* ENROLLMENTS */
-        GET_ENROLLED_USER: (state, payload) => {
+        GET_ENROLLED_USERS: (state, payload) => {
             var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
             var activeEnrolledUsers = [] // The users that have been accepted in this class
             var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
@@ -826,7 +711,13 @@ export const store = new Vuex.Store({
             }
             // console.log(activeEnrolledUsers)
             state.enrolledUsers = activeEnrolledUsers
-            state.enrolledUsersNotAccepted = inactiveEnrolledUsers
+        },
+        GET_ENROLLED_CLASSES: (state, enrolledClasses) => {
+            state.enrolledClasses = enrolledClasses
+        },
+        CREATE_ENROLLMENT: (state, newEnrollment) => {
+            state.enrollments.push(newEnrollment)
+            state.userEnrollments.push(newEnrollment)
         },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
@@ -860,6 +751,9 @@ export const store = new Vuex.Store({
         /* ENROLLMENTS */
         GET_ENROLLMENTS: (state, enrollments) => {
             state.enrollments = enrollments
+        },
+        GET_USER_ENROLLMENTS: (state, userEnrollments) => {
+            state.userEnrollments = userEnrollments
         }
     },
 
@@ -891,11 +785,11 @@ export const store = new Vuex.Store({
         enrolledUsers: state => {
             return state.enrolledUsers
         },
-        enrolledUsersNotAccepted: state => {
-            return state.enrolledUsersNotAccepted
-        },
         enrollments: state => {
             return state.enrollments
+        },
+        userEnrollments: state => {
+            return state.userEnrollments
         },
         currentVideoID: state => {
             return state.currentVideoID
@@ -903,35 +797,11 @@ export const store = new Vuex.Store({
         canons: state => {
             return state.canons
         },
-        classesToEnroll: state => {
-            return state.classesToEnroll
-        },
-        adminClasses: state => {
-            return state.adminClasses
-        },
-        activeClasses: state => {
-            return state.activeClasses
-        },
-        archivedClasses: state => {
-            return state.archivedClasses
-        },
-        studentClasses: state => {
-            return state.studentClasses
-        },
         departments: state => {
             return state.departments
         },
-        currentClassSelected: state => {
-            return state.currentClassSelected
-        },
-        currentClassIdSelected: state => {
-            return state.currentClassIdSelected
-        },
-        currentClassNumber: state => {
-            return state.currentClassNumber
-        },
-        currentClassDepartment: state => {
-            return state.currentClassDepartment
+        currentClass: state => {
+            return state.currentClass
         },
         uploadVideoProps: state => {
             return state.uploadVideoProps

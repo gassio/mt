@@ -9,9 +9,9 @@
 					<div class="home__main column is-10">
 
 						<div class="featured" v-show="role === 'student' || role === 'professor'">
-							<h3 class="featured__heading">Featured videos of {{ currentClassSelected }}</h3>
+							<h3 class="featured__heading">Featured videos of {{ currentClass.name }}</h3>
 							<div class="featured__container">
-								<mt-video-card v-for="v in this.videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClassSelected !== 'Home' && v.class === currentClassSelected && v.featuredClass === true) || (currentClassSelected === 'Home' && v.featuredGlobal === true)">
+								<mt-video-card v-for="v in this.videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClass.name !== 'Home' && v.class === currentClass.name && v.featuredClass === true) || (currentClass.name === 'Home' && v.featuredGlobal === true)">
 								</mt-video-card>
 							</div>
 						</div>
@@ -25,13 +25,13 @@
 							</div>
 						</div>
 
-						<div class="home__classvideos" v-show="!(currentClassSelected === 'Home')">
-							<h3 class="class__heading"> {{ currentClassNumber }} - {{ currentClassSelected }}
+						<div class="home__classvideos" v-show="!(currentClass.name === 'Home')">
+							<h3 class="class__heading"> {{ currentClass.number }} - {{ currentClass.name }}
 							</h3>
-							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClassSelected"></mt-video-itemlist>
+							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClass.name"></mt-video-itemlist>
 						</div>
 
-						<upload-video :currentClassProp="currentClassSelected" v-show="currentClassSelected !== 'Home'"></upload-video>
+						<upload-video :currentClassProp="currentClass.name" v-show="currentClass.name !== 'Home'"></upload-video>
 
 					</div>
 
@@ -237,15 +237,19 @@
 			}
 		},
 		created() {	
+			// if (this.role === 'student') {
+			// 	this.$store.dispatch('getAllUserEnrollmentsByUserId') // Initializes only this user's enrollments
+			// }
+			// else {
+			// 	this.$store.dispatch('getAllEnrollments') // Initializes all enrollments
+			// }
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
-			this.$store.dispatch('getEnrollmentsByUserId')
 			this.$store.dispatch('getGenres')
 			this.$store.dispatch('getUsers')
-			this.$store.dispatch('getEnrollments')
 			
-			if (this.$store.state.currentClassSelected === ''){
-				this.$store.state.currentClassSelected = 'Home'
+			if (this.$store.state.currentClass.name === ''){
+				this.$store.state.currentClass.name = 'Home'
 			}
 		},
 		mounted() {
@@ -261,7 +265,7 @@
 		},
 		computed: {
 			...mapGetters(
-				['videos', 'classes', 'currentClassSelected', 'currentClassNumber']
+				['videos', 'classes', 'currentClass']
 			)
 		},
 		components: {
