@@ -651,13 +651,20 @@
 				this.newClass['professorId'] = this.userId
 				var self = this
 				this.$store.dispatch('createClass', {newClass: this.newClass})
-				.then(function() {
+				.then(function(response) {
 					if (self.role === 'administrator') {
 						self.updateAdminClasses()
 					}
 					else if (self.role === 'professor') {
 						self.updateProfessorClasses()
 					}
+					// Select created class
+					self.$store.commit('CURRENT_CLASS_SELECT', {
+						className: response.data.data.name, 
+						classNumber: response.data.data.number, 
+						classId: response.data.data.id, 
+						classDepartment: response.data.data.department
+					})
 				})
 				this.newClass = {}
 			},
