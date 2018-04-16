@@ -190,7 +190,8 @@ export const store = new Vuex.Store({
         users: [],
         // ENROLLMENTS
         enrollments: [], // All enrollments
-        enrolledUsersInThisClass: [], // TODO THIS WILL BE REFACTORED OUT, IT'S CURRENTLY USED IN COLLABORATORS
+        // enrolledUsersInThisClass: [], // TODO THIS WILL BE THE NEW ARRAY ??
+        enrolledUsers: [], // TODO THIS WILL BE REFACTORED OUT, IT'S CURRENTLY USED IN COLLABORATORS
         // For Student
         userEnrollments: [], // Current student's enrollments
         enrolledClasses: [] // Current student's classes (both accepted/not accepted)
@@ -432,8 +433,9 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("enrolledUser?classId=" + payload)
             .then(function (response)
             {
-                // var responseObj = {data: response.data.data, classId: payload}
-                commit('GET_ENROLLED_USERS', response.data.data)
+                var responseObj = {data: response.data.data, classId: payload}
+                // commit('GET_ENROLLED_USERS', response.data.data)
+                commit('GET_ENROLLED_USERS', responseObj)
             })
             .catch(function (err) {
                 console.log('getEnrolledUsersByClassId GET error: ', err)
@@ -694,28 +696,29 @@ export const store = new Vuex.Store({
             state.currentClass.department = payload.classDepartment
         },
         /* ENROLLMENTS */
-        GET_ENROLLED_USERS: (state, enrolledUsersInThisClass) => {
-            // var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
-            // var activeEnrolledUsers = [] // The users that have been accepted in this class
-            // var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
-            // // console.log(enrolledUsersInThisClass)
-            // for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
-            //     for(var j = 0; j < state.enrollments.length; j++){
-            //         // UserId must be found in enrollments and the classId of that enrollment must be the current class
-            //         if (state.enrollments[j].userId === enrolledUsersInThisClass[i].id && state.enrollments[j].classId === payload.classId){
-            //             // The enrollment should be in accepted status or else the user is not considered "enrolled"/active
-            //             if (state.enrollments[j].accepted){
-            //                 activeEnrolledUsers.push(enrolledUsersInThisClass[i])
-            //             }
-            //             else {
-            //                 inactiveEnrolledUsers.push(enrolledUsersInThisClass[i])
-            //             }
-            //         }
-            //     }
-            // }
-            // // console.log(activeEnrolledUsers)
+        GET_ENROLLED_USERS: (state, payload) => {
+            var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
+            var activeEnrolledUsers = [] // The users that have been accepted in this class
+            var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
             // console.log(enrolledUsersInThisClass)
-            state.enrolledUsersInThisClass = enrolledUsersInThisClass
+            for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
+                for(var j = 0; j < state.enrollments.length; j++){
+                    // UserId must be found in enrollments and the classId of that enrollment must be the current class
+                    if (state.enrollments[j].userId === enrolledUsersInThisClass[i].id && state.enrollments[j].classId === payload.classId){
+                        // The enrollment should be in accepted status or else the user is not considered "enrolled"/active
+                        if (state.enrollments[j].accepted){
+                            activeEnrolledUsers.push(enrolledUsersInThisClass[i])
+                        }
+                        else {
+                            inactiveEnrolledUsers.push(enrolledUsersInThisClass[i])
+                        }
+                    }
+                }
+            }
+            // console.log(activeEnrolledUsers)
+            // console.log(enrolledUsersInThisClass)
+            // state.enrolledUsersInThisClass = enrolledUsersInThisClass
+            state.enrolledUsers = activeEnrolledUsers
         },
         GET_ENROLLED_CLASSES: (state, enrolledClasses) => {
             state.enrolledClasses = enrolledClasses
@@ -787,8 +790,8 @@ export const store = new Vuex.Store({
         users: state => {
             return state.users
         },
-        enrolledUsersInThisClass: state => {
-            return state.enrolledUsersInThisClass
+        enrolledUsers: state => {
+            return state.enrolledUsers
         },
         enrollments: state => {
             return state.enrollments

@@ -769,7 +769,7 @@
             updateEnrolledStudents() {
 				// console.log("Updating enrollments")
 				var self = this
-				this.$store.dispatch('getEnrolledUsersByClassId', this.currentClass.id) // Update the store.enrollments array first
+				// this.$store.dispatch('getEnrolledUsersByClassId', this.currentClass.id) // Update the store.enrollments array first
 				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClass.id)
 				.then(function(response){
 					// console.log("running enrolled/requested selection", response)

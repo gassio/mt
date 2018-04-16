@@ -144,7 +144,7 @@
 
                         var theUrl = 'https' + '://' + theData.link.address + theData.link.path + '?api_format=xml&key=' + theData.link.query.key + '&token=' + theData.link.query.token
                         self.$store.commit('SET_UPLOAD_URL', theUrl)
-                        console.log("Upload url created. The url is ", theUrl)
+                        // console.log("Upload url created. The url is ", theUrl)
 
                         self.createVideo(theData.link.query.key)
                     })
@@ -153,32 +153,33 @@
             createVideo(jwVideoId) {
                 var self = this
                 
-                console.log('before init: ', self.dropzoneInstance)
+                // console.log('before init of dropzone instance: ', self.dropzoneInstance)
 
-                // Creating dropzone
-                if (this.dropzoneInstance === null) {
-                    this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
-                        url: 'http://www.test.com', // this.uploadUrl
-                        autoProcessQueue: false,
-                        parallelUploads: 100,
-                        maxFiles: 1,
-                        timeout: 1800000, // 30min 
-                        headers: {
-                            'Cache-Control': null,
-                            'X-Requested-With': null,
-                        }
-                    })
+                // Clearing dropzone instance, if there is one
+                if (this.dropzoneInstance !== null) {
+                    this.dropzoneInstance.destroy()
                 }
-
+                // Creating dropzone
+                this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
+                    url: 'http://www.test.com', // this.uploadUrl
+                    autoProcessQueue: false,
+                    parallelUploads: 100,
+                    maxFiles: 1,
+                    timeout: 1800000, // 30min 
+                    headers: {
+                        'Cache-Control': null,
+                        'X-Requested-With': null,
+                    }
+                })
                 // Sets the dropzone url
                 this.dropzoneInstance.options.url = this.uploadUrl
-                console.log('this url: ', this.dropzoneInstance.options.url)
+                // console.log('this url: ', this.dropzoneInstance.options.url)
 
                 // DROPZONE EVENTS
                 // File added 
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
-                    console.log('added file: ', self.dropzoneInstance)
+                    // console.log('added file: ', self.dropzoneInstance)
                     
                     this.getAssignmentsByThisClass().then(function() {
                         // Resets the value of metadataModal fields
@@ -196,23 +197,22 @@
                         self.modalMetadataIsOpen = true
                         // Sets the title field as the added file.name 
                         self.uploadVidMetadata.title = file.name
-                        console.log("Added file.")
-                        console.log(self.uploadVidMetadata)
+                        // console.log("Added file.")
+                        // console.log(self.uploadVidMetadata)
                     })
                 })
 
                 // Updates the upload progress bar
                 this.dropzoneInstance.on("totaluploadprogress", (progress) => {
-                    console.log('upload progress: ', self.dropzoneInstance)
+                    // console.log('upload progress: ', self.dropzoneInstance)
                     this.uploadProgress = progress
-                    console.log("Progress event \n ", progress)
+                    // console.log("Progress event \n ", progress)
                 })
                 
                 // Event fired when the uploading process reaches 100%.
-                // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
-                    console.log('success: ', self.dropzoneInstance)
-                    console.log('Jwvideo object created. The key is: ', jwVideoId)
+                    // console.log('success: ', self.dropzoneInstance)
+                    // console.log('Jwvideo object created. The key is: ', jwVideoId)
                     this.modalProgressIsOpen = false
                     this.modalSyncOpen = true
                     // Shows loading spinner
@@ -223,20 +223,25 @@
                             .then( response => {
                                 var conversions = response.data.data.conversions
                                 var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
-                                console.log("conv1: ", conversions)
+                                // console.log("conv1: ", conversions)
                                 var everythingReady = true // this is a trick
                                 for (var i = 0, l = conversions.length; i < l; i++) {
+                                    // console.log("checking for if everything is ready loop: ", i)
                                     if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
                                         everythingReady = false
+                                        // console.log("720p not ready")
                                     }
                                     else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
                                         everythingReady = false
+                                        // console.log("406p not ready")
                                     }
                                     else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
                                         everythingReady = false
+                                        // console.log("270p not ready")
                                     }
                                     else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
                                         everythingReady = false
+                                        // console.log("180p not ready")
                                     }
                                     // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
                                     //     everythingReady = false
@@ -244,8 +249,10 @@
                                 }
                                 if (conversions.length === 1) {
                                     everythingReady = false
+                                    // console.log("Everything not ready, conversions length === 1")
                                 }      
                                 if (everythingReady) {
+                                    // console.log("EVERYTHING READY == TRUE, starting pick conversion algorithm")
                                     // Pick conversion logic
                                     var pickedVidIndex = 0
                                     var foundIt = false
@@ -258,10 +265,11 @@
                                                 // Do necessary stuff after picking a conversion
                                                 link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
                                                 duration = conversions[i].duration
-                                                console.log('|> Link: ', link)
-                                                console.log('|> Duration: ', duration)
+                                                // console.log('|> Link: ', link)
+                                                // console.log('|> Duration: ', duration)
                                                         
                                                 // POST video 
+                                                // console.log("Conversion picked: dispatching createVideo")
                                                 self.$store.dispatch('createVideo', {
                                                     "assignmentId": self.uploadVidMetadata.assignmentId,
                                                     "title": self.uploadVidMetadata.title,
@@ -277,24 +285,24 @@
                                                     "duration": parseInt(duration),
                                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
                                                 }).then(() => {
+                                                    // console.log("dispatch createVideo complete, now in then")
                                                     self.modalSyncOpen = false  // Close loading bar
                                                     self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                                                    console.log("currentClass.name: ", self.currentClass.name)
+                                                    // console.log("currentClass.name: ", self.currentClass.name)
                                                     clearInterval(intervalID)
 
                                                     // Clearing modal form
                                                     self.uploadVidMetadata = { title: '', class: self.currentClass.name, classNumber: self.currentClass.number, classDepartment: self.currentClass.department, genre: '', presentedAt: '', assignmentId: '' }
-    
-                                                    // Clearing dropzone instance
-                                                    // self.dropzoneInstance.files = []
                                                     self.dropzoneInstance.removeAllFiles()
-                                                    console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
+                                                    // console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
+                                                    self.uploadProgress = 0.0
                                                 })
-
+                                                // console.log("conversion picked, now breaking after createVideo")
                                                 break
                                             }
                                         }
                                         if (foundIt) {
+                                            // console.log("conversion picked, now breaking on outer loop")
                                             break
                                         }
                                     }     
@@ -319,7 +327,7 @@
                 })
 
                 this.dropzoneInstance.on("canceled", (files, response) => {
-                    console.log('canceled')
+                    // console.log('canceled')
                 })
 
                 // UI events
