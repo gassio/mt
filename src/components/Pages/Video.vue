@@ -3,13 +3,13 @@
         
         <my-header></my-header>
         
-        <!--<div class="video__breadcrumb spacer columns is-gapless is-marginless">
+        <!-- <div class="video__breadcrumb spacer columns is-gapless is-marginless">
              <router-link :to="{ path: '/'}" class="video__breadcrumb-title column is-8">
                 <button class="video__breadcrumb-title-btn button is-white">
                     <i class="fa fa-chevron-left" aria-hidden="true"></i> &nbsp {{ this.videos.title }}
                 </button>
-            </router-link> -->
-
+            </router-link>
+        </div> -->
             <!-- <div class="video-timer column is-4">
                 <span>{{ secondsToMMSS(videoCurrentTime) }}</span>
             </div>
@@ -174,9 +174,11 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
+                <router-link to="/" class="collaborators button" v-show="currentClass.name !== 'Home'" tag="button" active-class="head__nav-item-active" exact><i class="fa fa-chevron-left"></i> Back to class</router-link>
                 <button class="collaborators button" @click="openModalCollaborators()">
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
+                
 
                 <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
@@ -202,7 +204,7 @@ You might also want to include a concrete strategy recommendation."
                         </el-tab-pane>
                         <el-tab-pane label="Other students">
                             <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
-                            <el-table ref="multipleTable" :data="enrolledUsers" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
+                            <el-table ref="multipleTable" :data="enrolledUsersInThisClass" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template scope="s2">
                                         <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
@@ -359,7 +361,8 @@ You might also want to include a concrete strategy recommendation."
                 authService : this.$root.$options.authService,
                 modalSyncOpen: false,
                 secureHTTPService : this.$root.$options.secureHTTPService,
-                authData: {}
+                authData: {},
+                currentRoute: ''
             }
         },
         methods: {
@@ -1061,6 +1064,7 @@ You might also want to include a concrete strategy recommendation."
         mounted() {
             var self = this
             this.authData = this.$root.$options.authService.getAuthData()
+            this.currentRoute = this.$root.$options.router.currentRoute.name.toLowerCase()
             
             // Temporary solution for MOUNTED() cycle because of Vuex stuff.
             // Trying to get the index (vIndex) of the video that the same id with the params.id
@@ -1277,7 +1281,7 @@ You might also want to include a concrete strategy recommendation."
             ...mapGetters([
                 'videos', 'currentVideoID', 'canons', 
                 'videoAnnotations', 'collaborators', 'users',
-                'enrolledUsers', 'classes'
+                'enrolledUsersInThisClass', 'classes', 'currentClass'
             ])
         },
         components: {
