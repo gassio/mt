@@ -905,9 +905,9 @@
 				return this.$store.dispatch('getAssignments', this.currentClass.id)
 			},
 			createAssignment() {
-				if (this.currnetClass.id !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
+				if (this.currentClass.id !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
 					this.$store.dispatch('createAssignment', {
-						classId: this.currnetClass.id,
+						classId: this.currentClass.id,
 						title: this.assignmentTitle,
 						description: this.assignmentDescription,
 						genre: this.assignmentGenre

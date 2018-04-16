@@ -219,7 +219,7 @@ export const store = new Vuex.Store({
                 })
         },
         createVideo: function ({ commit, dispatch }, payload) {
-            secureHTTPService.post("video", payload)
+            return secureHTTPService.post("video", payload)
                 .then( response => {
                     console.log('-----')
                     console.log('POST video')
