@@ -101,8 +101,8 @@
                 uploadProgress: 0,
                 uploadVidMetadata: {
 					title: '',
-					class: this.currentClassProp,
-                    classNumber: this.currentClassNumber,
+					class: '',
+                    classNumber: '',
                     classDepartment: '',
                     genre: '',
                     presentedAt: '',
@@ -153,6 +153,8 @@
             createVideo(jwVideoId) {
                 var self = this
                 
+                console.log('before init: ', self.dropzoneInstance)
+
                 // Creating dropzone
                 if (this.dropzoneInstance === null) {
                     this.dropzoneInstance = new Dropzone('.uploadvid__text', { 
@@ -176,14 +178,15 @@
                 // File added 
                 // user enters video details
                 this.dropzoneInstance.on("addedfile", (file) => {
-                    var self = this
+                    console.log('added file: ', self.dropzoneInstance)
+                    
                     this.getAssignmentsByThisClass().then(function() {
                         // Resets the value of metadataModal fields
                         self.uploadVidMetadata = {
                             title: '',
-                            class: self.currentClassProp,
-                            classNumber: self.currentClassNumber,
-                            classDepartment: self.currentClassDepartment,
+                            class: self.currentClass.name,
+                            classNumber: self.currentClass.number,
+                            classDepartment: self.currentClass.department,
                             genre: '',
                             presentedAt: '',
                             assignmentId: ''
@@ -200,6 +203,7 @@
 
                 // Updates the upload progress bar
                 this.dropzoneInstance.on("totaluploadprogress", (progress) => {
+                    console.log('upload progress: ', self.dropzoneInstance)
                     this.uploadProgress = progress
                     console.log("Progress event \n ", progress)
                 })
@@ -207,6 +211,7 @@
                 // Event fired when the uploading process reaches 100%.
                 // Event fired when the uploading process reaches 100%.
                 this.dropzoneInstance.on("success", () => {
+                    console.log('success: ', self.dropzoneInstance)
                     console.log('Jwvideo object created. The key is: ', jwVideoId)
                     this.modalProgressIsOpen = false
                     this.modalSyncOpen = true
@@ -216,9 +221,8 @@
                     let intervalID = setInterval(function () {
                         self.secureHTTPService.get("jwconversion?videoId=" + jwVideoId)
                             .then( response => {
-                                console.log(' getting conversions...')
-                                let conversions = response.data.data.conversions
-                                var conversionNames = ['720p', '406p', 'Original'] // Conversion names in order of preference
+                                var conversions = response.data.data.conversions
+                                var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
                                 console.log("conv1: ", conversions)
                                 var everythingReady = true // this is a trick
                                 for (var i = 0, l = conversions.length; i < l; i++) {
@@ -228,11 +232,19 @@
                                     else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
                                         everythingReady = false
                                     }
-                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
                                         everythingReady = false
                                     }
+                                    else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                                        everythingReady = false
+                                    }
+                                    // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                                    //     everythingReady = false
+                                    // }
                                 }
-                                if (conversions.length === 1) everythingReady = false
+                                if (conversions.length === 1) {
+                                    everythingReady = false
+                                }      
                                 if (everythingReady) {
                                     // Pick conversion logic
                                     var pickedVidIndex = 0
@@ -264,14 +276,21 @@
                                                     "link": link,
                                                     "duration": parseInt(duration),
                                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                                                }).then(() => {
+                                                    self.modalSyncOpen = false  // Close loading bar
+                                                    self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                                                    console.log("currentClass.name: ", self.currentClass.name)
+                                                    clearInterval(intervalID)
+
+                                                    // Clearing modal form
+                                                    self.uploadVidMetadata = { title: '', class: self.currentClass.name, classNumber: self.currentClass.number, classDepartment: self.currentClass.department, genre: '', presentedAt: '', assignmentId: '' }
+    
+                                                    // Clearing dropzone instance
+                                                    // self.dropzoneInstance.files = []
+                                                    self.dropzoneInstance.removeAllFiles()
+                                                    console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
                                                 })
-                                                
-                                                self.modalSyncOpen = false  // Close loading bar
-                                                self.currentClassSelected = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                                                console.log("currentClassSelected: ", self.currentClassSelected)
-                                                clearInterval(intervalID)
-                                                // Clearing modal form
-                                                self.uploadVidMetadata = { title: '', class: '', genre: '', presentedAt: ''}
+
                                                 break
                                             }
                                         }
