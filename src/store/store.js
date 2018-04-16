@@ -190,6 +190,7 @@ export const store = new Vuex.Store({
         users: [],
         // ENROLLMENTS
         enrollments: [], // All enrollments
+        // enrolledUsersInThisClass: [], // TODO THIS WILL BE THE NEW ARRAY ??
         enrolledUsers: [], // TODO THIS WILL BE REFACTORED OUT, IT'S CURRENTLY USED IN COLLABORATORS
         // For Student
         userEnrollments: [], // Current student's enrollments
@@ -433,7 +434,11 @@ export const store = new Vuex.Store({
             .then(function (response)
             {
                 var responseObj = {data: response.data.data, classId: payload}
+                // commit('GET_ENROLLED_USERS', response.data.data)
                 commit('GET_ENROLLED_USERS', responseObj)
+            })
+            .catch(function (err) {
+                console.log('getEnrolledUsersByClassId GET error: ', err)
             })
         },
         /* ASSIGNMENTS */ 
@@ -711,6 +716,8 @@ export const store = new Vuex.Store({
                 }
             }
             // console.log(activeEnrolledUsers)
+            // console.log(enrolledUsersInThisClass)
+            // state.enrolledUsersInThisClass = enrolledUsersInThisClass
             state.enrolledUsers = activeEnrolledUsers
         },
         GET_ENROLLED_CLASSES: (state, enrolledClasses) => {
