@@ -205,7 +205,7 @@ You might also want to include a concrete strategy recommendation."
                             <el-table ref="multipleTable" :data="enrolledUsers" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template scope="s2">
-                                        <i class="fa fa-user"></i>{{ s2.row.firstName }} {{ s2.row.lastName }}
+                                        <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
                                     </template>
                                 </el-table-column>
                                 <el-table-column prop="class">
