@@ -15,6 +15,7 @@
                                                                                                                     <!-- https://github.com/vuejs/vue-router/issues/800 -->
                     <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" @click.native="setCurrentClass('Home')" exact>Home</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
+                    <!-- <router-link to="/" class="head__nav-item navbar-item" v-show="currentClass.name !== 'Home' && currentRoute !== 'admin' && currentRoute !== 'student' && currentRoute !== 'professor'" tag="a" active-class="head__nav-item-active" exact>Back to {{ currentClass.name }} Class</router-link> -->
                 </div>
                 <div class="navbar-end">
                     <a class="head__nav-item navbar-item"><p><i class="fa fa-user-circle"></i> {{ usernameRole }}</p></a>
@@ -36,8 +37,9 @@
         props: ['userProfile'],
         data() {
             return {
-                usernameRole: "",
-                authData: {}
+                usernameRole: '',
+                authData: {},
+                currentRoute: ''
             }
         },
         methods: {
@@ -55,6 +57,8 @@
         mounted() {
             this.authData = this.$root.$options.authService.getAuthData()
             this.usernameRole = this.authData.firstName + " " + this.authData.lastName[0].toUpperCase() + ". - " + this.authData.role[0].toUpperCase() + this.authData.role.slice(1)
+            // this.currentRoute = this.$root.$options.router.currentRoute.name.toLowerCase()
+            
             // setInterval(() => {
             //     const authService = this.$root.$options.authService
             //     console.log(authService.getAuthData())
@@ -97,7 +101,7 @@
         },
         computed: {
             ...mapGetters([
-                'uploadingVideo'
+                'uploadingVideo', 'currentClass'
             ])
         },
     }
