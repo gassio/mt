@@ -354,7 +354,7 @@
 
 				// ENROLLMENTS
 				// Professor/Administrator side
-				studentRequestsTab: 'enrolledStudents', // required to select a tab when the modal is first opened
+				studentRequestsTab: 'enrolledStudents', // Required to select a tab. enrolledStudents is the initialization
 				enrolledStudents: [],
                 filteredEnrolledStudents: [],
 				enrolledStudentsInputValue: '',
@@ -644,8 +644,14 @@
 			},
 			// administrator, professor
 			setCurrentClass(className, classNumber, classId, classDepartment) {
-				this.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
+				// Update enrollments. This is needed to show the little number of requested enrollments in the sidebar
+				var self = this
+				self.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
 				this.updateEnrolledStudents()
+				.then(function() {
+					//
+				})
+
 			},
 			createClass() {	
 				this.newClass['professorId'] = this.userId
@@ -763,6 +769,7 @@
             updateEnrolledStudents() {
 				// console.log("Updating enrollments")
 				var self = this
+				this.$store.dispatch('getEnrolledUsersByClassId', this.currentClass.id) // Update the store.enrollments array first
 				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClass.id)
 				.then(function(response){
 					// console.log("running enrolled/requested selection", response)
