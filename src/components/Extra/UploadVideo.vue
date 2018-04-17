@@ -65,7 +65,7 @@
         </el-dialog>
         
         <!-- Processing modal -->
-        <el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false">
+        <el-dialog class="uploadvid__sync" :visible.sync="modalSyncOpen" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false">
             <div class="uploadvid__sync-load" 
                 v-loading="modalSyncOpen" 
                 element-loading-text="The video is being processed. The waiting time usually takes 1 minute for every minute duration of the original." 
