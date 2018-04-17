@@ -578,15 +578,14 @@
 									}
 								}
 							}
-
-							// Remove enrolled class from notEnrolledClasses
-							for (var nec = self.notEnrolledClasses.length - 1; nec >= 0; nec--) {
-								if (self.notEnrolledClasses[nec].id === self.enrolledClasses[ec].id) {
-									// console.log("Splicing ", ec, " - ", self.enrolledClasses[ec].name)
-									self.notEnrolledClasses.splice(nec, 1)
-									self.filteredNotEnrolledClasses = self.notEnrolledClasses
-									break
-								}
+						}
+						// Remove enrolled class from notEnrolledClasses
+						for (var nec = self.notEnrolledClasses.length - 1; nec >= 0; nec--) {
+							if (self.notEnrolledClasses[nec].id === self.enrolledClasses[ec].id) {
+								// console.log("Splicing ", ec, " - ", self.enrolledClasses[ec].name)
+								self.notEnrolledClasses.splice(nec, 1)
+								self.filteredNotEnrolledClasses = self.notEnrolledClasses
+								break
 							}
 						}
 					}
