@@ -2,31 +2,31 @@
 
 	<div class="classvideo">
 
-			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'administrator' && currentVideo.featuredGlobal === false" @click="featureGlobal($event)">
-			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'administrator' &&  currentVideo.featuredGlobal === true" @click="unfeatureGlobal($event)">
-			
-			<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'professor' && currentVideo.featuredClass === false" @click="featureVideo($event)">
-			<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'professor' && currentVideo.featuredClass === true" @click="unfeatureVideo($event)">
+		<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'administrator' && currentVideo.featuredGlobal === false" @click="featureGlobal($event)">
+		<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'administrator' &&  currentVideo.featuredGlobal === true" @click="unfeatureGlobal($event)">
+		
+		<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'professor' && currentVideo.featuredClass === false" @click="featureVideo($event)">
+		<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'professor' && currentVideo.featuredClass === true" @click="unfeatureVideo($event)">
 
-
-		<div class="classvideo__metadata">
-			<img class="classvideo__image" :src="currentVideo.thumb">
-			<div class="classvideo__titles">
-				<router-link :to="'/video/' + currentVideo.id" tag="a" class="classvideo__title">{{ currentVideo.title }}</router-link>
-				<p class="classvideo__class">{{ currentVideo.class }}</p>
-				<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ genreName }} </p>
-			</div>
-			<div class="classvideo__metameta">
-				<span class="classvideo__score">
-					<p class="classvideo__scoreNum">{{ ratingSum.toFixed(1) }}</p>
-					<p class="classvideo__scoreLabel">Effectiveness</p>
-				</span>
-				<span class="classvideo__annotations">
-					<p class="classvideo__annotationsNum">{{ annotationsSum }}</p>
-					<p class="classvideo__annotationsLabel">Comments</p>
-				</span>
-			</div>
-		</div>
+		<router-link :to="'/video/' + currentVideo.id" tag="a" class="classvideo__metadata">
+				<img class="classvideo__image" :src="currentVideo.thumb">
+				<div class="classvideo__titles">
+					<!-- class="classvideo__title">{{ currentVideo.title }} -->
+					<p class="classvideo__title">{{ currentVideo.title }}</p>
+					<p class="classvideo__class">{{ currentVideo.class }}</p>
+					<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ genreName }} </p>
+				</div>
+				<div class="classvideo__metameta">
+					<span class="classvideo__score">
+						<p class="classvideo__scoreNum">{{ ratingAverage.toFixed(1) }}</p>
+						<p class="classvideo__scoreLabel">Effectiveness</p>
+					</span>
+					<span class="classvideo__annotations">
+						<p class="classvideo__annotationsNum">{{ numberOfAnnotations }}</p>
+						<p class="classvideo__annotationsLabel">Comments</p>
+					</span>
+				</div>
+		</router-link>
 	</div>
 
 </template>
@@ -41,8 +41,8 @@
 			return {
 				role: this.$root.$options.authService.getAuthData().role,
 				secureHTTPService : this.$root.$options.secureHTTPService,
-				annotationsSum: 0,
-				ratingSum: 0,
+				numberOfAnnotations: 0,
+				ratingAverage: 0,
 				genreName: ''
 			}
 		},
@@ -123,13 +123,13 @@
 			// Calculate the annotationsSum
 			this.secureHTTPService.get("annotation/?videoId=" + this.currentVideo.id)
                 .then(function (response) { 
-					self.annotationsSum =  response.data.data.length
-					let sum = 0
+					self.numberOfAnnotations =  response.data.data.length
+					let ratingsSum = 0
 					for (var i = 0; i < response.data.data.length; i++) {
-						sum = sum + response.data.data[i].rating
+						ratingsSum = ratingsSum + response.data.data[i].rating
 					}
-					if (self.annotationsSum !== 0) { 
-						self.ratingSum = sum / self.annotationsSum
+					if (self.numberOfAnnotations !== 0) { 
+						self.ratingAverage = ratingsSum / self.numberOfAnnotations
 					}
 				})
 				.catch(function (err) { console.log(err) })
