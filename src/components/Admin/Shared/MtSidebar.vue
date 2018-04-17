@@ -10,7 +10,7 @@
 				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && (currentClass.name !== 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true"><i class="fa fa-plus"></i>Find a class to enroll</a>
+				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true; updateStudentClasses()"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
 			<!-- Sidebar Classes menu for student -->
@@ -22,9 +22,9 @@
 					element-loading-text="Loading..." 
 					element-loading-spinner="el-icon-loading"
 					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
-				<!-- The two lines below don't show, if the enrolledClasses array contains nothing, so there is no need for a v-show="!loadingClasses" -->
-				<el-input class="sidebar__classesInput" v-show="enrolledClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('enrolledClasses', 'filteredEnrolledClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-for="c in filteredEnrolledClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+				<!-- The two lines below don't show if the acceptedClasses array is empty, so there is no need for a v-show="!loadingClasses" -->
+				<el-input class="sidebar__classesInput" v-show="acceptedClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('acceptedClasses', 'filteredAcceptedClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
+				<a class="sidebar__classesLink" v-for="c in filteredAcceptedClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for administrator-->
@@ -226,7 +226,7 @@
                     <el-tab-pane label="Enrolled students" name="enrolledStudents">
                         <el-input icon="search" v-model="searchInput" @change="queryEnrolledStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
 						<div class="mt-table">
-							<li v-for="s in filteredEnrolledStudents" :key="s.id">
+							<li v-for="s in classEnrolledStudents" :key="s.id">
 								<span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}} - <i class="fa fa-book"></i> {{ currentClass.name }}</span>
 							</li>
 						</div>
@@ -324,8 +324,8 @@
 				searchInputClassSidebar: '',         // Used in search text area in sidebar classes
 				classIdClicked: '',
 				// Student classes
-				enrolledClasses: [],            // The classes that this student is enrolled to
-				filteredEnrolledClasses: [],
+				acceptedClasses: [],            // The classes that this student is enrolled to
+				filteredAcceptedClasses: [],
 				notEnrolledClasses: [],         // The classes that this student hasn't enrolled or requested
 				filteredNotEnrolledClasses: [],
 				requestedClasses: [],           // The classes that this student has requested to be enrolled
@@ -485,17 +485,11 @@
 			this.$store.dispatch('getCategories')
 			// Initialize classes arrays
 			this.loadingClasses = true
-			// console.log("dispatching get all classes")
 			var self = this
 			if (this.role === 'student') {
-				this.$store.dispatch("getAllClasses") // Update state.classes
+				// Initialize arrays
+				self.updateStudentClasses()
 				.then(function() {
-					// console.log("dispatching getAllUserEnrollmentsByUserId")
-					return self.$store.dispatch("getAllUserEnrollmentsByUserId", self.userId) // Update state.userEnrollments
-				})
-				.then(function() {
-					// Initialize arrays
-					self.updateStudentClasses() 
 					self.loadingClasses = false
 				})
 			}
@@ -532,62 +526,65 @@
 				
      		}, 500),
 			updateStudentClasses(){
-				// This method updates the "student classes", ie enrolledClasses, requestedClasses, notEnrolledClasses
-				// It relies on the store's classes and userEnrollments, so they might need to be updated before calling
-				// this method, depending on previous actions.
-				this.enrolledClasses = []
-				this.filteredEnrolledClasses = []
-				this.notEnrolledClasses = []
-				this.filteredNotEnrolledClasses = []
-				this.requestedClasses = []
-				for (var c = 0; c < this.classes.length; c++) {
-					if (!this.classes[c].archived) {
-						for (var e = 0; e < this.userEnrollments.length; e++) {
-							if (this.userEnrollments[e].classId === this.classes[c].id) {
-								if (this.userEnrollments[e].accepted) {
-									// Accepted enrollment
-									this.enrolledClasses.push(this.classes[c])
-									this.filteredEnrolledClasses.push(this.classes[c])
+				// This method updates the "student classes", ie acceptedClasses, requestedClasses, notEnrolledClasses
+				// It relies on the store's classes, enrolledClasses and userEnrollments
+				// console.log("dispatching get all classes")
+				var self = this
+				return this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					// console.log("dispatching getAllUserEnrollmentsByUserId")
+					return self.$store.dispatch("getAllUserEnrollmentsByUserId", self.userId) // Update state.userEnrollments
+				})
+				.then(function() {
+					// console.log("dispatching getEnrolledClassesByUserId")
+					return self.$store.dispatch("getEnrolledClassesByUserId", self.userId) // Update state.enrolledClasses
+				})
+				.then(function() {
+					self.acceptedClasses = []
+					self.filteredAcceptedClasses = []
+					self.requestedClasses = []
+					self.notEnrolledClasses = []
+					self.filteredNotEnrolledClasses = []
+					
+					self.notEnrolledClasses = self.classes
+					self.filteredNotEnrolledClasses = self.classes
+
+					for (var ec = 0; ec < self.enrolledClasses.length; ec++) {
+						if (!self.enrolledClasses[ec].archived) {
+							// Search enrollments for self enrolled class
+							for (var ue = 0; ue < self.userEnrollments.length; ue++) {
+								if (self.userEnrollments[ue].classId === self.enrolledClasses[ec].id) {
+									if (self.userEnrollments[ue].accepted) {
+										// Accepted enrollment
+										// console.log("Accepted ", ec, " - ", self.enrolledClasses[ec].name)
+										self.acceptedClasses.push(self.enrolledClasses[ec])
+										self.filteredAcceptedClasses.push(self.enrolledClasses[ec])
+										break
+									}
+									else {
+										// Not yet accepted enrollment
+										// console.log("Requested ", ec, " - ", self.enrolledClasses[ec].name)
+										self.requestedClasses.push(self.enrolledClasses[ec])
+										break
+									}
+								}
+							}
+
+							// Remove enrolled class from notEnrolledClasses
+							for (var nec = self.notEnrolledClasses.length - 1; nec >= 0; nec--) {
+								if (self.notEnrolledClasses[nec].id === self.enrolledClasses[ec].id) {
+									// console.log("Splicing ", ec, " - ", self.enrolledClasses[ec].name)
+									self.notEnrolledClasses.splice(nec, 1)
+									self.filteredNotEnrolledClasses = self.notEnrolledClasses
 									break
 								}
-								else {
-									// Not yet accepted enrollment
-									this.requestedClasses.push(this.classes[c])
-									break
-								}
-							} 
-						}
-					}
-				}
-				for (var c = 0; c < this.classes.length; c++) {
-					if (!this.classes[c].archived) {
-						var foundInEnrolledClasses = false
-						var foundInRequestedClasses = false
-						// Search for this class in enrolled classes
-						for (var e = 0; e < this.enrolledClasses.length; e++) {
-							// If it is found, it should not be added in the notEnrolledClasses
-							if (this.enrolledClasses[e].id === this.classes[c].id) {
-								foundInEnrolledClasses = true
-								break
-							} 
-						}
-						// Search for this class in requested classes
-						for (var r = 0; r < this.requestedClasses.length; r++) {
-							if (this.requestedClasses[r].id === this.classes[c].id) {
-								foundInRequestedClasses = true
-								break
 							}
 						}
-						// This class is neither enrolled nor requested => it is not enrolled yet
-						if (!foundInEnrolledClasses && !foundInRequestedClasses){
-							this.notEnrolledClasses.push(this.classes[c])
-							this.filteredNotEnrolledClasses.push(this.classes[c])
-						}
 					}
-				}
-				// console.log(this.enrolledClasses)
-				// console.log(this.requestedClasses)
-				// console.log(this.notEnrolledClasses)
+					// console.log(self.acceptedClasses)
+					// console.log(self.requestedClasses)
+					// console.log(self.notEnrolledClasses)
+				})
 			},
 			updateAdminClasses(){
 				// This method updates the "admin classes", ie adminActiveClasses, adminArchivedClasses
@@ -647,10 +644,10 @@
 				// Update enrollments. This is needed to show the little number of requested enrollments in the sidebar
 				var self = this
 				self.$store.commit('CURRENT_CLASS_SELECT', {name: className, id: classId, number: classNumber, department: classDepartment})
-				this.updateEnrolledStudents()
-				.then(function() {
-					//
-				})
+				// this.updateEnrolledStudents()
+				// .then(function() {
+				// 	//
+				// })
 
 			},
 			createClass() {	
@@ -762,14 +759,22 @@
 				this.filteredEnrolledStudents = []
 				this.requestedStudents = []
 				this.requestedStudentsClone = []
-				this.updateEnrolledStudents().then(function() {
+				this.updateEnrolledStudents()
+				.then(function() {
 					self.modalStudentRequestsIsOpen = true
 				})
 			},
             updateEnrolledStudents() {
 				// console.log("Updating enrollments")
 				var self = this
-				// this.$store.dispatch('getEnrolledUsersByClassId', this.currentClass.id) // Update the store.enrollments array first
+				// return this.$store.dispatch('getEnrolledUsersByClassId', this.currentClass.id) // Update the store.enrollments array first
+				// .then(function() {
+				// 	console.log("Class enrolled students: ", self.classEnrolledStudents)
+				// 	return this.$store.dispatch('getEnrollmentsByClassId', this.currentClassId)
+				// })
+				// .then(function() {
+				// 	console.log("Class enrollments: ", self.classEnrollments)
+				// })
 				return this.secureHTTPService.get("enrolledUser?classId=" + this.currentClass.id)
 				.then(function(response){
 					// console.log("running enrolled/requested selection", response)
@@ -1067,6 +1072,8 @@
 				this.$store.dispatch('createEnrollment', body)
 				.then(function() {
 					self.updateStudentClasses()
+					.then(function() {
+					})
 					self.modalEnrollClassIsOpen = false
 					alert("Enrollment request sent.")
 				})
@@ -1084,7 +1091,8 @@
             ...mapGetters(
 				['videos', 'classes', 'currentClass',
 				 'assignments', 'genres', 'categories', 
-				 'enrollments', 'userEnrollments'
+				 'enrollments', 'userEnrollments', 'enrolledClasses',
+				 'classEnrolledStudents'
 				]
             )
 		},
