@@ -495,23 +495,20 @@
 			this.loadingClasses = true
 			var self = this
 			if (this.role === 'student') {
-				// Initialize arrays
 				self.updateStudentClasses()
 				.then(function() {
 					self.loadingClasses = false
 				})
 			}
 			else if (this.role == 'administrator') {
-				this.$store.dispatch("getAllClasses") // Update state.classes
+				self.updateAdminClasses() 
 				.then(function() {
-					self.updateAdminClasses() 
 					self.loadingClasses = false
 				})
 			}
 			else if (this.role == 'professor') {
-				this.$store.dispatch("getAllClasses") // Update state.classes
+				self.updateProfessorClasses() 
 				.then(function() {
-					self.updateProfessorClasses() 
 					self.loadingClasses = false
 				})
 			}
@@ -535,7 +532,7 @@
      		}, 500),
 			updateStudentClasses(){
 				// This method updates the "student classes", ie acceptedClasses, requestedClasses, notEnrolledClasses
-				// It relies on the store's classes, enrolledClasses and userEnrollments, which all get updated first
+				// It relies on the store's classes, enrolledClasses and userEnrollments, which all get updated first.
 
 				// console.log("dispatching get all classes")
 				var self = this
@@ -596,43 +593,49 @@
 			},
 			updateAdminClasses(){
 				// This method updates the "admin classes", ie adminActiveClasses, adminArchivedClasses
-				// It relies on the store's classes, so they might need to be updated before calling
-				// this method, depending on previous actions.
-				this.adminActiveClasses = [] // All not archived classes of metalogon
-				this.filteredAdminActiveClasses = [] 
-				this.adminArchivedClasses = []
-				this.filteredAdminArchivedClasses = []
-				for (var c = 0; c < this.classes.length; c++) {
-					if (this.classes[c].archived) {
-						this.adminArchivedClasses.push(this.classes[c])
-						this.filteredAdminArchivedClasses.push(this.classes[c])
+				// It relies on the store's classes, which gets updated first.
+				var self = this
+				return this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					self.adminActiveClasses = [] // All not archived classes of metalogon
+					self.filteredAdminActiveClasses = [] 
+					self.adminArchivedClasses = []
+					self.filteredAdminArchivedClasses = []
+					for (var c = 0; c < self.classes.length; c++) {
+						if (self.classes[c].archived) {
+							self.adminArchivedClasses.push(self.classes[c])
+							self.filteredAdminArchivedClasses.push(self.classes[c])
+						}
+						else {
+							self.adminActiveClasses.push(self.classes[c])
+							self.filteredAdminActiveClasses.push(self.classes[c])
+						}
 					}
-					else {
-						this.adminActiveClasses.push(this.classes[c])
-						this.filteredAdminActiveClasses.push(this.classes[c])
-					}
-				}
+				})
 			},
 			updateProfessorClasses() {
 				// This method updates the "professor classes", ie professorActiveClasses, professorArchivedClasses
-				// It relies on the store's classes, so they might need to be updated before calling
-				// this method, depending on previous actions.
-				this.professorActiveClasses = [] // All not archived classes of metalogon
-				this.filteredProfessorActiveClasses = [] 
-				this.professorArchivedClasses = []
-				this.filteredProfessorArchivedClasses = []
-				for (var c = 0; c < this.classes.length; c++) {
-					if (this.classes[c].professorId === this.userId){
-						if (this.classes[c].archived) {
-							this.professorArchivedClasses.push(this.classes[c])
-							this.filteredProfessorArchivedClasses.push(this.classes[c])
-						}
-						else {
-							this.professorActiveClasses.push(this.classes[c])
-							this.filteredProfessorActiveClasses.push(this.classes[c])
+				// It relies on the store's classes, which gets updated first.
+				var self = this
+				return this.$store.dispatch("getAllClasses") // Update state.classes
+				.then(function() {
+					self.professorActiveClasses = [] // All not archived classes of metalogon
+					self.filteredProfessorActiveClasses = [] 
+					self.professorArchivedClasses = []
+					self.filteredProfessorArchivedClasses = []
+					for (var c = 0; c < self.classes.length; c++) {
+						if (self.classes[c].professorId === self.userId){
+							if (self.classes[c].archived) {
+								self.professorArchivedClasses.push(self.classes[c])
+								self.filteredProfessorArchivedClasses.push(self.classes[c])
+							}
+							else {
+								self.professorActiveClasses.push(self.classes[c])
+								self.filteredProfessorActiveClasses.push(self.classes[c])
+							}
 						}
 					}
-				}
+				})
 			},
 			// administrator
 			deleteClass() {
@@ -642,9 +645,13 @@
 				this.$store.dispatch('deleteClass', objectId)
 				.then(function() {
 					// Delete class can only be called by administrator, so only admin classes need to be updated
+					self.loadingClasses = true
 					self.updateAdminClasses()
-					self.modalDeleteClassIsOpen = false
-					self.$store.commit('CURRENT_CLASS_SELECT', { name: 'Home' }) // Sets the current showing class state to home
+					.then(function() {
+						self.modalDeleteClassIsOpen = false
+						self.$store.commit('CURRENT_CLASS_SELECT', { name: 'Home' }) // Sets the current showing class state to home
+						self.loadingClasses = false
+					})
 				})
 			},
 			// administrator, professor
@@ -664,10 +671,18 @@
 				this.$store.dispatch('createClass', {newClass: this.newClass})
 				.then(function(response) {
 					if (self.role === 'administrator') {
+						self.loadingClasses = true
 						self.updateAdminClasses()
+						.then(function () {
+							self.loadingClasses = false
+						})
 					}
 					else if (self.role === 'professor') {
+						self.loadingClasses = true
 						self.updateProfessorClasses()
+						.then(function () {
+							self.loadingClasses = false
+						})
 					}
 					// Select created class
 					self.$store.commit('CURRENT_CLASS_SELECT', {
@@ -700,10 +715,18 @@
 				})
 				.then(function() {
 					if (self.role == 'administrator') {
+						self.loadingClasses = true
 						self.updateAdminClasses()
+						.then(function () {
+							self.loadingClasses = false
+						})
 					}
 					else if (self.role === 'professor'){
+						self.loadingClasses = true
 						self.updateProfessorClasses()
+						.then(function () {
+							self.loadingClasses = false
+						})
 					}
 
 					self.modalArchiveClassIsOpen = false // Closes the modal
@@ -733,12 +756,20 @@
 				})
 				.then(function() {
 					if (self.role == 'administrator') {
+						self.loadingClasses = true
 						self.updateAdminClasses()
-						self.sidebarClassesTab = 'activeClasses'
+						.then(function () {
+							self.loadingClasses = false
+							self.sidebarClassesTab = 'activeClasses'
+						})
 					}
 					else if (self.role === 'professor'){
+						self.loadingClasses = true
 						self.updateProfessorClasses()
-						self.sidebarClassesTab = 'activeClasses'
+						.then(function () {
+							self.loadingClasses = false
+							self.sidebarClassesTab = 'activeClasses'
+						})
 					}
 
 					self.modalUnarchiveClassIsOpen = false
