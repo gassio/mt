@@ -10,7 +10,7 @@
 				<a class="sidebar__actionsLink" v-show="(role === 'administrator' || role === 'professor') && !(currentClass.name === 'Home')" @click="openModalStudentRequests()"><i class="fa fa-file-text-o"></i>Student requests ({{ requestedStudents.length }})</a>
 				<!-- <a class="sidebar__actionsLink" v-show="role === 'administrator' || role === 'professor'" @click="createCategoriesTreeDataForm(); modalGenreCustomization = true"><i class="fa fa-commenting-o"></i>Categories</a> -->
 				<a class="sidebar__actionsLink" v-show="role === 'administrator' && (currentClass.name !== 'Home')" @click="modalDeleteClassIsOpen = true"><i class="fa fa-trash"></i>Delete this class</a>
-				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="modalEnrollClassIsOpen = true; updateStudentClasses()"><i class="fa fa-plus"></i>Find a class to enroll</a>
+				<a class="sidebar__actionsLink" v-show="role === 'student'" @click="toggleModalClassesToEnroll()"><i class="fa fa-plus"></i>Find a class to enroll</a>
 			</div>
 
 			<!-- Sidebar Classes menu for student -->
@@ -277,19 +277,26 @@
             </el-dialog> -->
 
 			<!-- Student -->
-			<el-dialog title="Find a class to enroll" class="modal-student-requests" :visible.sync="modalEnrollClassIsOpen">
+			<el-dialog title="Find a class to enroll" class="modal-student-requests" :visible.sync="modalClassesToEnrollIsOpen">
+				<!-- Loading -->
+				<div class="uploadvid__sync-load" 
+					v-loading="loadingModalClasses" 
+					v-show="loadingModalClasses"
+					element-loading-text="Loading..." 
+					element-loading-spinner="el-icon-loading"
+					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
 				<!-- <p v-show="notEnrolledClasses.length !== 0" ><b>Classes to enroll</b></p> -->
-				<p v-show="notEnrolledClasses.length === 0" ><b>No classes to enroll</b></p>
-				<el-input icon="search" v-show="notEnrolledClasses.length !== 0" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
-				<div class="mt-table">
+				<p v-show="notEnrolledClasses.length === 0 && !loadingModalClasses" ><b>No classes to enroll</b></p>
+				<el-input icon="search" v-show="notEnrolledClasses.length !== 0 && !loadingModalClasses" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
+				<div class="mt-table" v-show="!loadingModalClasses">
 					<li v-for="c in filteredNotEnrolledClasses" :key="c.id" @click="enrollToClass($event)">
 						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
 						<i style="visibility:hidden">{{ c.id }}</i>
 					</li>
 				</div>
 				<br>
-				<span v-show="requestedClasses.length !== 0"><b>Requests Pending</b></span>
-				<div label="" class="mt-table">
+				<span v-show="requestedClasses.length !== 0 && !loadingModalClasses"><b>Requests Pending</b></span>
+				<div label="" class="mt-table" v-show="!loadingModalClasses">
 					<li v-for="c in requestedClasses" :key="c.id">
 						<a><i class="fa fa-book"></i> {{ c.name }} - {{ c.department }} - {{ c.number }} - {{ c.semester }}</a>
 						<!-- <i style="visibility:hidden">{{ c.id }}</i> -->
@@ -314,6 +321,7 @@
 				userId: this.$root.$options.authService.getAuthData().userId,
 				secureHTTPService : this.$root.$options.secureHTTPService,
 				loadingClasses: false,
+				loadingModalClasses: false,
 				loadingAssignments: false,
 				// CLASSES
 				sidebarClassesTab: 'activeClasses',  // Required to select a tab. activeClasses is the initialization
@@ -342,7 +350,7 @@
 
 				// MODALS
 				// Student
-				modalEnrollClassIsOpen: false,
+				modalClassesToEnrollIsOpen: false,
 				// Professor, Administrator
 				modalCreateClassIsOpen: false,
 				modalArchiveClassIsOpen: false,
@@ -527,7 +535,8 @@
      		}, 500),
 			updateStudentClasses(){
 				// This method updates the "student classes", ie acceptedClasses, requestedClasses, notEnrolledClasses
-				// It relies on the store's classes, enrolledClasses and userEnrollments
+				// It relies on the store's classes, enrolledClasses and userEnrollments, which all get updated first
+
 				// console.log("dispatching get all classes")
 				var self = this
 				return this.$store.dispatch("getAllClasses") // Update state.classes
@@ -1064,6 +1073,20 @@
 				console.log(data);
 			},
 			// Student
+			toggleModalClassesToEnroll() {
+				if (this.modalClassesToEnrollIsOpen) {
+					this.modalClassesToEnrollIsOpen = false
+				}
+				else{
+					this.modalClassesToEnrollIsOpen = true
+				}
+				this.loadingModalClasses = true
+				var self = this
+				this.updateStudentClasses()
+				.then(function() {
+					self.loadingModalClasses = false
+				})
+			},
 			enrollToClass(event) {
 				const clickedClassId = event.currentTarget.children[1].innerHTML
 				var body = {classId : clickedClassId, userId : this.userId}
@@ -1074,7 +1097,7 @@
 					self.updateStudentClasses()
 					.then(function() {
 					})
-					self.modalEnrollClassIsOpen = false
+					self.toggleModalClassesToEnroll()
 					alert("Enrollment request sent.")
 				})
 			},
