@@ -8,10 +8,11 @@
 		<img class="classvideo__favorite" src="../../../assets/favorite-inactive.svg" v-show="role === 'professor' && currentVideo.featuredClass === false" @click="featureVideo($event)">
 		<img class="classvideo__favorite" src="../../../assets/favorite-active.svg" v-show="role === 'professor' && currentVideo.featuredClass === true" @click="unfeatureVideo($event)">
 
+		<button class="classvideo__delete" v-show="role ==='administrator'" @click="toggleDeleteConfirmationModal()">Delete Video</button>
+
 		<router-link :to="'/video/' + currentVideo.id" tag="a" class="classvideo__metadata">
 				<img class="classvideo__image" :src="currentVideo.thumb">
 				<div class="classvideo__titles">
-					<!-- class="classvideo__title">{{ currentVideo.title }} -->
 					<p class="classvideo__title">{{ currentVideo.title }}</p>
 					<p class="classvideo__class">{{ currentVideo.class }}</p>
 					<p class="classvideo__genre">{{ secondsToMMSS(currentVideo.duration) }} / {{ genreName }} </p>
@@ -27,8 +28,13 @@
 					</span>
 				</div>
 		</router-link>
-	</div>
 
+		<!-- Delete video confirmation -->
+		<el-dialog :title="'!Not complete - leaves garbage in backend (annotations, collaborations, jwvideo). Use sparingly! Do you want to delete `' + currentVideo.title + '` video?'" :visible.sync="deleteModalIsOpen">
+			<el-button @click="toggleDeleteConfirmationModal()">Go back</el-button>
+			<el-button class="add-class-btn" @click="deleteVideo(); toggleDeleteConfirmationModal()"><strong>Delete Video</strong></el-button>
+		</el-dialog>
+	</div>
 </template>
 
 <script>
@@ -43,14 +49,27 @@
 				secureHTTPService : this.$root.$options.secureHTTPService,
 				numberOfAnnotations: 0,
 				ratingAverage: 0,
-				genreName: ''
+				genreName: '',
+				deleteModalIsOpen: false
 			}
 		},
 		methods: {
+			toggleDeleteConfirmationModal() {
+				if (this.deleteModalIsOpen) {
+					this.deleteModalIsOpen = false
+				}
+				else {
+					this.deleteModalIsOpen = true
+				}
+			},
+			deleteVideo() {
+				this.$store.dispatch("deleteVideo", this.currentVideo.id)
+			},
 			featureGlobal(event) {
-				var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+				var eventVideoId = $(event.currentTarget).siblings()[4].getAttribute("href")
 				// The string '/video/' has 7 seven characters.
 				eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+				// console.log(eventVideoId)
 
 				for (var i = 0, l = this.videos.length; i < l; i++) {
 					if (this.videos[i].id === eventVideoId) {
@@ -62,9 +81,10 @@
 				}
 			},
 			unfeatureGlobal(event) {
-				var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+				var eventVideoId = $(event.currentTarget).siblings()[4].getAttribute("href")
 				// The string '/video/' has 7 seven characters.
 				eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+				// console.log(eventVideoId)
 
 				for (var i = 0, l = this.videos.length; i < l; i++) {
 					if (this.videos[i].id === eventVideoId) {
@@ -76,9 +96,10 @@
 				}
 			},
 			featureVideo(event) {
-				var eventVideoId = $(event.currentTarget).siblings().find('.classvideo__title').attr("href")
+				var eventVideoId = $(event.currentTarget).siblings()[4].getAttribute("href")
 				// The string '/video/' has 7 seven characters.
 				eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+				// console.log(eventVideoId)
 
 				for (var i = 0, l = this.videos.length; i < l; i++) {
 					if (this.videos[i].id === eventVideoId) {
@@ -90,9 +111,10 @@
 				}
 			},
 			unfeatureVideo(event) {
-				var eventVideoId = $(event.currentTarget).next().find('.classvideo__title').attr("href")
+				var eventVideoId = $(event.currentTarget).siblings()[4].getAttribute("href")
 				// The string '/video/' has 7 seven characters.
 				eventVideoId = eventVideoId.substring(7, eventVideoId.length)
+				// console.log(eventVideoId)
 
 				for (var i = 0, l = this.videos.length; i < l; i++) {
 					if (this.videos[i].id === eventVideoId) {
