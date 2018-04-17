@@ -639,14 +639,14 @@
 					// Delete class can only be called by administrator, so only admin classes need to be updated
 					self.updateAdminClasses()
 					self.modalDeleteClassIsOpen = false
-					self.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to home
+					self.$store.commit('CURRENT_CLASS_SELECT', { name: 'Home' }) // Sets the current showing class state to home
 				})
 			},
 			// administrator, professor
 			setCurrentClass(className, classNumber, classId, classDepartment) {
 				// Update enrollments. This is needed to show the little number of requested enrollments in the sidebar
 				var self = this
-				self.$store.commit('CURRENT_CLASS_SELECT', {className: className, classNumber: classNumber, classId: classId, classDepartment: classDepartment})
+				self.$store.commit('CURRENT_CLASS_SELECT', {name: className, id: classId, number: classNumber, department: classDepartment})
 				this.updateEnrolledStudents()
 				.then(function() {
 					//
@@ -666,10 +666,10 @@
 					}
 					// Select created class
 					self.$store.commit('CURRENT_CLASS_SELECT', {
-						className: response.data.data.name, 
-						classNumber: response.data.data.number, 
-						classId: response.data.data.id, 
-						classDepartment: response.data.data.department
+						name: response.data.data.name, 
+						id: response.data.data.id, 
+						number: response.data.data.number, 
+						department: response.data.data.department
 					})
 				})
 				this.newClass = {}
@@ -703,7 +703,7 @@
 
 					self.modalArchiveClassIsOpen = false // Closes the modal
 
-					self.$store.commit('CURRENT_CLASS_SELECT', { className: 'Home' }) // Sets the current showing class state to home
+					self.$store.commit('CURRENT_CLASS_SELECT', { name: 'Home' }) // Sets the current showing class state to home
 				})
 				.catch(function(err) {
 					console.log('Error on archive class PUT: ', err)
@@ -740,10 +740,10 @@
 
 					self.$store.commit('CURRENT_CLASS_SELECT', 
 					{ 
-						className: objectToBeUnarchived.name, 
-						classNumber: objectToBeUnarchived.number, 
-						classId: objectToBeUnarchived.id, 
-						classDepartment: objectToBeUnarchived.classDepartment 
+						name: objectToBeUnarchived.name, 
+						id: objectToBeUnarchived.id, 
+						number: objectToBeUnarchived.number, 
+						department: objectToBeUnarchived.classDepartment 
 					})				
 				})
 				.catch(function(err) {
