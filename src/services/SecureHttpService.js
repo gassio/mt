@@ -62,9 +62,9 @@ export default {
                     }
                     else if (err.response.status == "404") {
                         console.log("secureHTTPService: response status 404")
-                        localStorage.clear()
-                        ourApp.$router.push('/Login')
-                        ourApp.$router.push('/ErrorPage')
+                        // localStorage.clear()
+                        // ourApp.$router.push('/Login')
+                        // ourApp.$router.push('/ErrorPage')
                         reject()
                     }
                     // localStorage.clear()
