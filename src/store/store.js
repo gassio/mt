@@ -397,39 +397,57 @@ export const store = new Vuex.Store({
         /* ENROLLMENTS */ 
         createEnrollment: function ({ commit }, payload) {
             return secureHTTPService.post("enrollment", payload)
-                .then(function(response){
-                    commit('CREATE_ENROLLMENT', response.data.data)
-                })
-                .catch(function(err) {
-                    console.log("createEnrollment PUT error: ", err)
-                })
+            .then(function(response){
+                // console.log("Create enrollment payload: ", payload)
+                // console.log(response.data.data)
+                commit('CREATE_ENROLLMENT', response.data.data)
+            })
+            .catch(function(err) {
+                console.log("createEnrollment POST error: ", err)
+            })
+        },
+        editEnrollment: function ({ commit }, payload) {
+            return secureHTTPService.put("enrollment/" + payload.id, payload)
+            .then(function(response){
+                commit('EDIT_ENROLLMENT', response.data.data)
+            })
+            .catch(function(err) {
+                console.log("editEnrollment PUT error: ", err)
+            })
+        },
+        deleteEnrollment: function ({commit}, payload) {
+            return secureHTTPService.delete("enrollment/" + payload)
+            .then(function(response) {
+                // console.log("Delete enrollment payload: ", payload)
+                // console.log(response.data.data)
+                commit('DELETE_ENROLLMENT', payload)
+            })
+            .catch(function(err) {
+                console.log("deleteEnrollment DELETE error: ", err)
+            })
         },
         getAllEnrollments: function ({ commit }, payload) {
             return secureHTTPService.get("enrollment")
-                .then(function (response)
-                {
-                    // console.log("getAllEnrollments action")
-                    commit('GET_ENROLLMENTS', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            .then(function(response) {
+                // console.log("getAllEnrollments action")
+                commit('GET_ENROLLMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                
+            })
         },
         getAllUserEnrollmentsByUserId: function ({ commit }, payload) {
             return secureHTTPService.get("enrollment?userId=" + payload)
-                .then(function (response)
-                {                   
-                    // console.log("getAllUserEnrollmentsByUserId action")
-                    commit('GET_USER_ENROLLMENTS', response.data.data)
-                })
-                .catch(function (err) {
-                    console.log('getAllUserEnrollmentsByUserId GET error: ', err)
-                })
+            .then(function(response) {
+                commit('GET_USER_ENROLLMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getAllUserEnrollmentsByUserId GET error: ', err)
+            })
         },
         getEnrolledClassesByUserId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledClass?userId=" + payload)
-            .then(function (response)
-            {
+            .then(function(response) {
                 // console.log("getEnrolledClassesByUserId action")
                 commit('GET_ENROLLED_CLASSES', response.data.data)
             })
@@ -439,11 +457,7 @@ export const store = new Vuex.Store({
         },
         getEnrolledUsersByClassId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledUser?classId=" + payload)
-            .then(function (response)
-            {
-                // var responseObj = {data: response.data.data, classId: payload}
-                // commit('GET_ENROLLED_STUDENTS_BY_CLASSID', responseObj)
-                // console.log(response.data.data)
+            .then(function(response) {
                 commit('GET_ENROLLED_STUDENTS_BY_CLASSID', response.data.data)
             })
             .catch(function (err) {
@@ -451,10 +465,9 @@ export const store = new Vuex.Store({
             })
         },
         getEnrollmentsByClassId: function ({ commit }, payload) {
-            return secureHTTPService.get("enrollement?classId=" + payload)
-            .then(function (response)
-            {
-                console.log(response.data.data)
+            return secureHTTPService.get("enrollment?classId=" + payload)
+            .then(function(response) {
+                // console.log(response.data.data)
                 commit('GET_ENROLLMENTS_BY_CLASS_ID', response.data.data)
             })
             .catch(function (err) {
@@ -769,7 +782,20 @@ export const store = new Vuex.Store({
         },
         CREATE_ENROLLMENT: (state, newEnrollment) => {
             state.enrollments.push(newEnrollment)
-            state.userEnrollments.push(newEnrollment)
+        },
+        EDIT_ENROLLMENT: (state, editedEnrollment) => {
+            for (var e = 0; e < state.enrollments.length; e++) {
+                if (state.enrollments[e].id === editedEnrollment.id)
+                    state.enrollments[e] = editedEnrollment
+                    break
+            }
+        },
+        DELETE_ENROLLMENT: (state, deletedEnrollmentId) => {
+            for (var i = 0, l = state.enrollments.length; i < l; i++) {
+                if (state.enrollments[i].id === deletedEnrollmentId) 
+                    state.enrollments.splice(i,1)
+                    break
+            }
         }
     },
 
@@ -807,6 +833,9 @@ export const store = new Vuex.Store({
         },
         classEnrolledStudents: state => {
             return state.classEnrolledStudents // All students enrolled in provided classId from enrolledUser resource
+        },
+        classEnrollments: state => {
+            return state.classEnrollments // All enrollments of provided classId from enrollment resource
         },
         userEnrollments: state => {
             return state.userEnrollments // All enrollments of provided userId from enrollment resource
