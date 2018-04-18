@@ -204,7 +204,7 @@ You might also want to include a concrete strategy recommendation."
                         </el-tab-pane>
                         <el-tab-pane label="Other students">
                             <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
-                            <el-table ref="multipleTable" :data="enrolledUsers" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
+                            <el-table ref="multipleTable" :data="classEnrolledStudentsAccepted" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template scope="s2">
                                         <i class="fa fa-user"></i> {{ s2.row.firstName }} {{ s2.row.lastName }}
@@ -358,6 +358,7 @@ You might also want to include a concrete strategy recommendation."
                 otherInventionelected: false,
                 modalCollaboratorsIsOpen: false,
                 collaboratorsInputValue: '',
+                classEnrolledStudentsAccepted: [],
                 authService : this.$root.$options.authService,
                 modalSyncOpen: false,
                 secureHTTPService : this.$root.$options.secureHTTPService,
@@ -1029,7 +1030,7 @@ You might also want to include a concrete strategy recommendation."
                 // Define the filter method that is used above.
                 var filterCollaborators = (queryString) => {
                     return (collaborator) => {
-                        return collaborator.studentName.toLowerCase().indexOf(queryString) === 0
+                        return collaborator.studentName.toLowerCase().indexOf(queryString) !== -1
                     }
                 } 
 
@@ -1041,17 +1042,31 @@ You might also want to include a concrete strategy recommendation."
                 
                 for (var i = 0, l = this.classes.length; i < l; i++) { 
                     if (this.classes[i].name === this.videos.class) {
-                        this.$store.dispatch( 'getEnrolledUsersByClassId', this.classes[i].id )
+                        var self = this
+                        this.$store.dispatch('getEnrolledUsersByClassId', this.classes[i].id )
+                        .then(function() {
+                            return self.$store.dispatch('getEnrollmentsByClassId', self.classes[i].id)
+                        })
+                        .then(function() {
+                            for (var e = 0; e < self.classEnrollments.length; e++) {
+                                for (var s = 0; s < self.classEnrolledStudents.length; s++) {
+                                    if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id && self.classEnrollments[e].accepted) {
+                                        self.classEnrolledStudentsAccepted.push(self.classEnrolledStudents[s])
+                                    }
+                                }
+                            }
+                        })
+                        break
                     }
                 }
             },
             addCollaborator(scope, row) {
                 console.log('addCollaborator')
-                this.$store.dispatch( 'createCollaboration', { videoId: this.id, userId: row.id } )
+                this.$store.dispatch('createCollaboration', { videoId: this.id, userId: row.id })
             },
             deleteCollaborator(scope, row) {
                 console.log('deleteCollaborator')
-                this.$store.dispatch( 'deleteCollaboration', { videoId: this.id, userId: row.id } )
+                this.$store.dispatch('deleteCollaboration', { videoId: this.id, userId: row.id })
             },
             goHome() {
                 this.$router.push('/' + this.authData.role)
@@ -1281,7 +1296,8 @@ You might also want to include a concrete strategy recommendation."
             ...mapGetters([
                 'videos', 'currentVideoID', 'canons', 
                 'videoAnnotations', 'collaborators', 'users',
-                'enrolledUsers', 'classes', 'currentClass'
+                'classEnrolledStudents', 'classes', 'currentClass',
+                'classEnrollments'
             ])
         },
         components: {
