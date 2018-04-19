@@ -21,157 +21,387 @@ export const store = new Vuex.Store({
         videos: [],
         videoAnnotations: [],
         classes: [],
-        canons: [   
-            { 
-                name: 'Invention', 
-                categories: [
-                    { 
-                        name: 'Appeals',
-                        mvs: [
-                            { desc: 'Logos: Appeals to reason or logic, including appeals to statistics, math, logic, order, and \"objectivity.\"' },
-                            { desc: 'Pathos: Appeals to human emotion, desire, or passion' },
-                            { desc: 'Ethos: Appeals to the character or authority of the speaker (situated or invented)' }
-                        ]
-                    },
-                    { 
-                        name: 'Kairos',
-                        mvs: [
-                            { desc: 'Exigence (situation-driven): Recent events to show urgency or relevance to the present' },
-                            { desc: 'Audience-speaker relationship at the moment' },
-                            { desc: 'Alignment to communities taking positions and serving a set of interests' },
-                            { desc: 'Power dynamics between communities or groups ' },
-                            { desc: 'Preferred or appropriate lines of argument, given the audience’s values/needsy' }
-                        ]
-                    },
-                    { 
-                        name: 'Stasis',
-                        mvs: [
-                            { desc: 'Fact (conjecture)' },
-                            { desc: 'Definition' },
-                            { desc: 'Causation' },
-                            { desc: 'Quality (value)' },
-                            { desc: 'Policy' },
-                            { desc: 'Place (forum)' },
-                        ]
-                    },
-                    { 
-                        name: 'Topoi',
-                        mvs: [
-                            { desc: 'Comparative' },
-                            { desc: 'Causal' },
-                            { desc: 'Dimensional' }
-                        ]
-                    },
-                    { 
-                        name: 'Extrinsic proof',
-                        mvs: [
-                            { desc: 'Testimony' },
-                            { desc: 'Data'}
-                        ]
-                    }
-                ]
-            },
-            { 
-                name: 'Structure', 
-                categories: [
-                    { 
-                        name: 'Terms',
-                        desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'
-                    },
-                    { 
-                        name: 'Conceptual transitions',
-                        desc: 'Uses conceptual transitions to connect key sections of the presentation'
-                    },
-                    { 
-                        name: 'Line of argument',
-                        desc: 'Provides a clear line of argument which is brought to a clear position at the end'
-                    },
-                    { 
-                        name: 'Central moves',
-                        desc: 'Uses the central rhetorical moves for each section appropriately '
-                    }
-                    ]
-            },
-            { 
-                name: 'Delivery', 
-                categories: [
-                    { 
-                        name: 'Volume',
-                        desc: 'Volume, rate, and pitch are appropriate and modulated'
-                    },
-                    { 
-                        name: 'Gestures',
-                        desc: 'Gestures, eye contact, and body movement used intentionally to engage audience'
-                    },
-                    { 
-                        name: 'Metadiscourse',
-                        desc: 'Metadiscourse orients listener and helps transition between sections'
-                    },
-                    { 
-                        name: 'Posture',
-                        desc: 'Posture and stance project confidence, and allow speaker to interact with audience and screen'
-                    },
-                    { 
-                        name: 'Language',
-                        desc: 'Technical and informal language are both employed as appropriate'
-                    }
-                ]
-            },
-            { 
-                name: 'Visuals', 
-                categories: [
-                    { 
-                        name: 'Pictorial cues',
-                        desc: 'Uses primarily pictorial cues (limited text)'
-                    },
-                    { 
-                        name: 'Slide titles',
-                        desc: 'Uses assertion-based slide titles to convey key concepts (including title slide)'
-                    },
-                    { 
-                        name: 'Image-text highlight',
-                        desc: 'Images and text highlight/focus audience on key points'
-                    },
-                    { 
-                        name: 'Graphics',
-                        desc: 'Graphics show relevant data/concepts to support the claims'
-                    },
-                    { 
-                        name: 'Memorable images',
-                        desc: 'Memorable images provide necessary context to support the oral discussion'
-                    }
-                ]
-            },
-            { 
-                name: 'Style', 
-                categories: [
-                    { 
-                        name: 'Coherence ',
-                        desc: 'Uses transitions at the sentence level to connect key concepts and parts of the argument'
-                    },
-                    { 
-                        name: 'Concision',
-                        desc: 'Uses the fewest possible words to explain the concepts for the audience, avoiding unnecessary repetition'
-                    },
-                    { 
-                        name: 'Flow',
-                        desc: 'Uses structures such as given/new or three-part structures to help the audience follow the argument'
-                    },
-                    { 
-                        name: 'Emphasis',
-                        desc: 'Uses specific words or phrases to draw attention to important concepts'
-                    },
-                    { 
-                        name: 'Figures of Speech',
-                        desc: 'Uses analogies, metaphors or other rhetorical devices to enhance the concepts and make the speech memorable'
-                    },
-                    { 
-                        name: 'Figures of Sound',
-                        desc: 'Uses auditory cues at the sentence (e.g. patterned parallelism) or word level (e.g. alliteration) to make the oral delivery more memorable'
-                    }
-                ]
-            }
-        ],
+        canons: {
+            // Structure: {
+            //     _id: '59a870870110587e400ff7c4',
+            //     name: 'Structure',
+            //     categories: [
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997d8',
+            //             name: 'Coherence',
+            //             canon: 'Structure',
+            //             description: 'Connects the central rhetorical moves for each section explicitly to each other',
+            //             id: '23ce4e5a-7be5-4f92-878c-b312cda3c1df',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997d9',
+            //             name: 'Argumentation',
+            //             canon: 'Structure',
+            //             description: 'Provides a clear line of argument which is brought to a clear position at the end',
+            //             id: '20333182-94e6-4867-8295-d4014531254e',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e1',
+            //             name: 'Overview',
+            //             canon: 'Structure',
+            //             description: 'Provides overview of the talk, emphasizing the connection between key terms and concepts',
+            //             id: 'f72f342e-1284-48d5-b3f9-11e873f01572',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e3',
+            //             name: 'Transitions',
+            //             canon: 'Structure',
+            //             description: 'Uses conceptual transitions to connect key sections of the presentation',
+            //             id: 'af69b134-0df7-41d4-bdba-95768f13548d',
+            //             subcategories: [],
+            //         },
+            //     ],
+            // },
+            // Style: {
+            //     _id: '59a870870110587e400ff7c5',
+            //     name: 'Style',
+            //     categories: [
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e0',
+            //             name: 'Coherence',
+            //             canon: 'Style',
+            //             description: 'Uses transitions at the sentence level to connect key concepts and parts of the argument',
+            //             id: '48de9842-8b5a-48c7-8b73-d05546246bca',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e2',
+            //             name: 'Concision',
+            //             canon: 'Style',
+            //             description: 'Uses the fewest possible words to explain the concepts for the audience, avoiding unnecessary repetition',
+            //             id: '4092dbf3-d5e0-4ba0-95fe-fc66ec5c909a',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e4',
+            //             name: 'Emphasis',
+            //             canon: 'Style',
+            //             description: 'Uses specific words or phrases to draw attention to important concepts',
+            //             id: '0f0e3a71-0b43-4468-876e-45952cf20f0a',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e9',
+            //             name: 'Figures of Sound',
+            //             canon: 'Style',
+            //             description: 'Uses auditory cues at the sentence (e.g. patterned parallelism) or word level (e.g. alliteration) to make the oral delivery more memorable',
+            //             id: '851035a5-c902-44b6-a258-ace5149101d8',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997ea',
+            //             name: 'Flow',
+            //             canon: 'Style',
+            //             description: 'Uses structures such as given/new or three-part structures to help the audience follow the argument',
+            //             id: '6e57c08d-8a83-49f7-9eb2-fb9a6f84ff52',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e7',
+            //             name: 'Figures of Speech/Tropes',
+            //             canon: 'Style',
+            //             description: 'Uses analogies, metaphors or other rhetorical devices to enhance the concepts and make the speech memorable',
+            //             id: '01c188b8-9f1c-4683-9e8d-fc3213e5538e',
+            //             subcategories: [],
+            //         },
+            //     ],
+            // },
+            // Invention: {
+            //     _id: '59a870870110587e400ff7c3',
+            //     name: 'Invention',
+            //     categories: [
+            //         {
+            //             _id: '5ad53bbdfbe7273c8c2ed0dd',
+            //             canon: 'Invention',
+            //             name: 'Appeals',
+            //             id: '7d6a2b42-3803-402c-8c2a-a789b72bdcd7',
+            //             subcategories: [
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a1',
+            //                     canon: 'Invention',
+            //                     parentId: '7d6a2b42-3803-402c-8c2a-a789b72bdcd7',
+            //                     name: 'Pathos',
+            //                     description: 'Appeals to human emotion, desire, or passion',
+            //                     id: '7b94bf7a-69d7-434c-98d7-31b29f12b1bb',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a0',
+            //                     canon: 'Invention',
+            //                     parentId: '7d6a2b42-3803-402c-8c2a-a789b72bdcd7',
+            //                     name: 'Logos',
+            //                     description: 'Appeals to reason or logic, including appeals to statistics, math, logic, order, and "objectivity."',
+            //                     id: '17f9e576-0e8e-4d24-a32c-e5ff37c26b2a',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a2',
+            //                     canon: 'Invention',
+            //                     parentId: '7d6a2b42-3803-402c-8c2a-a789b72bdcd7',
+            //                     name: 'Ethos',
+            //                     description: 'Appeals to the character or authority of the speaker (situated or invented)\n',
+            //                     id: '41e813c6-ab17-4ac0-a4d4-64bf9ad24094',
+            //                 },
+            //             ],
+            //         },
+            //         {
+            //             _id: '5ad53bbdfbe7273c8c2ed0de',
+            //             canon: 'Invention',
+            //             name: 'Kairos',
+            //             id: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //             subcategories: [
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a4',
+            //                     canon: 'Invention',
+            //                     parentId: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //                     name: 'Relationship',
+            //                     description: 'Audience-speaker relationship at the moment',
+            //                     id: '3c4daec2-6475-44ae-ac4e-0e517bb82ec8',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a6',
+            //                     canon: 'Invention',
+            //                     parentId: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //                     name: 'Dynamics',
+            //                     description: 'Power dynamics between communities or groups',
+            //                     id: 'c421ba0e-d1dc-4fe1-8f45-cebc7d67e4f5',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a3',
+            //                     canon: 'Invention',
+            //                     parentId: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //                     name: 'Exigence',
+            //                     description: 'Recent events to show urgency or relevance to the present (situation-driven)',
+            //                     id: '1bf0403c-893b-4c7e-85e5-91164f46bd38',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a5',
+            //                     canon: 'Invention',
+            //                     parentId: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //                     name: 'Alignment',
+            //                     description: 'Alignment to communities taking positions and serving a set of interests',
+            //                     id: 'e44df013-3aab-464c-b795-02b191a89bd3',
+            //                 },
+            //                 {
+            //                     _id: '5ad53d1be1a09324acc3d8a7',
+            //                     canon: 'Invention',
+            //                     parentId: 'fe224053-31cd-4e0c-9453-4dc592696ec4',
+            //                     name: 'Argumentation',
+            //                     description: 'Preferred or appropriate lines of argument, given the audience’s values/needs',
+            //                     id: 'fbcca7e0-a167-4055-8f7b-14755e4772fe',
+            //                 },
+            //             ],
+            //         },
+            //         {
+            //             _id: '5ad53bbdfbe7273c8c2ed0df',
+            //             canon: 'Invention',
+            //             name: 'Stasis',
+            //             id: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //             subcategories: [
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8a8',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Fact',
+            //                 id: '0d026903-6334-47aa-b32e-4ca346df7046',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8a9',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Definition',
+            //                 id: 'c48bf3c7-129e-47e8-80c0-0a95a63182ad',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8aa',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Causation',
+            //                 id: '4e4ac743-0e08-463a-af6c-69a65a4f1ddb',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8ab',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Quality',
+            //                 id: '82068c97-f959-4146-8830-9c44d7ed3248',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8ad',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Place',
+            //                 id: 'dd0eba36-9cf5-4161-89cb-233b429b3766',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8ac',
+            //                 canon: 'Invention',
+            //                 parentId: '0489dfca-5464-4bb1-85ef-05442b1bc629',
+            //                 name: 'Policy',
+            //                 id: '8850a3ba-940e-4581-932f-6f43707527fe',
+            //             },
+            //             ],
+            //         },
+            //         {
+            //             _id: '5ad53bbdfbe7273c8c2ed0e0',
+            //             canon: 'Invention',
+            //             name: 'Topoi',
+            //             id: '9dd3e433-2b2c-4c64-8b3f-206ccdc6055f',
+            //             subcategories: [
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8ae',
+            //                 canon: 'Invention',
+            //                 parentId: '9dd3e433-2b2c-4c64-8b3f-206ccdc6055f',
+            //                 name: 'Comparative',
+            //                 id: 'db64971c-6d4e-4501-991e-b83ac0249ab6',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8b0',
+            //                 canon: 'Invention',
+            //                 parentId: '9dd3e433-2b2c-4c64-8b3f-206ccdc6055f',
+            //                 name: 'Dimensional',
+            //                 id: 'e0fe5d88-c3c5-4fbe-b5ff-bf96e224125b',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8af',
+            //                 canon: 'Invention',
+            //                 parentId: '9dd3e433-2b2c-4c64-8b3f-206ccdc6055f',
+            //                 name: 'Causal',
+            //                 id: '16f0b684-ff0c-4ea7-9dc4-5fc6d05ae5b8',
+            //             },
+            //             ],
+            //         },
+            //         {
+            //             _id: '5ad53bbdfbe7273c8c2ed0e1',
+            //             canon: 'Invention',
+            //             name: 'Extrinsic proof',
+            //             id: 'c4138d98-5580-4cc9-a4c2-5b7b03299ce2',
+            //             subcategories: [
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8b1',
+            //                 canon: 'Invention',
+            //                 parentId: 'c4138d98-5580-4cc9-a4c2-5b7b03299ce2',
+            //                 name: 'Testimony',
+            //                 id: '84dc0662-69e8-4634-a425-b9f96363634b',
+            //             },
+            //             {
+            //                 _id: '5ad53d1be1a09324acc3d8b2',
+            //                 canon: 'Invention',
+            //                 parentId: 'c4138d98-5580-4cc9-a4c2-5b7b03299ce2',
+            //                 name: 'Data',
+            //                 id: '5e3b0795-ad36-4ebf-a142-241c0a956372',
+            //             },
+            //             ],
+            //         },
+            //     ],
+            // },
+            // Visuals: {
+            //     _id: '59a870870110587e400ff7c6',
+            //     name: 'Visuals',
+            //     categories: [
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997da',
+            //             name: 'Limited text',
+            //             canon: 'Visuals',
+            //             description: 'Uses primarily pictorial cues (limited text) ',
+            //             id: 'b0ca80cb-1fab-4b64-a797-d3a79f36cae8',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997dc',
+            //             name: 'Visual cues',
+            //             canon: 'Visuals',
+            //             description: 'Images and text highlight/focus audience on key points',
+            //             id: 'f8f292d9-5e24-46f2-b62b-ac32587d8f88',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997db',
+            //             name: 'Assertive slide titles',
+            //             canon: 'Visuals',
+            //             description: 'Uses assertion-based slide titles to convey key concepts (including title slide)',
+            //             id: 'fbe18018-7474-4a93-b8a7-9a3172c03383',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997dd',
+            //             name: 'Memorable images',
+            //             canon: 'Visuals',
+            //             description: 'Memorable images provide necessary context to support the oral discussion',
+            //             id: 'f7ab11c9-2e33-4867-9567-9c5de1c26de4',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997de',
+            //             name: 'Supportive graphics',
+            //             canon: 'Visuals',
+            //             description: 'Graphics show relevant data/concepts to support the claims',
+            //             id: 'd1a8070c-47ef-425f-8282-52009c254d95',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997df',
+            //             name: 'Effective graphs',
+            //             canon: 'Visuals',
+            //             description: 'Graphs are high resolution and legends/annotations are easily legible',
+            //             id: '8abfcc66-f0ad-4b56-afa4-43dcdd3098dd',
+            //             subcategories: [],
+            //         },
+            //     ],
+            // },
+            // Delivery: {
+            //     _id: '59a870870110587e400ff7c7',
+            //     name: 'Delivery',
+            //     categories: [
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997eb',
+            //             name: 'Volume, rate and pitch',
+            //             canon: 'Delivery',
+            //             description: 'Volume, rate, and pitch are appropriate and modulated',
+            //             id: '90443579-f986-4c6c-b5ad-87051f94754c',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e5',
+            //             name: 'Metadiscourse',
+            //             canon: 'Delivery',
+            //             description: 'Metadiscourse orients listener and helps transition between sections',
+            //             id: 'f30a75f8-213b-4353-ad93-c7ea23ea82a7',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e6',
+            //             name: 'Posture and stance',
+            //             canon: 'Delivery',
+            //             description: 'Posture and stance project confidence, and allow speaker to interact with audience and screen',
+            //             id: '663f68e0-989f-429a-8c46-2e5c95834b0d',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997e8',
+            //             name: 'Language',
+            //             canon: 'Delivery',
+            //             description: 'Technical and informal language are both employed as appropriate',
+            //             id: '6e275087-88a7-4fb2-b3fc-80daf27390ce',
+            //             subcategories: [],
+            //         },
+            //         {
+            //             _id: '5ad5394e4da6db26cc8997ec',
+            //             name: 'Gestures, eye contact and body movement',
+            //             canon: 'Delivery',
+            //             description: 'Gestures, eye contact, and body movement used intentionally to engage audience',
+            //             id: '6e67d011-d151-4562-9679-d3be0d363541',
+            //             subcategories: [],
+            //         },
+            //     ],
+            // },
+        },
         categories: [],
         genres: [],
         departments: [],
@@ -307,8 +537,9 @@ export const store = new Vuex.Store({
                 })
         },
         editAnnotation: function ({ commit }, payload) {            
-            secureHTTPService.put("video/" + payload.id, payload.video)
+            secureHTTPService.put("annotation/" + payload.annotationId, payload.body)
                 .then(response => {
+                    commit('EDIT_ANNOTATION', payload)
                 })
                 .catch(function (err) {
                     console.log('Error annotation edit...', err)
@@ -495,6 +726,17 @@ export const store = new Vuex.Store({
                     
                 })
         },
+        /* CANONS */ 
+        getCanons: function ({ commit }) {
+            secureHTTPService.get("tree")
+                .then(function (response)
+                {
+                    commit('GET_CANONS', response.data.data)
+                })
+                .catch(function (err) {
+                    console.log(err)
+                })
+        },
         /* CATEGORIES */ 
         getCategories: function ({ commit }) {
             secureHTTPService.get("category")
@@ -609,25 +851,14 @@ export const store = new Vuex.Store({
             state.videoAnnotations.push(payload)
         },
         EDIT_ANNOTATION: (state, payload) => {
-            var currentAnnotation = state.videos[payload.id].annotations[payload.cardID]
-            var annotations = state.videos[payload.id].annotations
-            
-            currentAnnotation.rating = payload.rating
-            currentAnnotation.comment = payload.comment
-            currentAnnotation.from = payload.from
-            currentAnnotation.to = payload.to
-            
-            // Sorting annotations[] by from property
-            annotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
-            
-            secureHTTPService.put("video/" + payload.id)
-            .then(response => {
-                console.log(payload.videoObj)
-                console.log('Success edit!')
-            })
-            .catch(function (err) {
-                console.log('Error annotation edit...')
-            })
+            for (var i=0, l = state.videoAnnotations.length; i < l; i++) {
+                if (payload.annotationId === state.videoAnnotations[i].id) {
+                    state.videoAnnotations[i].comment = payload.body.comment
+                    state.videoAnnotations[i].from = payload.body.from
+                    state.videoAnnotations[i].to = payload.body.to
+                    state.videoAnnotations[i].rating = payload.body.rating
+                }
+            }
         },
         DELETE_ANNOTATION: (state, payload) => {
             for (var i = 0, l = state.videoAnnotations.length; i < l; i++) {
@@ -743,6 +974,10 @@ export const store = new Vuex.Store({
         /* GENRES */
         GET_GENRES: (state, genres) => {
             state.genres = genres
+        },
+        /* CANONS */
+        GET_CANONS: (state, canons) => {
+            state.canons = canons
         },
         /* CATEGORIES */
         GET_CATEGORIES: (state, categories) => {
