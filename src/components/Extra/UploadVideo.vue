@@ -257,7 +257,7 @@
                                     var pickedVidIndex = 0
                                     var foundIt = false
                                     for (var n = 0; n < conversionNames.length; n++) {
-                                        console.log("conv2: ", conversions, conversionNames[n])
+                                        // console.log("conv2: ", conversions, conversionNames[n])
                                         for (var i = 0, l = conversions.length; i < l; i++) {
                                             if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
                                                 pickedVidIndex = i
@@ -408,7 +408,7 @@
                 })
             },
             getAssignmentsByThisClass() {
-                console.log("Getting assignments")
+                // console.log("Getting assignments")
                 return this.$store.dispatch('getAssignments', this.currentClass.id)
             }
         },

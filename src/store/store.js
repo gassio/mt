@@ -420,11 +420,12 @@ export const store = new Vuex.Store({
         users: [],
         // ENROLLMENTS
         enrollments: [], // All enrollments
-        // enrolledUsersInThisClass: [], // TODO THIS WILL BE THE NEW ARRAY ??
-        enrolledUsers: [], // TODO THIS WILL BE REFACTORED OUT, IT'S CURRENTLY USED IN COLLABORATORS
+        // For administrator/professor
+        classEnrolledStudents: [], // Current class enrolled students (both accepted/not accepted)
+        classEnrollments: [],      // Current class enrollments (both accepted/not accepted)
         // For Student
         userEnrollments: [], // Current student's enrollments
-        enrolledClasses: [] // Current student's classes (both accepted/not accepted)
+        enrolledClasses: []  // Current student's classes (both accepted/not accepted)
     },
 
     actions: {
@@ -452,8 +453,8 @@ export const store = new Vuex.Store({
         createVideo: function ({ commit, dispatch }, payload) {
             return secureHTTPService.post("video", payload)
                 .then( response => {
-                    console.log('-----')
-                    console.log('POST video')
+                    // console.log('-----')
+                    // console.log('POST video')
                     commit('CREATE_VIDEO', response.data.data)
                     dispatch( 'createCollaboration', { videoId: response.data.data.id, userId: authService.getAuthData().userId } )
                 })
@@ -477,41 +478,50 @@ export const store = new Vuex.Store({
         deleteVideo: function ({ commit }, payload) {
             secureHTTPService.delete("video/" + payload)
                 .then( response => {
-                    console.log('-----')
-                    console.log('DELETE video')
+                    // console.log('-----')
+                    // console.log('DELETE video')
+                    // console.log(response)
+                    // console.log(payload)
                     commit('DELETE_VIDEO', payload)
                 })
-                .catch( response => console.log(response.error))
+                .then( response => {
+                    // TODO delete annotations of video
+                    // TODO delete collaborations of video
+                    // TODO delete jwvideo
+                })
+                .catch(function (err) {
+                    console.log('deleteVideo DELETE error: ', err)
+                })
         },
         featureVideo: function ({ commit }, payload) {
             secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
-                    console.log("store.js: Video object that sent: ", payload)
-                    console.log(response)
+                    // console.log("store.js: Video object that sent: ", payload)
+                    // console.log(response)
                 })
                 .catch( response => console.log(response.error))
         },
         featureGlobal: function ({ commit }, payload) {
             secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
-                    console.log("store.js: Video object that sent: ", payload)
-                    console.log(response)
+                    // console.log("store.js: Video object that sent: ", payload)
+                    // console.log(response)
                 })
                 .catch( response => console.log(response.error))
         },
         unfeatureGlobal: function ({ commit }, payload) {
             secureHTTPService.put("video/" + payload.id, payload)
                 .then( response => {
-                    console.log("store.js: Video object that sent: ", payload)
-                    console.log(response)
+                    // console.log("store.js: Video object that sent: ", payload)
+                    // console.log(response)
                 })
                 .catch( response => console.log(response.error))
         },
         unfeatureVideo: function ({ commit }, payload) {
             secureHTTPService.put("video/" + payload.id, payload)
             .then( response => {
-                console.log("store.js: Video object that sent: ", payload)
-                console.log(response)
+                // console.log("store.js: Video object that sent: ", payload)
+                // console.log(response)
             })
             .catch( response => console.log(response.error))
         },
@@ -618,58 +628,81 @@ export const store = new Vuex.Store({
         /* ENROLLMENTS */ 
         createEnrollment: function ({ commit }, payload) {
             return secureHTTPService.post("enrollment", payload)
-                .then(function(response){
-                    commit('CREATE_ENROLLMENT', response.data.data)
-                })
-                .catch(function(err) {
-                    console.log("createEnrollment PUT error: ", err)
-                })
+            .then(function(response){
+                // console.log("Create enrollment payload: ", payload)
+                // console.log(response.data.data)
+                commit('CREATE_ENROLLMENT', response.data.data)
+            })
+            .catch(function(err) {
+                console.log("createEnrollment POST error: ", err)
+            })
+        },
+        editEnrollment: function ({ commit }, payload) {
+            return secureHTTPService.put("enrollment/" + payload.id, payload)
+            .then(function(response){
+                commit('EDIT_ENROLLMENT', response.data.data)
+            })
+            .catch(function(err) {
+                console.log("editEnrollment PUT error: ", err)
+            })
+        },
+        deleteEnrollment: function ({commit}, payload) {
+            return secureHTTPService.delete("enrollment/" + payload)
+            .then(function(response) {
+                // console.log("Delete enrollment payload: ", payload)
+                // console.log(response.data.data)
+                commit('DELETE_ENROLLMENT', payload)
+            })
+            .catch(function(err) {
+                console.log("deleteEnrollment DELETE error: ", err)
+            })
         },
         getAllEnrollments: function ({ commit }, payload) {
             return secureHTTPService.get("enrollment")
-                .then(function (response)
-                {
-                    // console.log("getAllEnrollments action")
-                    commit('GET_ENROLLMENTS', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+            .then(function(response) {
+                // console.log("getAllEnrollments action")
+                commit('GET_ENROLLMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                
+            })
         },
         getAllUserEnrollmentsByUserId: function ({ commit }, payload) {
             return secureHTTPService.get("enrollment?userId=" + payload)
-                .then(function (response)
-                {
-                    // var enrolledClassIds = []
-                    // var enrollments = response.data.data
-                    // for (var i = 0, l = enrollments.length; i < l; i++) {
-                    //     if (enrollments[i].accepted){
-                    //         enrolledClassIds.push(enrollments[i].classId)
-                    //     }
-                    // }
-                    // commit( 'CREATE_STUDENT_CLASSES', enrolledClassIds)
-                    
-                    // console.log("getAllUserEnrollmentsByUserId action")
-                    commit('GET_USER_ENROLLMENTS', response.data.data)
-                })
+            .then(function(response) {
+                commit('GET_USER_ENROLLMENTS', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getAllUserEnrollmentsByUserId GET error: ', err)
+            })
         },
         getEnrolledClassesByUserId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledClass?userId=" + payload)
-            .then(function (response)
-            {
+            .then(function(response) {
+                // console.log("getEnrolledClassesByUserId action")
                 commit('GET_ENROLLED_CLASSES', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getEnrolledClassesByUserId GET error: ', err)
             })
         },
         getEnrolledUsersByClassId: function ({ commit }, payload) {
             return secureHTTPService.get("enrolledUser?classId=" + payload)
-            .then(function (response)
-            {
-                var responseObj = {data: response.data.data, classId: payload}
-                // commit('GET_ENROLLED_USERS', response.data.data)
-                commit('GET_ENROLLED_USERS', responseObj)
+            .then(function(response) {
+                commit('GET_ENROLLED_STUDENTS_BY_CLASSID', response.data.data)
             })
             .catch(function (err) {
                 console.log('getEnrolledUsersByClassId GET error: ', err)
+            })
+        },
+        getEnrollmentsByClassId: function ({ commit }, payload) {
+            return secureHTTPService.get("enrollment?classId=" + payload)
+            .then(function(response) {
+                // console.log(response.data.data)
+                commit('GET_ENROLLMENTS_BY_CLASS_ID', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getEnrollmentsByClassId GET error: ', err)
             })
         },
         /* ASSIGNMENTS */ 
@@ -825,24 +858,28 @@ export const store = new Vuex.Store({
             state.videos.duration = payload.duration
             state.videos.status = payload.status
         },
-        DELETE_VIDEO: (state, payload) => {
-            var videos = state.videos
-            for (var i=0, l = annotations.length; i < l; i++) {
-                if (videos[i].id === payload.video.id)
-                    videos.splice(i, 1)              
-            }
-        },
-        // Not used.
-        GET_CLASS_VIDEOS: (state, classTitle) => {
+        DELETE_VIDEO: (state, videoId) => {
             for (var i=0, l = state.videos.length; i < l; i++) {
-                if (state.videos[i].class !== classTitle) 
-                    state.videos.splice(i,1)
+                if (state.videos[i].id === videoId)
+                    try {
+                        state.videos.splice(i, 1)            
+                    }
+                    catch(err) {
+                        console.log(err)
+                    }
             }
         },
         // Not used.
-        CREATE_UPLOAD_URL: (state, payload) => {      
-            state.uploadUrl = payload.link.protocol + '://' + payload.link.address + payload.link.path + '?api_format=xml&key=' + payload.link.query.key + '&token=' + payload.link.query.token
-        },
+        // GET_CLASS_VIDEOS: (state, classTitle) => {
+        //     for (var i=0, l = state.videos.length; i < l; i++) {
+        //         if (state.videos[i].class !== classTitle) 
+        //             state.videos.splice(i,1)
+        //     }
+        // },
+        // Not used.
+        // CREATE_UPLOAD_URL: (state, payload) => {      
+        //     state.uploadUrl = payload.link.protocol + '://' + payload.link.address + payload.link.path + '?api_format=xml&key=' + payload.link.query.key + '&token=' + payload.link.query.token
+        // },
         /* ANNOTATIONS */
         GET_VIDEO_ANNOTATIONS: (state, newAnnotations) => {
             state.videoAnnotations = newAnnotations
@@ -892,25 +929,6 @@ export const store = new Vuex.Store({
             }
         },
         // ADMIN
-        // CREATE_ADMIN_CLASSES: (state) => {
-        //     state.adminClasses = []
-        //     for (var i = 0, l = state.classes.length; i < l; i++) {
-        //         state.adminClasses.push(state.classes[i])
-        //     }
-        // },
-        // PROFESSOR
-        // CREATE_ACTIVE_ARCHIVED_CLASSES: (state) => {
-        //     state.activeClasses = []
-        //     state.archivedClasses = []
-        //     for (var i = 0, l = state.classes.length; i < l; i++) {
-        //         if (state.classes[i].professorId === authService.getAuthData().userId) {
-        //             if (state.classes[i].archived === false)
-        //                 state.activeClasses.push(state.classes[i])
-        //             else
-        //                 state.archivedClasses.push(state.classes[i])
-        //         }
-        //     }
-        // },
         FILL_DEPARTMENTS: (state) => {
             for (var i = 0, l = state.classes.length; i < l; i++) {
                 if (!state.departments.includes(state.classes[i].department))
@@ -921,42 +939,10 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
-            state.currentClass.name = payload.className
-            state.currentClass.id = payload.classId
-            state.currentClass.number = payload.classNumber
-            state.currentClass.department = payload.classDepartment
-        },
-        /* ENROLLMENTS */
-        GET_ENROLLED_USERS: (state, payload) => {
-            var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
-            var activeEnrolledUsers = [] // The users that have been accepted in this class
-            var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
-            // console.log(enrolledUsersInThisClass)
-            for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
-                for(var j = 0; j < state.enrollments.length; j++){
-                    // UserId must be found in enrollments and the classId of that enrollment must be the current class
-                    if (state.enrollments[j].userId === enrolledUsersInThisClass[i].id && state.enrollments[j].classId === payload.classId){
-                        // The enrollment should be in accepted status or else the user is not considered "enrolled"/active
-                        if (state.enrollments[j].accepted){
-                            activeEnrolledUsers.push(enrolledUsersInThisClass[i])
-                        }
-                        else {
-                            inactiveEnrolledUsers.push(enrolledUsersInThisClass[i])
-                        }
-                    }
-                }
-            }
-            // console.log(activeEnrolledUsers)
-            // console.log(enrolledUsersInThisClass)
-            // state.enrolledUsersInThisClass = enrolledUsersInThisClass
-            state.enrolledUsers = activeEnrolledUsers
-        },
-        GET_ENROLLED_CLASSES: (state, enrolledClasses) => {
-            state.enrolledClasses = enrolledClasses
-        },
-        CREATE_ENROLLMENT: (state, newEnrollment) => {
-            state.enrollments.push(newEnrollment)
-            state.userEnrollments.push(newEnrollment)
+            state.currentClass.name = payload.name
+            state.currentClass.id = payload.id
+            state.currentClass.number = payload.number
+            state.currentClass.department = payload.department
         },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
@@ -997,6 +983,54 @@ export const store = new Vuex.Store({
         },
         GET_USER_ENROLLMENTS: (state, userEnrollments) => {
             state.userEnrollments = userEnrollments
+        },
+        /* ENROLLMENTS */
+        GET_ENROLLED_STUDENTS_BY_CLASSID: (state, enrolledStudentsByClassId) => {
+            // var enrolledUsersInThisClass = payload.data // All users that have enrolled, including the not yet accepted enrollments
+            // var activeEnrolledUsers = [] // The users that have been accepted in this class
+            // var inactiveEnrolledUsers = [] // The users that have requested enrollement but have not been accepted in this class
+            // // console.log(enrolledUsersInThisClass)
+            // for (var i = 0; i < enrolledUsersInThisClass.length; i++) {
+            //     for(var j = 0; j < state.enrollments.length; j++){
+            //         // UserId must be found in enrollments and the classId of that enrollment must be the current class
+            //         if (state.enrollments[j].userId === enrolledUsersInThisClass[i].id && state.enrollments[j].classId === payload.classId){
+            //             // The enrollment should be in accepted status or else the user is not considered "enrolled"/active
+            //             if (state.enrollments[j].accepted){
+            //                 activeEnrolledUsers.push(enrolledUsersInThisClass[i])
+            //             }
+            //             else {
+            //                 inactiveEnrolledUsers.push(enrolledUsersInThisClass[i])
+            //             }
+            //         }
+            //     }
+            // }
+            // console.log(activeEnrolledUsers)
+            // console.log(enrolledUsersInThisClass)
+            // state.enrolledUsersInThisClass = enrolledUsersInThisClass
+            state.classEnrolledStudents = enrolledStudentsByClassId
+        },
+        GET_ENROLLMENTS_BY_CLASS_ID: (state, enrollmentsByClassId) => {
+            state.classEnrollments = enrollmentsByClassId
+        },
+        GET_ENROLLED_CLASSES: (state, enrolledClasses) => {
+            state.enrolledClasses = enrolledClasses
+        },
+        CREATE_ENROLLMENT: (state, newEnrollment) => {
+            state.enrollments.push(newEnrollment)
+        },
+        EDIT_ENROLLMENT: (state, editedEnrollment) => {
+            for (var e = 0; e < state.enrollments.length; e++) {
+                if (state.enrollments[e].id === editedEnrollment.id)
+                    state.enrollments[e] = editedEnrollment
+                    break
+            }
+        },
+        DELETE_ENROLLMENT: (state, deletedEnrollmentId) => {
+            for (var i = 0, l = state.enrollments.length; i < l; i++) {
+                if (state.enrollments[i].id === deletedEnrollmentId) 
+                    state.enrollments.splice(i,1)
+                    break
+            }
         }
     },
 
@@ -1025,15 +1059,26 @@ export const store = new Vuex.Store({
         users: state => {
             return state.users
         },
-        enrolledUsers: state => {
-            return state.enrolledUsers
-        },
+        // Enrollments
         enrollments: state => {
-            return state.enrollments
+            return state.enrollments // All enrollments from enrollment resource
+        },
+        enrollmentsByClassId: state => {
+            return state.enrollmentsByClassId // All enrollments of provided classId from enrollment resource
+        },
+        classEnrolledStudents: state => {
+            return state.classEnrolledStudents // All students enrolled in provided classId from enrolledUser resource
+        },
+        classEnrollments: state => {
+            return state.classEnrollments // All enrollments of provided classId from enrollment resource
         },
         userEnrollments: state => {
-            return state.userEnrollments
+            return state.userEnrollments // All enrollments of provided userId from enrollment resource
         },
+        enrolledClasses: state => {
+            return state.enrolledClasses // All enrolled class of provided userId from enrolledClass resource
+        },
+        // End enrollments
         currentVideoID: state => {
             return state.currentVideoID
         },

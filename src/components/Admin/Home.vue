@@ -413,11 +413,23 @@
 					height: 60px;
 				}
 
+				.classvideo__delete {
+					/* KOSTAS */
+					margin-top: 0;
+					padding-top: 0;
+					margin-bottom: 3px;
+					font-size:12px;
+					height: 60px;
+					margin-left: 10px;
+				}
 				.classvideo__metadata {
 					display: flex;
 					justify-content: space-between;
 					margin-left: 20px;
 					width: 100%;
+					/* KOSTAS */
+					text-decoration: none; 
+					color: black; 
 				}
 
 					.classvideo__image {
