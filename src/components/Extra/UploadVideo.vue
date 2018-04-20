@@ -265,39 +265,72 @@
                                                 // Do necessary stuff after picking a conversion
                                                 link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
                                                 duration = conversions[i].duration
-                                                // console.log('|> Link: ', link)
-                                                // console.log('|> Duration: ', duration)
-                                                        
-                                                // POST video 
-                                                // console.log("Conversion picked: dispatching createVideo")
-                                                self.$store.dispatch('createVideo', {
-                                                    "assignmentId": self.uploadVidMetadata.assignmentId,
-                                                    "title": self.uploadVidMetadata.title,
-                                                    "class": self.uploadVidMetadata.class,
-                                                    "classNumber": self.uploadVidMetadata.classNumber,
-                                                    "classDepartment": self.uploadVidMetadata.classDepartment,
-                                                    "jwVideoId": jwVideoId,
-                                                    "genre": self.uploadVidMetadata.genre,
-                                                    "presentedAt": self.uploadVidMetadata.presentedAt,
-                                                    "featuredGlobal": false,
-                                                    "featuredClass": false,
-                                                    "link": link,
-                                                    "duration": parseInt(duration),
-                                                    "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                                                }).then(() => {
-                                                    // console.log("dispatch createVideo complete, now in then")
-                                                    self.modalSyncOpen = false  // Close loading bar
-                                                    self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
-                                                    // console.log("currentClass.name: ", self.currentClass.name)
-                                                    clearInterval(intervalID)
 
-                                                    // Clearing modal form
-                                                    self.uploadVidMetadata = { title: '', class: self.currentClass.name, classNumber: self.currentClass.number, classDepartment: self.currentClass.department, genre: '', presentedAt: '', assignmentId: '' }
-                                                    self.dropzoneInstance.removeAllFiles()
-                                                    // console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
-                                                    self.uploadProgress = 0.0
+                                                self.secureHTTPService.get("jwthumbnail/" + jwVideoId)
+                                                .then( response => {
+                                                    if (response.data.data.thumbnail.status === 'ready') {
+                                                        // POST video 
+                                                        self.$store.dispatch('createVideo', {
+                                                            "assignmentId": self.uploadVidMetadata.assignmentId,
+                                                            "title": self.uploadVidMetadata.title,
+                                                            "class": self.uploadVidMetadata.class,
+                                                            "classNumber": self.uploadVidMetadata.classNumber,
+                                                            "classDepartment": self.uploadVidMetadata.classDepartment,
+                                                            "jwVideoId": jwVideoId,
+                                                            "genre": self.uploadVidMetadata.genre,
+                                                            "presentedAt": self.uploadVidMetadata.presentedAt,
+                                                            "featuredGlobal": false,
+                                                            "featuredClass": false,
+                                                            "link": link,
+                                                            "duration": parseInt(duration),
+                                                            "thumb": "https://cdn.jwplayer.com/thumbs/" + jwVideoId + "-" + 720 + ".jpg",
+                                                        }).then(() => {
+                                                            // console.log("dispatch createVideo complete, now in then")
+                                                            self.modalSyncOpen = false  // Close loading bar
+                                                            self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                                                            // console.log("currentClass.name: ", self.currentClass.name)
+                                                            clearInterval(intervalID)
+
+                                                            // Clearing modal form
+                                                            self.uploadVidMetadata = { title: '', class: self.currentClass.name, classNumber: self.currentClass.number, classDepartment: self.currentClass.department, genre: '', presentedAt: '', assignmentId: '' }
+                                                            self.dropzoneInstance.removeAllFiles()
+                                                            // console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
+                                                            self.uploadProgress = 0.0
+                                                        })
+                                                    }
+                                                    else {
+                                                        self.$store.dispatch('createVideo', {
+                                                            "assignmentId": self.uploadVidMetadata.assignmentId,
+                                                            "title": self.uploadVidMetadata.title,
+                                                            "class": self.uploadVidMetadata.class,
+                                                            "classNumber": self.uploadVidMetadata.classNumber,
+                                                            "classDepartment": self.uploadVidMetadata.classDepartment,
+                                                            "jwVideoId": jwVideoId,
+                                                            "genre": self.uploadVidMetadata.genre,
+                                                            "presentedAt": self.uploadVidMetadata.presentedAt,
+                                                            "featuredGlobal": false,
+                                                            "featuredClass": false,
+                                                            "link": link,
+                                                            "duration": parseInt(duration),
+                                                            "thumb": "http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png",
+                                                        }).then(() => {
+                                                            // console.log("dispatch createVideo complete, now in then")
+                                                            self.modalSyncOpen = false  // Close loading bar
+                                                            self.currentClass.name = self.uploadVidMetadata.class // Change current class screen to the uploaded video class  
+                                                            // console.log("currentClass.name: ", self.currentClass.name)
+                                                            clearInterval(intervalID)
+
+                                                            // Clearing modal form
+                                                            self.uploadVidMetadata = { title: '', class: self.currentClass.name, classNumber: self.currentClass.number, classDepartment: self.currentClass.department, genre: '', presentedAt: '', assignmentId: '' }
+                                                            self.dropzoneInstance.removeAllFiles()
+                                                            // console.log('after dropzone removeAllFiles: ', self.dropzoneInstance)
+                                                            self.uploadProgress = 0.0
+                                                        })
+                                                    }
                                                 })
-                                                // console.log("conversion picked, now breaking after createVideo")
+                                                .catch( function(error) {
+                                                    console.log(error)
+                                                })
                                                 break
                                             }
                                         }

@@ -175,23 +175,31 @@
 								<strong>Title:</strong>
 								<span class="assignments__titleId">{{ a.id }}</span>
 								<p class="assignments__titleText" @click="toggleTitleEdit($event)">{{ a.title }}</p>
-								<input v-model="a.title" @blur="saveTitleEdit($event)" type="text" class="input assignments__titleInput"></textarea>
+								<input v-model="a.title" @blur="saveTitleEdit($event, a.id)" type="text" class="input assignments__titleInput"></textarea>
 							</span>
 							<hr>
 							<span class="assignments__desc">
 								<strong class="assignments__descTitle">Description:</strong>
 								<span class="assignments__descId">{{ a.id }}</span>
 								<p class="assignments__descText" @click="toggleDescriptionEdit($event)">{{ a.description }}</p>
-								<textarea v-model="a.description" @blur="saveDescriptionEdit($event)" type="text" class="textarea assignments__descTextarea"></textarea>
+								<textarea v-model="a.description" @blur="saveDescriptionEdit($event, a.id)" type="text" class="textarea assignments__descTextarea"></textarea>
 							</span>
 							<hr>
 							<span class="assignments__genre" v-for="g in genres" v-if="g.id === a.genre" :key="g.id">
 								<strong class="assignments__genreTitle">Genre:</strong> 
 								<span class="assignments__genreId">{{ a.id }}</span>
 								<p class="assignments__genreName" @click="toggleGenreEdit($event)">{{ g.name }}</p>
-								<select v-model="a.genre" @change="saveGenreEdit($event)" class="assignments__genreSelect select">
+								<select v-model="a.genre" @change="saveGenreEdit($event, a.id)" class="assignments__genreSelect select">
 									<option v-for="g in genres" :label="g.name" :value="g.id" :key="g.id" class="option"></option>
 								</select>
+							</span>
+							<hr>
+							<span class="assignments__dueDate">
+								<strong class="assignments__dueDateTitle">Due date:</strong>
+								<span class="assignments__dueDateId">{{ a.id }}</span>
+								<p>
+									<el-date-picker type="date" placeholder="Pick a date" v-model="a.dueDate" @change="saveDueDateEdit($event, a.id)"></el-date-picker>
+								</p>
 							</span>
 							<hr>
 							<router-link :to="'/video/' + v.id" tag="div" class="classvideo" v-for="v in videos" :key="v.id" v-if="v.assignmentId === a.id" style="cursor:pointer">
@@ -215,6 +223,8 @@
 						<el-select v-model="assignmentGenre" placeholder="Select a genre" style="width:50%" @change="updateAssignments()">
 							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.id"></el-option>
 						</el-select>
+						<p>Set due date:</p>
+						<el-date-picker type="date" placeholder="Pick a date" v-model="assignmentDueDate"></el-date-picker>
 						<hr>
 						<el-button @click="createAssignment()">Create</el-button>
                     </el-tab-pane>
@@ -406,6 +416,7 @@
 				assignmentDescription: '',
 				assignmentGenre: '',
 				assignmentCategorySelected: '',
+				assignmentDueDate: '',
 				categoriesCheckList: [],
 
 				//-----------------------------------
@@ -1118,12 +1129,13 @@
 				return this.$store.dispatch('getAssignments', this.currentClass.id)
 			},
 			createAssignment() {
-				if (this.currentClass.id !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '') {
+				if (this.currentClass.id !== '' && this.assignmentTitle !== '' && this.assignmentDescription !== '' && this.assignmentGenre !== '' && this.assignmentDueDate !== '') {
 					this.$store.dispatch('createAssignment', {
 						classId: this.currentClass.id,
 						title: this.assignmentTitle,
 						description: this.assignmentDescription,
-						genre: this.assignmentGenre
+						genre: this.assignmentGenre,
+						dueDate: this.assignmentDueDate
 					})
 					this.assignmentTitle = ''
 					this.assignmentDescription = ''
@@ -1142,25 +1154,24 @@
 				ev.currentTarget.style.display = 'none'
 				ev.currentTarget.parentElement.getElementsByClassName('assignments__titleInput')[0].style.display = 'block'
 			},
-			saveTitleEdit(ev) {
+			saveTitleEdit(ev, currentAssignmentId) {
 				console.log("saveTitleEdit()")
 				ev.currentTarget.style.display = 'none'
 				ev.currentTarget.parentElement.getElementsByClassName('assignments__titleText')[0].style.display = 'block'
-				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__titleId')[0].innerHTML
 
 				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
 				
 				for (var i = 0, l = this.assignments.length; i < l; i++) {
-					if (this.assignments[i].id === editedId) {
+					if (this.assignments[i].id === currentAssignmentId) {
 						assignmentObj.classId = this.assignments[i].classId
 						assignmentObj.title = ev.currentTarget.parentElement.getElementsByClassName('assignments__titleInput')[0].value
 						assignmentObj.description = this.assignments[i].description
 						assignmentObj.genre = this.assignments[i].genre
-						assignmentObj.id = editedId
+						assignmentObj.id = currentAssignmentId
 					}
 				}
 				this.$store.dispatch('editAssignment', {
-					id: editedId,
+					id: currentAssignmentId,
 					assignment: assignmentObj
 				})
 			},
@@ -1170,26 +1181,25 @@
 				ev.currentTarget.parentElement.getElementsByTagName('textarea')[0].style.display = 'block'
 				console.log(this.assignments) 
 			},
-			saveDescriptionEdit(ev) {
+			saveDescriptionEdit(ev, currentAssignmentId) {
 				console.log("saveDescriptionEdit()")
 				ev.currentTarget.style.display = 'none'
 				ev.currentTarget.parentElement.getElementsByClassName('assignments__descText')[0].style.display = 'block'
-				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__descId')[0].innerHTML
 
 				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
 
 				for (var i = 0, l = this.assignments.length; i < l; i++) {
-					if (this.assignments[i].id === editedId) {
+					if (this.assignments[i].id === currentAssignmentId) {
 						assignmentObj.classId = this.assignments[i].classId
 						assignmentObj.title = this.assignments[i].title
 						assignmentObj.description = ev.currentTarget.parentElement.getElementsByClassName('assignments__descText')[0].innerHTML
 						assignmentObj.genre = this.assignments[i].genre
-						assignmentObj.id = editedId
+						assignmentObj.id = currentAssignmentId
 					}
 				}
 				
 				this.$store.dispatch('editAssignment', {
-					id: editedId,
+					id: currentAssignmentId,
 					assignment: assignmentObj
 				})
 			},
@@ -1198,26 +1208,33 @@
 				ev.currentTarget.style.display = 'none'
 				ev.currentTarget.parentElement.getElementsByClassName('assignments__genreSelect')[0].style.display = 'block'
 			},
-			saveGenreEdit(ev) {
+			saveGenreEdit(ev, currentAssignmentId) {
 				console.log("saveGenreEdit()")
 				ev.currentTarget.style.display = 'none'
 				ev.currentTarget.parentElement.getElementsByClassName('assignments__genreName')[0].style.display = 'block'
-				let editedId = ev.currentTarget.parentElement.getElementsByClassName('assignments__genreId')[0].innerHTML
 
 				let assignmentObj = { classId: '', title: '', description: '', genre: '', id: '' }
 				
 				for (var i = 0, l = this.assignments.length; i < l; i++) {
-					if (this.assignments[i].id === editedId) {
+					if (this.assignments[i].id === currentAssignmentId) {
 						assignmentObj.classId = this.assignments[i].classId
 						assignmentObj.title = this.assignments[i].title
 						assignmentObj.description = this.assignments[i].description
 						assignmentObj.genre = ev.currentTarget.parentElement.getElementsByClassName('assignments__genreSelect')[0].value
-						assignmentObj.id = editedId
+						assignmentObj.id = currentAssignmentId
 					}
 				}
 				this.$store.dispatch('editAssignment', {
-					id: editedId,
+					id: currentAssignmentId,
 					assignment: assignmentObj
+				})
+			},
+			saveDueDateEdit(date, currentAssignmentId) {
+				console.log("saveGenreEdit()")
+
+				this.$store.dispatch('editAssignment', {
+					id: currentAssignmentId,
+					assignment: { dueDate: date}
 				})
 			},
 			// CATEGORIES
@@ -1428,11 +1445,11 @@
 				}
 
 				.assignments__titleText {
-					cursor: pointer;
+					cursor: text;
 					padding: 5px 0px;
 				}
 				.assignments__titleText:hover {
-					background-color: #eee;
+					background-color: #EFE00B;
 				}
 
 				.assignments__titleInput {
@@ -1451,11 +1468,11 @@
 				}
 				
 				.assignments__descText {
-					cursor: pointer;
+					cursor: text;
 					padding: 5px 0px;
 				}
 				.assignments__descText:hover {
-					background-color: #eee;
+					background-color: #EFE00B;
 				}
 
 				.assignments__descTextarea {
@@ -1476,17 +1493,28 @@
 
 				.assignments__genreName {
 					font-size: 16px;
-					cursor: pointer;
+					cursor: text;
 					padding: 5px 0px;
 				}
 				.assignments__genreName:hover {
-					background-color: #eee;
+					background-color: #EFE00B;
 				}
 
 				.assignments__genreSelect {
 					display: none
 				}
 
+
+			.assignments__dueDate {
+
+			}
+
+				.assignments__dueDateTitle {
+					font-size: 16px;
+				}
+				.assignments__dueDateId {
+					visibility: hidden;
+				}
 
 /* ==============================================
 			#MT-TABLE
