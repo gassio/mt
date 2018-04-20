@@ -87,7 +87,9 @@
                             <div class="annotate-subcategories" v-if="annotateCanon === 'Invention'">
                                 <label class="label">Choose move</label>
                                 <el-select v-model="selectedMove" v-for="cat in canons['Invention'].categories" v-if="cat.id === annotateCategory" :key="cat.name" placeholder="Choose move:">
-                                    <el-option v-for="subcategory in cat.subcategories" :key="subcategory.description" :label="subcategory.name + ': ' + subcategory.description" :value="subcategory.description">
+                                    <!-- The ternary operator x ? y : z 
+                                        We use it in :label and :value because there are subcategories without a description. -->
+                                    <el-option v-for="subcategory in cat.subcategories" :key="subcategory.id" :label="!!subcategory.description ? subcategory.name + ': ' + subcategory.description : subcategory.name" :value="!!subcategory.description ? subcategory.name + ': ' + subcategory.description : subcategory.name">
                                     </el-option>
                                     <el-option label="Other" value="Other"></el-option>
                                 </el-select>
@@ -626,9 +628,8 @@ You might also want to include a concrete strategy recommendation."
                     alert('Please set a rate.')
                 } else {
 
-                    // We are pushing the card the state because the PUT call needs to pass the whole video object in the body.
-                    // this.videos.annotations.push(card)
                     this.$store.dispatch('addAnnotation', card)
+                    // this.$store.dispatch('getVideoAnnotations', this.id) // The store update is necessary because we show the cards according to /viewannotation
                     
                     // Seek to previous paused time.
                     this.player.seek(this.mmssToSeconds(this.annotateStart))
