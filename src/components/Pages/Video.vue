@@ -64,7 +64,7 @@
                             <div class="annotate-menu__canons-close"><span @click="isAnnotating = false; isAnnotateMenu = false">X</span></div>
                         </nav>
                         <nav class="annotate-menu__categories" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
-                            <a :class="canon.name" v-for="cat in canon.categories" :key="cat.name" @click="chooseCategoryAnnotate(cat.name)" :title="cat.desc">{{ cat.name }}</a>  
+                            <a :class="canon.name" v-for="cat in canon.categories" :key="cat.name" @click="chooseCategoryAnnotate(cat.id)" :title="cat.desc">{{ cat.name }}</a>  
                         </nav>
                         
                     </div>
@@ -78,7 +78,7 @@
                         
                         <div class="annotate-fields-right">
                             <div class="annotate-desc field" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
-                                <div class="annotate-desc-text" v-for="cat in canon.categories" :key="cat.name" v-if="cat.name === annotateCategory">
+                                <div class="annotate-desc-text" v-for="cat in canon.categories" :key="cat.id" v-if="cat.id === annotateCategory">
                                     <h1>{{ cat.name }}</h1>
                                     <p>{{ cat.description }}</p>
                                 </div>
@@ -86,8 +86,8 @@
                             </div>  
                             <div class="annotate-subcategories" v-if="annotateCanon === 'Invention'">
                                 <label class="label">Choose move</label>
-                                <el-select v-model="selectedMove" v-for="cat in canons['Invention'].categories" v-if="cat.name === annotateCategory" :key="cat.name" placeholder="Choose move:">
-                                    <el-option v-for="subcategory in cat.subcategories" :key="subcategory.description" :label="subcategory.description" :value="subcategory.description">
+                                <el-select v-model="selectedMove" v-for="cat in canons['Invention'].categories" v-if="cat.id === annotateCategory" :key="cat.name" placeholder="Choose move:">
+                                    <el-option v-for="subcategory in cat.subcategories" :key="subcategory.description" :label="subcategory.name + ': ' + subcategory.description" :value="subcategory.description">
                                     </el-option>
                                     <el-option label="Other" value="Other"></el-option>
                                 </el-select>
@@ -139,7 +139,7 @@ You might also want to include a concrete strategy recommendation."
                         -->
                         <div class="annotate-fields-right">
                             <div class="annotate-desc field" v-for="canon in canons" :key="canon.name" v-if="canon.name === annotateCanon">
-                                <p class="control" v-for="cat in canon.categories" :key="cat.name" v-if="cat.name === annotateCategory">"{{ cat.description }}"</p>
+                                <p class="control" v-for="cat in canon.categories" :key="cat.id" v-if="cat.id === annotateCategory">"{{ cat.description }}"</p>
                                 <div class="annotate-menu__canons-close"><span @click="isEditing = false; isVideoline = false; isEditFields = false">X</span></div>
                             </div>
                             <div class="annotate-effectiveness field">
@@ -251,8 +251,8 @@ You might also want to include a concrete strategy recommendation."
                         <div class="timeline-card column" :class="card.canon + '-border'" @click="seekCard($event)" v-for="card in videoAnnotations" :key="card.id" v-if="card.canon === isInvention || card.canon === isStructure || card.canon === isDelivery || card.canon === isVisuals || card.canon === isStyle">
                             <div class="timeline-card__head">
                                 <div class="timeline-card__title-container">
-                                    <!-- TODO: card.category -->
-                                    <span class="timeline-card__title">{{ card.canon }}</span>
+                                    <!-- category[0].name IS FROM /viewannotation -->
+                                    <span class="timeline-card__title">{{ card.category[0].name }}</span>
                                     <span class="timeline-card__time">{{ card.from }} - {{ card.to }}</span>
                                     <!-- <img src="../../assets/big-idea.svg"> -->
                                 </div>
@@ -322,7 +322,7 @@ You might also want to include a concrete strategy recommendation."
                 videoCurrentTimeMMSS: 0,
                 videoIndex: 0,
                 annotateCanon: 'Delivery',
-                annotateCategory: 'Volume',
+                annotateCategory: '', // the categoryId from the category that is chosen
                 annotateSubCategory: '',
                 annotateRating: 1,
                 annotateComment: '',
@@ -605,7 +605,7 @@ You might also want to include a concrete strategy recommendation."
                 var annotateCategories = this.canons[this.annotateCanon].categories
 
                 for (var i = 0, l = annotateCategories.length; i < l; i++) {
-                    if (this.annotateCategory === annotateCategories[i].name)
+                    if (this.annotateCategory === annotateCategories[i].id)
                         annotateDesc = annotateCategories[i].description
                 }
 
@@ -613,7 +613,7 @@ You might also want to include a concrete strategy recommendation."
                     author: this.authService.getAuthData().firstName + ' ' + this.authService.getAuthData().lastName.slice()[0] + '.', // Alexander T.
                     videoId: this.id,
                     canon: this.annotateCanon,
-                    category: this.annotateCategory,
+                    categoryId: this.annotateCategory,
                     label: annotateDesc, // category description
                     comment: theComment,
                     from: this.annotateStart,
@@ -1041,7 +1041,6 @@ You might also want to include a concrete strategy recommendation."
         },
         created() {
             this.$store.dispatch('getVideo', this.id)
-            this.$store.dispatch('getCanons')
             this.$store.dispatch('getVideoAnnotations', this.id)
         },
         mounted() {

@@ -247,6 +247,7 @@
 			this.$store.dispatch('getAllClasses')
 			this.$store.dispatch('getGenres')
 			this.$store.dispatch('getUsers')
+			this.$store.dispatch('getCanons')
 			
 			if (this.$store.state.currentClass.name === ''){
 				this.$store.state.currentClass.name = 'Home'
