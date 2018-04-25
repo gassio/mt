@@ -158,11 +158,10 @@ export const store = new Vuex.Store({
                     console.log(err)
                 })
         },
-        addAnnotation: function ({ commit, state }, payload) {
+        addAnnotation: function ({dispatch, commit, state }, payload) {
             secureHTTPService.post("annotation?videoId=" + payload.videoId, payload)
                 .then(response => {
-                    console.log(payload)
-                    commit('ADD_ANNOTATION', response.data.data)
+                    dispatch('getVideoAnnotations', payload.videoId)
                 })
                 .catch(function (err) {
                     console.log('Error annotation add...', err)

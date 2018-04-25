@@ -292,11 +292,13 @@
 						<p v-show="notEnrolledClasses.length === 0" ><b>No classes to enroll</b></p>
 						<el-input icon="search" v-show="notEnrolledClasses.length !== 0" v-model="searchInputClassModal" @change="filterClassArray('notEnrolledClasses', 'filteredNotEnrolledClasses', searchInputClassModal)" placeholder="Search for a class..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input>
                         <div class="mt-table">
-							<li v-for="c in filteredNotEnrolledClasses" :key="c.id" >
-								<!-- <i class="fa fa-book"></i> {{ c.number }} - {{ c.name }} - {{ c.department }} - {{ c.semester }} -->
-								<i class="fa fa-book"></i> {{ c.name }} - {{ c.semester }}
-								<i style="visibility:hidden">{{ c.id }}</i>
-								<el-button size="small" type="info" style="float: right; margin: -2px;" @click="requestToEnrollToClass($event)">Request enrollment</el-button>
+							<li class="mt-table__row" v-for="c in filteredNotEnrolledClasses" :key="c.id">
+								<span>
+									<i class="fa fa-book"></i>
+									<span>{{ c.name }} - {{ c.semester }}</span>
+								</span>
+								<span style="visibility:hidden;font-size:2px;">{{ c.id }}</span>
+								<el-button size="small" type="info" style="" @click="requestToEnrollToClass($event)">Request enrollment</el-button>
 							</li>
 						</div>
                     </el-tab-pane>
@@ -1528,6 +1530,11 @@
 .mt-table li:hover {
 	background-color: #F5F5F5;
 }
+
+	.mt-table__row {
+		display: flex;
+    	justify-content: space-between;
+	}
 
 
 
