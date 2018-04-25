@@ -98,8 +98,7 @@
                                 <label class="label">Comment</label>
                                 <p class="control">
                                     <textarea class="textarea" 
-                                    placeholder="[Name]
-You might also want to include a concrete strategy recommendation." 
+                                    placeholder="[Name] You might also want to include a concrete strategy recommendation." 
                                             v-model="annotateComment">
                                     </textarea>
                                 </p>
@@ -177,15 +176,44 @@ You might also want to include a concrete strategy recommendation."
                 </div>
 
                 <router-link to="/" class="collaborators button" v-show="currentClass.name !== 'Home'" tag="button" active-class="head__nav-item-active" exact><i class="fa fa-chevron-left"></i> Back to class</router-link>
-                <button class="collaborators button" @click="openModalCollaborators()">
+                <button class="collaborators button" @click="toggleModalCollaborators()">
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
                 
-
-                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                <el-dialog :visible.sync="modalCollaboratorsIsOpen">
+                    <span class="modal-collaborators" slot="title"><b>{{videos.title}} - Collaborators</b></span>
+                    <!-- Loading -->
+                    <div class="uploadvid__sync-load" 
+                        v-loading="loadingCollaborators" 
+                        v-show="loadingCollaborators"
+                        element-loading-text="Loading..." 
+                        element-loading-spinner="el-icon-loading"
+                        element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
+                    <el-tabs v-model="modalCollaboratorsTab" v-show="!loadingCollaborators">
+                        <el-tab-pane label="Collaborators" name="collaborators">
+                            <p v-show="videoCollaborators.length === 0" ><i>No collaborators</i></p>
+                            <div class="mt-table">
+                                <li v-for="(s, index) in videoCollaborators" :key="s.id" style="list-style:none">
+                                    <span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}}</span>
+                                    <el-button size="small" type="info" style="float: right; margin: -2px;">Remove</el-button>
+                                </li>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane label="Other students" name="otherStudents">
+                            <p v-show="otherStudents.length === 0" ><i>No other students</i></p>
+                            <el-input icon="search" v-show="otherStudents.length !== 0" v-model="searchInput" @change="filterStudentsArray('otherStudents', 'filteredOtherStudents', searchInput)" placeholder="Search for a student..." style="width:220px;margin-bottom:7px;"></el-input>
+                            <div class="mt-table">
+                                <li v-for="(s, index) in filteredOtherStudents" :key="s.id" style="list-style:none"> <!-- TODO add filteredOtherStudents here -->
+                                    <span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}}</span>
+                                    <el-button size="small" type="info" style="float: right; margin: -2px;">Add collaborator</el-button>
+                                </li>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-dialog>
+                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
                         <el-tab-pane label="Collaborators">
-                            <!-- <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input> -->
                             <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No collaborators">
                                 <el-table-column prop="name" width="180">
                                     <template scope="s1">
@@ -205,7 +233,6 @@ You might also want to include a concrete strategy recommendation."
                             </el-table>
                         </el-tab-pane>
                         <el-tab-pane label="Other students">
-                            <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
                             <el-table ref="multipleTable" :data="classEnrolledStudentsAccepted" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template scope="s2">
@@ -223,11 +250,9 @@ You might also want to include a concrete strategy recommendation."
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <br>
-                            <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
                         </el-tab-pane>
                     </el-tabs>
-                </el-dialog>
+                </el-dialog> -->
 
             </div>
 
@@ -359,10 +384,15 @@ You might also want to include a concrete strategy recommendation."
                 id: this.$route.params.id,
                 selectedMove: 'Other',
                 otherInventionelected: false,
+                // Collaborations
                 modalCollaboratorsIsOpen: false,
-                collaboratorsInputValue: '',
-                classEnrolledStudentsAccepted: [],
-                authService : this.$root.$options.authService,
+                loadingCollaborators: false,
+                modalCollaboratorsTab: 'collaborators',
+                searchInput: '',
+                otherStudents: [], // Class enrolled students that are not collaborated with this video
+                filteredOtherStudents: [],
+                // End collaborations
+                authService: this.$root.$options.authService,
                 modalSyncOpen: false,
                 secureHTTPService : this.$root.$options.secureHTTPService,
                 authData: {},
@@ -992,42 +1022,105 @@ You might also want to include a concrete strategy recommendation."
                     moreLessBtn.siblings().hide()
                 }
             },
-            queryCollaborators: _.debounce(function () {
-                console.log('QUERY COLLABORATORS')
+            filterStudentsArray: _.debounce(function (arrayName, filteredArrayName, filterString) {
+                // Filters any student array
+                // Requires the array's name as string in the first argument and 
+                // the filtered array's name as string in the second argument and
+                // the search input in the third argument
 
                 // Define the filter method that is used above.
-                var filterCollaborators = (queryString) => {
-                    return (collaborator) => {
-                        return collaborator.studentName.toLowerCase().indexOf(queryString) !== -1
+                var filterStudents = (queryString) => {
+                    return (s) => {
+                        var name = s.firstName + " " + s.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
                     }
                 } 
 
-                this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
-             }, 500),
-            openModalCollaborators() {
-                this.modalCollaboratorsIsOpen = true
-                this.$store.dispatch('getCollaborators', this.id)
+                this[filteredArrayName] = this[arrayName].filter(filterStudents(filterString))
+            }, 500),
+            updateCollaborators() {
+                // This method updates the collaborators/not collaborators(the students enrolled in this class but not collaborated with this video)
+                // It relies on the store's videoCollaborators, classEnrolledStudents and classEnrollments, which get updated first.
                 
-                for (var i = 0, l = this.classes.length; i < l; i++) { 
-                    if (this.classes[i].name === this.videos.class) {
-                        var self = this
-                        this.$store.dispatch('getEnrolledUsersByClassId', this.classes[i].id )
-                        .then(function() {
-                            return self.$store.dispatch('getEnrollmentsByClassId', self.classes[i].id)
-                        })
-                        .then(function() {
-                            for (var e = 0; e < self.classEnrollments.length; e++) {
-                                for (var s = 0; s < self.classEnrolledStudents.length; s++) {
-                                    if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id && self.classEnrollments[e].accepted) {
-                                        self.classEnrolledStudentsAccepted.push(self.classEnrolledStudents[s])
+                var self = this
+                return this.$store.dispatch('getCollaboratorsByVideoId', this.videos.id)
+                .then(function() {
+                    // Update the store.classEnrolledStudents array first
+                    return self.$store.dispatch('getEnrolledUsersByClassId', self.currentClass.id) 
+                })
+                .then(function() {
+                    // console.log("Class enrolled students: ", self.classEnrolledStudents)
+                    return self.$store.dispatch('getEnrollmentsByClassId', self.currentClass.id)
+                })
+                .then(function() {
+                    // console.log("Class enrollments: ", self.classEnrollments)
+                    self.otherStudents = []
+                    self.filteredOtherStudents = []
+
+                    for (var s = 0; s < self.classEnrolledStudents.length; s++) {
+                        for (var e = 0; e < self.classEnrollments.length; e++) {
+                            if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id) {
+                                if (self.classEnrollments[e].accepted) {
+                                    // Need to search for this student in collaborators
+                                    // If he is a collaborator he is not pushed into otherStudents array
+                                    var isCollaborator = false
+                                    for (var u = 0; u < self.videoCollaborators.length; u++) {
+                                        if (self.videoCollaborators[u].id === self.classEnrolledStudents[s].id)
+                                            isCollaborator = true
+                                    }
+                                    if (!isCollaborator) {
+                                        self.otherStudents.push(self.classEnrolledStudents[s])
+                                        self.filteredOtherStudents.push(self.classEnrolledStudents[s])
                                     }
                                 }
                             }
-                        })
-                        break
+                        }
                     }
-                }
+                })
+                .catch(function(err) {
+                    console.log("Error while updating collaborators: ", err)
+                })
             },
+            toggleModalCollaborators() {
+                if (this.modalCollaboratorsIsOpen) {
+					this.modalCollaboratorsIsOpen = false
+					this.loadingCollaborators = false
+				}
+				else{
+					this.modalCollaboratorsIsOpen = true
+					this.modalCollaboratorsTab = 'collaborators'
+					this.loadingCollaborators = true
+				}
+				var self = this
+				this.updateCollaborators()
+				.then(function() {
+					self.loadingCollaborators = false
+				})
+            },
+            // openModalCollaborators() {
+            //     this.modalCollaboratorsIsOpen = true
+            //     this.$store.dispatch('getCollaborators', this.id)
+                
+            //     for (var i = 0, l = this.classes.length; i < l; i++) { 
+            //         if (this.classes[i].name === this.videos.class) {
+            //             var self = this
+            //             this.$store.dispatch('getEnrolledUsersByClassId', this.classes[i].id )
+            //             .then(function() {
+            //                 return self.$store.dispatch('getEnrollmentsByClassId', self.classes[i].id)
+            //             })
+            //             .then(function() {
+            //                 for (var e = 0; e < self.classEnrollments.length; e++) {
+            //                     for (var s = 0; s < self.classEnrolledStudents.length; s++) {
+            //                         if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id && self.classEnrollments[e].accepted) {
+            //                             self.classEnrolledStudentsAccepted.push(self.classEnrolledStudents[s])
+            //                         }
+            //                     }
+            //                 }
+            //             })
+            //             break
+            //         }
+            //     }
+            // },
             addCollaborator(scope, row) {
                 console.log('addCollaborator')
                 this.$store.dispatch('createCollaboration', { videoId: this.id, userId: row.id })
@@ -1263,9 +1356,8 @@ You might also want to include a concrete strategy recommendation."
         computed: {
             ...mapGetters([
                 'videos', 'currentVideoID', 'canons', 
-                'videoAnnotations', 'collaborators', 'users',
-                'classEnrolledStudents', 'classes', 'currentClass',
-                'classEnrollments'
+                'videoAnnotations', 'classEnrolledStudents', 'classes', 
+                'currentClass', 'classEnrollments', 'videoCollaborators'
             ])
         },
         components: {
