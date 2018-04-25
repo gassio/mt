@@ -36,16 +36,25 @@ export const store = new Vuex.Store({
         uploadingVideo: false,
         uploadUrl: '',
         assignments: [],
-        collaborators: [],
         users: [],
+
+        // COLLABORATIONS
+        allCollaborations: [],   // All the collaborations of MT (collaboration resource)
+        // For video
+        videoCollaborations: [], // Video collaborations         (collaboration resource)
+        videoCollaborators: [],  // Video collaborators          (users resource)
+        // For user
+        userCollaborations: [],  // User collaborations          (collaboration resource)
+        userCollaborated: [],    // User collaborated videos     (video resource)
+
         // ENROLLMENTS
-        enrollments: [], // All enrollments
+        enrollments: [],           // All enrollments
         // For administrator/professor
         classEnrolledStudents: [], // Current class enrolled students (both accepted/not accepted)
         classEnrollments: [],      // Current class enrollments (both accepted/not accepted)
         // For Student
-        userEnrollments: [], // Current student's enrollments
-        enrolledClasses: []  // Current student's classes (both accepted/not accepted)
+        userEnrollments: [],       // Current student's enrollments
+        enrolledClasses: []        // Current student's classes (both accepted/not accepted)
     },
 
     actions: {
@@ -275,7 +284,7 @@ export const store = new Vuex.Store({
                 commit('GET_ENROLLMENTS', response.data.data)
             })
             .catch(function (err) {
-                
+                console.log('getAllEnrollments GET error: ', err)
             })
         },
         getAllUserEnrollmentsByUserId: function ({ commit }, payload) {
@@ -392,29 +401,80 @@ export const store = new Vuex.Store({
                     
                 })
         },
-        /* COLLABORATORS */ 
-        getCollaborators: function ({ commit }, payload) {
-            secureHTTPService.get("collaborator?videoId=" + payload)
-                .then(function (response)
-                {
-                    commit('GET_COLLABORATORS', response.data.data)
-                })
-                .catch(function (err) {
-                    
-                })
+        /* COLLABORATORS */
+        getAllCollaborations: function({commit}) {
+            return secureHTTPService.get("collaboration")
+            .then(function(response) {
+                commit('GET_ALL_COLLABORATIONS', response.data.data)
+                console.log("Updated store allCollaborations")
+                console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('getAllCollaborations GET error: ', err) 
+            })
+        },
+        getCollaborationsByVideoId: function({commit}, payload) {
+            // Filters collaboration resource by video id
+            return secureHTTPService.get("collaboration?videoId=" + payload)
+            .then(function(response) {
+                commit('GET_COLLABORATIONS_BY_VIDEO_ID', response.data.data)
+                console.log("Updated store videoCollaborations for videoId: ", payload)
+                console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('getCollaborationsByVideoId GET error: ', err) 
+            })
+        },
+        getCollaboratorsByVideoId: function({commit}, payload) {
+            // Uses collaborator join
+            return secureHTTPService.get("collaborator?videoId=" + payload)
+            .then(function(response) {
+                commit('GET_COLLABORATORS_BY_VIDEO_ID', response.data.data)
+                console.log("Updated store videoCollaborators for videoId: ", payload)
+                console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('getCollaboratorsByVideoId GET error: ', err) 
+            })
+        },
+        getCollaborationsByUserId: function({commit}, payload) {
+            // Filters collaboration resource by user id
+            return secureHTTPService.get("collaboration?userId=" + payload)
+            .then(function(response) {
+                commit('GET_COLLABORATIONS_BY_USER_ID', response.data.data)
+                console.log("Updated store userCollaborations for userId: ", payload)
+                console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('getCollaborationsByUserId GET error: ', err) 
+            })
+        },
+        getCollaboratedVideosByUserId: function({commit}, payload) {
+            // Users collaborated join
+            return secureHTTPService.get("collaborated?userId=" + payload)
+            .then(function(response) {
+                commit('GET_COLLABORATED_VIDEOS_BY_USER_ID', response.data.data)
+                console.log("Updated store userCollaborated for userId: ", payload)
+                console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('getCollaboratedVideosByUserId GET error: ', err) 
+            })
         },
         createCollaboration: function ({ commit, dispatch }, payload) {
-            secureHTTPService.post("collaboration", payload)
+            return secureHTTPService.post("collaboration", payload)
                 .then(function (response)
                 {
-                    dispatch('getCollaborators', payload.videoId)
+                    //dispatch('getCollaborators', payload.videoId)
+                    console.log("Created collaboration for payload: ", payload)
+                    console.log("Response: ", response)
                 })
                 .catch(function (err) {
                     
                 })
         },
         deleteCollaboration: function ({ commit, dispatch }, payload) {
-            secureHTTPService.get("collaboration")
+            return secureHTTPService.get("collaboration?userId=" + payload.userId)
                 .then(function (response)
                 {
                     var collaborations = response.data.data
@@ -577,8 +637,20 @@ export const store = new Vuex.Store({
             state.categories = categories
         },
         /* COLLABORATORS */
-        GET_COLLABORATORS: (state, collaborators) => {
-            state.collaborators = collaborators
+        GET_ALL_COLLABORATIONS: (state, allCollaborations) => {
+            state.allCollaborations = allCollaborations
+        },
+        GET_COLLABORATIONS_BY_VIDEO_ID: (state, videoCollaborations) => {
+            state.videoCollaborations = videoCollaborations
+        },
+        GET_COLLABORATORS_BY_VIDEO_ID: (state, videoCollaborators) => {
+            state.videoCollaborators = videoCollaborators
+        },
+        GET_COLLABORATIONS_BY_USER_ID: (state, userCollaborations) => {
+            state.userCollaborations = userCollaborations
+        },
+        GET_COLLABORATED_VIDEOS_BY_USER_ID: (state, userCollaborated) => {
+            state.userCollaborated = userCollaborated
         },
         /* USERS */
         GET_USERS: (state, users) => {
@@ -660,30 +732,43 @@ export const store = new Vuex.Store({
         categories: state => {
             return state.categories
         },
-        collaborators: state => {
-            return state.collaborators
-        },
         users: state => {
             return state.users
         },
+        // Collaborators
+        allCollaborations: state => {
+            return state.allCollaborations   // All collaborations of MT
+        },
+        videoCollaborations: state => {
+            return state.videoCollaborations // Collaborations of current video
+        },
+        videoCollaborators: state => {
+            return state.videoCollaborators  // Collaborators of current video
+        },
+        userCollaborations: state => {
+            return state.userCollaborations  // Collaborations of current user
+        },
+        userCollaborated: state => {
+            return state.userCollaborated    // Collaborated videos of current user
+        },
         // Enrollments
         enrollments: state => {
-            return state.enrollments // All enrollments from enrollment resource
+            return state.enrollments           // All enrollments from enrollment resource
         },
         enrollmentsByClassId: state => {
-            return state.enrollmentsByClassId // All enrollments of provided classId from enrollment resource
+            return state.enrollmentsByClassId  // All enrollments of provided classId from enrollment resource
         },
         classEnrolledStudents: state => {
             return state.classEnrolledStudents // All students enrolled in provided classId from enrolledUser resource
         },
         classEnrollments: state => {
-            return state.classEnrollments // All enrollments of provided classId from enrollment resource
+            return state.classEnrollments      // All enrollments of provided classId from enrollment resource
         },
         userEnrollments: state => {
-            return state.userEnrollments // All enrollments of provided userId from enrollment resource
+            return state.userEnrollments       // All enrollments of provided userId from enrollment resource
         },
         enrolledClasses: state => {
-            return state.enrolledClasses // All enrolled class of provided userId from enrolledClass resource
+            return state.enrolledClasses       // All enrolled class of provided userId from enrolledClass resource
         },
         // End enrollments
         currentVideoID: state => {
