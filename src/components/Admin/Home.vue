@@ -1,98 +1,54 @@
-	<template>
+<template>
 
-			<div class="home">
+	<div class="home">
 
-				<my-header></my-header>
-				
-				<div class="home__body columns">
+		<my-header></my-header>
+		
+		<div class="home__body columns">
 
-					<div class="home__main column is-10">
+			<div class="home__main column is-10">
 
-						<div class="featured" v-show="role === 'student' || role === 'professor'">
-							<h3 class="featured__heading">Featured videos of {{ currentClass.name }}</h3>
-							<div class="featured__container">
-								<mt-video-card v-for="v in this.videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClass.name !== 'Home' && v.class === currentClass.name && v.featuredClass === true) || (currentClass.name === 'Home' && v.featuredGlobal === true)">
-								</mt-video-card>
-							</div>
-						</div>
-
-						
-						<div class="featured" v-show="role === 'administrator'">
-							<h3 class="featured__heading">Featured videos of Home</h3>
-							<div class="featured__container">
-								<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true">
-								</mt-video-card>
-							</div>
-						</div>
-
-						<div class="home__classvideos" v-show="!(currentClass.name === 'Home')">
-							<h3 class="class__heading"> {{ currentClass.number }} - {{ currentClass.name }}
-							</h3>
-							<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClass.name"></mt-video-itemlist>
-						</div>
-
-						<upload-video :currentClassProp="currentClass.name" v-show="currentClass.name !== 'Home'"></upload-video>
-
+				<div class="featured" v-show="role === 'student' || role === 'professor'">
+					<h3 class="featured__heading">Featured videos of {{ currentClass.name }}</h3>
+					<div class="featured__container">
+						<mt-video-card v-for="v in this.videos" v-bind:key="v.id" :currentVideo="v" v-if="(currentClass.name !== 'Home' && v.class === currentClass.name && v.featuredClass === true) || (currentClass.name === 'Home' && v.featuredGlobal === true)">
+						</mt-video-card>
 					</div>
-
-					<mt-sidebar></mt-sidebar>
-
 				</div>
+
 				
-				<my-footer></my-footer>	
+				<div class="featured" v-show="role === 'administrator'">
+					<h3 class="featured__heading">Featured videos of Home</h3>
+					<div class="featured__container">
+						<mt-video-card v-for="video in videos" v-bind:key="video.id" :currentVideo="video" v-if="video.featuredGlobal === true">
+						</mt-video-card>
+					</div>
+				</div>
 
-				<!-- <el-dialog title="Genre customization" :visible.sync="modalGenreCustomization" size="large">
-						<h3 style="margin-bottom:10px;">Choose genre:</h3>
-						<el-select v-model="currentGenre" placeholder="Choose a genre">
-							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-						</el-select>
+				<div class="home__classvideos" v-show="!(currentClass.name === 'Home')">
+					<h3 class="class__heading"> {{ currentClass.number }} - {{ currentClass.name }}
+					</h3>
+					<mt-video-itemlist v-for="v in videos" v-bind:key="v.id" :currentVideo="v" v-if="v.class === currentClass.name"></mt-video-itemlist>
+				</div>
 
-						<el-radio class="radio" v-model="currentGenre" v-for="g in genres" :key="g.name" :label="g.name"></el-radio>
+				<upload-video :currentClassProp="currentClass.name" v-show="currentClass.name !== 'Home'"></upload-video>
 
-						<br/>
-						<br/>
-						<p>Choose canons:</p>
-						<el-tree :data="canons" :props="genreProps" @node-click="handleNodeClick" show-checkbox>
-						</el-tree>
-						
-						<span slot="footer" class="dialog-footer">
-								<el-button @click="modalGenreCustomization = false">Close</el-button>
-						</span>
-				</el-dialog>	
+			</div>
 
-				<el-dialog title="Genre customization" :visible.sync="modalGenreCustomization2" size="large">
-						<h3 style="margin-bottom:10px;">Choose genre:</h3>
-						<el-select v-model="currentGenre" placeholder="Choose a genre">
-							<el-option v-for="g in genres" :key="g.name" :label="g.name" :value="g.name"></el-option>
-						</el-select>
-						<br/>
-						<br/>
-						<p style="font-weight:700; margin-top:10px;">STRUCTURE</p>
-						<el-transfer v-model="structurePassed" :data="structureData" :titles="['Disabled', 'Enabled']">
-						</el-transfer>
-						<p style="font-weight:700; margin-top:10px;">DELIVERY</p>
-						<el-transfer v-model="deliveryPassed" :data="deliveryData" :titles="['Disabled', 'Enabled']">
-						</el-transfer>
-						<p style="font-weight:700; margin-top:10px;">STYLE</p>
-						<el-transfer v-model="stylePassed" :data="styleData" :titles="['Disabled', 'Enabled']">
-						</el-transfer>
-						<p style="font-weight:700; margin-top:10px;">VISUALS</p>
-						<el-transfer v-model="visualsPassed" :data="visualsData" :titles="['Disabled', 'Enabled']">
-						</el-transfer>
-						
-						<span slot="footer" class="dialog-footer">
-								<el-button @click="modalGenreCustomization2 = false">Close</el-button>
-						</span>
-				</el-dialog>	 -->
-				
-			</div>	
+			<mt-sidebar></mt-sidebar>
 
-	</template>
+		</div>
+		
+		<my-footer></my-footer>		
+	</div>	
+
+</template>
 
 <script>
 	import _ from 'lodash'
 	import { mapGetters } from 'vuex'
 	import { mapMutations } from 'vuex'
+	import { Loading } from 'element-ui';
 	import UploadVideo from '../Extra/UploadVideo.vue'
 	import MyHeader from '../Layout/MyHeader.vue'
 	import MtSidebar from './Shared/MtSidebar.vue'
@@ -103,170 +59,90 @@
 	export default {
 		data() {
 			return {
-                role: "",
-				modalGenreCustomization: false,
-				modalGenreCustomization2: false,
-				genres: [
-					{ name: 'Elevator pitch' },
-					{ name: 'Lab presentation' },
-					{ name: 'Thesis talk' },
-					{ name: 'Progress report' },
-					{ name: 'Conference talk' }
-				],
-				currentGenre: 'Lab presentation',
-				// Genre version 1
-				canons: [
-					{
-						label: 'Moves',
-						children: [
-							{ label: 'Introduction', children: [
-								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-								{ label: 'States the value of the present research and explains why it was conducted' },
-								{ label: 'Discusses the definitions of key terms' },
-								{ label: 'Summarizes and previews the methods used' },
-								{ label: 'Presents basic equations' },
-							]},
-							{ label: 'Methodology', children: [
-								{ label: 'Describes materials and instrumentation in the study' },
-								{ label: 'Describes tasks (actions) in the study' },
-								{ label: 'Describes the procedures of an experiment (activities)' },
-								{ label: 'Presents justification of techniques' },
-								{ label: 'Describes variables in the study' },
-								{ label: 'Describes the procedures used in data analysis' },
-								{ label: 'Describes the relations between the experiment and prior/subsequent experiments' },
-							]},
-							{ label: 'Results and Discussion', children: [
-								{ label: 'Shows that the research area is important/central/interesting/problematic/relevant and narrows down to the topic of the research' },
-								{ label: 'States the value of the present research and explains why it was conducted' },
-								{ label: 'Discusses the definitions of key terms' },
-								{ label: 'Summarizes and previews the methods used' },
-								{ label: 'Presents basic equations' },
-							]},
-							{ label: 'Conclusion', children: [
-								{ label: 'xxxxxxxxxx' },
-							]},
-							{ label: 'Question and Answer', children: [
-								{ label: 'xxxxxxxxxx' },
-							]},
-						]
-					}, 
-					{
-						label: 'Structure',
-						children: [
-							{ label: 'Terms', desc: 'Provides overview of the talk, emphasizing the connection between key terms and concepts'},
-							{ label: 'Conceptual transitions' },
-							{ label: 'Line of argument' },
-							{ label: 'Central moves' },
-						]
-					}, 
-					{
-						label: 'Delivery',
-						children: [
-							{ label: 'Volume' },
-							{ label: 'Gestures' },
-							{ label: 'Metadiscourse' },
-							{ label: 'Posture' },
-							{ label: 'Language' },
-						]
-					}, 
-					{
-						label: 'Style',
-						children: [
-							{ label: 'Coherence' },
-							{ label: 'Concision' },
-							{ label: 'Flow' },
-							{ label: 'Emphasis' },
-							{ label: 'Figures of Speech' },
-							{ label: 'Figures of Sound' },
-						]
-					},
-					{
-						label: 'Visuals',
-						children: [
-							{ label: 'Pictorial cues' },
-							{ label: 'Slide titles' },
-							{ label: 'Image-text highlight' },
-							{ label: 'Graphics' },
-							{ label: 'Memorable images' }
-						]
-					},
-				],
-				genreProps: {
-					children: 'children',
-					label: 'label',
-					desc: 'desc'
-				},
-				// Genre version 2
-				structureData: [
-					{ key: 0, label: 'Terms'},
-					{ key: 1, label: 'Conceptual transitions' },
-					{ key: 2, label: 'Line of argument' },
-					{ key: 3, label: 'Central moves' }
-				],
-				structurePassed: [],
-				deliveryData: [
-					{ key: 0, label: 'Volume' },
-					{ key: 1, label: 'Gestures' },
-					{ key: 2, label: 'Metadiscourse' },
-					{ key: 3, label: 'Posture' },
-					{ key: 4, label: 'Language' },
-				],
-				deliveryPassed: [],
-				styleData: [
-					{ key: 0, label: 'Coherence' },
-					{ key: 1, label: 'Concision' },
-					{ key: 2, label: 'Flow' },
-					{ key: 3, label: 'Emphasis' },
-					{ key: 4, label: 'Figures of Speech' },
-					{ key: 5, label: 'Figures of Sound' },
-				],
-				stylePassed: [],
-				visualsData: [
-					{ label: 'Pictorial cues' },
-					{ label: 'Slide titles' },
-					{ label: 'Image-text highlight' },
-					{ label: 'Graphics' },
-					{ label: 'Memorable images' }
-				],
-				visualsPassed: []
+				userId: '',
+				role: "",
+				loadingInstance: null
 			}
 		},
 		methods: {
-			handleNodeClick(data) {
-				console.log(data);
+			wrongClassRedirect() {
+				if (this.role === 'student') {	
+					// If user is a student we have to check if they are enrolled to this class
+					var isEnrolled = false
+					// Go through user's enrollments and if an enrollment is accepted, find the class
+					// and check if it is the same as current class.
+					for (var e = 0; e < this.userEnrollments.length; e++) {
+						if (this.userEnrollments[e].accepted) {
+							for (var ec = 0; ec < this.enrolledClasses.length; ec++) {
+								if (this.userEnrollments[e].classId === this.enrolledClasses[ec].id) {
+									// TODO after class ID is added to video resource, change these to ids,
+									// TODO and remove the inside loop, checking with just id is possible
+									if (this.enrolledClasses[ec].name === this.currentClass.name) {
+										isEnrolled = true
+										break
+									}
+								}
+							}
+							if (isEnrolled) {
+								break
+							}
+						}
+					}
+					if (!isEnrolled) { // User is not enrolled, redirect to home
+						// console.log("redirecting...")
+                		this.$store.commit('CURRENT_CLASS_SELECT', {name: 'Home'})
+					}
+				}
+				else if (this.role === 'professor') {
+					// This class does not belong to this professor, redirect to home
+					if (this.currentClass.professorId !== this.userId) {		
+						// console.log("redirecting...")
+                		this.$store.commit('CURRENT_CLASS_SELECT', {name: 'Home'})
+					}
+				}
 			}
 		},
-		created() {	
-			// if (this.role === 'student') {
-			// 	this.$store.dispatch('getAllUserEnrollmentsByUserId') // Initializes only this user's enrollments
-			// }
-			// else {
-			// 	this.$store.dispatch('getAllEnrollments') // Initializes all enrollments
-			// }
+		created() {
 			this.$store.dispatch('getAllVideos')
 			this.$store.dispatch('getAllClasses')
 			this.$store.dispatch('getGenres')
 			this.$store.dispatch('getUsers')
-			this.$store.dispatch('getCanons')
-			
-			if (this.$store.state.currentClass.name === ''){
-				this.$store.state.currentClass.name = 'Home'
-			}
+			this.$store.dispatch('getCanons')			
 		},
 		mounted() {
+			this.loadingInstance = Loading.service({fullscreen: true});
+
 			this.role = this.$root.$options.authService.getAuthData().role
+			this.userId = this.$root.$options.authService.getAuthData().userId
+
+			if (this.$store.state.currentClass.name === '') { // If no class is previously selected, select Home
+                this.$store.commit('CURRENT_CLASS_SELECT', {name: 'Home'})
+			}
+
+			var self = this
+			this.$store.dispatch('getEnrolledClassesByUserId', this.userId)
+			.then(function() {
+				self.$store.dispatch('getAllUserEnrollmentsByUserId', self.userId)
+			})
+			.then(function() {
+				self.wrongClassRedirect()
+				self.loadingInstance.close()
+			})
+
 			document.body.style.backgroundImage = "none"
 			document.body.style.backgroundColor = "#FFF"
-			try {
-				document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "100"
-			}
-			catch (err) {
-				// console.log(err)
-			}
+			// try {
+			// 	document.getElementsByClassName('el-loading-mask')[0].style.zIndex = "100"
+			// }
+			// catch (err) {
+			// 	// console.log(err)
+			// }
 		},
 		computed: {
 			...mapGetters(
-				['videos', 'classes', 'currentClass']
+				['videos', 'classes', 'currentClass',
+				 'enrolledClasses', 'userEnrollments'
+				]
 			)
 		},
 		components: {
@@ -280,7 +156,7 @@
 	}
 </script>
 
-	<style>
+<style>
 	/* ==============================================
 									#GENERAL-LAYOUT
 		================================================= */
@@ -324,7 +200,7 @@
 
 
 
-/* ==============================================
+	/* ==============================================
                 #FTDCARD (Featured card)
 	================================================= */
 
@@ -813,4 +689,4 @@
 							background-color: #ada316;
 					}
 
-	</style>
+</style>
