@@ -27,10 +27,11 @@ export const store = new Vuex.Store({
         departments: [],
         // The currently selected class 
         currentClass: { 
-            name:'Home', 
+            name:'', 
             id: '',
             number: '',
-            department: ''
+            department: '',
+            professorId: ''
         },
         currentVideoID: null,
         uploadingVideo: false,
@@ -60,24 +61,24 @@ export const store = new Vuex.Store({
     actions: {
         /* VIDEOS  */
         getAllVideos: function ({ commit }) {
-            secureHTTPService.get("video")
-                .then(function (response)
-                {
-                    commit('GET_ALL_VIDEOS', response.data.data )
-                })
-                .catch(function (err) {
-                    $('.home').html(errorHTML)
-                })
+            return secureHTTPService.get("video")
+            .then(function (response)
+            {
+                commit('GET_ALL_VIDEOS', response.data.data )
+            })
+            .catch(function (err) {
+                $('.home').html(errorHTML)
+            })
         },
         getVideo: function ({ commit }, payload) {
-            secureHTTPService.get("video/" + payload)
-                .then(function (response)
-                {
-                    commit('GET_VIDEO', response.data.data)
-                })
-                .catch(function (err) {
-                    $('.video').html(errorHTML)
-                })
+            return secureHTTPService.get("video/" + payload)
+            .then(function (response)
+            {
+                commit('GET_VIDEO', response.data.data)
+            })
+            .catch(function (err) {
+                $('.video').html(errorHTML)
+            })
         },
         createVideo: function ({ commit, dispatch }, payload) {
             return secureHTTPService.post("video", payload)
@@ -156,16 +157,16 @@ export const store = new Vuex.Store({
         },
         /* ANNOTATIONS */
         getVideoAnnotations: function ({ commit, state }, payload) {
-            secureHTTPService.get("viewannotation?videoId=" + payload)
-                .then(function (response)
-                {
-                    // console.log(response.data.data)
-                    commit( 'GET_VIDEO_ANNOTATIONS', response.data.data )
-                    state.videoAnnotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
+            return secureHTTPService.get("viewannotation?videoId=" + payload)
+            .then(function (response)
+            {
+                // console.log(response.data.data)
+                commit( 'GET_VIDEO_ANNOTATIONS', response.data.data )
+                state.videoAnnotations.sort(function(a,b) {return (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0);} );
+            })
+            .catch(function (err) {
+                console.log('getVideoAnnotations GET err: ', err)
+            })
         },
         addAnnotation: function ({dispatch, commit, state }, payload) {
             secureHTTPService.post("annotation?videoId=" + payload.videoId, payload)
@@ -381,14 +382,14 @@ export const store = new Vuex.Store({
         },
         /* CANONS */ 
         getCanons: function ({ commit }) {
-            secureHTTPService.get("tree")
-                .then(function (response)
-                {
-                    commit('GET_CANONS', response.data.data)
-                })
-                .catch(function (err) {
-                    console.log(err)
-                })
+            return secureHTTPService.get("tree")
+            .then(function (response)
+            {
+                commit('GET_CANONS', response.data.data)
+            })
+            .catch(function (err) {
+                console.log('getCanons GET err: ', err)
+            })
         },
         /* CATEGORIES */ 
         getCategories: function ({ commit }) {
@@ -406,8 +407,8 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("collaboration")
             .then(function(response) {
                 commit('GET_ALL_COLLABORATIONS', response.data.data)
-                console.log("Updated store allCollaborations")
-                console.log("Response: ", response)
+                // console.log("Updated store allCollaborations")
+                // console.log("Response: ", response)
             })
             .catch(function(err) {
                 console.log('getAllCollaborations GET error: ', err) 
@@ -418,8 +419,8 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("collaboration?videoId=" + payload)
             .then(function(response) {
                 commit('GET_COLLABORATIONS_BY_VIDEO_ID', response.data.data)
-                console.log("Updated store videoCollaborations for videoId: ", payload)
-                console.log("Response: ", response)
+                // console.log("Updated store videoCollaborations for videoId: ", payload)
+                // console.log("Response: ", response)
             })
             .catch(function(err) {
                 console.log('getCollaborationsByVideoId GET error: ', err) 
@@ -430,8 +431,8 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("collaborator?videoId=" + payload)
             .then(function(response) {
                 commit('GET_COLLABORATORS_BY_VIDEO_ID', response.data.data)
-                console.log("Updated store videoCollaborators for videoId: ", payload)
-                console.log("Response: ", response)
+                // console.log("Updated store videoCollaborators for videoId: ", payload)
+                // console.log("Response: ", response)
             })
             .catch(function(err) {
                 console.log('getCollaboratorsByVideoId GET error: ', err) 
@@ -442,8 +443,8 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("collaboration?userId=" + payload)
             .then(function(response) {
                 commit('GET_COLLABORATIONS_BY_USER_ID', response.data.data)
-                console.log("Updated store userCollaborations for userId: ", payload)
-                console.log("Response: ", response)
+                // console.log("Updated store userCollaborations for userId: ", payload)
+                // console.log("Response: ", response)
             })
             .catch(function(err) {
                 console.log('getCollaborationsByUserId GET error: ', err) 
@@ -454,8 +455,8 @@ export const store = new Vuex.Store({
             return secureHTTPService.get("collaborated?userId=" + payload)
             .then(function(response) {
                 commit('GET_COLLABORATED_VIDEOS_BY_USER_ID', response.data.data)
-                console.log("Updated store userCollaborated for userId: ", payload)
-                console.log("Response: ", response)
+                // console.log("Updated store userCollaborated for userId: ", payload)
+                // console.log("Response: ", response)
             })
             .catch(function(err) {
                 console.log('getCollaboratedVideosByUserId GET error: ', err) 
@@ -463,35 +464,32 @@ export const store = new Vuex.Store({
         },
         createCollaboration: function ({ commit, dispatch }, payload) {
             return secureHTTPService.post("collaboration", payload)
-                .then(function (response)
-                {
-                    //dispatch('getCollaborators', payload.videoId)
-                    console.log("Created collaboration for payload: ", payload)
-                    console.log("Response: ", response)
-                })
-                .catch(function (err) {
-                    
-                })
+            .then(function (response)
+            {
+                // console.log("Created collaboration for payload: ", payload)
+                // console.log("Response: ", response)
+            })
+            .catch(function(err) {
+                console.log('createCollaboration POST error: ', err) 
+            })
         },
-        deleteCollaboration: function ({ commit, dispatch }, payload) {
-            return secureHTTPService.get("collaboration?userId=" + payload.userId)
-                .then(function (response)
-                {
-                    var collaborations = response.data.data
-
-                    for (var i = 0, l = collaborations.length; i < l; i++) {
-                        if (collaborations[i].videoId === payload.videoId && collaborations[i].userId === payload.userId) {
-                            secureHTTPService.delete("collaboration/" + collaborations[i].id)
-                                .then(function (response)
-                                {
-                                    console.log('deleted collaboration: ')
-                                    dispatch('getCollaborators', payload.videoId)
-                                })
-                        }
-                    } 
-                    
-
-                })
+        deleteCollaboration: function ({ commit, dispatch, state }, payload) {
+            return dispatch('getCollaborationsByUserId', payload.userId)
+            .then(function (response)
+            {
+                for (var i = 0, l = state.userCollaborations.length; i < l; i++) {
+                    if (state.userCollaborations[i].videoId === payload.videoId && state.userCollaborations[i].userId === payload.userId) {
+                        return secureHTTPService.delete("collaboration/" + state.userCollaborations[i].id)
+                        .then(function (response)
+                        {
+                            // console.log('deleted collaboration: ', response)
+                        })
+                        .catch(function(err) {
+                            console.log('deleteCollaboration DELETE error: ', err)
+                        })
+                    }
+                } 
+            })
         },
         /* USERS */ 
         getUsers: function ({ commit }, payload) {
@@ -599,10 +597,7 @@ export const store = new Vuex.Store({
             state.uploadUrl = payload
         },
         CURRENT_CLASS_SELECT: (state, payload) => {
-            state.currentClass.name = payload.name
-            state.currentClass.id = payload.id
-            state.currentClass.number = payload.number
-            state.currentClass.department = payload.department
+            state.currentClass = payload
         },
         /* ASSIGNMENTS */
         GET_ASSIGNMENTS: (state, assignments) => {
