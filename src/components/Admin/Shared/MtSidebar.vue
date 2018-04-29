@@ -24,7 +24,7 @@
 					element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
 				<!-- The two lines below don't show if the acceptedClasses array is empty, so there is no need for a v-show="!loadingClasses" -->
 				<el-input class="sidebar__classesInput" v-show="acceptedClasses.length !== 0" icon="search" v-model="searchInputClassSidebar" @change="filterClassArray('acceptedClasses', 'filteredAcceptedClasses', searchInputClassSidebar)" placeholder="Search for a class..."></el-input>
-				<a class="sidebar__classesLink" v-for="c in filteredAcceptedClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+				<a class="sidebar__classesLink" v-for="c in filteredAcceptedClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }"  :key="c.id" @click="setCurrentClass(c)">{{ c.number }} - {{ c.name }}</a>
 			</div>
 
 			<!-- Sidebar Classes menu for administrator-->
@@ -41,7 +41,7 @@
 						<div class="sidebar__classes">
 							<i v-show="adminActiveClasses.length === 0"> &nbsp;&nbsp; No classes </i>
 							<el-input class="sidebar__classesInput" v-show="adminActiveClasses.length !== 0" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('adminActiveClasses', 'filteredAdminActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-for="c in filteredAdminActiveClasses"  :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-for="c in filteredAdminActiveClasses"  :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
@@ -68,7 +68,7 @@
 						<div class="sidebar__classes">
 							<i v-show="professorActiveClasses.length === 0"> &nbsp;&nbsp; No classes - create one </i>
 							<el-input class="sidebar__classesInput" v-show="professorActiveClasses.length !== 0" icon="search" v-model="searchInputActiveClassSidebar" @change="filterClassArray('professorActiveClasses', 'filteredProfessorActiveClasses', searchInputActiveClassSidebar)" placeholder="Search for a class..."></el-input>
-							<a class="sidebar__classesLink" v-for="c in filteredProfessorActiveClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c.name, c.number, c.id, c.department)">{{ c.number }} - {{ c.name }}</a>
+							<a class="sidebar__classesLink" v-for="c in filteredProfessorActiveClasses" :class="{ 'is-bg-light' : (currentClass.name === c.name) }" :key="c.id" @click="setCurrentClass(c)">{{ c.number }} - {{ c.name }}</a>
 						</div>
 					</el-tab-pane>
 					<el-tab-pane label="Archived" name="archivedClasses">
@@ -734,10 +734,10 @@
 				})
 			},
 			// Administrator, professor
-			setCurrentClass(className, classNumber, classId, classDepartment) {
+			setCurrentClass(classObject) {
 				if (this.role === "professor" || this.role === "administrator")
 					this.loadingClasses = true
-				this.$store.commit('CURRENT_CLASS_SELECT', {name: className, id: classId, number: classNumber, department: classDepartment})
+				this.$store.commit('CURRENT_CLASS_SELECT', classObject)
 
 				// Update students. This is needed to show the little number of requested enrollments in the sidebar
 				var self = this

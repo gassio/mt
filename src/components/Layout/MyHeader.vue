@@ -13,7 +13,7 @@
             <div class="navbar-menu">
                 <div class="navbar-start">
                                                                                                                     <!-- https://github.com/vuejs/vue-router/issues/800 -->
-                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" @click.native="setCurrentClass('Home')" exact>Home</router-link>
+                    <router-link to="/" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" @click.native="setCurrentClass({name: 'Home'})" exact>Home</router-link>
                     <router-link to="/wiki" class="head__nav-item navbar-item" tag="a" active-class="head__nav-item-active" exact>Wiki</router-link>
                     <!-- <router-link to="/" class="head__nav-item navbar-item" v-show="currentClass.name !== 'Home' && currentRoute !== 'admin' && currentRoute !== 'student' && currentRoute !== 'professor'" tag="a" active-class="head__nav-item-active" exact>Back to {{ currentClass.name }} Class</router-link> -->
                 </div>
@@ -43,9 +43,9 @@
             }
         },
         methods: {
-            setCurrentClass(className, classNumber, classId, classDepartment) {
+            setCurrentClass(classObject) {
                 // console.log('CURRENT_CLASS_SELECT')
-                this.$store.commit('CURRENT_CLASS_SELECT', {name: className, id: classId, number: classNumber, department: classDepartment})
+                this.$store.commit('CURRENT_CLASS_SELECT', classObject)
             },
             logOut() {
                 this.$router.push('/login')
