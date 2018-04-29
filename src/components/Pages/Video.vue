@@ -98,8 +98,7 @@
                                 <label class="label">Comment</label>
                                 <p class="control">
                                     <textarea class="textarea" 
-                                    placeholder="[Name]
-You might also want to include a concrete strategy recommendation." 
+                                    placeholder="[Name] You might also want to include a concrete strategy recommendation." 
                                             v-model="annotateComment">
                                     </textarea>
                                 </p>
@@ -176,16 +175,52 @@ You might also want to include a concrete strategy recommendation."
                     <i class="fa fa-plus fa_1_5x" aria-hidden="true"></i><span>Add annotation</span>
                 </div>
 
-                <router-link to="/" class="collaborators button" v-show="currentClass.name !== 'Home'" tag="button" active-class="head__nav-item-active" exact><i class="fa fa-chevron-left"></i> Back to class</router-link>
-                <button class="collaborators button" @click="openModalCollaborators()">
+                <router-link to="/" class="collaborators button" v-if="currentClass.name !== 'Home'" tag="button" active-class="head__nav-item-active" exact><i class="fa fa-chevron-left"></i> Back to class</router-link>
+                <button class="collaborators button" @click="toggleModalCollaborators()">
                     <i class="fa fa-users"></i><span>Collaborators</span>
                 </button>
                 
-
-                <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
+                <el-dialog :visible.sync="modalCollaboratorsIsOpen">
+                    <span class="modal-collaborators" slot="title"><b>{{videos.title}} - Collaborators</b></span>
+                    <!-- Loading -->
+                    <div class="uploadvid__sync-load" 
+                        v-loading="loadingCollaborators" 
+                        v-if="loadingCollaborators"
+                        element-loading-text="Loading..." 
+                        element-loading-spinner="el-icon-loading"
+                        element-loading-background="rgba(0, 0, 0, 0.8)"><br><br><br><br><br></div>
+                    <el-tabs v-model="modalCollaboratorsTab" v-show="!loadingCollaborators">
+                        <el-tab-pane label="Collaborators" name="collaborators">
+                            <p v-show="videoCollaborators.length === 0" ><i>No collaborators</i></p>
+                            <div class="mt-table">
+                                <li v-for="(s, index) in videoCollaborators" :key="s.id" style="list-style:none">
+                                    <span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}}</span>
+                                    <el-button 
+                                        v-if="collabEditAccess"
+                                        @click="deleteCollaborator(index, s)" 
+                                        size="small" type="info" style="float: right; margin: -2px;">Remove
+                                    </el-button>
+                                </li>
+                            </div>
+                        </el-tab-pane>
+                        <el-tab-pane v-if="collabEditAccess" label="Other students" name="otherStudents">
+                            <div v-show="otherStudents.length === 0" ><i>No other students</i></div>
+                            <el-input icon="search" v-show="otherStudents.length !== 0" v-model="searchInput" @change="filterStudentsArray('otherStudents', 'filteredOtherStudents', searchInput)" placeholder="Search for a student..." style="width:220px;margin-bottom:7px;"></el-input>
+                            <div class="mt-table">
+                                <li v-for="(s, index) in filteredOtherStudents" :key="s.id" style="list-style:none">
+                                    <span><i class="fa fa-user"></i> {{ s.firstName + " " + s.lastName}}</span>
+                                    <el-button
+                                        @click="addCollaborator(index, s)" 
+                                        size="small" type="info" style="float: right; margin: -2px;">Add collaborator
+                                    </el-button>
+                                </li>
+                            </div>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-dialog>
+                <!-- <el-dialog title="Video collaborators" :visible.sync="modalCollaboratorsIsOpen" class="modal-collaborators">
                     <el-tabs >
                         <el-tab-pane label="Collaborators">
-                            <!-- <el-input icon="search" v-model="collaboratorsInputValue" @change="queryCollaborators()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;" class="mt-search-input"></el-input> -->
                             <el-table :data="collaborators" style="width: 100%" :show-header="false" empty-text="No collaborators">
                                 <el-table-column prop="name" width="180">
                                     <template scope="s1">
@@ -205,7 +240,6 @@ You might also want to include a concrete strategy recommendation."
                             </el-table>
                         </el-tab-pane>
                         <el-tab-pane label="Other students">
-                            <!-- <el-input icon="search" v-model="requestedStudentsInputValue" @change="queryRequestedStudents()" placeholder="Search a student..." style="width:220px;margin-bottom:7px;"></el-input> -->
                             <el-table ref="multipleTable" :data="classEnrolledStudentsAccepted" :border="false" style="width: 100%" :show-header="false" empty-text="No other students in this class">
                                 <el-table-column prop="name">
                                     <template scope="s2">
@@ -223,11 +257,9 @@ You might also want to include a concrete strategy recommendation."
                                     </template>
                                 </el-table-column>
                             </el-table>
-                            <br>
-                            <!-- <el-button @click="acceptAllStudents()">Accept all</el-button> -->
                         </el-tab-pane>
                     </el-tabs>
-                </el-dialog>
+                </el-dialog> -->
 
             </div>
 
@@ -356,23 +388,31 @@ You might also want to include a concrete strategy recommendation."
                 toggleCardEditButton: false,
                 dragEndIsMoving: false,
                 annotationPauseTime: 0,
-                id: this.$route.params.id,
+                id: '',
                 selectedMove: 'Other',
                 otherInventionelected: false,
+                // Collaborations
+                collabEditAccess: false, // If user is already a collaborator then he can edit collaborators
                 modalCollaboratorsIsOpen: false,
-                collaboratorsInputValue: '',
-                classEnrolledStudentsAccepted: [],
-                authService : this.$root.$options.authService,
+                loadingCollaborators: false,
+                modalCollaboratorsTab: 'collaborators',
+                searchInput: '',
+                otherStudents: [], // Class enrolled students that are not collaborated with this video
+                filteredOtherStudents: [],
+                // End collaborations
+                authService: this.$root.$options.authService,
                 modalSyncOpen: false,
                 secureHTTPService : this.$root.$options.secureHTTPService,
                 authData: {},
-                currentRoute: ''
+                role: '',
+                currentRoute: '',
+                loadingInstance: null
             }
         },
         methods: {
             annotating() {
                 var self = this
-
+                
                 // Checking for new annotations in current video (for real time annotating)
                 this.$store.dispatch('getVideoAnnotations', this.id)
 
@@ -419,10 +459,10 @@ You might also want to include a concrete strategy recommendation."
                 $('.crop__space').css('width', coordsEnd - coordsStart)
 
                 this.annotateStart = this.secondsToMMSS(this.annotationPauseTime - 5)
-                this.annotateEnd = this.secondsToMMSS(this.annotationPauseTime + 5)
+                this.annotateEnd = this.secondsToMMSS(this.annotationPauseTime + 25)
 
                 this.startDragTime = this.secondsToMMSS(this.annotationPauseTime - 5)
-                this.endDragTime = this.secondsToMMSS(this.annotationPauseTime + 5)
+                this.endDragTime = this.secondsToMMSS(this.annotationPauseTime + 25)
 
                 // "out of bounds" exception
                 if ((self.videoDuration - annotationNowTime) < 90) {
@@ -498,6 +538,7 @@ You might also want to include a concrete strategy recommendation."
                             var targetTime = clickTime + self.annotationPauseTime - 90
 
                         self.player.seek(targetTime)
+                        self.player.pause()
                         targetTime = self.secondsToMMSS(targetTime)
                         self.annotateStart = targetTime
                         self.startDragTime = targetTime
@@ -579,6 +620,7 @@ You might also want to include a concrete strategy recommendation."
                             var targetTime = clickTime + self.annotationPauseTime - 90
                     
                         self.player.seek(targetTime)
+                        self.player.pause()
                         targetTime = self.secondsToMMSS(targetTime)
                         self.annotateEnd = targetTime
                         self.endDragTime = targetTime
@@ -992,259 +1034,356 @@ You might also want to include a concrete strategy recommendation."
                     moreLessBtn.siblings().hide()
                 }
             },
-            queryCollaborators: _.debounce(function () {
-                console.log('QUERY COLLABORATORS')
+            filterStudentsArray: _.debounce(function (arrayName, filteredArrayName, filterString) {
+                // Filters any student array
+                // Requires the array's name as string in the first argument and 
+                // the filtered array's name as string in the second argument and
+                // the search input in the third argument
 
                 // Define the filter method that is used above.
-                var filterCollaborators = (queryString) => {
-                    return (collaborator) => {
-                        return collaborator.studentName.toLowerCase().indexOf(queryString) !== -1
+                var filterStudents = (queryString) => {
+                    return (s) => {
+                        var name = s.firstName + " " + s.lastName
+                        return name.toLowerCase().indexOf(queryString.toLowerCase()) !== -1
                     }
                 } 
 
-                this.collaborators = this.collaborators.filter(filterCollaborators(this.collaboratorsInputValue))
-             }, 500),
-            openModalCollaborators() {
-                this.modalCollaboratorsIsOpen = true
-                this.$store.dispatch('getCollaborators', this.id)
-                
-                for (var i = 0, l = this.classes.length; i < l; i++) { 
-                    if (this.classes[i].name === this.videos.class) {
-                        var self = this
-                        this.$store.dispatch('getEnrolledUsersByClassId', this.classes[i].id )
-                        .then(function() {
-                            return self.$store.dispatch('getEnrollmentsByClassId', self.classes[i].id)
-                        })
-                        .then(function() {
-                            for (var e = 0; e < self.classEnrollments.length; e++) {
-                                for (var s = 0; s < self.classEnrolledStudents.length; s++) {
-                                    if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id && self.classEnrollments[e].accepted) {
-                                        self.classEnrolledStudentsAccepted.push(self.classEnrolledStudents[s])
+                this[filteredArrayName] = this[arrayName].filter(filterStudents(filterString))
+            }, 500),
+            hasCollabEditAccess() {
+                // If current user is an administrator, they have edit access by default
+                // If the current user is a professor, it checks if this professor owns the class and
+                // gives them edit access
+                // If current user is a student, it checks if they are a collaborator, gives them editing
+                // access
+                if (this.role === 'administrator') {
+                    this.collabEditAccess = true
+                }
+                else if (this.role === 'professor') {
+                    this.collabEditAccess = false
+                    if (this.authData.userId === this.currentClass.professorId) {
+                       this.collabEditAccess = true
+                    }
+                }
+                else { // student
+                    this.collabEditAccess = false
+                    for (var u = 0; u < this.videoCollaborators.length; u++) {
+                        if (this.videoCollaborators[u].id === this.authData.userId) {
+                            this.collabEditAccess = true
+                            break
+                        }
+                    }
+                }
+
+            },
+            updateCollaborators() {
+                // This method updates the collaborators/not collaborators(the students enrolled in this class but not collaborated with this video)
+                // It relies on the store's videoCollaborators, classEnrolledStudents and classEnrollments, which get updated first.
+                // console.log("Video.vue updating collabs...")
+                var self = this
+                return this.$store.dispatch('getCollaboratorsByVideoId', this.videos.id)
+                .then(function() {
+                    // Update the store.classEnrolledStudents array first
+                    return self.$store.dispatch('getEnrolledUsersByClassId', self.currentClass.id) 
+                })
+                .then(function() {
+                    // console.log("Class enrolled students: ", self.classEnrolledStudents)
+                    return self.$store.dispatch('getEnrollmentsByClassId', self.currentClass.id)
+                })
+                .then(function() {
+                    // console.log("Class enrollments: ", self.classEnrollments)
+                    self.otherStudents = []
+                    self.filteredOtherStudents = []
+
+                    for (var s = 0; s < self.classEnrolledStudents.length; s++) {
+                        for (var e = 0; e < self.classEnrollments.length; e++) {
+                            if (self.classEnrollments[e].userId === self.classEnrolledStudents[s].id) {
+                                if (self.classEnrollments[e].accepted) {
+                                    // Need to search for this student in collaborators
+                                    // If he is a collaborator he is not pushed into otherStudents array
+                                    var isCollaborator = false
+                                    for (var u = 0; u < self.videoCollaborators.length; u++) {
+                                        if (self.videoCollaborators[u].id === self.classEnrolledStudents[s].id)
+                                            isCollaborator = true
+                                    }
+                                    if (!isCollaborator) {
+                                        self.otherStudents.push(self.classEnrolledStudents[s])
+                                        self.filteredOtherStudents.push(self.classEnrolledStudents[s])
                                     }
                                 }
                             }
-                        })
-                        break
+                        }
                     }
-                }
+                    // console.log("Video.vue updated collabs")
+                })
+                .catch(function(err) {
+                    console.log("Error while updating collaborators: ", err)
+                })
+            },
+            toggleModalCollaborators() {
+                if (this.modalCollaboratorsIsOpen) {
+					this.modalCollaboratorsIsOpen = false
+					this.loadingCollaborators = false
+				}
+				else{
+					this.modalCollaboratorsIsOpen = true
+					this.modalCollaboratorsTab = 'collaborators'
+					this.loadingCollaborators = true
+				}
+				var self = this
+				this.updateCollaborators()
+				.then(function() {
+                    self.hasCollabEditAccess()
+					self.loadingCollaborators = false
+				})
             },
             addCollaborator(scope, row) {
-                console.log('addCollaborator')
+                var self = this
+                this.loadingCollaborators = true
                 this.$store.dispatch('createCollaboration', { videoId: this.id, userId: row.id })
+                .then(function() {
+                    return self.updateCollaborators()
+                })
+                .then(function() {
+                    self.loadingCollaborators = false
+                })
             },
             deleteCollaborator(scope, row) {
-                console.log('deleteCollaborator')
+                var self = this
+                this.loadingCollaborators = true
                 this.$store.dispatch('deleteCollaboration', { videoId: this.id, userId: row.id })
+                .then(function() {
+                    return self.updateCollaborators()
+                })
+                .then(function() {
+                    self.loadingCollaborators = false
+                })
             },
             goHome() {
-                this.$router.push('/' + this.authData.role)
+                this.$router.push('/' + this.role)
             }
         },
         created() {
-            this.$store.dispatch('getVideo', this.id)
-            this.$store.dispatch('getVideoAnnotations', this.id)
         },
         mounted() {
+            this.loadingInstance = Loading.service({ fullscreen: true });
+
+            this.id = this.$route.params.id // Get video ID from URL
+
             var self = this
-            this.authData = this.$root.$options.authService.getAuthData()
-            this.currentRoute = this.$root.$options.router.currentRoute.name.toLowerCase()
-            
-            // Temporary solution for MOUNTED() cycle because of Vuex stuff.
-            // Trying to get the index (vIndex) of the video that the same id with the params.id
-            var vIndex; 
-            for (var i=0, l = this.videos.length; i < l; i++) {
-                if (this.videos[i].id === this.id) 
-                    vIndex = i
-            }
-
-            this.videoIndex = vIndex
-
-            this.videoDuration = this.videos[vIndex].duration
-            this.videoDurationMMSS = this.secondsToMMSS(this.videoDuration) 
-
-            // Loads video sources: 
-            // link
-            // duration
-            // thumb TODO
-            // this.getVideoSources(vIndex)
-
-            // Get the correct source of the video. 
-            // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
-            // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
-            // So, we get the last object - 1 = sourcesLength - 2
-            var sourcesLength, correctSource
-            if (this.videos[vIndex].hasOwnProperty("sources")) {
-                sourcesLength = this.videos[vIndex].sources.length
-                correctSource = sourcesLength - 2
-            }
-
-            if (this.videos[vIndex].status === 0) {
-                // this.modalSyncOpen = true // Shows loading spinner
-
-                // let link, duration, thumb
-
-                // // Fetching link and duration
-                // let intervalID = setInterval(function () {
-                //     console.log("Sending get jwconversion?videoId=jwVideoId call")
-                //     self.secureHTTPService.get("jwconversion?videoId=" + self.videos.jwVideoId)
-                //         .then( response => {
-                //             console.log(' getting conversions...')
-                //             let conversions = response.data.data.conversions
-                //             var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
-                //             console.log("conv1: ", conversions)
-                //             var everythingReady = true // this is a trick
-                //             for (var i = 0, l = conversions.length; i < l; i++) {
-                //                 if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
-                //                     everythingReady = false
-                //                 }
-                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
-                //                     everythingReady = false
-                //                 }
-                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
-                //                     everythingReady = false
-                //                 }
-                //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
-                //                     everythingReady = false
-                //                 }
-                //                 // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
-                //                 //     everythingReady = false
-                //                 // }
-                //             }
-                //             if (conversions.length === 1) everythingReady = false
-                //             if (everythingReady) {
-                //                 // Pick conversion logic
-                //                 var pickedVidIndex = 0
-                //                 var foundIt = false
-                //                 for (var n = 0; n < conversionNames.length; n++) {
-                //                     console.log("conv2: ", conversions, conversionNames[n])
-                //                     for (var i = 0, l = conversions.length; i < l; i++) {
-                //                         if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
-                //                             pickedVidIndex = i
-                //                             foundIt = true
-                //                             // Do necessary stuff after picking a conversion
-                //                             link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
-                //                             duration = conversions[i].duration
-                //                             console.log('|> Link: ', link)
-                //                             console.log('|> Duration: ', duration)
-                                                    
-                //                             // PUT video (update link, status 1)
-                //                             self.$store.dispatch('editVideo', { 
-                //                                 videoId: self.id, 
-                //                                 videoBody: {
-                //                                     "link": link,
-                //                                     "duration": parseInt(duration),
-                //                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
-                //                                     "status": 1,
-                //                                     "featuredGlobal": false,
-                //                                     "featuredClass": false
-                //                                 } 
-                //                             })
-
-                //                             self.player = jwplayer('player')            
-                //                             self.player.setup({
-                //                                 file: link,
-                //                                 image: self.videos.thumb,
-                //                                 "height": $('.player').height(),
-                //                             })
-                //                             // Animate progress bar width
-                //                             self.player.on('time', function(event) {
-                //                                 if (self.player.getState() === 'playing') {
-                //                                     var totalTime = self.videoDuration;
-                //                                     var currentTime = event.position;
-
-                //                                     // Get the current time of video in sec
-                //                                     self.videoCurrentTime = self.player.getPosition()
-                //                                     // Convert the time to MM:SS
-                //                                     self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
-
-                //                                     // Scaling = 3 minutes 
-                //                                     var percentTime = (currentTime / 180) * 100;
-
-                //                                     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-
-                //                                 }
-                //                             })
-
-                //                             self.modalSyncOpen = false  // Close loading bar
-                //                             clearInterval(intervalID)
-
-                //                             break
-                //                         }
-                //                     }
-                //                     if (foundIt) {
-                //                         break
-                //                     }
-                //                 }     
-                //             }                           
-                //         })
-                //         .catch( function(error) {
-                //             console.log("Couldn't get conversions \n ", error)
-                //             clearInterval(intervalID)
-                //         })
-                // }, 5000)
-            }
-            // else if (this.videos[vIndex].status === 1) {
-            else {
-                self.player = jwplayer('player')            
-                self.player.setup({
-                    file: self.videos[vIndex].link,
-                    image: self.videos.thumb,
-                    "height": $('.player').height(),
-                })
-                // Animate progress bar width
-                self.player.on('time', function(event) {
-                    if (self.player.getState() === 'playing') {
-                        var totalTime = self.videoDuration;
-                        var currentTime = event.position;
-
-                        // Get the current time of video in sec
-                        self.videoCurrentTime = self.player.getPosition()
-                        // Convert the time to MM:SS
-                        self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
-
-                        // Scaling = 3 minutes 
-                        var percentTime = (currentTime / 180) * 100;
-
-                        $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
-
+            this.$store.dispatch('getVideo', this.id)
+            .then(function() {
+                return self.$store.dispatch('getAllClasses')
+            })
+            .then(function() {
+                // TODO search for class in classes, and pass the whole class object
+                // TODO remove the whole search thing, add class object in video???
+                for(var c = 0; c < self.classes.length; c++) {
+                    if (self.classes[c].name === self.videos.class) {
+                        self.$store.commit('CURRENT_CLASS_SELECT', self.classes[c])
+                        break
                     }
-                })
-            }
-
-            // DRAGGABLE RIBBON
-            $( ".videoline-ribbon" ).draggable({
-                axis: "x",
-                containment: "#videoline",
-                scroll: false,
-                start() {
-
-                },
-                drag(event) {
-                    var windowOffset = $('.videoline').offset().left
-                    
-                    var clickCoords = event.originalEvent.clientX - windowOffset; 
-                    var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
-
-                    if (clickCoordsPercent < 0) {
-                        clickCoordsPercent = 0
-                    } else if (clickCoordsPercent > 100) {
-                        clickCoordsPercent = 100
-                    }
-                   
-                    // Scaling = 3 minutes 
-                    var clickTime = (clickCoordsPercent * 180) / 100
-                    
-                    if (self.annotationPauseTime < 90) {
-                        clickTime = clickTime // + self.annotationPauseTime
-                    } else { 
-                        clickTime = clickTime + self.annotationPauseTime - 90
-                    }
-
-                    self.player.seek(clickTime)      
-                },
-                stop(event) {
                 }
-            })   
+                return self.$store.dispatch('getVideoAnnotations', self.id)
+            })
+            .then(function() {
+                return self.$store.dispatch('getCanons')
+            })
+            .then(function() {
+                self.authData = self.$root.$options.authService.getAuthData()
+                self.role = self.authData.role
+                self.currentRoute = self.$root.$options.router.currentRoute.name.toLowerCase()
+
+                // this.$store.dipatch('getVideo', this.id) fills the state.videos with just THIS video
+                self.videoDuration = self.videos.duration
+                self.videoDurationMMSS = self.secondsToMMSS(self.videoDuration) 
+
+                // Loads video sources: 
+                // link
+                // duration
+                // thumb TODO
+                // self.getVideoSources(vIndex)
+
+                // Get the correct source of the video. 
+                // The "sources" resource (vidSources) is an array that contains about 3-6 objects.
+                // The last object = sourcesLength - 1 contains an m4a file, which we do not want.
+                // So, we get the last object - 1 = sourcesLength - 2
+                var sourcesLength, correctSource
+                if (self.videos.hasOwnProperty("sources")) {
+                    sourcesLength = self.videos.sources.length
+                    correctSource = sourcesLength - 2
+                }
+
+                if (self.videos.status === 0) {
+                    // self.modalSyncOpen = true // Shows loading spinner
+
+                    // let link, duration, thumb
+
+                    // // Fetching link and duration
+                    // let intervalID = setInterval(function () {
+                    //     console.log("Sending get jwconversion?videoId=jwVideoId call")
+                    //     self.secureHTTPService.get("jwconversion?videoId=" + self.videos.jwVideoId)
+                    //         .then( response => {
+                    //             console.log(' getting conversions...')
+                    //             let conversions = response.data.data.conversions
+                    //             var conversionNames = ['720p', '406p', '270p', '180p']//, 'Original'] // Conversion names in order of preference
+                    //             console.log("conv1: ", conversions)
+                    //             var everythingReady = true // this is a trick
+                    //             for (var i = 0, l = conversions.length; i < l; i++) {
+                    //                 if (conversions[i].status === 'Queued' && conversions[i].template.name === '720p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '406p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '270p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 else if (conversions[i].status === 'Queued' && conversions[i].template.name === '180p'){
+                    //                     everythingReady = false
+                    //                 }
+                    //                 // else if (conversions[i].status === 'Queued' && conversions[i].template.name === 'Original'){
+                    //                 //     everythingReady = false
+                    //                 // }
+                    //             }
+                    //             if (conversions.length === 1) everythingReady = false
+                    //             if (everythingReady) {
+                    //                 // Pick conversion logic
+                    //                 var pickedVidIndex = 0
+                    //                 var foundIt = false
+                    //                 for (var n = 0; n < conversionNames.length; n++) {
+                    //                     console.log("conv2: ", conversions, conversionNames[n])
+                    //                     for (var i = 0, l = conversions.length; i < l; i++) {
+                    //                         if (conversions[i].status === 'Ready' && conversions[i].template.name === conversionNames[n]) {
+                    //                             pickedVidIndex = i
+                    //                             foundIt = true
+                    //                             // Do necessary stuff after picking a conversion
+                    //                             link = conversions[i].link.protocol + '://' + conversions[i].link.address + conversions[i].link.path
+                    //                             duration = conversions[i].duration
+                    //                             console.log('|> Link: ', link)
+                    //                             console.log('|> Duration: ', duration)
+                                                        
+                    //                             // PUT video (update link, status 1)
+                    //                             self.$store.dispatch('editVideo', { 
+                    //                                 videoId: self.id, 
+                    //                                 videoBody: {
+                    //                                     "link": link,
+                    //                                     "duration": parseInt(duration),
+                    //                                     "thumb": 'http://www.ulivesmart.com/wp-content/uploads/2017/05/feature-video-thumbnail-overlay.png',
+                    //                                     "status": 1,
+                    //                                     "featuredGlobal": false,
+                    //                                     "featuredClass": false
+                    //                                 } 
+                    //                             })
+
+                    //                             self.player = jwplayer('player')            
+                    //                             self.player.setup({
+                    //                                 file: link,
+                    //                                 image: self.videos.thumb,
+                    //                                 "height": $('.player').height(),
+                    //                             })
+                    //                             // Animate progress bar width
+                    //                             self.player.on('time', function(event) {
+                    //                                 if (self.player.getState() === 'playing') {
+                    //                                     var totalTime = self.videoDuration;
+                    //                                     var currentTime = event.position;
+
+                    //                                     // Get the current time of video in sec
+                    //                                     self.videoCurrentTime = self.player.getPosition()
+                    //                                     // Convert the time to MM:SS
+                    //                                     self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+
+                    //                                     // Scaling = 3 minutes 
+                    //                                     var percentTime = (currentTime / 180) * 100;
+
+                    //                                     $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
+                    //                                 }
+                    //                             })
+
+                    //                             self.modalSyncOpen = false  // Close loading bar
+                    //                             clearInterval(intervalID)
+
+                    //                             break
+                    //                         }
+                    //                     }
+                    //                     if (foundIt) {
+                    //                         break
+                    //                     }
+                    //                 }     
+                    //             }                           
+                    //         })
+                    //         .catch( function(error) {
+                    //             console.log("Couldn't get conversions \n ", error)
+                    //             clearInterval(intervalID)
+                    //         })
+                    // }, 5000)
+                }
+                // else if (self.videos[vIndex].status === 1) {
+                else {
+                    self.player = jwplayer('player')            
+                    self.player.setup({
+                        file: self.videos.link,
+                        image: self.videos.thumb,
+                        "height": $('.player').height(),
+                    })
+                    // Animate progress bar width
+                    self.player.on('time', function(event) {
+                        if (self.player.getState() === 'playing') {
+                            var totalTime = self.videoDuration;
+                            var currentTime = event.position;
+
+                            // Get the current time of video in sec
+                            self.videoCurrentTime = self.player.getPosition()
+                            // Convert the time to MM:SS
+                            self.videoCurrentTimeMMSS = self.secondsToMMSS(self.videoCurrentTime)
+
+                            // Scaling = 3 minutes 
+                            var percentTime = (currentTime / 180) * 100;
+
+                            $('.videoline-ribbon').animate({ left: percentTime + "%" }, 50);
+
+                        }
+                    })
+                }
+
+                self.loadingInstance.close()
+
+                // DRAGGABLE RIBBON
+                $( ".videoline-ribbon" ).draggable({
+                    axis: "x",
+                    containment: "#videoline",
+                    scroll: false,
+                    start() {
+
+                    },
+                    drag(event) {
+                        var windowOffset = $('.videoline').offset().left
+                        
+                        var clickCoords = event.originalEvent.clientX - windowOffset; 
+                        var clickCoordsPercent = ( clickCoords / $('.videoline').width() ) * 100
+
+                        if (clickCoordsPercent < 0) {
+                            clickCoordsPercent = 0
+                        } else if (clickCoordsPercent > 100) {
+                            clickCoordsPercent = 100
+                        }
+                    
+                        // Scaling = 3 minutes 
+                        var clickTime = (clickCoordsPercent * 180) / 100
+                        
+                        if (self.annotationPauseTime < 90) {
+                            clickTime = clickTime // + self.annotationPauseTime
+                        } else { 
+                            clickTime = clickTime + self.annotationPauseTime - 90
+                        }
+
+                        self.player.seek(clickTime)      
+                    },
+                    stop(event) {
+                    }
+                })   
+            })
         },
         updated() {
             // Fixes unknown man picture bug
@@ -1263,9 +1402,8 @@ You might also want to include a concrete strategy recommendation."
         computed: {
             ...mapGetters([
                 'videos', 'currentVideoID', 'canons', 
-                'videoAnnotations', 'collaborators', 'users',
-                'classEnrolledStudents', 'classes', 'currentClass',
-                'classEnrollments'
+                'videoAnnotations', 'classEnrolledStudents', 'classes', 
+                'currentClass', 'classEnrollments', 'videoCollaborators'
             ])
         },
         components: {
