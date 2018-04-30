@@ -264,10 +264,10 @@
             </div>
 
             <div class="cards column is-4">
-                <div class="cards-content">
+                <div class="cards-content" v-if="canonLoadingDone">
                     <nav class="card-menu">
                         <!-- title="Hide/show" -->
-                        <a class="card-menu__item" :class="canon.name" v-for="canon in canons" :key="canon.name"  @click="chooseCanonFilter($event, canon.name)">
+                        <a class="card-menu__item" :class="canon.name" v-for="canon in canons" :key="canon.name"  @click="chooseCanonFilter($event, canon.name)" >
                             <i class="card-menu__icon fa fa_1x" style="margin-top:20px;" :class="{ 'fa-pencil-square-o': (canon.name === 'Invention'), 'fa-book': (canon.name === 'Structure'), 'fa-commenting': (canon.name === 'Delivery'), 'fa-eye': (canon.name === 'Visuals'), 'fa-diamond': (canon.name === 'Style') }"></i>
                             <span class="card-menu__title">{{ canon.name }}</span>
                             <div class="card-menu__triangle" :class="canon.name + '-border-triangle'" ></div> 
@@ -406,7 +406,8 @@
                 authData: {},
                 role: '',
                 currentRoute: '',
-                loadingInstance: null
+                loadingInstance: null,
+                canonLoadingDone: false
             }
         },
         methods: {
@@ -1166,6 +1167,8 @@
         created() {
         },
         mounted() {
+            this.canonLoadingDone = false
+            
             this.loadingInstance = Loading.service({ fullscreen: true });
 
             this.id = this.$route.params.id // Get video ID from URL
@@ -1190,6 +1193,7 @@
                 return self.$store.dispatch('getCanons')
             })
             .then(function() {
+                self.canonLoadingDone = true
                 self.authData = self.$root.$options.authService.getAuthData()
                 self.role = self.authData.role
                 self.currentRoute = self.$root.$options.router.currentRoute.name.toLowerCase()
@@ -1387,7 +1391,7 @@
         },
         updated() {
             // Fixes unknown man picture bug
-            $('.jw-logo').hide()
+            // $('.jw-logo').hide()
 
             // Fetches annotations of the current video (videoid = URLid)
             // Stores annotations in videoAnnotations[]
@@ -2083,6 +2087,30 @@
                         color: #FFF;
                         background-color: #272424;
                     }
+
+
+
+
+/* ==============================================
+        #MT-TABLE
+================================================= */
+
+.mt-table li {
+	padding: 5px 5px;
+	border-bottom: 1px solid #ccc;
+	list-style: none;
+}
+.mt-table li:hover {
+	background-color: #F5F5F5;
+}
+
+	.mt-table__row {
+		display: flex;
+    	justify-content: space-between;
+	}
+
+
+
 
 
 /* ==============================================
