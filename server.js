@@ -9,6 +9,10 @@ app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
 });
   
-
-// app.listen(port);
-// console.log('server started '+ port);
+// app.get('/*', function(req, res) {
+//     res.sendFile(path.join(__dirname, 'path/to/your/index.html'), function(err) {
+//       if (err) {
+//         res.status(500).send(err)
+//       }
+//     })
+//   })
